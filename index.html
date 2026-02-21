@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ON Radio</title>
+
 <style>
     /* ESTILOS GENERALES */
     body, html {
@@ -16,7 +17,7 @@
         position: relative;
     }
 
-    /* IMAGEN DE FONDO */
+    /* IMAGEN DE FONDO + OVERLAY */
     body::before {
         content: "";
         position: fixed;
@@ -30,8 +31,6 @@
         background-repeat: no-repeat;
         z-index: -2;
     }
-
-    /* OVERLAY SEMITRANSPARENTE */
     body::after {
         content: "";
         position: fixed;
@@ -39,11 +38,11 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background-color: rgba(0,0,0,0.5); /* negro con 50% de transparencia */
+        background-color: rgba(0,0,0,0.5);
         z-index: -1;
     }
 
-    /* CONTENEDOR PRINCIPAL */
+    /* CONTENEDOR */
     .container {
         position: relative;
         z-index: 1;
@@ -58,18 +57,38 @@
         transition: transform 0.3s ease;
     }
     .logo:hover {
-        transform: scale(1.05); /* pequeño zoom al pasar mouse */
+        transform: scale(1.05);
     }
 
-    /* TITULO Y SUBTITULO */
+    /* TITULO */
     h1 {
         margin: 10px 0 5px 0;
         font-size: 28px;
     }
-
     .tagline {
         margin-bottom: 30px;
         font-size: 18px;
+    }
+
+    /* BOTON PLAY PRINCIPAL */
+    #playRadio {
+        display: block;
+        width: 280px;
+        margin: 0 auto 25px auto;
+        padding: 15px;
+        background-color: #FF6600;
+        color: white;
+        text-decoration: none;
+        border: none;
+        border-radius: 12px;
+        font-size: 18px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+    #playRadio:hover {
+        transform: scale(1.05);
+        box-shadow: 0 8px 12px rgba(0,0,0,0.4);
     }
 
     /* BOTONES COLORIDOS */
@@ -81,24 +100,20 @@
         width: 260px;
         max-width: 90%;
         padding: 15px;
-        margin: 12px auto;
+        margin: 10px auto;
         color: white;
         text-decoration: none;
         border-radius: 12px;
         font-size: 17px;
         font-weight: bold;
-        transition: all 0.3s ease;
+        transition: 0.3s;
         box-shadow: 0 4px 6px rgba(0,0,0,0.3);
     }
-
-    /* EFECTO INTERACTIVO */
     .button:hover {
-        transform: scale(1.05);
-        box-shadow: 0 8px 12px rgba(0,0,0,0.4);
-        opacity: 0.95;
+        transform: scale(1.04);
+        opacity: 0.9;
     }
 
-    /* COLORES DE BOTONES */
     .btn-web { background-color: #ff6600; }
     .btn-app { background-color: #1abc9c; }
     .btn-whatsapp { background-color: #25D366; }
@@ -114,6 +129,7 @@
 <body>
 
 <div class="container">
+
     <!-- LOGO -->
     <img src="logotipo.png" alt="ON Radio" class="logo">
 
@@ -121,35 +137,53 @@
     <h1>ON Radio</h1>
     <div class="tagline">Dale ON a la música que más te gusta 🎶</div>
 
-    <!-- BOTONES -->
-    <a href="https://www.laonradio.com.ar" class="button btn-web">
+    <!-- BOTÓN PRINCIPAL DE PLAY -->
+    <button id="playRadio">🎧 Escuchá ON Radio</button>
+
+    <!-- BOTONES DE ENLACES -->
+    <a href="https://www.laonradio.com.ar" class="button btn-web" target="_blank">
         🌐 Visitar nuestra web
     </a>
-    <a href="https://radiio.com.ar/app/a5ae1c1a12ac221f" class="button btn-app">
+    <a href="https://radiio.com.ar/app/a5ae1c1a12ac221f" class="button btn-app" target="_blank">
         📱 Descargar la app
     </a>
-    <a href="https://wa.me/5491161358000" class="button btn-whatsapp">
+    <a href="https://wa.me/5491161358000" class="button btn-whatsapp" target="_blank">
         💬 WhatsAppeanos!
     </a>
-    <a href="https://www.instagram.com/la_on_radio/" class="button btn-instagram">
+    <a href="https://www.instagram.com/la_on_radio/" class="button btn-instagram" target="_blank">
         📸 Instagram
     </a>
-    <a href="https://www.facebook.com/ONRadioo" class="button btn-facebook">
+    <a href="https://www.facebook.com/ONRadioo" class="button btn-facebook" target="_blank">
         👍 Facebook
     </a>
-    <a href="https://www.youtube.com/@LaONRadio" class="button btn-youtube">
+    <a href="https://www.youtube.com/@LaONRadio" class="button btn-youtube" target="_blank">
         ▶️ YouTube
     </a>
-    <a href="https://www.tiktok.com/@laonradio" class="button btn-tiktok">
+    <a href="https://www.tiktok.com/@laonradio" class="button btn-tiktok" target="_blank">
         🎵 TikTok
     </a>
-    <a href="https://x.com/laonradioo" class="button btn-x">
+    <a href="https://x.com/laonradioo" class="button btn-x" target="_blank">
         🐦 X
     </a>
-    <a href="https://www.twitch.tv/laonradio" class="button btn-twitch">
+    <a href="https://www.twitch.tv/laonradio" class="button btn-twitch" target="_blank">
         🎮 Twitch
     </a>
+
 </div>
+
+<!-- REPRODUCTOR DE RADIO -->
+<audio id="radioStream" src="https://streaming.radiosenlinea.com.ar/9020/stream" preload="none"></audio>
+
+<script>
+    const btnPlay = document.getElementById("playRadio");
+    const radio = document.getElementById("radioStream");
+
+    btnPlay.addEventListener("click", function() {
+        radio.play().catch(err => {
+            console.log("El navegador requiere interacción del usuario para reproducir.");
+        });
+    });
+</script>
 
 </body>
 </html>
