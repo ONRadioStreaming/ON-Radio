@@ -53,8 +53,12 @@
 
     /* LOGO */
     .logo {
-        width: 200px; /* ajusta si querés más grande o más chico */
+        width: 200px;
         margin-bottom: 20px;
+        transition: transform 0.3s ease;
+    }
+    .logo:hover {
+        transform: scale(1.05); /* pequeño zoom al pasar mouse */
     }
 
     /* TITULO Y SUBTITULO */
@@ -74,7 +78,7 @@
         align-items: center;
         justify-content: center;
         gap: 10px;
-        width: 280px;
+        width: 260px;
         max-width: 90%;
         padding: 15px;
         margin: 12px auto;
@@ -83,7 +87,15 @@
         border-radius: 12px;
         font-size: 17px;
         font-weight: bold;
-        transition: 0.2s;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+    }
+
+    /* EFECTO INTERACTIVO */
+    .button:hover {
+        transform: scale(1.05);
+        box-shadow: 0 8px 12px rgba(0,0,0,0.4);
+        opacity: 0.95;
     }
 
     /* COLORES DE BOTONES */
@@ -97,17 +109,13 @@
     .btn-x { background-color: #1DA1F2; }
     .btn-twitch { background-color: #9146FF; }
 
-    /* HOVER */
-    .button:hover {
-        opacity: 0.85;
-    }
 </style>
 </head>
 <body>
 
 <div class="container">
     <!-- LOGO -->
-    <img src="logo.png" alt="ON Radio" class="logo">
+    <img src="logotipo.png" alt="ON Radio" class="logo">
 
     <!-- TITULO Y SUBTITULO -->
     <h1>ON Radio</h1>
