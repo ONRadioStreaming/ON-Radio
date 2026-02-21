@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ON Radio</title>
 <style>
-    /* Estilos generales */
     body {
         margin: 0;
         padding: 0;
@@ -16,18 +15,16 @@
         text-align: center;
     }
 
-    /* Contenedor principal */
     .container {
         display: flex;
         flex-direction: column;
         align-items: center;
         padding: 20px;
-        background-color: rgba(0,0,0,0.5); /* ligera transparencia para resaltar botones */
+        background-color: rgba(0,0,0,0.5);
         min-height: 100vh;
         justify-content: center;
     }
 
-    /* Logo */
     .logo {
         width: 200px;
         height: auto;
@@ -44,7 +41,6 @@
         margin-bottom: 30px;
     }
 
-    /* Botones */
     .btn {
         display: flex;
         align-items: center;
@@ -72,20 +68,21 @@
     }
 
     /* Colores de los botones */
-    .web { background-color: #FF7F50; } /* coral */
-    .app { background-color: #FFA500; } /* naranja */
-    .whatsapp { background-color: #25D366; } /* verde WhatsApp */
-    .instagram { background-color: #E1306C; } /* Instagram fucsia */
-    .facebook { background-color: #1877F2; } /* azul Facebook */
-    .tiktok { background-color: #69C9D0; } /* cyan TikTok */
-    .youtube { background-color: #FF0000; } /* rojo YouTube */
-    .x { background-color: #1DA1F2; } /* azul X/Twitter */
-    .twitch { background-color: #9146FF; } /* morado Twitch */
+    .web { background-color: #FF7F50; }
+    .app { background-color: #FFA500; }
+    .whatsapp { background-color: #25D366; }
+    .instagram { background-color: #E1306C; }
+    .facebook { background-color: #1877F2; }
+    .tiktok { background-color: #69C9D0; }
+    .youtube { background-color: #FF0000; }
+    .x { background-color: #1DA1F2; }
+    .twitch { background-color: #9146FF; }
+    .publicidad { background-color: #25D366; } /* mismo verde WhatsApp */
 
-    /* Pie de página */
     footer {
         margin-top: 30px;
         font-size: 0.9em;
+        line-height: 1.4em;
     }
 </style>
 </head>
@@ -96,7 +93,7 @@
 
     <!-- Título -->
     <h1>ON Radio</h1>
-    <p class="subtitle">Dale ON a la música que más te gusta</p>
+    <p class="subtitle">¡Dale ON a la música que más te gusta!</p>
 
     <!-- Botones -->
     <a href="https://www.laonradio.com.ar" target="_blank" class="btn web">
@@ -112,7 +109,7 @@
     </a>
 
     <a href="https://www.instagram.com/la_on_radio/" target="_blank" class="btn instagram">
-        <img src="icons/instagram.png" alt="Instagram"> Casarnos en Instagram
+        <img src="icons/instagram.png" alt="Instagram"> Seguinos en Instagram
     </a>
 
     <a href="https://www.facebook.com/ONRadioo" target="_blank" class="btn facebook">
@@ -135,8 +132,16 @@
         <img src="icons/twitch.png" alt="Twitch"> Seguinos en Twitch
     </a>
 
+    <!-- Botón nuevo de publicidad -->
+    <a href="https://wa.me/5492475402890" target="_blank" class="btn publicidad">
+        <img src="icons/whatsapp-white.png" alt="WhatsApp"> ¿Querés hacer publicidad? Click aquí
+    </a>
+
     <!-- Pie de página -->
-    <footer>Gracias por acompañarnos desde Rojas para todo el mundo 🎧</footer>
+    <footer>
+        ON Radio<br>
+        Desde la ciudad de Rojas, para todo el mundo 🎧
+    </footer>
 </div>
 </body>
 </html>
