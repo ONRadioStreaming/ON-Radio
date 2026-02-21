@@ -51,10 +51,7 @@
     }
 
     /* Colores y degradés */
-    .radio-vivo {
-        background: linear-gradient(to left, #ff0000, #800000);
-    }
-
+    .radio-vivo { background: linear-gradient(to left, #FF0000, #800000); }
     .web { background: linear-gradient(to left, #1E90FF, #000033); }
     .app { background: linear-gradient(to left, #32CD32, #003300); }
     .whatsapp { background: linear-gradient(to left, #25D366, #004d00); }
@@ -64,12 +61,7 @@
     .x { background: linear-gradient(to left, #000000, #333333); }
     .youtube { background: linear-gradient(to left, #FF0000, #800000); }
     .twitch { background: linear-gradient(to left, #6441A5, #200050); }
-    .publicidad { background: linear-gradient(to left, #FF8C00, #803d00); }
-
-    footer {
-        margin-top: 40px;
-        font-size: 0.9em;
-    }
+    .publicidad { background: linear-gradient(to left, #25D366, #004d00); } /* Verde WhatsApp */
 
 </style>
 </head>
@@ -79,10 +71,13 @@
     <h1>ON Radio</h1>
     <p class="slogan">Dale ON a la música que más te gusta!</p>
 
-    <!-- Botón arriba: radio en vivo -->
-    <a href="https://streaming.radiosenlinea.com.ar/9020/stream" target="_blank" class="boton radio-vivo">
+    <!-- Botón radio en vivo -->
+    <a href="#" onclick="document.getElementById('streaming').play(); return false;" class="boton radio-vivo">
         <img src="parlante.png" alt="Radio en vivo"> Escuchar la radio ahora
     </a>
+
+    <!-- Reproductor oculto -->
+    <audio id="streaming" src="https://streaming.radiosenlinea.com.ar/9020/stream" autoplay></audio>
 
     <!-- Botones existentes -->
     <a href="https://www.laonradio.com.ar" target="_blank" class="boton web">
@@ -121,7 +116,7 @@
         <img src="contracción.png" alt="Seguinos en Twitch"> Seguinos en Twitch
     </a>
 
-    <!-- Botón de publicidad -->
+    <!-- Botón publicidad -->
     <a href="https://wa.me/5492474445664" target="_blank" class="boton publicidad">
         <img src="whatsapp.png" alt="Publicidad"> ¿Querés hacer publicidad? Click aquí
     </a>
