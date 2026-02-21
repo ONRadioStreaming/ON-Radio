@@ -3,147 +3,141 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ON RADIO</title>
-
-<!-- Font Awesome para íconos -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
-
+<title>ON Radio Streaming</title>
 <style>
-/* BODY */
-body {
-    margin: 0;
-    font-family: 'Segoe UI', sans-serif;
-    background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)),
-                url('fondo-musica.jpg') no-repeat center center fixed;
-    background-size: cover;
-    color: white;
-    text-align: center;
-}
+    /* ESTILOS GENERALES */
+    body, html {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        font-family: Arial, sans-serif;
+        color: white;
+        overflow-x: hidden;
+    }
 
-/* CONTAINER */
-.container {
-    max-width: 420px;
-    margin: auto;
-    padding: 20px;
-}
+    /* VIDEO DE FONDO */
+    #bg-video {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        z-index: -1; /* detrás de todo */
+    }
 
-/* LOGO */
-.logo {
-    width: 200px;
-    margin: 30px 0 10px 0;
-}
+    /* CONTENEDOR PRINCIPAL */
+    .container {
+        position: relative;
+        z-index: 1;
+        text-align: center;
+        padding: 40px 20px;
+    }
 
-/* TITULO Y TAGLINE */
-h1 {
-    margin-bottom: 5px;
-    font-size: 26px;
-}
+    /* LOGO */
+    .logo {
+        width: 200px; /* ajusta si querés más grande o más chico */
+        margin-bottom: 20px;
+    }
 
-.tagline {
-    font-size: 14px;
-    color: #ffffffcc;
-    margin-bottom: 25px;
-}
+    /* TITULO Y TAGLINE */
+    h1 {
+        margin: 10px 0 5px 0;
+        font-size: 28px;
+    }
 
-/* BOTONES */
-.button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    width: 100%;
-    padding: 15px;
-    margin: 12px 0;
-    color: white;
-    text-decoration: none;
-    border-radius: 12px;
-    font-size: 17px;
-    font-weight: bold;
-    transition: 0.2s;
-}
+    .tagline {
+        margin-bottom: 30px;
+        font-size: 18px;
+    }
 
-/* Hover efecto */
-.button:hover {
-    transform: scale(1.03);
-}
+    /* BOTONES COLORIDOS */
+    .button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        width: 280px;       /* ancho fijo más pequeño */
+        max-width: 90%;     /* ajusta en pantallas chicas */
+        padding: 15px;      /* altura del botón */
+        margin: 12px auto;  /* centrado horizontal */
+        color: white;
+        text-decoration: none;
+        border-radius: 12px;
+        font-size: 17px;
+        font-weight: bold;
+        transition: 0.2s;
+    }
 
-/* BOTONES COLORIDOS */
-.web { background: #555555; }
-.app { background: #FF3C00; }
-.whatsapp { background: #25D366; }
-.instagram { background: linear-gradient(45deg, #f58529, #dd2a7b, #8134af, #515bd4); }
-.facebook { background: #1877f2; }
-.youtube { background: #FF0000; }
-.tiktok { background: #000000; color: #fff; }
-.x { background: #1DA1F2; }
-.twitch { background: #9146FF; }
+    /* COLORES DE BOTONES */
+    .btn-web { background-color: #ff6600; }
+    .btn-app { background-color: #1abc9c; }
+    .btn-whatsapp { background-color: #25D366; }
+    .btn-instagram { background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%); }
+    .btn-facebook { background-color: #1877f2; }
+    .btn-youtube { background-color: #FF0000; }
+    .btn-tiktok { background-color: #010101; color:white; }
+    .btn-x { background-color: #1DA1F2; }
+    .btn-twitch { background-color: #9146FF; }
 
-/* ICONOS */
-.button i {
-    font-size: 20px;
-}
+    /* HOVER */
+    .button:hover {
+        opacity: 0.85;
+    }
 
-/* FOOTER */
-.footer {
-    margin-top: 30px;
-    font-size: 12px;
-    color: #bbbbbb;
-}
+    /* ICONOS */
+    .icon {
+        width: 20px;
+        height: 20px;
+    }
+
 </style>
 </head>
 <body>
 
+<!-- VIDEO DE FONDO -->
+<video autoplay muted loop id="bg-video">
+    <source src="VIDEO REDES VERTICAL.mp4" type="video/mp4">
+    Tu navegador no soporta videos de fondo.
+</video>
+
 <div class="container">
+    <!-- LOGO -->
+    <img src="LOGO-CONTORNO-BLANCO-300X202.png" alt="ON Radio" class="logo">
 
-<!-- LOGO -->
-<img src="logo.png" alt="ON Radio" class="logo">
+    <!-- TITULO Y TAGLINE -->
+    <h1>ON Radio Streaming</h1>
+    <div class="tagline">Dale ON a la música que más te gusta 🎶</div>
 
-<!-- TITULO -->
-<h1>ON Radio Streaming</h1>
-<div class="tagline">Dale ON a la música que más te gusta 🎶</div>
-
-<!-- BOTONES -->
-<a class="button web" href="https://www.laonradio.com.ar" target="_blank">
-<i class="fas fa-globe"></i> Visita nuestra web
-</a>
-
-<a class="button app" href="https://radiio.com.ar/app/a5ae1c1a12ac221f" target="_blank">
-<i class="fab fa-android"></i><i class="fab fa-apple"></i><i class="fab fa-windows"></i> Descargar App
-</a>
-
-<a class="button whatsapp" href="https://wa.me/5491161358000" target="_blank">
-<i class="fab fa-whatsapp"></i> WhatsAppianos
-</a>
-
-<a class="button instagram" href="https://www.instagram.com/la_on_radio/" target="_blank">
-<i class="fab fa-instagram"></i> Instagram
-</a>
-
-<a class="button facebook" href="https://www.facebook.com/ONRadioo" target="_blank">
-<i class="fab fa-facebook"></i> Facebook
-</a>
-
-<a class="button youtube" href="https://www.youtube.com/@LaONRadio" target="_blank">
-<i class="fab fa-youtube"></i> YouTube
-</a>
-
-<a class="button tiktok" href="https://www.tiktok.com/@laonradio" target="_blank">
-<i class="fab fa-tiktok"></i> TikTok
-</a>
-
-<a class="button x" href="https://x.com/laonradioo" target="_blank">
-<i class="fab fa-x-twitter"></i> X
-</a>
-
-<a class="button twitch" href="https://www.twitch.tv/laonradio" target="_blank">
-<i class="fab fa-twitch"></i> Twitch
-</a>
-
-<!-- FOOTER -->
-<div class="footer">
-© 2026 ON Radio Streaming
+    <!-- BOTONES -->
+    <a href="https://www.laonradio.com.ar" class="button btn-web">
+        🌐 Visitar nuestra web
+    </a>
+    <a href="https://radiio.com.ar/app/a5ae1c1a12ac221f" class="button btn-app">
+        📱 Descargar la app
+    </a>
+    <a href="https://wa.me/5491161358000" class="button btn-whatsapp">
+        💬 WhatsAppianos
+    </a>
+    <a href="https://www.instagram.com/la_on_radio/" class="button btn-instagram">
+        📸 Instagram
+    </a>
+    <a href="https://www.facebook.com/ONRadioo" class="button btn-facebook">
+        👍 Facebook
+    </a>
+    <a href="https://www.youtube.com/@LaONRadio" class="button btn-youtube">
+        ▶️ YouTube
+    </a>
+    <a href="https://www.tiktok.com/@laonradio" class="button btn-tiktok">
+        🎵 TikTok
+    </a>
+    <a href="https://x.com/laonradioo" class="button btn-x">
+        🐦 X
+    </a>
+    <a href="https://www.twitch.tv/laonradio" class="button btn-twitch">
+        🎮 Twitch
+    </a>
 </div>
 
-</div>
 </body>
 </html>
