@@ -13,17 +13,12 @@
         font-family: Arial, sans-serif;
         color: white;
         overflow-x: hidden;
-    }
 
-    /* VIDEO DE FONDO */
-    #bg-video {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        z-index: -1; /* detrás de todo */
+        /* IMAGEN DE FONDO */
+        background-image: url('Auriculares 640 x 1136.jpg');
+        background-size: cover;        /* ocupa toda la pantalla */
+        background-position: center;   /* centrado */
+        background-repeat: no-repeat;
     }
 
     /* CONTENEDOR PRINCIPAL */
@@ -94,12 +89,6 @@
 </style>
 </head>
 <body>
-
-<!-- VIDEO DE FONDO -->
-<video autoplay muted loop id="bg-video">
-    <source src="VIDEO REDES VERTICAL.mp4" type="video/mp4">
-    Tu navegador no soporta videos de fondo.
-</video>
 
 <div class="container">
     <!-- LOGO -->
