@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ON Radio</title>
+
 <!-- Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-L5CGFW94XR"></script>
 <script>
@@ -26,20 +27,19 @@
     .logo {
         width: 200px;
         height: auto;
-        margin-top: 20px;
-        margin-bottom: 10px;
+        margin: 20px 0;
     }
 
     h1 {
-        font-size: 2em;
-        margin: 5px 0;
-        text-shadow: 2px 2px 4px #000000;
+        font-size: 2.5em;
+        margin: 0;
+        text-shadow: 2px 2px 4px #000;
     }
 
     p.slogan {
         font-size: 1.2em;
         margin-bottom: 30px;
-        text-shadow: 2px 2px 4px #000000;
+        text-shadow: 1px 1px 3px #000;
     }
 
     .boton {
@@ -59,9 +59,10 @@
     }
 
     .boton img {
-        width: 25px;
-        height: 25px;
+        width: 28px;
+        height: 28px;
         margin-right: 10px;
+        filter: drop-shadow(1px 1px 2px rgba(0,0,0,0.7));
     }
 
     .boton:hover {
@@ -71,7 +72,7 @@
     /* Colores y degradés */
     .radio-vivo { background: linear-gradient(to left, #FF0000, #800000); }
     .web { background: linear-gradient(to left, #1E90FF, #000033); }
-    .app { background: linear-gradient(to left, #FF8C00, #803300); } /* cambio de verde a naranja oscuro */
+    .app { background: linear-gradient(to left, #FF8C00, #804000); } /* color distinto al verde WhatsApp */
     .whatsapp { background: linear-gradient(to left, #25D366, #004d00); }
     .instagram { background: linear-gradient(to left, #E1306C, #33001a); }
     .facebook { background: linear-gradient(to left, #3b5998, #000033); }
@@ -82,17 +83,17 @@
     .publicidad { background: linear-gradient(to left, #25D366, #004d00); }
 
     footer {
-        margin-top: 30px;
-        font-size: 0.8em;
+        margin-top: 20px;
+        font-size: 0.75em;
         line-height: 1.2em;
         background-color: rgba(0,0,0,0.5);
-        padding: 10px;
+        padding: 5px 0;
     }
 </style>
 </head>
 <body>
 
-    <!-- Logo superior -->
+    <!-- Logo -->
     <img src="logotipo.png" alt="ON Radio" class="logo">
 
     <!-- Título y slogan -->
@@ -107,7 +108,7 @@
     <!-- Reproductor oculto -->
     <audio id="streaming" src="https://streaming.radiosenlinea.com.ar/9020/stream"></audio>
 
-    <!-- Botones existentes -->
+    <!-- Botones de acción -->
     <a href="https://www.laonradio.com.ar" target="_blank" class="boton web">
         <img src="web.png" alt="Conocé nuestra web"> Ingresa a nuestra web
     </a>
@@ -117,31 +118,31 @@
     </a>
 
     <a href="https://wa.me/5491161358000" target="_blank" class="boton whatsapp">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsAppeanos!"> WhatsAppeanos!
+        <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp"> WhatsAppeanos!
     </a>
 
     <a href="https://www.instagram.com/la_on_radio" target="_blank" class="boton instagram">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/e/e7/Instagram_logo_2016.svg" alt="Seguinos en Instagram"> Seguinos en Instagram
+        <img src="https://upload.wikimedia.org/wikipedia/commons/e/e7/Instagram_logo_2016.svg" alt="Instagram"> Seguinos en Instagram
     </a>
 
     <a href="https://www.facebook.com/onradioo" target="_blank" class="boton facebook">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg" alt="Seguinos en Facebook"> Seguinos en Facebook
+        <img src="https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg" alt="Facebook"> Seguinos en Facebook
     </a>
 
-    <a href="https://www.tiktok.com/@laonradio" target="_blank" class="boton tiktok">
-        <img src="tiktok.png" alt="Seguinos en TikTok"> Seguinos en TikTok
+    <a href="tiktok.png" target="_blank" class="boton tiktok">
+        <img src="tiktok.png" alt="TikTok"> Seguinos en TikTok
     </a>
 
-    <a href="https://www.twitter.com/laonradioo" target="_blank" class="boton x">
-        <img src="x.png" alt="Seguinos en X"> Seguinos en X
+    <a href="X.png" target="_blank" class="boton x">
+        <img src="X.png" alt="X"> Seguinos en X
     </a>
 
     <a href="https://www.youtube.com/@laonradio" target="_blank" class="boton youtube">
-        <img src="youtube.png" alt="Seguinos en YouTube"> Seguinos en YouTube
+        <img src="https://upload.wikimedia.org/wikipedia/commons/0/09/YouTube_full-color_icon_%282017%29.svg" alt="YouTube"> Seguinos en YouTube
     </a>
 
-    <a href="https://www.twitch.tv/laonradio" target="_blank" class="boton twitch">
-        <img src="contracción.png" alt="Seguinos en Twitch"> Seguinos en Twitch
+    <a href="contracción.png" target="_blank" class="boton twitch">
+        <img src="contracción.png" alt="Twitch"> Seguinos en Twitch
     </a>
 
     <!-- Botón publicidad -->
@@ -151,8 +152,8 @@
 
     <!-- Footer -->
     <footer>
-        <div>ON Radio</div>
-        <div>Desde la ciudad de Rojas, BS. AS., Argentina para todo el mundo</div>
+        ON Radio<br>
+        Desde la ciudad de Rojas, BS. AS, Argentina para todo el mundo
     </footer>
 
 </body>
