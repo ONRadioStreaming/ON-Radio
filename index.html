@@ -4,75 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ON Radio</title>
-<style>
-    body {
-        margin: 0;
-        font-family: Arial, sans-serif;
-        background: url('fondo.jpg') no-repeat center center fixed;
-        background-size: cover;
-        color: #fff;
-        text-align: center;
-    }
 
-    h1 {
-        font-size: 2.5em;
-        margin-top: 20px;
-        text-shadow: 2px 2px 4px #000000;
-    }
-
-    p.slogan {
-        font-size: 1.2em;
-        margin-bottom: 30px;
-        text-shadow: 1px 1px 2px #000000;
-    }
-
-    .boton {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin: 10px auto;
-        padding: 12px 25px;
-        width: 250px;
-        max-width: 90%;
-        color: white;
-        text-decoration: none;
-        font-weight: bold;
-        border-radius: 10px;
-        box-shadow: 0 5px 10px rgba(0,0,0,0.3);
-        transition: transform 0.2s;
-    }
-
-    .boton img {
-        width: 25px;
-        height: 25px;
-        margin-right: 10px;
-    }
-
-    .boton:hover {
-        transform: scale(1.05);
-    }
-
-    /* Colores y degradés */
-    .radio-vivo { background: linear-gradient(to left, #FF0000, #800000); }
-    .web { background: linear-gradient(to left, #1E90FF, #000033); }
-    .app { background: linear-gradient(to left, #FF8C00, #FF4500); } /* color distinto del verde */
-    .whatsapp { background: linear-gradient(to left, #25D366, #004d00); }
-    .instagram { background: linear-gradient(to left, #E1306C, #33001a); }
-    .facebook { background: linear-gradient(to left, #3b5998, #000033); }
-    .tiktok { background: linear-gradient(to left, #69C9D0, #003333); }
-    .x { background: linear-gradient(to left, #000000, #333333); }
-    .youtube { background: linear-gradient(to left, #FF0000, #800000); }
-    .twitch { background: linear-gradient(to left, #6441A5, #200050); }
-    .publicidad { background: linear-gradient(to left, #25D366, #004d00); }
-
-    footer {
-        margin-top: 20px;
-        font-size: 0.75em;
-        line-height: 1.2em;
-        background-color: rgba(0,0,0,0.5);
-        padding: 5px;
-    }
-</style>
 <!-- Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-L5CGFW94XR"></script>
 <script>
@@ -81,71 +13,148 @@
   gtag('js', new Date());
   gtag('config', 'G-L5CGFW94XR');
 </script>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: url('fondo.jpg') no-repeat center center fixed;
+    background-size: cover;
+    color: #fff;
+    text-align: center;
+}
+
+/* Contorno negro para títulos */
+h1, p.slogan {
+    text-shadow: 2px 2px 4px #000000;
+}
+
+h1 {
+    font-size: 2.5em;
+    margin-top: 20px;
+}
+
+p.slogan {
+    font-size: 1.2em;
+    margin-bottom: 30px;
+}
+
+/* Botones */
+.boton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 10px auto;
+    padding: 12px 25px;
+    width: 250px;
+    max-width: 90%;
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    border-radius: 10px;
+    box-shadow: 0 5px 10px rgba(0,0,0,0.3);
+    transition: transform 0.2s;
+}
+
+.boton img, .boton svg {
+    width: 25px;
+    height: 25px;
+    margin-right: 10px;
+}
+
+.boton:hover {
+    transform: scale(1.05);
+}
+
+/* Colores y degradés */
+.radio-vivo { background: linear-gradient(to left, #FF0000, #800000); }
+.web { background: linear-gradient(to left, #1E90FF, #000033); }
+.app { background: linear-gradient(to left, #FF8C00, #003300); } /* Cambiado a naranja para diferenciar de WhatsApp */
+.whatsapp { background: linear-gradient(to left, #25D366, #004d00); }
+.instagram { background: linear-gradient(to left, #E1306C, #33001a); }
+.facebook { background: linear-gradient(to left, #3b5998, #000033); }
+.tiktok { background: linear-gradient(to left, #69C9D0, #003333); }
+.x { background: linear-gradient(to left, #000000, #333333); }
+.youtube { background: linear-gradient(to left, #FF0000, #800000); }
+.twitch { background: linear-gradient(to left, #6441A5, #200050); }
+.publicidad { background: linear-gradient(to left, #25D366, #004d00); }
+
+/* Footer */
+footer {
+    margin-top: 30px;
+    font-size: 0.8em;
+    line-height: 1.2em;
+    padding: 10px;
+    background-color: rgba(0,0,0,0.4);
+}
+</style>
 </head>
 <body>
 
-    <!-- Logo -->
-    <img src="logotipo.png" alt="ON Radio" style="width:200px;height:auto;margin-top:20px;">
+<!-- Logo -->
+<img src="logotipo.png" alt="ON Radio" style="width:200px; height:auto; margin-bottom:20px;">
 
-    <!-- Título y slogan -->
-    <h1>ON Radio</h1>
-    <p class="slogan">Dale ON a la música que más te gusta!</p>
+<!-- Título y slogan -->
+<h1>ON Radio</h1>
+<p class="slogan">Dale ON a la música que más te gusta!</p>
 
-    <!-- Botón radio en vivo -->
-    <a href="#" onclick="document.getElementById('streaming').play(); return false;" class="boton radio-vivo">
-        <img src="parlante.svg" alt="Radio en vivo"> Escuchanos en vivo ahora
-    </a>
+<!-- Botón radio en vivo con SVG parlante inline -->
+<a href="#" onclick="document.getElementById('streaming').play(); return false;" class="boton radio-vivo">
+  <svg xmlns="http://www.w3.org/2000/svg" fill="#FFFFFF" viewBox="0 0 24 24"><path d="M3 10v4h4l5 5V5l-5 5H3z"/></svg>
+  Escuchanos en vivo ahora
+</a>
+<audio id="streaming" src="https://streaming.radiosenlinea.com.ar/9020/stream"></audio>
 
-    <!-- Reproductor oculto -->
-    <audio id="streaming" src="https://streaming.radiosenlinea.com.ar/9020/stream"></audio>
+<!-- Botones existentes -->
+<a href="https://www.laonradio.com.ar" target="_blank" class="boton web">
+  <img src="web.png" alt="Conocé nuestra web"> Ingresa a nuestra web
+</a>
 
-    <!-- Botones existentes -->
-    <a href="https://www.laonradio.com.ar" target="_blank" class="boton web">
-        <img src="web.png" alt="Conocé nuestra web"> Ingresa a nuestra web
-    </a>
+<a href="https://radiio.com.ar/app/a5ae1c1a12ac221f" class="boton app">
+  <img src="aplicación.png" alt="Descargá nuestra app"> Descargá la app
+</a>
 
-    <a href="https://radiio.com.ar/app/a5ae1c1a12ac221f" class="boton app">
-        <img src="aplicación.png" alt="Descargá nuestra app"> Descargá la app
-    </a>
+<a href="https://wa.me/5491161358000" target="_blank" class="boton whatsapp">
+  <!-- SVG oficial WhatsApp -->
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" fill="#25D366"><path d="M380.9 97.1C339-3.5 260.8-12.9 199.2 25.2c-61.6 38.2-76.8 112.3-68.5 161.2-29.3 63.5-31.2 148.2 17.1 213.3l-1 68.6c5.8 7.7 10.7 15.7 16.2 23.2 5.3-4.1 10.5-8.2 15.7-12.2 41.8 23.2 88.2 32.3 136.5 21.3 70.7-14.7 122-63.2 135.9-133.3 14-70.2-7.7-140.7-58.3-184.1zM224 331.3c-43.3 0-78.4-35-78.4-78.3s35-78.3 78.3-78.3 78.3 35 78.3 78.3-35 78.3-78.2 78.3z"/></svg>
+  WhatsAppeanos!
+</a>
 
-    <a href="https://wa.me/5491161358000" target="_blank" class="boton whatsapp">
-        <img src="whatsapp.svg" alt="WhatsAppeanos!"> WhatsAppeanos!
-    </a>
+<a href="https://www.instagram.com/la_on_radio" target="_blank" class="boton instagram">
+  <!-- SVG oficial Instagram -->
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" fill="#E1306C"><path d="M224 202.7c-34.4 0-62.3 28-62.3 62.4 0 34.5 28 62.3 62.3 62.3 34.4 0 62.3-28 62.3-62.3 0-34.5-28-62.4-62.3-62.4zM398.8 80c-18.7-18.7-44.5-28.8-71.5-28.8H121.7c-27 0-52.8 10.1-71.5 28.8-18.7 18.7-28.8 44.5-28.8 71.5v205.5c0 27 10.1 52.8 28.8 71.5 18.7 18.7 44.5 28.8 71.5 28.8h205.5c27 0 52.8-10.1 71.5-28.8 18.7-18.7 28.8-44.5 28.8-71.5V151.5c0-27-10.1-52.8-28.8-71.5z"/></svg>
+  Seguinos en Instagram
+</a>
 
-    <a href="https://www.instagram.com/la_on_radio" target="_blank" class="boton instagram">
-        <img src="instagram.svg" alt="Seguinos en Instagram"> Seguinos en Instagram
-    </a>
+<a href="https://www.facebook.com/onradioo" target="_blank" class="boton facebook">
+  <img src="facebook.png" alt="Seguinos en Facebook"> Seguinos en Facebook
+</a>
 
-    <a href="https://www.facebook.com/onradioo" target="_blank" class="boton facebook">
-        <img src="facebook.svg" alt="Seguinos en Facebook"> Seguinos en Facebook
-    </a>
+<a href="https://www.tiktok.com/@laonradio" target="_blank" class="boton tiktok">
+  <img src="tiktok.png" alt="Seguinos en TikTok"> Seguinos en TikTok
+</a>
 
-    <a href="https://www.tiktok.com/@laonradio" target="_blank" class="boton tiktok">
-        <img src="tiktok.png" alt="Seguinos en TikTok"> Seguinos en TikTok
-    </a>
+<a href="https://www.twitter.com/laonradioo" target="_blank" class="boton x">
+  <img src="x.png" alt="Seguinos en X"> Seguinos en X
+</a>
 
-    <a href="https://www.twitter.com/laonradioo" target="_blank" class="boton x">
-        <img src="x.png" alt="Seguinos en X"> Seguinos en X
-    </a>
+<a href="https://www.youtube.com/@laonradio" target="_blank" class="boton youtube">
+  <img src="youtube.png" alt="Seguinos en YouTube"> Seguinos en YouTube
+</a>
 
-    <a href="https://www.youtube.com/@laonradio" target="_blank" class="boton youtube">
-        <img src="youtube.svg" alt="Seguinos en YouTube"> Seguinos en YouTube
-    </a>
+<a href="https://www.twitch.tv/laonradio" target="_blank" class="boton twitch">
+  <img src="contracción.png" alt="Seguinos en Twitch"> Seguinos en Twitch
+</a>
 
-    <a href="https://www.twitch.tv/laonradio" target="_blank" class="boton twitch">
-        <img src="contracción.png" alt="Seguinos en Twitch"> Seguinos en Twitch
-    </a>
+<a href="https://wa.me/5492475402890" target="_blank" class="boton publicidad">
+  <img src="whatsapp.png" alt="Publicidad"> ¿Querés hacer publicidad? Click aquí
+</a>
 
-    <!-- Botón publicidad -->
-    <a href="https://wa.me/5492475402890" target="_blank" class="boton publicidad">
-        <img src="whatsapp.svg" alt="Publicidad"> ¿Querés hacer publicidad? Click aquí
-    </a>
-
-    <!-- Footer -->
-    <footer>
-        <div>ON Radio</div>
-        <div>Desde la ciudad de Rojas, BS. AS, Argentina para todo el mundo</div>
-    </footer>
+<!-- Footer -->
+<footer>
+  <div>ON Radio</div>
+  <div>Desde la ciudad de Rojas, BS. AS., Argentina para todo el mundo</div>
+</footer>
 
 </body>
 </html>
