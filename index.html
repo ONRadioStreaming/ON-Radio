@@ -4,128 +4,191 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ON Radio</title>
+
 <style>
-    body {
-        margin: 0;
-        font-family: Arial, sans-serif;
-        background: url('fondo.jpg') no-repeat center center fixed;
-        background-size: cover;
-        color: #fff;
-        text-align: center;
-    }
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: url('fondo.jpg') no-repeat center center fixed;
+    background-size: cover;
+    color: #fff;
+    text-align: center;
+}
 
-    h1 {
-        font-size: 2em;
-        margin-top: 20px;
-    }
+.contenedor {
+    background: rgba(0,0,0,0.45);
+    min-height: 100vh;
+    padding: 20px 0 40px 0;
+}
 
-    p.slogan {
-        font-size: 1.2em;
-        margin-bottom: 30px;
-    }
+.logo {
+    width: 180px;
+    margin-top: 20px;
+}
 
-    .boton {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin: 10px auto;
-        padding: 12px 25px;
-        width: 250px;
-        max-width: 90%;
-        color: white;
-        text-decoration: none;
-        font-weight: bold;
-        border-radius: 10px;
-        box-shadow: 0 5px 10px rgba(0,0,0,0.3);
-        transition: transform 0.2s;
-    }
+h1 {
+    margin-top: 10px;
+    font-size: 2.2em;
+}
 
-    .boton img {
-        width: 25px;
-        height: 25px;
-        margin-right: 10px;
-    }
+.slogan {
+    font-size: 1.1em;
+    margin-bottom: 30px;
+}
 
-    .boton:hover {
-        transform: scale(1.05);
-    }
+.boton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 10px auto;
+    padding: 12px 20px;
+    width: 260px;
+    max-width: 90%;
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    border-radius: 12px;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.5);
+    transition: 0.2s;
+}
 
-    /* Colores y degradés */
-    .radio-vivo { background: linear-gradient(to left, #FF0000, #800000); }
-    .web { background: linear-gradient(to left, #1E90FF, #000033); }
-    .app { background: linear-gradient(to left, #32CD32, #003300); }
-    .whatsapp { background: linear-gradient(to left, #25D366, #004d00); }
-    .instagram { background: linear-gradient(to left, #E1306C, #33001a); }
-    .facebook { background: linear-gradient(to left, #3b5998, #000033); }
-    .tiktok { background: linear-gradient(to left, #69C9D0, #003333); }
-    .x { background: linear-gradient(to left, #000000, #333333); }
-    .youtube { background: linear-gradient(to left, #FF0000, #800000); }
-    .twitch { background: linear-gradient(to left, #6441A5, #200050); }
-    .publicidad { background: linear-gradient(to left, #25D366, #004d00); }
+.boton:hover {
+    transform: scale(1.05);
+}
 
+.boton img,
+.boton svg {
+    width: 24px;
+    height: 24px;
+    margin-right: 10px;
+}
+
+/* COLORES */
+
+.radio-vivo { background: linear-gradient(to left, #ff0000, #600000); }
+
+.web { background: linear-gradient(to left, #1E90FF, #000033); }
+
+.app { background: linear-gradient(to left, #00bcd4, #00363a); }
+
+.whatsapp { background: linear-gradient(to left, #25D366, #004d00); }
+
+.instagram { background: linear-gradient(to left, #E1306C, #33001a); }
+
+.facebook { background: linear-gradient(to left, #1877F2, #000033); }
+
+.tiktok { background: linear-gradient(to left, #69C9D0, #003333); }
+
+.x { background: linear-gradient(to left, #000000, #333333); }
+
+.youtube { background: linear-gradient(to left, #FF0000, #800000); }
+
+.twitch { background: linear-gradient(to left, #9146FF, #200050); }
+
+.publicidad { background: linear-gradient(to left, #25D366, #004d00); }
+
+footer {
+    margin-top: 30px;
+    font-size: 0.9em;
+    text-shadow: 2px 2px 4px #000;
+}
 </style>
 </head>
+
 <body>
+<div class="contenedor">
 
-    <!-- Título y slogan -->
-    <h1>ON Radio</h1>
-    <p class="slogan">Dale ON a la música que más te gusta!</p>
+<img src="logotipo.png" class="logo">
 
-    <!-- Botón radio en vivo -->
-    <a href="#" onclick="document.getElementById('streaming').play(); return false;" class="boton radio-vivo">
-        <img src="parlante.png" alt="Radio en vivo"> Escuchanos en vivo ahora
-    </a>
+<h1>ON Radio</h1>
+<p class="slogan">Dale ON a la música que más te gusta!</p>
 
-    <!-- Reproductor oculto -->
-    <audio id="streaming" src="https://streaming.radiosenlinea.com.ar/9020/stream"></audio>
+<!-- RADIO EN VIVO -->
+<a href="#" onclick="document.getElementById('streaming').play(); return false;" class="boton radio-vivo">
+<svg fill="white" viewBox="0 0 24 24">
+<path d="M3 9v6h4l5 5V4L7 9H3z"/>
+<path d="M14 3.23v2.06c2.89 1 5 3.77 5 7.71s-2.11 6.71-5 7.71v2.06c4.01-1.05 7-4.69 7-9.77s-2.99-8.72-7-9.77z"/>
+</svg>
+Escuchanos en vivo ahora
+</a>
 
-    <!-- Botones existentes -->
-    <a href="https://www.laonradio.com.ar" target="_blank" class="boton web">
-        <img src="web.png" alt="Conocé nuestra web"> Ingresa a nuestra web
-    </a>
+<audio id="streaming" src="https://streaming.radiosenlinea.com.ar/9020/stream"></audio>
 
-    <a href="https://radiio.com.ar/app/a5ae1c1a12ac221f" class="boton app">
-        <img src="aplicación.png" alt="Descargá nuestra app"> Descargá la app
-    </a>
+<!-- WEB -->
+<a href="https://www.laonradio.com.ar" target="_blank" class="boton web">
+<img src="web.png">
+Ingresá a nuestra web
+</a>
 
-    <a href="https://wa.me/5491161358000" target="_blank" class="boton whatsapp">
-        <img src="whatsapp.png" alt="WhatsAppeanos!"> WhatsAppeanos!
-    </a>
+<!-- APP -->
+<a href="https://radiio.com.ar/app/a5ae1c1a12ac221f" target="_blank" class="boton app">
+<img src="aplicación.png">
+Descargá la app
+</a>
 
-    <a href="https://www.instagram.com/la_on_radio" target="_blank" class="boton instagram">
-        <img src="instagram.png" alt="Seguinos en Instagram"> Seguinos en Instagram
-    </a>
+<!-- WHATSAPP -->
+<a href="https://wa.me/5491161358000" target="_blank" class="boton whatsapp">
+<svg fill="white" viewBox="0 0 24 24">
+<path d="M12 0C5.37 0 0 5.37 0 12c0 2.12.56 4.1 1.54 5.82L0 24l6.36-1.67A11.95 11.95 0 0012 24c6.63 0 12-5.37 12-12S18.63 0 12 0z"/>
+</svg>
+WhatsAppeanos
+</a>
 
-    <a href="https://www.facebook.com/onradioo" target="_blank" class="boton facebook">
-        <img src="facebook.png" alt="Seguinos en Facebook"> Seguinos en Facebook
-    </a>
+<!-- INSTAGRAM -->
+<a href="https://www.instagram.com/la_on_radio" target="_blank" class="boton instagram">
+<svg fill="white" viewBox="0 0 24 24">
+<path d="M7 2C4.24 2 2 4.24 2 7v10c0 2.76 2.24 5 5 5h10c2.76 0 5-2.24 5-5V7c0-2.76-2.24-5-5-5H7z"/>
+</svg>
+Seguinos en Instagram
+</a>
 
-    <a href="https://www.tiktok.com/@laonradio" target="_blank" class="boton tiktok">
-        <img src="tiktok.png" alt="Seguinos en TikTok"> Seguinos en TikTok
-    </a>
+<!-- FACEBOOK -->
+<a href="https://www.facebook.com/onradioo" target="_blank" class="boton facebook">
+<svg fill="white" viewBox="0 0 24 24">
+<path d="M22 12a10 10 0 10-11.5 9.95v-7.04H8v-2.91h2.5V9.8c0-2.47 1.47-3.84 3.73-3.84 1.08 0 2.21.19 2.21.19v2.43h-1.24c-1.23 0-1.61.77-1.61 1.55v1.86H16l-.4 2.91h-2.27V22A10 10 0 0022 12z"/>
+</svg>
+Seguinos en Facebook
+</a>
 
-    <a href="https://www.twitter.com/laonradioo" target="_blank" class="boton x">
-        <img src="x.png" alt="Seguinos en X"> Seguinos en X
-    </a>
+<!-- TIKTOK -->
+<a href="https://www.tiktok.com/@laonradio" target="_blank" class="boton tiktok">
+<img src="tiktok.png">
+Seguinos en TikTok
+</a>
 
-    <a href="https://www.youtube.com/@laonradio" target="_blank" class="boton youtube">
-        <img src="youtube.png" alt="Seguinos en YouTube"> Seguinos en YouTube
-    </a>
+<!-- X -->
+<a href="https://x.com/laonradioo" target="_blank" class="boton x">
+<img src="x.png">
+Seguinos en X
+</a>
 
-    <a href="https://www.twitch.tv/laonradio" target="_blank" class="boton twitch">
-        <img src="contracción.png" alt="Seguinos en Twitch"> Seguinos en Twitch
-    </a>
+<!-- YOUTUBE -->
+<a href="https://www.youtube.com/@laonradio" target="_blank" class="boton youtube">
+<svg fill="white" viewBox="0 0 24 24">
+<path d="M23.5 6.2s-.2-1.6-.8-2.3c-.8-.8-1.6-.8-2-.9C17.9 2.7 12 2.7 12 2.7h-.1s-5.9 0-8.7.3c-.4.1-1.2.1-2 .9C.6 4.6.5 6.2.5 6.2S.2 8 .2 9.8v1.4C.2 13 .5 14.8.5 14.8s.2 1.6.8 2.3c.8.8 1.9.8 2.4.9 1.8.2 7.3.3 7.3.3s5.9 0 8.7-.3c.4-.1 1.2-.1 2-.9.6-.7.8-2.3.8-2.3s.3-1.8.3-3.6V9.8c0-1.8-.3-3.6-.3-3.6zM9.8 14.5V7.5l6.3 3.5-6.3 3.5z"/>
+</svg>
+Seguinos en YouTube
+</a>
 
-    <!-- Botón publicidad -->
-    <a href="https://wa.me/5492475402890" target="_blank" class="boton publicidad">
-        <img src="whatsapp.png" alt="Publicidad"> ¿Querés hacer publicidad? Click aquí
-    </a>
+<!-- TWITCH -->
+<a href="https://www.twitch.tv/laonradio" target="_blank" class="boton twitch">
+<img src="contracción.png">
+Seguinos en Twitch
+</a>
 
-    <!-- Footer -->
-    <footer>
-        <div>ON Radio</div>
-        <div>Desde la ciudad de Rojas para todo el mundo</div>
-    </footer>
+<!-- PUBLICIDAD -->
+<a href="https://wa.me/5492475402890" target="_blank" class="boton publicidad">
+<svg fill="white" viewBox="0 0 24 24">
+<path d="M12 0C5.37 0 0 5.37 0 12c0 2.12.56 4.1 1.54 5.82L0 24l6.36-1.67A11.95 11.95 0 0012 24c6.63 0 12-5.37 12-12S18.63 0 12 0z"/>
+</svg>
+¿Querés hacer publicidad? Click aquí
+</a>
 
+<footer>
+<div>ON Radio</div>
+<div>Desde la ciudad de Rojas, para todo el mundo</div>
+</footer>
+
+</div>
 </body>
 </html>
