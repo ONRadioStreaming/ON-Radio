@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Ranking ON Radio</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #111;
+      color: white;
+      text-align: center;
+      padding: 30px;
+    }
+
+    h1 {
+      color: #00ffcc;
+    }
+
+    .song {
+      margin: 10px auto;
+      padding: 15px;
+      background: #222;
+      border-radius: 8px;
+      width: 340px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    button {
+      background: #00ffcc;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    button:hover {
+      background: #00ccaa;
+    }
+
+    #message {
+      margin-top: 20px;
+      font-weight: bold;
+      color: #00ffcc;
+    }
+
+    #ranking {
+      margin-top: 30px;
+    }
+  </style>
+</head>
+
+<body>
+
+<h1>Votá tu favorita 🔥</h1>
+
+<div id="songs"></div>
+<div id="message"></div>
+<div id="ranking"></div>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+import { getDatabase, ref, get, update } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyC8XXef5k8hLmNL8ufIJsc7Sx5KTlRFdH8",
+  authDomain: "on-radio-ranking.firebaseapp.com",
+  databaseURL: "https://on-radio-ranking-default-rtdb.firebaseio.com",
+  projectId: "on-radio-ranking",
+  storageBucket: "on-radio-ranking.firebasestorage.app",
+  messagingSenderId: "311635352358",
+  appId: "1:311635352358:web:257ff4821987f07d31ffe7"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+// 🔥 EDITÁ ESTO CADA DOMINGO
+let songsList = [
+  "Canción 1 - Artista",
+  "Canción 2 - Artista",
+  "Canción 3 - Artista",
+  "Canción 4 - Artista",
+  "Canción 5 - Artista",
+  "Canción 6 - Artista",
+  "Canción 7 - Artista",
+  "Canción 8 - Artista",
+  "Canción 9 - Artista",
+  "Canción 10 - Artista"
+];
+
+// Mezcla aleatoria
+songsList.sort(() => Math.random() - 0.5);
+
+const songsDiv = document.getElementById("songs");
+
+songsList.forEach(song => {
+  const div = document.createElement("div");
+  div.className = "song";
+  div.innerHTML = `
+    <span>${song}</span>
+    <button onclick="vote('${song}')">Votar</button>
+  `;
+  songsDiv.appendChild(div);
+});
+
+// Generar clave semanal automática
+function getWeekKey() {
+  const now = new Date();
+  const firstJan = new Date(now.getFullYear(), 0, 1);
+  const days = Math.floor((now - firstJan) / (24 * 60 * 60 * 1000));
+  const week = Math.ceil((days + firstJan.getDay() + 1) / 7);
+  return now.getFullYear() + "-W" + week;
+}
+
+window.vote = async function(song) {
+  const weekKey = getWeekKey();
+
+  const weeklyRef = ref(db, "ranking_semanal/" + weekKey + "/" + song);
+  const historicRef = ref(db, "historico_total/" + song);
+
+  const weeklySnap = await get(weeklyRef);
+  const weeklyVotes = weeklySnap.exists() ? weeklySnap.val() : 0;
+
+  const historicSnap = await get(historicRef);
+  const historicVotes = historicSnap.exists() ? historicSnap.val() : 0;
+
+  await update(ref(db), {
+    ["ranking_semanal/" + weekKey + "/" + song]: weeklyVotes + 1,
+    ["historico_total/" + song]: historicVotes + 1
+  });
+
+  document.getElementById("message").innerHTML =
+    "✅ Tu voto fue registrado correctamente. El ranking se actualiza en vivo.";
+
+  showRanking();
+};
+
+async function showRanking() {
+  const weekKey = getWeekKey();
+  const snapshot = await get(ref(db, "ranking_semanal/" + weekKey));
+
+  const rankingDiv = document.getElementById("ranking");
+  rankingDiv.innerHTML = "<h2>Top de la Semana</h2>";
+
+  if (!snapshot.exists()) return;
+
+  const data = snapshot.val();
+  const sorted = Object.entries(data).sort((a, b) => b[1] - a[1]);
+
+  sorted.forEach((item, index) => {
+    rankingDiv.innerHTML += <p>${index + 1}. ${item[0]}</p>;
+  });
+}
+
+</script>
+
+</body>
+</html>
