@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <title>Ranking ON Radio</title>
-
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -13,9 +12,7 @@
       padding: 30px;
     }
 
-    h1 {
-      color: #00ffcc;
-    }
+    h1 { color: #00ffcc; }
 
     .song {
       margin: 10px auto;
@@ -37,9 +34,7 @@
       font-weight: bold;
     }
 
-    button:hover {
-      background: #00ccaa;
-    }
+    button:hover { background: #00ccaa; }
 
     #message {
       margin-top: 20px;
@@ -47,9 +42,7 @@
       color: #00ffcc;
     }
 
-    #ranking {
-      margin-top: 30px;
-    }
+    #ranking { margin-top: 30px; }
   </style>
 </head>
 
@@ -79,7 +72,6 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-// 🔥 EDITÁ ESTO CADA DOMINGO
 let songsList = [
   "Canción 1 - Artista",
   "Canción 2 - Artista",
@@ -93,7 +85,6 @@ let songsList = [
   "Canción 10 - Artista"
 ];
 
-// Mezcla aleatoria
 songsList.sort(() => Math.random() - 0.5);
 
 const songsDiv = document.getElementById("songs");
@@ -101,14 +92,19 @@ const songsDiv = document.getElementById("songs");
 songsList.forEach(song => {
   const div = document.createElement("div");
   div.className = "song";
-  div.innerHTML = `
-    <span>${song}</span>
-    <button onclick="vote('${song}')">Votar</button>
-  `;
+
+  const span = document.createElement("span");
+  span.textContent = song;
+
+  const button = document.createElement("button");
+  button.textContent = "Votar";
+  button.onclick = () => vote(song);
+
+  div.appendChild(span);
+  div.appendChild(button);
   songsDiv.appendChild(div);
 });
 
-// Generar clave semanal automática
 function getWeekKey() {
   const now = new Date();
   const firstJan = new Date(now.getFullYear(), 0, 1);
@@ -117,7 +113,7 @@ function getWeekKey() {
   return now.getFullYear() + "-W" + week;
 }
 
-window.vote = async function(song) {
+async function vote(song) {
   const weekKey = getWeekKey();
 
   const weeklyRef = ref(db, "ranking_semanal/" + weekKey + "/" + song);
@@ -138,7 +134,7 @@ window.vote = async function(song) {
     "✅ Tu voto fue registrado correctamente. El ranking se actualiza en vivo.";
 
   showRanking();
-};
+}
 
 async function showRanking() {
   const weekKey = getWeekKey();
@@ -153,7 +149,7 @@ async function showRanking() {
   const sorted = Object.entries(data).sort((a, b) => b[1] - a[1]);
 
   sorted.forEach((item, index) => {
-    rankingDiv.innerHTML += <p>${index + 1}. ${item[0]}</p>;
+    rankingDiv.innerHTML += "<p>" + (index + 1) + ". " + item[0] + "</p>";
   });
 }
 
