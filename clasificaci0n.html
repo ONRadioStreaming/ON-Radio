@@ -1,158 +1,180 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Ranking ON Radio</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #111;
-      color: white;
-      text-align: center;
-      padding: 30px;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ranking ON! Radio</title>
+<style>
+body {
+    background-color: #000;
+    color: #0ff;
+    font-family: Arial, sans-serif;
+    text-align: center;
+    padding: 20px;
+}
 
-    h1 { color: #00ffcc; }
+h1 {
+    margin-bottom: 20px;
+}
 
-    .song {
-      margin: 10px auto;
-      padding: 15px;
-      background: #222;
-      border-radius: 8px;
-      width: 340px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
+.ranking-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: rgba(0,0,0,0.7);
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 10px;
+    color: #fff;
+}
 
-    button {
-      background: #00ffcc;
-      border: none;
-      padding: 8px 12px;
-      border-radius: 5px;
-      cursor: pointer;
-      font-weight: bold;
-    }
+.artista-img {
+    width: 60px;
+    height: 60px;
+    border-radius: 8px;
+    margin-right: 10px;
+}
 
-    button:hover { background: #00ccaa; }
+.cancion-info {
+    flex-grow: 1;
+    text-align: left;
+    margin-right: 10px;
+}
 
-    #message {
-      margin-top: 20px;
-      font-weight: bold;
-      color: #00ffcc;
-    }
+.play-btn, .votar-btn {
+    padding: 6px 12px;
+    margin-left: 5px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
 
-    #ranking { margin-top: 30px; }
-  </style>
+.play-btn { background-color: #00bfff; color: #fff; }
+.votar-btn { background-color: #ff4500; color: #fff; }
+
+audio { display: none; } /* Ocultar reproductores */
+</style>
 </head>
-
 <body>
 
-<h1>Votá tu favorita 🔥</h1>
+<h1>Vota tu canción favorita 🔥</h1>
 
-<div id="songs"></div>
-<div id="message"></div>
-<div id="ranking"></div>
+<div class="ranking-item">
+    <img src="tema1.jpg" class="artista-img" alt="Roze Oficial x Max Carra x Valen">
+    <div class="cancion-info">
+        <div>Tu jardín con enanitos</div>
+        <div>Roze Oficial x Max Carra x Valen</div>
+    </div>
+    <button class="play-btn" onclick="document.getElementById('audio1').play()">▶️</button>
+    <audio id="audio1" src="audio1.mp3"></audio>
+    <button class="votar-btn" onclick="votar('tema1')">Votar</button>
+</div>
 
-<script type="module">
+<div class="ranking-item">
+    <img src="tema2.jpg" class="artista-img" alt="El Bogueto x Yung Beef">
+    <div class="cancion-info">
+        <div>Cuando No Era Cantante</div>
+        <div>El Bogueto x Yung Beef</div>
+    </div>
+    <button class="play-btn" onclick="document.getElementById('audio2').play()">▶️</button>
+    <audio id="audio2" src="audio2.mp3"></audio>
+    <button class="votar-btn" onclick="votar('tema2')">Votar</button>
+</div>
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
-import { getDatabase, ref, get, update } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
+<div class="ranking-item">
+    <img src="tema3.jpg" class="artista-img" alt="La T y la M">
+    <div class="cancion-info">
+        <div>Soy Favela</div>
+        <div>La T y la M</div>
+    </div>
+    <button class="play-btn" onclick="document.getElementById('audio3').play()">▶️</button>
+    <audio id="audio3" src="audio3.mp3"></audio>
+    <button class="votar-btn" onclick="votar('tema3')">Votar</button>
+</div>
 
-const firebaseConfig = {
-  apiKey: "AIzaSyC8XXef5k8hLmNL8ufIJsc7Sx5KTlRFdH8",
-  authDomain: "on-radio-ranking.firebaseapp.com",
-  databaseURL: "https://on-radio-ranking-default-rtdb.firebaseio.com",
-  projectId: "on-radio-ranking",
-  storageBucket: "on-radio-ranking.firebasestorage.app",
-  messagingSenderId: "311635352358",
-  appId: "1:311635352358:web:257ff4821987f07d31ffe7"
-};
+<div class="ranking-item">
+    <img src="tema4.jpg" class="artista-img" alt="Ozuna x Beele">
+    <div class="cancion-info">
+        <div>Pikito</div>
+        <div>Ozuna x Beele</div>
+    </div>
+    <button class="play-btn" onclick="document.getElementById('audio4').play()">▶️</button>
+    <audio id="audio4" src="audio4.mp3"></audio>
+    <button class="votar-btn" onclick="votar('tema4')">Votar</button>
+</div>
 
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
+<div class="ranking-item">
+    <img src="tema5.jpg" class="artista-img" alt="Jess & Nick">
+    <div class="cancion-info">
+        <div>Dame Más Verano</div>
+        <div>Jess & Nick</div>
+    </div>
+    <button class="play-btn" onclick="document.getElementById('audio5').play()">▶️</button>
+    <audio id="audio5" src="audio5.mp3"></audio>
+    <button class="votar-btn" onclick="votar('tema5')">Votar</button>
+</div>
 
-let songsList = [
-  "Canción 1 - Artista",
-  "Canción 2 - Artista",
-  "Canción 3 - Artista",
-  "Canción 4 - Artista",
-  "Canción 5 - Artista",
-  "Canción 6 - Artista",
-  "Canción 7 - Artista",
-  "Canción 8 - Artista",
-  "Canción 9 - Artista",
-  "Canción 10 - Artista"
-];
+<div class="ranking-item">
+    <img src="tema6.jpg" class="artista-img" alt="Ryan Castro x Kapo x Gangsta">
+    <div class="cancion-info">
+        <div>La VILLA</div>
+        <div>Ryan Castro x Kapo x Gangsta</div>
+    </div>
+    <button class="play-btn" onclick="document.getElementById('audio6').play()">▶️</button>
+    <audio id="audio6" src="audio6.mp3"></audio>
+    <button class="votar-btn" onclick="votar('tema6')">Votar</button>
+</div>
 
-songsList.sort(() => Math.random() - 0.5);
+<div class="ranking-item">
+    <img src="tema7.jpg" class="artista-img" alt="Luck Ra x Miranda!">
+    <div class="cancion-info">
+        <div>TU MISTERIOSO ALGUIEN (CUARTETO)</div>
+        <div>Luck Ra x Miranda!</div>
+    </div>
+    <button class="play-btn" onclick="document.getElementById('audio7').play()">▶️</button>
+    <audio id="audio7" src="audio7.mp3"></audio>
+    <button class="votar-btn" onclick="votar('tema7')">Votar</button>
+</div>
 
-const songsDiv = document.getElementById("songs");
+<div class="ranking-item">
+    <img src="tema8.jpg" class="artista-img" alt="ROSALÍA x Yahritza Y Su Esencia">
+    <div class="cancion-info">
+        <div>La Perla</div>
+        <div>ROSALÍA x Yahritza Y Su Esencia</div>
+    </div>
+    <button class="play-btn" onclick="document.getElementById('audio8').play()">▶️</button>
+    <audio id="audio8" src="audio8.mp3"></audio>
+    <button class="votar-btn" onclick="votar('tema8')">Votar</button>
+</div>
 
-songsList.forEach(song => {
-  const div = document.createElement("div");
-  div.className = "song";
+<div class="ranking-item">
+    <img src="tema9.jpg" class="artista-img" alt="Max Carra">
+    <div class="cancion-info">
+        <div>UWAIE</div>
+        <div>Max Carra</div>
+    </div>
+    <button class="play-btn" onclick="document.getElementById('audio9').play()">▶️</button>
+    <audio id="audio9" src="audio9.mp3"></audio>
+    <button class="votar-btn" onclick="votar('tema9')">Votar</button>
+</div>
 
-  const span = document.createElement("span");
-  span.textContent = song;
+<div class="ranking-item">
+    <img src="tema10.jpg" class="artista-img" alt="Daddy Yankee">
+    <div class="cancion-info">
+        <div>Bzrp Music Sessions</div>
+        <div>Daddy Yankee</div>
+    </div>
+    <button class="play-btn" onclick="document.getElementById('audio10').play()">▶️</button>
+    <audio id="audio10" src="audio10.mp3"></audio>
+    <button class="votar-btn" onclick="votar('tema10')">Votar</button>
+</div>
 
-  const button = document.createElement("button");
-  button.textContent = "Votar";
-  button.onclick = () => vote(song);
-
-  div.appendChild(span);
-  div.appendChild(button);
-  songsDiv.appendChild(div);
-});
-
-function getWeekKey() {
-  const now = new Date();
-  const firstJan = new Date(now.getFullYear(), 0, 1);
-  const days = Math.floor((now - firstJan) / (24 * 60 * 60 * 1000));
-  const week = Math.ceil((days + firstJan.getDay() + 1) / 7);
-  return now.getFullYear() + "-W" + week;
+<script>
+// Función de voto de ejemplo
+function votar(idTema) {
+    alert('Tu voto fue registrado correctamente 🎵');
+    // Aquí más adelante se conectará con Firebase para registrar el voto
 }
-
-async function vote(song) {
-  const weekKey = getWeekKey();
-
-  const weeklyRef = ref(db, "ranking_semanal/" + weekKey + "/" + song);
-  const historicRef = ref(db, "historico_total/" + song);
-
-  const weeklySnap = await get(weeklyRef);
-  const weeklyVotes = weeklySnap.exists() ? weeklySnap.val() : 0;
-
-  const historicSnap = await get(historicRef);
-  const historicVotes = historicSnap.exists() ? historicSnap.val() : 0;
-
-  await update(ref(db), {
-    ["ranking_semanal/" + weekKey + "/" + song]: weeklyVotes + 1,
-    ["historico_total/" + song]: historicVotes + 1
-  });
-
-  document.getElementById("message").innerHTML =
-    "✅ Tu voto fue registrado correctamente. El ranking se actualiza en vivo.";
-
-  showRanking();
-}
-
-async function showRanking() {
-  const weekKey = getWeekKey();
-  const snapshot = await get(ref(db, "ranking_semanal/" + weekKey));
-
-  const rankingDiv = document.getElementById("ranking");
-  rankingDiv.innerHTML = "<h2>Top de la Semana</h2>";
-
-  if (!snapshot.exists()) return;
-
-  const data = snapshot.val();
-  const sorted = Object.entries(data).sort((a, b) => b[1] - a[1]);
-
-  sorted.forEach((item, index) => {
-    rankingDiv.innerHTML += "<p>" + (index + 1) + ". " + item[0] + "</p>";
-  });
-}
-
 </script>
 
 </body>
