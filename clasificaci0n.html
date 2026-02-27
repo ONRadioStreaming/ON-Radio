@@ -2,238 +2,148 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Ranking ON Radio</title>
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ranking ON!</title>
 <style>
-body {
-    margin: 0;
-    font-family: Arial, Helvetica, sans-serif;
-    background-image: url("fondoranking.jpg");
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
-    color: white;
-}
-
-.logo {
-    text-align: center;
-    padding: 20px;
-}
-
-.logo img {
-    width: 180px;
-}
-
-h1 {
-    text-align: center;
-    margin-bottom: 30px;
-}
-
-.contenedor {
-    width: 95%;
-    max-width: 1100px;
-    margin: auto;
-    background: rgba(0,0,0,0.8);
-    padding: 20px;
-    border-radius: 10px;
-}
-
-.tema {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 15px 0;
-    border-bottom: 1px solid #444;
-}
-
-.tema img {
-    width: 90px;
-    border-radius: 8px;
-}
-
-.info {
-    flex: 1;
-    margin-left: 15px;
-}
-
-.info h3 {
-    margin: 0;
-    font-size: 18px;
-}
-
-.info p {
-    margin: 3px 0 10px 0;
-    font-size: 14px;
-    color: #ccc;
-}
-
-.controls {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-audio {
-    width: 250px;
-}
-
-.votar {
-    padding: 6px 12px;
-    background: #ff3c00;
-    border: none;
-    color: white;
-    font-weight: bold;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-.votar:hover {
-    background: #ff6600;
-}
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: url('fondoranking.jpg') no-repeat center center fixed;
+        background-size: cover;
+        color: #fff;
+    }
+    .logo {
+        text-align: center;
+        margin: 20px 0;
+    }
+    .tema {
+        display: flex;
+        align-items: center;
+        margin: 10px 20px;
+        padding: 10px;
+        background: rgba(0,0,0,0.5);
+        border-radius: 10px;
+    }
+    .tema img {
+        width: 80px;
+        height: 80px;
+        border-radius: 8px;
+        margin-right: 15px;
+        object-fit: cover;
+    }
+    .info {
+        flex: 1;
+    }
+    .info .nombre {
+        font-size: 1.1em;
+        font-weight: bold;
+    }
+    .info .artista {
+        font-size: 0.9em;
+        color: #ccc;
+    }
+    .controles {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+    button {
+        padding: 5px 10px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        background-color: #ff5722;
+        color: white;
+        font-weight: bold;
+    }
 </style>
 </head>
-
 <body>
 
 <div class="logo">
-<img src="logotipo.png">
+    <img src="logotipo.png" alt="ON! Radio Logo" style="height:80px;">
 </div>
 
-<h1>🔥 Ranking ON Radio 🔥</h1>
+<div id="lista-temas"></div>
 
-<div class="contenedor">
+<!-- Firebase -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
 
-<!-- 1 -->
-<div class="tema">
-<img src="tipica.jpg">
-<div class="info">
-<h3>1. Típica Argentina</h3>
-<p>Nico Valdi x Chofer x El Lobo</p>
-</div>
-<div class="controls">
-<audio controls src="tipica.mp3"></audio>
-<button class="votar">Votar</button>
-</div>
-</div>
+// Configuración Firebase
+const firebaseConfig = {
+    apiKey: "AIzaSyC8XXef5k8hLmNL8ufIJsc7Sx5KTlRFdH8",
+    authDomain: "on-radio-ranking.firebaseapp.com",
+    databaseURL: "https://on-radio-ranking-default-rtdb.firebaseio.com",
+    projectId: "on-radio-ranking",
+    storageBucket: "on-radio-ranking.firebasestorage.app",
+    messagingSenderId: "311635352358",
+    appId: "1:311635352358:web:257ff4821987f07d31ffe7"
+};
 
-<!-- 2 -->
-<div class="tema">
-<img src="corriente.jpg">
-<div class="info">
-<h3>2. Music Sessions Vol. 0/66</h3>
-<p>Daddy Yankee - BZRP</p>
-</div>
-<div class="controls">
-<audio controls src="papi.mp3"></audio>
-<button class="votar">Votar</button>
-</div>
-</div>
+// Inicializar Firebase
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+const listaRef = ref(db, 'temas');
 
-<!-- 3 -->
-<div class="tema">
-<img src="lavilla.jpg">
-<div class="info">
-<h3>3. La Villa</h3>
-<p>Ryan Castro, Kapo, Gangsta</p>
-</div>
-<div class="controls">
-<audio controls src="lavilla.mp3"></audio>
-<button class="votar">Votar</button>
-</div>
-</div>
+// Función para leer y mostrar los temas
+function cargarTemas() {
+    onValue(listaRef, (snapshot) => {
+        const data = snapshot.val();
+        const contenedor = document.getElementById('lista-temas');
+        contenedor.innerHTML = '';
 
-<!-- 4 -->
-<div class="tema">
-<img src="hacecalor.jpg">
-<div class="info">
-<h3>4. Hace Calor</h3>
-<p>María Becerra, El Alfa, Xross</p>
-</div>
-<div class="controls">
-<audio controls src="hacecalor.mp3"></audio>
-<button class="votar">Votar</button>
-</div>
-</div>
+        // Convertir objeto en array y ordenar por votos descendentes
+        const temasArray = Object.entries(data).sort((a,b) => b[1].votos - a[1].votos);
 
-<!-- 5 -->
-<div class="tema">
-<img src="chorro.jpg">
-<div class="info">
-<h3>5. Ladrón</h3>
-<p>Luck Ra, Karina, Zaira, Bauletti</p>
-</div>
-<div class="controls">
-<audio controls src="chorro.mp3"></audio>
-<button class="votar">Votar</button>
-</div>
-</div>
+        temasArray.forEach(([key, tema]) => {
+            const div = document.createElement('div');
+            div.className = 'tema';
+            div.innerHTML = `
+                <img src="${tema.imagen}" alt="${tema.nombre}">
+                <div class="info">
+                    <div class="nombre">${tema.nombre}</div>
+                    <div class="artista">${tema.artista}</div>
+                </div>
+                <div class="controles">
+                    <audio controls>
+                        <source src="${tema.audio}" type="audio/mpeg">
+                        Tu navegador no soporta audio.
+                    </audio>
+                    <button onclick="votar('${key}')">Votar</button>
+                </div>
+            `;
+            contenedor.appendChild(div);
+        });
+    });
+}
 
-<!-- 6 -->
-<div class="tema">
-<img src="paisaje.jpg">
-<div class="info">
-<h3>6. Paisaje</h3>
-<p>Ke Personajes y Karina</p>
-</div>
-<div class="controls">
-<audio controls src="paisaje.mp3"></audio>
-<button class="votar">Votar</button>
-</div>
-</div>
+// Función para votar
+function votar(key) {
+    const hoy = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+    const votadoHoy = localStorage.getItem('votado_' + key);
 
-<!-- 7 -->
-<div class="tema">
-<img src="laperla.jpg">
-<div class="info">
-<h3>7. La Perla</h3>
-<p>Rosalía</p>
-</div>
-<div class="controls">
-<audio controls src="laperla.mp3"></audio>
-<button class="votar">Votar</button>
-</div>
-</div>
+    if(votadoHoy === hoy){
+        alert("Ya votaste hoy este tema. Volvé mañana para votar de nuevo.");
+        return;
+    }
 
-<!-- 8 -->
-<div class="tema">
-<img src="taylor.jpg">
-<div class="info">
-<h3>8. The Fate of Ophelia</h3>
-<p>Taylor Swift</p>
-</div>
-<div class="controls">
-<audio controls src="taylor.mp3"></audio>
-<button class="votar">Votar</button>
-</div>
-</div>
+    const temaRef = ref(db, 'temas/' + key);
+    onValue(temaRef, (snapshot) => {
+        const tema = snapshot.val();
+        if(!tema) return;
+        const nuevosVotos = (tema.votos || 0) + 1;
+        update(temaRef, { votos: nuevosVotos }).then(() => {
+            alert("Gracias por votar tu tema preferido.\nRecordá que podés votar una sola vez por día.\nVolvé mañana para votar otra vez.");
+            localStorage.setItem('votado_' + key, hoy);
+        });
+    }, { onlyOnce: true });
+}
 
-<!-- 9 -->
-<div class="tema">
-<img src="lumar.jpg">
-<div class="info">
-<h3>9. Una y Otra Vez</h3>
-<p>Marcela Morelo y Luciano Pereyra</p>
-</div>
-<div class="controls">
-<audio controls src="lumar.mp3"></audio>
-<button class="votar">Votar</button>
-</div>
-</div>
-
-<!-- 10 -->
-<div class="tema">
-<img src="tujardin.jpg">
-<div class="info">
-<h3>10. Tu Jardin con Enanitos</h3>
-<p>Roze Oficial, Max Carra, Valen, RAMKY</p>
-</div>
-<div class="controls">
-<audio controls src="tujardin.MP3"></audio>
-<button class="votar">Votar</button>
-</div>
-</div>
-
-</div>
+// Cargar temas al inicio
+cargarTemas();
+</script>
 
 </body>
 </html>
