@@ -4,6 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Ranking ON!</title>
+
+<!-- MediaElement CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mediaelement/5.0.1/mediaelementplayer.min.css" />
+
 <style>
 body {
     margin: 0;
@@ -67,12 +71,6 @@ body {
     gap: 10px;
 }
 
-audio {
-    width: 180px; /* reproductor más largo que el botón */
-    height: 30px;
-    min-width: 140px;
-}
-
 button {
     width: 70px;
     height: 30px;
@@ -110,11 +108,6 @@ footer {
         justify-content: flex-start;
         gap: 10px;
     }
-    audio {
-        width: 160px;
-        height: auto;
-        min-width: 140px;
-    }
     button {
         width: 70px;
     }
@@ -138,8 +131,12 @@ footer {
 
 <!-- Footer -->
 <footer>
-    Derechos reservados a OnRadio. Dale ON a la música que más te gusta.
+    Derechos reservados a OnRadio.<br>
+    Dale ON a la música que más te gusta!
 </footer>
+
+<!-- MediaElement JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mediaelement/5.0.1/mediaelement-and-player.min.js"></script>
 
 <!-- Firebase -->
 <script type="module">
@@ -180,7 +177,7 @@ function cargarTemas() {
                     <div class="artista">${tema.artista}</div>
                 </div>
                 <div class="controles">
-                    <audio controls>
+                    <audio class="mejs-player" controls>
                         <source src="${tema.audio}" type="audio/mpeg">
                         Tu navegador no soporta audio.
                     </audio>
@@ -188,6 +185,16 @@ function cargarTemas() {
                 </div>
             `;
             contenedor.appendChild(div);
+        });
+
+        // Inicializar MediaElementJS en todos los reproductores
+        const players = document.querySelectorAll('audio');
+        players.forEach(p => {
+            new MediaElementPlayer(p, {
+                features: ['playpause','progress','volume'],
+                audioWidth: 180,
+                audioHeight: 30
+            });
         });
     });
 }
