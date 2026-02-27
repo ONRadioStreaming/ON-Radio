@@ -3,226 +3,171 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ranking ON!</title>
-
-<!-- MediaElement CSS -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mediaelement/5.0.1/mediaelementplayer.min.css" />
-
+<title>Ranking ON Radio</title>
 <style>
-body {
+  body {
     margin: 0;
     font-family: Arial, sans-serif;
-    background: url('fondoranking.jpg') no-repeat center center fixed;
+    background: url('fondo.jpg') no-repeat center center fixed;
     background-size: cover;
-    color: #fff;
-}
+    color: white;
+  }
 
-/* Logo */
-.logo {
+  header {
     text-align: center;
-    margin: 20px 0;
-}
+    padding: 20px;
+  }
 
-/* Título */
-.titulo-ranking {
-    text-align: center;
-    font-size: 2em;
+  header img {
+    width: 180px;
+    max-width: 80%;
+  }
+
+  header h1 {
+    font-size: 1.5em;
+    margin-top: 10px;
     font-weight: bold;
-    margin-bottom: 25px;
-}
+  }
 
-/* Renglón de tema */
-.tema {
+  .tema {
     display: flex;
     align-items: center;
-    margin: 10px 20px;
-    padding: 8px;
-    background: rgba(0,0,0,0.5);
-    border-radius: 10px;
-}
+    background-color: rgba(0,0,0,0.5);
+    margin: 10px auto;
+    padding: 10px;
+    max-width: 800px;
+    border-radius: 8px;
+    flex-wrap: wrap; /* permite que en móvil se acomode en columna */
+  }
 
-.tema img {
+  .tema img {
     width: 60px;
     height: 60px;
-    border-radius: 5px;
     object-fit: cover;
     margin-right: 10px;
-    flex-shrink: 0;
-}
+    border-radius: 4px;
+  }
 
-.info {
+  .info {
     flex: 1;
-    margin-right: 10px;
-}
+    min-width: 150px;
+  }
 
-.info .nombre {
-    font-size: 1em;
+  .info .nombre {
     font-weight: bold;
-}
+  }
 
-.info .artista {
-    font-size: 0.85em;
-    color: #ccc;
-}
+  .info .artista {
+    font-size: 0.9em;
+    color: #ddd;
+  }
 
-.controles {
+  .controles {
     display: flex;
     align-items: center;
-    gap: 10px;
-}
+    margin-left: auto;
+    margin-top: 5px;
+  }
 
-button {
-    width: 70px;
+  .controles audio {
+    width: 180px;
     height: 30px;
-    background-color: #ff0000;
-    color: #fff;
-    font-weight: bold;
+    margin-right: 10px;
+  }
+
+  .controles button {
+    background-color: red;
+    color: white;
     border: none;
-    border-radius: 5px;
+    padding: 8px 12px;
+    border-radius: 4px;
     cursor: pointer;
-}
+    font-weight: bold;
+  }
 
-/* Footer */
-footer {
-    background: rgba(0,0,0,0.6);
-    color: #fff;
+  footer {
     text-align: center;
-    padding: 12px 0;
+    background-color: rgba(0,0,0,0.5);
+    padding: 15px;
     font-size: 0.9em;
-    margin-top: 30px;
-}
+    margin-top: 20px;
+  }
 
-/* Móviles */
-@media screen and (max-width: 500px) {
+  /* Responsive para móviles */
+  @media (max-width: 480px) {
     .tema {
-        flex-direction: column;
-        align-items: flex-start;
+      flex-direction: column;
+      align-items: flex-start;
     }
-    .info {
-        margin-right: 0;
-        margin-top: 5px;
-    }
+
     .controles {
-        margin-top: 5px;
-        width: 100%;
-        justify-content: flex-start;
-        gap: 10px;
+      width: 100%;
+      justify-content: space-between;
+      margin-top: 10px;
     }
-    button {
-        width: 70px;
+
+    .controles audio {
+      width: calc(100% - 100px);
+      height: 25px;
+      margin-right: 5px;
     }
-}
+
+    .controles button {
+      width: 90px;
+      padding: 6px 0;
+      font-size: 0.9em;
+    }
+  }
 </style>
 </head>
 <body>
 
-<!-- Logo -->
-<div class="logo">
-    <img src="logotipo.png" width="180" alt="ON! Radio Logo">
+<header>
+  <img src="logotipo.png" alt="On Radio Logo">
+  <h1>Votá en el ranking ON</h1>
+</header>
+
+<!-- Ejemplo de tema -->
+<div class="tema">
+  <img src="chorro.jpg" alt="Ladrón">
+  <div class="info">
+    <div class="nombre">Ladrón</div>
+    <div class="artista">Loopra y Karina</div>
+  </div>
+  <div class="controles">
+    <audio controls>
+      <source src="chorro.mp3" type="audio/mpeg">
+      Tu navegador no soporta audio.
+    </audio>
+    <button onclick="votar('chorro')">Votar</button>
+  </div>
 </div>
 
-<!-- Título -->
-<div class="titulo-ranking">
-    Votá en el Ranking ON!
+<div class="tema">
+  <img src="tujardin.jpg" alt="Tu jardín con Enanitos">
+  <div class="info">
+    <div class="nombre">Tu jardín con Enanitos</div>
+    <div class="artista">Roseo Oficial</div>
+  </div>
+  <div class="controles">
+    <audio controls>
+      <source src="tujardin.MP3" type="audio/mpeg">
+      Tu navegador no soporta audio.
+    </audio>
+    <button onclick="votar('tujardin')">Votar</button>
+  </div>
 </div>
 
-<!-- Lista de temas -->
-<div id="lista-temas"></div>
-
-<!-- Footer -->
 <footer>
-    Derechos reservados a OnRadio.<br>
-    Dale ON a la música que más te gusta!
+  <div>Derechos reservados a On Radio</div>
+  <div>Dale ON a la música que más te gusta!</div>
 </footer>
 
-<!-- MediaElement JS -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/mediaelement/5.0.1/mediaelement-and-player.min.js"></script>
-
-<!-- Firebase -->
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
-import { getDatabase, ref, get, update, child } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
-
-// Configuración Firebase
-const firebaseConfig = {
-    apiKey: "AIzaSyC8XXef5k8hLmNL8ufIJsc7Sx5KTlRFdH8",
-    authDomain: "on-radio-ranking.firebaseapp.com",
-    databaseURL: "https://on-radio-ranking-default-rtdb.firebaseio.com",
-    projectId: "on-radio-ranking",
-    storageBucket: "on-radio-ranking.firebasestorage.app",
-    messagingSenderId: "311635352358",
-    appId: "1:311635352358:web:257ff4821987f07d31ffe7"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
-const listaRef = ref(db, 'temas');
-
-// Mostrar temas
-function cargarTemas() {
-    get(listaRef).then((snapshot) => {
-        const data = snapshot.val();
-        const contenedor = document.getElementById('lista-temas');
-        contenedor.innerHTML = '';
-
-        const temasArray = Object.entries(data).sort(() => Math.random() - 0.5); // orden aleatorio
-
-        temasArray.forEach(([key, tema]) => {
-            const div = document.createElement('div');
-            div.className = 'tema';
-            div.innerHTML = `
-                <img src="${tema.imagen}" alt="${tema.nombre}">
-                <div class="info">
-                    <div class="nombre">${tema.nombre}</div>
-                    <div class="artista">${tema.artista}</div>
-                </div>
-                <div class="controles">
-                    <audio class="mejs-player" controls>
-                        <source src="${tema.audio}" type="audio/mpeg">
-                        Tu navegador no soporta audio.
-                    </audio>
-                    <button onclick="votar('${key}')">Votar</button>
-                </div>
-            `;
-            contenedor.appendChild(div);
-        });
-
-        // Inicializar MediaElementJS en todos los reproductores
-        const players = document.querySelectorAll('audio');
-        players.forEach(p => {
-            new MediaElementPlayer(p, {
-                features: ['playpause','progress','volume'],
-                audioWidth: 180,
-                audioHeight: 30
-            });
-        });
-    });
+<script>
+function votar(id) {
+  alert("Gracias por votar tu tema preferido. Recordá que podés votar una sola vez por día. Volvé mañana para votar otra vez.");
+  // Aquí integraríamos Firebase para actualizar votos
 }
-
-// Función votar
-function votar(key) {
-    const hoy = new Date().toISOString().split('T')[0];
-    const votadoHoy = localStorage.getItem('votado_' + key);
-
-    if(votadoHoy === hoy){
-        alert("Ya votaste hoy este tema. Volvé mañana para votar de nuevo.");
-        return;
-    }
-
-    const temaRef = child(listaRef, key);
-    get(temaRef).then((snapshot) => {
-        const tema = snapshot.val();
-        if(!tema) return;
-        const nuevosVotos = (tema.votos || 0) + 1;
-        update(temaRef, { votos: nuevosVotos }).then(() => {
-            alert("Gracias por votar tu tema preferido.\nRecordá que podés votar una sola vez por día.\nVolvé mañana para votar otra vez.");
-            localStorage.setItem('votado_' + key, hoy);
-        });
-    });
-}
-
-// Iniciar
-cargarTemas();
 </script>
 
 </body>
