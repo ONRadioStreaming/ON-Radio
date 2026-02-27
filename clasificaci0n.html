@@ -64,12 +64,13 @@ body {
 .controles {
     display: flex;
     align-items: center;
-    gap: 5px;
+    gap: 10px;
 }
 
 audio {
-    width: 140px;
+    width: 180px; /* reproductor más largo que el botón */
     height: 30px;
+    min-width: 140px;
 }
 
 button {
@@ -81,6 +82,16 @@ button {
     border: none;
     border-radius: 5px;
     cursor: pointer;
+}
+
+/* Footer */
+footer {
+    background: rgba(0,0,0,0.6);
+    color: #fff;
+    text-align: center;
+    padding: 12px 0;
+    font-size: 0.9em;
+    margin-top: 30px;
 }
 
 /* Móviles */
@@ -96,14 +107,16 @@ button {
     .controles {
         margin-top: 5px;
         width: 100%;
-        justify-content: space-between;
+        justify-content: flex-start;
+        gap: 10px;
     }
     audio {
-        width: 100%;
+        width: 160px;
         height: auto;
+        min-width: 140px;
     }
     button {
-        width: 100%;
+        width: 70px;
     }
 }
 </style>
@@ -122,6 +135,11 @@ button {
 
 <!-- Lista de temas -->
 <div id="lista-temas"></div>
+
+<!-- Footer -->
+<footer>
+    Derechos reservados a OnRadio. Dale ON a la música que más te gusta.
+</footer>
 
 <!-- Firebase -->
 <script type="module">
@@ -150,7 +168,7 @@ function cargarTemas() {
         const contenedor = document.getElementById('lista-temas');
         contenedor.innerHTML = '';
 
-        const temasArray = Object.entries(data).sort(() => Math.random() - 0.5); // aleatorio
+        const temasArray = Object.entries(data).sort(() => Math.random() - 0.5); // orden aleatorio
 
         temasArray.forEach(([key, tema]) => {
             const div = document.createElement('div');
