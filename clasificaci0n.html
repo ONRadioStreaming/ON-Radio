@@ -2,180 +2,238 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ranking ON! Radio</title>
+<title>Ranking ON Radio</title>
+
 <style>
 body {
-    background-color: #000;
-    color: #0ff;
-    font-family: Arial, sans-serif;
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background-image: url("fondoranking.jpg");
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    color: white;
+}
+
+.logo {
     text-align: center;
     padding: 20px;
 }
 
-h1 {
-    margin-bottom: 20px;
+.logo img {
+    width: 180px;
 }
 
-.ranking-item {
+h1 {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.contenedor {
+    width: 95%;
+    max-width: 1100px;
+    margin: auto;
+    background: rgba(0,0,0,0.8);
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.tema {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background-color: rgba(0,0,0,0.7);
-    margin: 10px 0;
-    padding: 10px;
-    border-radius: 10px;
-    color: #fff;
+    padding: 15px 0;
+    border-bottom: 1px solid #444;
 }
 
-.artista-img {
-    width: 60px;
-    height: 60px;
+.tema img {
+    width: 90px;
     border-radius: 8px;
-    margin-right: 10px;
 }
 
-.cancion-info {
-    flex-grow: 1;
-    text-align: left;
-    margin-right: 10px;
+.info {
+    flex: 1;
+    margin-left: 15px;
 }
 
-.play-btn, .votar-btn {
+.info h3 {
+    margin: 0;
+    font-size: 18px;
+}
+
+.info p {
+    margin: 3px 0 10px 0;
+    font-size: 14px;
+    color: #ccc;
+}
+
+.controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+audio {
+    width: 250px;
+}
+
+.votar {
     padding: 6px 12px;
-    margin-left: 5px;
+    background: #ff3c00;
     border: none;
-    border-radius: 6px;
+    color: white;
+    font-weight: bold;
+    border-radius: 5px;
     cursor: pointer;
 }
 
-.play-btn { background-color: #00bfff; color: #fff; }
-.votar-btn { background-color: #ff4500; color: #fff; }
-
-audio { display: none; } /* Ocultar reproductores */
+.votar:hover {
+    background: #ff6600;
+}
 </style>
 </head>
+
 <body>
 
-<h1>Vota tu canción favorita 🔥</h1>
-
-<div class="ranking-item">
-    <img src="tema1.jpg" class="artista-img" alt="Roze Oficial x Max Carra x Valen">
-    <div class="cancion-info">
-        <div>Tu jardín con enanitos</div>
-        <div>Roze Oficial x Max Carra x Valen</div>
-    </div>
-    <button class="play-btn" onclick="document.getElementById('audio1').play()">▶️</button>
-    <audio id="audio1" src="audio1.mp3"></audio>
-    <button class="votar-btn" onclick="votar('tema1')">Votar</button>
+<div class="logo">
+<img src="logotipo.png">
 </div>
 
-<div class="ranking-item">
-    <img src="tema2.jpg" class="artista-img" alt="El Bogueto x Yung Beef">
-    <div class="cancion-info">
-        <div>Cuando No Era Cantante</div>
-        <div>El Bogueto x Yung Beef</div>
-    </div>
-    <button class="play-btn" onclick="document.getElementById('audio2').play()">▶️</button>
-    <audio id="audio2" src="audio2.mp3"></audio>
-    <button class="votar-btn" onclick="votar('tema2')">Votar</button>
+<h1>🔥 Ranking ON Radio 🔥</h1>
+
+<div class="contenedor">
+
+<!-- 1 -->
+<div class="tema">
+<img src="tipica.jpg">
+<div class="info">
+<h3>1. Típica Argentina</h3>
+<p>Nico Valdi x Chofer x El Lobo</p>
+</div>
+<div class="controls">
+<audio controls src="tipica.mp3"></audio>
+<button class="votar">Votar</button>
+</div>
 </div>
 
-<div class="ranking-item">
-    <img src="tema3.jpg" class="artista-img" alt="La T y la M">
-    <div class="cancion-info">
-        <div>Soy Favela</div>
-        <div>La T y la M</div>
-    </div>
-    <button class="play-btn" onclick="document.getElementById('audio3').play()">▶️</button>
-    <audio id="audio3" src="audio3.mp3"></audio>
-    <button class="votar-btn" onclick="votar('tema3')">Votar</button>
+<!-- 2 -->
+<div class="tema">
+<img src="corriente.jpg">
+<div class="info">
+<h3>2. Music Sessions Vol. 0/66</h3>
+<p>Daddy Yankee - BZRP</p>
+</div>
+<div class="controls">
+<audio controls src="papi.mp3"></audio>
+<button class="votar">Votar</button>
+</div>
 </div>
 
-<div class="ranking-item">
-    <img src="tema4.jpg" class="artista-img" alt="Ozuna x Beele">
-    <div class="cancion-info">
-        <div>Pikito</div>
-        <div>Ozuna x Beele</div>
-    </div>
-    <button class="play-btn" onclick="document.getElementById('audio4').play()">▶️</button>
-    <audio id="audio4" src="audio4.mp3"></audio>
-    <button class="votar-btn" onclick="votar('tema4')">Votar</button>
+<!-- 3 -->
+<div class="tema">
+<img src="lavilla.jpg">
+<div class="info">
+<h3>3. La Villa</h3>
+<p>Ryan Castro, Kapo, Gangsta</p>
+</div>
+<div class="controls">
+<audio controls src="lavilla.mp3"></audio>
+<button class="votar">Votar</button>
+</div>
 </div>
 
-<div class="ranking-item">
-    <img src="tema5.jpg" class="artista-img" alt="Jess & Nick">
-    <div class="cancion-info">
-        <div>Dame Más Verano</div>
-        <div>Jess & Nick</div>
-    </div>
-    <button class="play-btn" onclick="document.getElementById('audio5').play()">▶️</button>
-    <audio id="audio5" src="audio5.mp3"></audio>
-    <button class="votar-btn" onclick="votar('tema5')">Votar</button>
+<!-- 4 -->
+<div class="tema">
+<img src="hacecalor.jpg">
+<div class="info">
+<h3>4. Hace Calor</h3>
+<p>María Becerra, El Alfa, Xross</p>
+</div>
+<div class="controls">
+<audio controls src="hacecalor.mp3"></audio>
+<button class="votar">Votar</button>
+</div>
 </div>
 
-<div class="ranking-item">
-    <img src="tema6.jpg" class="artista-img" alt="Ryan Castro x Kapo x Gangsta">
-    <div class="cancion-info">
-        <div>La VILLA</div>
-        <div>Ryan Castro x Kapo x Gangsta</div>
-    </div>
-    <button class="play-btn" onclick="document.getElementById('audio6').play()">▶️</button>
-    <audio id="audio6" src="audio6.mp3"></audio>
-    <button class="votar-btn" onclick="votar('tema6')">Votar</button>
+<!-- 5 -->
+<div class="tema">
+<img src="chorro.jpg">
+<div class="info">
+<h3>5. Ladrón</h3>
+<p>Luck Ra, Karina, Zaira, Bauletti</p>
+</div>
+<div class="controls">
+<audio controls src="chorro.mp3"></audio>
+<button class="votar">Votar</button>
+</div>
 </div>
 
-<div class="ranking-item">
-    <img src="tema7.jpg" class="artista-img" alt="Luck Ra x Miranda!">
-    <div class="cancion-info">
-        <div>TU MISTERIOSO ALGUIEN (CUARTETO)</div>
-        <div>Luck Ra x Miranda!</div>
-    </div>
-    <button class="play-btn" onclick="document.getElementById('audio7').play()">▶️</button>
-    <audio id="audio7" src="audio7.mp3"></audio>
-    <button class="votar-btn" onclick="votar('tema7')">Votar</button>
+<!-- 6 -->
+<div class="tema">
+<img src="paisaje.jpg">
+<div class="info">
+<h3>6. Paisaje</h3>
+<p>Ke Personajes y Karina</p>
+</div>
+<div class="controls">
+<audio controls src="paisaje.mp3"></audio>
+<button class="votar">Votar</button>
+</div>
 </div>
 
-<div class="ranking-item">
-    <img src="tema8.jpg" class="artista-img" alt="ROSALÍA x Yahritza Y Su Esencia">
-    <div class="cancion-info">
-        <div>La Perla</div>
-        <div>ROSALÍA x Yahritza Y Su Esencia</div>
-    </div>
-    <button class="play-btn" onclick="document.getElementById('audio8').play()">▶️</button>
-    <audio id="audio8" src="audio8.mp3"></audio>
-    <button class="votar-btn" onclick="votar('tema8')">Votar</button>
+<!-- 7 -->
+<div class="tema">
+<img src="laperla.jpg">
+<div class="info">
+<h3>7. La Perla</h3>
+<p>Rosalía</p>
+</div>
+<div class="controls">
+<audio controls src="laperla.mp3"></audio>
+<button class="votar">Votar</button>
+</div>
 </div>
 
-<div class="ranking-item">
-    <img src="tema9.jpg" class="artista-img" alt="Max Carra">
-    <div class="cancion-info">
-        <div>UWAIE</div>
-        <div>Max Carra</div>
-    </div>
-    <button class="play-btn" onclick="document.getElementById('audio9').play()">▶️</button>
-    <audio id="audio9" src="audio9.mp3"></audio>
-    <button class="votar-btn" onclick="votar('tema9')">Votar</button>
+<!-- 8 -->
+<div class="tema">
+<img src="taylor.jpg">
+<div class="info">
+<h3>8. The Fate of Ophelia</h3>
+<p>Taylor Swift</p>
+</div>
+<div class="controls">
+<audio controls src="taylor.mp3"></audio>
+<button class="votar">Votar</button>
+</div>
 </div>
 
-<div class="ranking-item">
-    <img src="tema10.jpg" class="artista-img" alt="Daddy Yankee">
-    <div class="cancion-info">
-        <div>Bzrp Music Sessions</div>
-        <div>Daddy Yankee</div>
-    </div>
-    <button class="play-btn" onclick="document.getElementById('audio10').play()">▶️</button>
-    <audio id="audio10" src="audio10.mp3"></audio>
-    <button class="votar-btn" onclick="votar('tema10')">Votar</button>
+<!-- 9 -->
+<div class="tema">
+<img src="lumar.jpg">
+<div class="info">
+<h3>9. Una y Otra Vez</h3>
+<p>Marcela Morelo y Luciano Pereyra</p>
+</div>
+<div class="controls">
+<audio controls src="lumar.mp3"></audio>
+<button class="votar">Votar</button>
+</div>
 </div>
 
-<script>
-// Función de voto de ejemplo
-function votar(idTema) {
-    alert('Tu voto fue registrado correctamente 🎵');
-    // Aquí más adelante se conectará con Firebase para registrar el voto
-}
-</script>
+<!-- 10 -->
+<div class="tema">
+<img src="tujardin.jpg">
+<div class="info">
+<h3>10. Tu Jardin con Enanitos</h3>
+<p>Roze Oficial, Max Carra, Valen, RAMKY</p>
+</div>
+<div class="controls">
+<audio controls src="tujardin.MP3"></audio>
+<button class="votar">Votar</button>
+</div>
+</div>
+
+</div>
 
 </body>
 </html>
