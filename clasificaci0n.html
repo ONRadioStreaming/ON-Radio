@@ -3,34 +3,33 @@
 <head>
   <meta charset="UTF-8">
   <title>Ranking ON Radio</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
       margin: 0;
       font-family: Arial, sans-serif;
       background: url('fondoranking.jpg') no-repeat center center fixed;
       background-size: cover;
-      color: white;
+      color: #fff;
     }
-    header {
+    .logo {
+      display: block;
+      margin: 20px auto;
+      width: 180px; /* mismo tamaño que index.html */
+    }
+    h1 {
       text-align: center;
-      padding: 20px 0;
-    }
-    header img {
-      width: 250px; /* mismo tamaño que la página principal */
-    }
-    header h1 {
-      margin: 10px 0 20px 0;
       font-size: 2em;
       font-weight: bold;
+      margin: 10px 0 30px 0;
     }
     .tema {
       display: flex;
       align-items: center;
       background: rgba(0,0,0,0.5);
-      margin: 10px auto;
+      margin: 10px 20px;
       padding: 10px;
-      border-radius: 10px;
-      max-width: 700px;
+      border-radius: 8px;
       flex-wrap: wrap;
     }
     .tema img {
@@ -38,79 +37,75 @@
       height: 80px;
       object-fit: cover;
       margin-right: 15px;
-      border-radius: 5px;
     }
     .info {
-      flex: 1;
-      min-width: 180px;
+      flex: 1 1 200px;
+      min-width: 150px;
     }
-    .info .nombre {
-      font-weight: bold;
+    .info b {
+      display: block;
       font-size: 1.1em;
     }
-    .info .artista {
-      font-size: 0.95em;
-    }
-    .player-votar {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-top: 5px;
-    }
     audio {
-      width: 200px;
+      flex: 1 1 250px;
+      max-width: 300px;
+      margin-right: 10px;
+      margin-top: 5px;
+      margin-bottom: 5px;
     }
-    .boton-votar {
+    button.votar {
       background-color: red;
       color: white;
       border: none;
-      padding: 8px 16px;
-      cursor: pointer;
+      padding: 10px 20px;
+      font-size: 1em;
       border-radius: 5px;
-      font-weight: bold;
+      cursor: pointer;
+      margin-top: 5px;
+      height: 40px;
     }
     footer {
       background: rgba(0,0,0,0.6);
       text-align: center;
-      padding: 10px 0;
+      padding: 15px 10px;
       font-size: 0.9em;
+      position: fixed;
+      width: 100%;
+      bottom: 0;
     }
-    footer div {
-      margin: 2px 0;
-    }
-    @media (max-width: 500px) {
+    @media (max-width: 600px) {
       .tema {
         flex-direction: column;
         align-items: flex-start;
       }
-      .player-votar {
-        width: 100%;
-        justify-content: space-between;
-      }
       audio {
-        width: 60%;
+        width: 100%;
+        max-width: 100%;
+        margin-right: 0;
+      }
+      button.votar {
+        width: 100%;
+        margin-top: 5px;
       }
     }
   </style>
 </head>
 <body>
 
-<header>
-  <img src="logotipo.png" alt="Logo ON Radio">
-  <h1>Votá en el Ranking ON</h1>
-</header>
+<img src="logotipo.png" class="logo" alt="ON Radio Logo">
+<h1>Votá en el Ranking ON</h1>
 
-<div id="lista-temas"></div>
+<div id="temas-container"></div>
 
 <footer>
   <div>Derechos reservados a ON Radio</div>
   <div>Dale ON a la música que más te gusta!</div>
 </footer>
 
-<!-- Firebase -->
+<!-- Firebase SDK -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
-  import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
+  import { getDatabase, ref, get, child, update } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyC8XXef5k8hLmNL8ufIJsc7Sx5KTlRFdH8",
@@ -124,56 +119,64 @@
 
   const app = initializeApp(firebaseConfig);
   const db = getDatabase(app);
+  const temasRef = ref(db, 'temas');
 
-  const temasRef = ref(db, 'temas'); // <-- cambiamos la referencia al nodo correcto
+  function cargarTemas(temas) {
+    const container = document.getElementById('temas-container');
+    container.innerHTML = '';
 
-  function shuffleArray(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [array[i], array[j]] = [array[j], array[i]];
-    }
-  }
-
-  onValue(temasRef, (snapshot) => {
-    const temas = snapshot.val();
-    const lista = document.getElementById('lista-temas');
-    lista.innerHTML = '';
-
-    if (!temas) return;
-
+    // Mezclar aleatoriamente
     const keys = Object.keys(temas);
-    shuffleArray(keys); // Orden aleatorio
+    keys.sort(() => Math.random() - 0.5);
 
     keys.forEach(key => {
-      const tema = temas[key];
+      const t = temas[key];
+      const temaDiv = document.createElement('div');
+      temaDiv.className = 'tema';
 
-      const divTema = document.createElement('div');
-      divTema.classList.add('tema');
-
-      divTema.innerHTML = `
-        <img src="${tema.imagen}" alt="${tema.nombre}">
+      temaDiv.innerHTML = `
+        <img src="${t.imagen}" alt="${t.nombre}">
         <div class="info">
-          <div class="nombre">${tema.nombre}</div>
-          <div class="artista">${tema.artista}</div>
-          <div class="player-votar">
-            <audio controls src="${tema.audio}"></audio>
-            <button class="boton-votar">Votar</button>
-          </div>
+          <b>${t.nombre}</b>
+          <span>${t.artista}</span>
         </div>
+        <audio controls src="${t.audio}"></audio>
+        <button class="votar">Votar</button>
       `;
 
-      const btnVotar = divTema.querySelector('.boton-votar');
-      btnVotar.addEventListener('click', () => {
-        alert("Gracias por votar tu tema preferido. Recordá que podés votar una sola vez por día. Volvé mañana para votar otra vez.");
-        // Opcional: actualizar votos en Firebase
-        const votosActuales = tema.votos || 0;
-        update(ref(db, temas/${key}), { votos: votosActuales + 1 });
+      const votarBtn = temaDiv.querySelector('.votar');
+      votarBtn.addEventListener('click', () => {
+        if (!localStorage.getItem('voto_' + key)) {
+          // Sumar un voto
+          const votosRef = ref(db, temas/${key}/votos);
+          get(votosRef).then(snapshot => {
+            const current = snapshot.val() || 0;
+            update(ref(db, temas/${key}), { votos: current + 1 }).then(() => {
+              alert("Gracias por votar tu tema preferido.\nRecordá que podés votar una sola vez por día.\nVolvé mañana para votar otra vez.");
+              localStorage.setItem('voto_' + key, 'true');
+              // refrescar ranking si se quiere, acá recarga la lista
+              get(child(ref(db), 'temas')).then(snapshot => {
+                cargarTemas(snapshot.val());
+              });
+            });
+          });
+        } else {
+          alert("Ya votaste este tema hoy. Volvé mañana para votar otra vez.");
+        }
       });
 
-      lista.appendChild(divTema);
+      container.appendChild(temaDiv);
     });
-  });
+  }
 
+  // Cargar temas desde Firebase al iniciar
+  get(temasRef).then(snapshot => {
+    if (snapshot.exists()) {
+      cargarTemas(snapshot.val());
+    } else {
+      console.log("No hay temas cargados");
+    }
+  }).catch(error => console.error(error));
 </script>
 
 </body>
