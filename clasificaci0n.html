@@ -5,119 +5,120 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Ranking ON Radio</title>
 <style>
-  body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: url('fondo.jpg') no-repeat center center fixed;
-    background-size: cover;
-    color: white;
-  }
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: url('fondoranking.jpg') no-repeat center center fixed;
+  background-size: cover;
+  color: white;
+}
 
-  header {
-    text-align: center;
-    padding: 20px;
-  }
+header {
+  text-align: center;
+  padding: 20px;
+}
 
-  header img {
-    width: 180px;
-    max-width: 80%;
-  }
+header img {
+  width: 180px;
+  max-width: 80%;
+}
 
-  header h1 {
-    font-size: 1.5em;
-    margin-top: 10px;
-    font-weight: bold;
-  }
+header h1 {
+  font-size: 1.5em;
+  margin-top: 10px;
+  font-weight: bold;
+}
 
+.tema {
+  display: flex;
+  align-items: center;
+  background-color: rgba(0,0,0,0.5);
+  margin: 10px auto;
+  padding: 10px;
+  max-width: 800px;
+  border-radius: 8px;
+  flex-wrap: wrap;
+}
+
+.tema img {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  margin-right: 10px;
+  border-radius: 4px;
+}
+
+.info {
+  flex: 1;
+  min-width: 150px;
+}
+
+.info .nombre {
+  font-weight: bold;
+}
+
+.info .artista {
+  font-size: 0.9em;
+  color: #ddd;
+}
+
+.controles {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+  margin-top: 5px;
+}
+
+.controles audio {
+  width: 180px;
+  height: 30px;
+  margin-right: 10px;
+}
+
+.controles button {
+  background-color: red;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+footer {
+  text-align: center;
+  background-color: rgba(0,0,0,0.5);
+  padding: 15px;
+  font-size: 0.9em;
+  margin-top: 20px;
+  line-height: 1.4em;
+}
+
+/* Responsive móvil */
+@media (max-width: 480px) {
   .tema {
-    display: flex;
-    align-items: center;
-    background-color: rgba(0,0,0,0.5);
-    margin: 10px auto;
-    padding: 10px;
-    max-width: 800px;
-    border-radius: 8px;
-    flex-wrap: wrap; /* permite que en móvil se acomode en columna */
-  }
-
-  .tema img {
-    width: 60px;
-    height: 60px;
-    object-fit: cover;
-    margin-right: 10px;
-    border-radius: 4px;
-  }
-
-  .info {
-    flex: 1;
-    min-width: 150px;
-  }
-
-  .info .nombre {
-    font-weight: bold;
-  }
-
-  .info .artista {
-    font-size: 0.9em;
-    color: #ddd;
+    flex-direction: column;
+    align-items: flex-start;
   }
 
   .controles {
-    display: flex;
-    align-items: center;
-    margin-left: auto;
-    margin-top: 5px;
+    width: 100%;
+    justify-content: space-between;
+    margin-top: 10px;
   }
 
   .controles audio {
-    width: 180px;
-    height: 30px;
-    margin-right: 10px;
+    width: calc(100% - 100px);
+    height: 25px;
+    margin-right: 5px;
   }
 
   .controles button {
-    background-color: red;
-    color: white;
-    border: none;
-    padding: 8px 12px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-weight: bold;
-  }
-
-  footer {
-    text-align: center;
-    background-color: rgba(0,0,0,0.5);
-    padding: 15px;
+    width: 90px;
+    padding: 6px 0;
     font-size: 0.9em;
-    margin-top: 20px;
   }
-
-  /* Responsive para móviles */
-  @media (max-width: 480px) {
-    .tema {
-      flex-direction: column;
-      align-items: flex-start;
-    }
-
-    .controles {
-      width: 100%;
-      justify-content: space-between;
-      margin-top: 10px;
-    }
-
-    .controles audio {
-      width: calc(100% - 100px);
-      height: 25px;
-      margin-right: 5px;
-    }
-
-    .controles button {
-      width: 90px;
-      padding: 6px 0;
-      font-size: 0.9em;
-    }
-  }
+}
 </style>
 </head>
 <body>
@@ -127,47 +128,79 @@
   <h1>Votá en el ranking ON</h1>
 </header>
 
-<!-- Ejemplo de tema -->
-<div class="tema">
-  <img src="chorro.jpg" alt="Ladrón">
-  <div class="info">
-    <div class="nombre">Ladrón</div>
-    <div class="artista">Loopra y Karina</div>
-  </div>
-  <div class="controles">
-    <audio controls>
-      <source src="chorro.mp3" type="audio/mpeg">
-      Tu navegador no soporta audio.
-    </audio>
-    <button onclick="votar('chorro')">Votar</button>
-  </div>
-</div>
-
-<div class="tema">
-  <img src="tujardin.jpg" alt="Tu jardín con Enanitos">
-  <div class="info">
-    <div class="nombre">Tu jardín con Enanitos</div>
-    <div class="artista">Roseo Oficial</div>
-  </div>
-  <div class="controles">
-    <audio controls>
-      <source src="tujardin.MP3" type="audio/mpeg">
-      Tu navegador no soporta audio.
-    </audio>
-    <button onclick="votar('tujardin')">Votar</button>
-  </div>
-</div>
+<div id="ranking"></div>
 
 <footer>
   <div>Derechos reservados a On Radio</div>
   <div>Dale ON a la música que más te gusta!</div>
 </footer>
 
-<script>
-function votar(id) {
-  alert("Gracias por votar tu tema preferido. Recordá que podés votar una sola vez por día. Volvé mañana para votar otra vez.");
-  // Aquí integraríamos Firebase para actualizar votos
-}
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+  import { getDatabase, ref, get, update } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyC8XXef5k8hLmNL8ufIJsc7Sx5KTlRFdH8",
+    authDomain: "on-radio-ranking.firebaseapp.com",
+    databaseURL: "https://on-radio-ranking-default-rtdb.firebaseio.com",
+    projectId: "on-radio-ranking",
+    storageBucket: "on-radio-ranking.firebasestorage.app",
+    messagingSenderId: "311635352358",
+    appId: "1:311635352358:web:257ff4821987f07d31ffe7"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+
+  async function cargarTemas() {
+    const dbRef = ref(db, 'Ranking_-_Semanal');
+    const snapshot = await get(dbRef);
+    if (snapshot.exists()) {
+      const temas = Object.values(snapshot.val());
+      mostrarTemas(temas);
+    } else {
+      console.error("No hay datos en Firebase");
+    }
+  }
+
+  function mostrarTemas(temas) {
+    const contenedor = document.getElementById('ranking');
+    contenedor.innerHTML = '';
+
+    // Mezclar aleatoriamente los temas
+    temas.sort(() => Math.random() - 0.5);
+
+    temas.forEach(tema => {
+      const div = document.createElement('div');
+      div.className = 'tema';
+      div.innerHTML = `
+        <img src="${tema.imagen}" alt="${tema.nombre}">
+        <div class="info">
+          <div class="nombre">${tema.nombre}</div>
+          <div class="artista">${tema.artista}</div>
+        </div>
+        <div class="controles">
+          <audio controls>
+            <source src="${tema.audio}" type="audio/mpeg">
+            Tu navegador no soporta audio.
+          </audio>
+          <button onclick="votar('${tema.nombre}')">Votar</button>
+        </div>
+      `;
+      contenedor.appendChild(div);
+    });
+  }
+
+  window.votar = async function(nombreTema) {
+    alert("Gracias por votar tu tema preferido. Recordá que podés votar una sola vez por día. Volvé mañana para votar otra vez.");
+    const temaRef = ref(db, Ranking_-_Semanal/${nombreTema}/votos);
+    const snapshot = await get(temaRef);
+    const votosActuales = snapshot.exists() ? snapshot.val() : 0;
+    update(ref(db, Ranking_-_Semanal/${nombreTema}), { votos: votosActuales + 1 });
+    cargarTemas();
+  }
+
+  cargarTemas();
 </script>
 
 </body>
