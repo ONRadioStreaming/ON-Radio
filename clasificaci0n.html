@@ -136,71 +136,85 @@ footer {
 </footer>
 
 <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
-  import { getDatabase, ref, get, update } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+import { getDatabase, ref, get, update } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyC8XXef5k8hLmNL8ufIJsc7Sx5KTlRFdH8",
-    authDomain: "on-radio-ranking.firebaseapp.com",
-    databaseURL: "https://on-radio-ranking-default-rtdb.firebaseio.com",
-    projectId: "on-radio-ranking",
-    storageBucket: "on-radio-ranking.firebasestorage.app",
-    messagingSenderId: "311635352358",
-    appId: "1:311635352358:web:257ff4821987f07d31ffe7"
-  };
+const firebaseConfig = {
+  apiKey: "AIzaSyC8XXef5k8hLmNL8ufIJsc7Sx5KTlRFdH8",
+  authDomain: "on-radio-ranking.firebaseapp.com",
+  databaseURL: "https://on-radio-ranking-default-rtdb.firebaseio.com",
+  projectId: "on-radio-ranking",
+  storageBucket: "on-radio-ranking.firebasestorage.app",
+  messagingSenderId: "311635352358",
+  appId: "1:311635352358:web:257ff4821987f07d31ffe7"
+};
 
-  const app = initializeApp(firebaseConfig);
-  const db = getDatabase(app);
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
 
-  async function cargarTemas() {
-    const dbRef = ref(db, 'Ranking_-_Semanal');
-    const snapshot = await get(dbRef);
-    if (snapshot.exists()) {
-      const temas = Object.values(snapshot.val());
-      mostrarTemas(temas);
-    } else {
-      console.error("No hay datos en Firebase");
+async function cargarTemas() {
+  const dbRef = ref(db, 'Ranking_-_Semanal');
+  const snapshot = await get(dbRef);
+  if (snapshot.exists()) {
+    const temasObj = snapshot.val();
+    const temas = [];
+
+    // Convertir cada nodo a un objeto con los datos y nombre del nodo
+    for (let key in temasObj) {
+      temas.push({
+        nombreNodo: key,
+        nombre: temasObj[key].nombre || key,
+        artista: temasObj[key].artista || "",
+        audio: temasObj[key].audio || "",
+        imagen: temasObj[key].imagen || "",
+        votos: temasObj[key].votos || 0
+      });
     }
+
+    mostrarTemas(temas);
+  } else {
+    console.error("No hay datos en Firebase");
   }
+}
 
-  function mostrarTemas(temas) {
-    const contenedor = document.getElementById('ranking');
-    contenedor.innerHTML = '';
+function mostrarTemas(temas) {
+  const contenedor = document.getElementById('ranking');
+  contenedor.innerHTML = '';
 
-    // Mezclar aleatoriamente los temas
-    temas.sort(() => Math.random() - 0.5);
+  // Mezclar aleatoriamente los temas
+  temas.sort(() => Math.random() - 0.5);
 
-    temas.forEach(tema => {
-      const div = document.createElement('div');
-      div.className = 'tema';
-      div.innerHTML = `
-        <img src="${tema.imagen}" alt="${tema.nombre}">
-        <div class="info">
-          <div class="nombre">${tema.nombre}</div>
-          <div class="artista">${tema.artista}</div>
-        </div>
-        <div class="controles">
-          <audio controls>
-            <source src="${tema.audio}" type="audio/mpeg">
-            Tu navegador no soporta audio.
-          </audio>
-          <button onclick="votar('${tema.nombre}')">Votar</button>
-        </div>
-      `;
-      contenedor.appendChild(div);
-    });
-  }
+  temas.forEach(tema => {
+    const div = document.createElement('div');
+    div.className = 'tema';
+    div.innerHTML = `
+      <img src="${tema.imagen}" alt="${tema.nombre}">
+      <div class="info">
+        <div class="nombre">${tema.nombre}</div>
+        <div class="artista">${tema.artista}</div>
+      </div>
+      <div class="controles">
+        <audio controls>
+          <source src="${tema.audio}" type="audio/mpeg">
+          Tu navegador no soporta audio.
+        </audio>
+        <button onclick="votar('${tema.nombreNodo}')">Votar</button>
+      </div>
+    `;
+    contenedor.appendChild(div);
+  });
+}
 
-  window.votar = async function(nombreTema) {
-    alert("Gracias por votar tu tema preferido. Recordá que podés votar una sola vez por día. Volvé mañana para votar otra vez.");
-    const temaRef = ref(db, Ranking_-_Semanal/${nombreTema}/votos);
-    const snapshot = await get(temaRef);
-    const votosActuales = snapshot.exists() ? snapshot.val() : 0;
-    update(ref(db, Ranking_-_Semanal/${nombreTema}), { votos: votosActuales + 1 });
-    cargarTemas();
-  }
-
+window.votar = async function(nombreNodo) {
+  alert("Gracias por votar tu tema preferido. Recordá que podés votar una sola vez por día. Volvé mañana para votar otra vez.");
+  const temaRef = ref(db, Ranking_-_Semanal/${nombreNodo}/votos);
+  const snapshot = await get(temaRef);
+  const votosActuales = snapshot.exists() ? snapshot.val() : 0;
+  update(ref(db, Ranking_-_Semanal/${nombreNodo}), { votos: votosActuales + 1 });
   cargarTemas();
+}
+
+cargarTemas();
 </script>
 
 </body>
