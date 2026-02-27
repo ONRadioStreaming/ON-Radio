@@ -5,82 +5,111 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Ranking ON!</title>
 <style>
-    body {
-        margin: 0;
-        font-family: Arial, sans-serif;
-        background: url('fondoranking.jpg') no-repeat center center fixed;
-        background-size: cover;
-        color: #fff;
-    }
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: url('fondoranking.jpg') no-repeat center center fixed;
+    background-size: cover;
+    color: #fff;
+}
 
-    /* Logo */
-    .logo {
-        text-align: center;
-        margin: 20px 0;
-    }
+/* Logo */
+.logo {
+    text-align: center;
+    margin: 20px 0;
+}
 
-    /* Título */
-    .titulo-ranking {
-        text-align: center;
-        font-size: 2em;
-        font-weight: bold;
-        margin-bottom: 25px;
-    }
+/* Título */
+.titulo-ranking {
+    text-align: center;
+    font-size: 2em;
+    font-weight: bold;
+    margin-bottom: 25px;
+}
 
-    /* Renglón de tema */
+/* Renglón de tema */
+.tema {
+    display: flex;
+    align-items: center;
+    margin: 10px 20px;
+    padding: 10px;
+    background: rgba(0,0,0,0.5);
+    border-radius: 10px;
+    flex-wrap: wrap; /* permite que los elementos bajen en celulares */
+}
+
+.tema img {
+    width: 80px;
+    height: 80px;
+    border-radius: 8px;
+    object-fit: cover;
+    margin-right: 15px;
+    flex-shrink: 0;
+}
+
+.info {
+    flex: 1 1 150px; /* se adapta al espacio disponible */
+    margin-right: 15px;
+}
+
+.info .nombre {
+    font-size: 1.1em;
+    font-weight: bold;
+}
+
+.info .artista {
+    font-size: 0.9em;
+    color: #ccc;
+    word-wrap: break-word;
+}
+
+.controles {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 5px;
+    flex-shrink: 0;
+}
+
+audio {
+    width: 150px;
+    max-width: 100%;
+}
+
+/* Botón rojo */
+button {
+    width: 70px;
+    height: 35px;
+    background-color: #ff0000;
+    color: white;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* Media queries para móviles */
+@media screen and (max-width: 600px) {
     .tema {
-        display: flex;
-        align-items: center;
-        margin: 10px 20px;
-        padding: 10px;
-        background: rgba(0,0,0,0.5);
-        border-radius: 10px;
+        flex-direction: column;
+        align-items: flex-start;
     }
-
-    .tema img {
-        width: 80px;
-        height: 80px;
-        border-radius: 8px;
-        object-fit: cover;
-        margin-right: 15px;
-    }
-
     .info {
-        flex: 1;
-        margin-right: 15px;
+        margin-right: 0;
+        margin-top: 5px;
     }
-
-    .info .nombre {
-        font-size: 1.1em;
-        font-weight: bold;
-    }
-
-    .info .artista {
-        font-size: 0.9em;
-        color: #ccc;
-    }
-
     .controles {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
+        margin-top: 5px;
+        flex-wrap: wrap;
         gap: 5px;
     }
-
     audio {
-        width: 180px; /* reproductor */
+        width: 100%;
     }
-
     button {
-        width: 80px;
-        height: 35px;
-        background-color: #ff0000; /* rojo */
-        color: white;
-        font-weight: bold;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
+        width: 100%;
     }
+}
 </style>
 </head>
 <body>
@@ -101,7 +130,7 @@
 <!-- Firebase -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
-import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
+import { getDatabase, ref, get, update, child } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
 
 // Configuración Firebase
 const firebaseConfig = {
@@ -114,19 +143,18 @@ const firebaseConfig = {
     appId: "1:311635352358:web:257ff4821987f07d31ffe7"
 };
 
-// Inicializar Firebase
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 const listaRef = ref(db, 'temas');
 
 // Mostrar temas
 function cargarTemas() {
-    onValue(listaRef, (snapshot) => {
+    get(listaRef).then((snapshot) => {
         const data = snapshot.val();
         const contenedor = document.getElementById('lista-temas');
         contenedor.innerHTML = '';
 
-        const temasArray = Object.entries(data).sort(() => Math.random() - 0.5); // orden aleatorio
+        const temasArray = Object.entries(data).sort(() => Math.random() - 0.5); // aleatorio
 
         temasArray.forEach(([key, tema]) => {
             const div = document.createElement('div');
@@ -160,8 +188,8 @@ function votar(key) {
         return;
     }
 
-    const temaRef = ref(db, 'temas/' + key);
-    onValue(temaRef, (snapshot) => {
+    const temaRef = child(listaRef, key);
+    get(temaRef).then((snapshot) => {
         const tema = snapshot.val();
         if(!tema) return;
         const nuevosVotos = (tema.votos || 0) + 1;
@@ -169,7 +197,7 @@ function votar(key) {
             alert("Gracias por votar tu tema preferido.\nRecordá que podés votar una sola vez por día.\nVolvé mañana para votar otra vez.");
             localStorage.setItem('votado_' + key, hoy);
         });
-    }, { onlyOnce: true });
+    });
 }
 
 // Iniciar
