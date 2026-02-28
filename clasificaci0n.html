@@ -5,255 +5,257 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Ranking ON Radio</title>
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
+  /* Fondo */
   body {
-    background: url('fondovertical1.png') no-repeat center top;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background: url('fondoranking.png') no-repeat center top;
     background-size: cover;
-    min-height: 100vh;
     color: white;
   }
+
+  /* Contenedor de ranking */
   .ranking-container {
     max-width: 1486px;
-    margin: 150px auto 90px auto; /* margen superior 150px, inferior 90px */
-    padding-left: 305.93px; /* margen izquierdo */
-    padding-right: 127.13px; /* margen derecho */
+    margin: 150px auto 50px auto; /* margen superior ajustable */
+    padding: 0 50px; /* margen lateral interno */
   }
+
+  /* Cada renglón de tema */
   .ranking-item {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 15px 0;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+    font-size: 18px;
   }
-  .ranking-left {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    min-width: 60%;
-  }
-  .rank-number {
-    font-size: 2rem;
-    width: 40px;
+
+  /* Número del ranking */
+  .ranking-number {
+    width: 50px;
     text-align: center;
+    font-weight: bold;
+    font-size: 28px;
   }
-  .rank-number.first {
+  .ranking-number.first {
+    font-size: 40px;
     color: red;
-    font-size: 2.8rem;
   }
-  .play-button {
+
+  /* Play dentro de círculo */
+  .play-btn {
     width: 30px;
     height: 30px;
-    border-radius: 50%;
     border: 2px solid white;
+    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
+    margin-right: 10px;
     cursor: pointer;
   }
-  .play-button::after {
+  .play-btn::after {
     content: '';
-    border-style: solid;
-    border-width: 7px 0 7px 12px;
-    border-color: transparent transparent transparent white;
     display: block;
-    margin-left: 2px;
+    width: 0;
+    height: 0;
+    border-left: 10px solid white;
+    border-top: 6px solid transparent;
+    border-bottom: 6px solid transparent;
   }
-  .track-info {
+
+  /* Contenido del tema */
+  .song-info {
+    flex: 1;
     display: flex;
     flex-direction: column;
   }
-  .track-info .title { font-weight: bold; font-size: 1rem; }
-  .track-info .artist { font-weight: normal; font-size: 0.9rem; }
-  .ranking-right {
+  .song-title {
+    font-weight: bold;
+  }
+  .song-artist {
+    font-weight: normal;
+    font-size: 16px;
+  }
+
+  /* Indicador */
+  .indicator {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
     display: flex;
     align-items: center;
-    gap: 10px;
+    justify-content: center;
   }
-  .indicator {
-    width: 12px;
-    height: 12px;
-    display: inline-block;
-    clip-path: polygon(50% 0%, 0% 100%, 100% 100%); /* triángulo */
+  .indicator.up {
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-bottom: 15px solid green;
   }
-  .indicator.up { background: green; transform: rotate(0deg); }
-  .indicator.down { background: red; transform: rotate(180deg); }
-  .indicator.stable { background: yellow; clip-path: none; width: 12px; height: 3px; }
-  .vote-button {
-    background: red;
+  .indicator.down {
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 15px solid red;
+  }
+  .indicator.stable {
+    width: 15px;
+    height: 15px;
+    background-color: yellow;
+  }
+
+  /* Botón votar */
+  .vote-btn {
+    background-color: red;
     color: white;
     border: none;
-    padding: 5px 10px;
+    padding: 5px 12px;
     cursor: pointer;
     font-weight: bold;
-    border-radius: 3px;
   }
 
   /* Responsive */
   @media (max-width: 768px) {
-    .ranking-container { padding-left: 20px; padding-right: 20px; }
-    .ranking-left { min-width: 50%; gap: 10px; }
-    .rank-number { font-size: 1.5rem; }
-    .rank-number.first { font-size: 2rem; }
-    .play-button { width: 25px; height: 25px; }
-    .play-button::after { border-width: 5px 0 5px 8px; }
-    .track-info .title { font-size: 0.9rem; }
-    .track-info .artist { font-size: 0.8rem; }
+    .ranking-container {
+      margin: 150px 20px 50px 20px;
+    }
+    .ranking-number {
+      width: 40px;
+      font-size: 24px;
+    }
+    .ranking-number.first {
+      font-size: 32px;
+    }
+    .song-title {
+      font-size: 16px;
+    }
+    .song-artist {
+      font-size: 14px;
+    }
+    .vote-btn {
+      padding: 4px 8px;
+      font-size: 14px;
+    }
   }
 </style>
 </head>
 <body>
-<div class="ranking-container">
-
-  <div class="ranking-item">
-    <div class="ranking-left">
-      <div class="rank-number first">1</div>
-      <div class="play-button"></div>
-      <div class="track-info">
-        <div class="title">Típica Argentina (Zum Zum Zum)</div>
-        <div class="artist">Nico Valdi x Chofer x El Lobo</div>
+  <div class="ranking-container">
+    <div class="ranking-item">
+      <div class="ranking-number first">1</div>
+      <div class="play-btn"></div>
+      <div class="song-info">
+        <div class="song-title">Típica Argentina (Zum Zum Zum)</div>
+        <div class="song-artist">Nico Valdi x Chofer x El Lobo</div>
       </div>
-    </div>
-    <div class="ranking-right">
       <div class="indicator up"></div>
-      <button class="vote-button">Votar</button>
+      <button class="vote-btn">Votar</button>
     </div>
-  </div>
 
-  <div class="ranking-item">
-    <div class="ranking-left">
-      <div class="rank-number">2</div>
-      <div class="play-button"></div>
-      <div class="track-info">
-        <div class="title">Music Sessions Vol. 0/66</div>
-        <div class="artist">Daddy Yankee - BZRP</div>
+    <div class="ranking-item">
+      <div class="ranking-number">2</div>
+      <div class="play-btn"></div>
+      <div class="song-info">
+        <div class="song-title">Music Sessions Vol. 0/66</div>
+        <div class="song-artist">Daddy Yankee - BZRP</div>
       </div>
-    </div>
-    <div class="ranking-right">
-      <div class="indicator stable"></div>
-      <button class="vote-button">Votar</button>
-    </div>
-  </div>
-
-  <div class="ranking-item">
-    <div class="ranking-left">
-      <div class="rank-number">3</div>
-      <div class="play-button"></div>
-      <div class="track-info">
-        <div class="title">La Villa</div>
-        <div class="artist">Ryan Castro, Kapo, Gangsta</div>
-      </div>
-    </div>
-    <div class="ranking-right">
       <div class="indicator down"></div>
-      <button class="vote-button">Votar</button>
+      <button class="vote-btn">Votar</button>
     </div>
-  </div>
 
-  <div class="ranking-item">
-    <div class="ranking-left">
-      <div class="rank-number">4</div>
-      <div class="play-button"></div>
-      <div class="track-info">
-        <div class="title">Hace calor</div>
-        <div class="artist">María Becerra, El Alfa y Xross</div>
+    <div class="ranking-item">
+      <div class="ranking-number">3</div>
+      <div class="play-btn"></div>
+      <div class="song-info">
+        <div class="song-title">La Villa</div>
+        <div class="song-artist">Ryan Castro, Kapo, Gangsta</div>
       </div>
-    </div>
-    <div class="ranking-right">
-      <div class="indicator up"></div>
-      <button class="vote-button">Votar</button>
-    </div>
-  </div>
-
-  <div class="ranking-item">
-    <div class="ranking-left">
-      <div class="rank-number">5</div>
-      <div class="play-button"></div>
-      <div class="track-info">
-        <div class="title">Ladrón</div>
-        <div class="artist">Luck Ra, Karina, Zaira, Bauletti</div>
-      </div>
-    </div>
-    <div class="ranking-right">
       <div class="indicator stable"></div>
-      <button class="vote-button">Votar</button>
+      <button class="vote-btn">Votar</button>
     </div>
-  </div>
 
-  <div class="ranking-item">
-    <div class="ranking-left">
-      <div class="rank-number">6</div>
-      <div class="play-button"></div>
-      <div class="track-info">
-        <div class="title">Paisaje</div>
-        <div class="artist">Ke Personajes y Karina La Princesita</div>
+    <div class="ranking-item">
+      <div class="ranking-number">4</div>
+      <div class="play-btn"></div>
+      <div class="song-info">
+        <div class="song-title">Hace calor</div>
+        <div class="song-artist">María Becerra, El Alfa y Xross</div>
       </div>
-    </div>
-    <div class="ranking-right">
-      <div class="indicator down"></div>
-      <button class="vote-button">Votar</button>
-    </div>
-  </div>
-
-  <div class="ranking-item">
-    <div class="ranking-left">
-      <div class="rank-number">7</div>
-      <div class="play-button"></div>
-      <div class="track-info">
-        <div class="title">La Perla</div>
-        <div class="artist">Rosalía</div>
-      </div>
-    </div>
-    <div class="ranking-right">
       <div class="indicator up"></div>
-      <button class="vote-button">Votar</button>
+      <button class="vote-btn">Votar</button>
     </div>
-  </div>
 
-  <div class="ranking-item">
-    <div class="ranking-left">
-      <div class="rank-number">8</div>
-      <div class="play-button"></div>
-      <div class="track-info">
-        <div class="title">The Fate of Ophelia</div>
-        <div class="artist">Taylor Swift</div>
+    <div class="ranking-item">
+      <div class="ranking-number">5</div>
+      <div class="play-btn"></div>
+      <div class="song-info">
+        <div class="song-title">Ladrón</div>
+        <div class="song-artist">Luck Ra, Karina, Zaira, Bauletti</div>
       </div>
-    </div>
-    <div class="ranking-right">
       <div class="indicator down"></div>
-      <button class="vote-button">Votar</button>
+      <button class="vote-btn">Votar</button>
     </div>
-  </div>
 
-  <div class="ranking-item">
-    <div class="ranking-left">
-      <div class="rank-number">9</div>
-      <div class="play-button"></div>
-      <div class="track-info">
-        <div class="title">Una y Otra Vez</div>
-        <div class="artist">Marcela Morelo y Luciano Pereyra</div>
+    <div class="ranking-item">
+      <div class="ranking-number">6</div>
+      <div class="play-btn"></div>
+      <div class="song-info">
+        <div class="song-title">Paisaje</div>
+        <div class="song-artist">Ke Personajes y Karina La Princesita</div>
       </div>
-    </div>
-    <div class="ranking-right">
       <div class="indicator stable"></div>
-      <button class="vote-button">Votar</button>
+      <button class="vote-btn">Votar</button>
     </div>
-  </div>
 
-  <div class="ranking-item">
-    <div class="ranking-left">
-      <div class="rank-number">10</div>
-      <div class="play-button"></div>
-      <div class="track-info">
-        <div class="title">Tu jardín con enanitos</div>
-        <div class="artist">Roze Oficial, Max Carra, Valen, RAMKY EN LOS CONTROLES</div>
+    <div class="ranking-item">
+      <div class="ranking-number">7</div>
+      <div class="play-btn"></div>
+      <div class="song-info">
+        <div class="song-title">La Perla</div>
+        <div class="song-artist">Rosalía</div>
       </div>
-    </div>
-    <div class="ranking-right">
       <div class="indicator up"></div>
-      <button class="vote-button">Votar</button>
+      <button class="vote-btn">Votar</button>
     </div>
-  </div>
 
-</div>
+    <div class="ranking-item">
+      <div class="ranking-number">8</div>
+      <div class="play-btn"></div>
+      <div class="song-info">
+        <div class="song-title">The Fate of Ophelia</div>
+        <div class="song-artist">Taylor Swift</div>
+      </div>
+      <div class="indicator down"></div>
+      <button class="vote-btn">Votar</button>
+    </div>
+
+    <div class="ranking-item">
+      <div class="ranking-number">9</div>
+      <div class="play-btn"></div>
+      <div class="song-info">
+        <div class="song-title">Una y Otra Vez</div>
+        <div class="song-artist">Marcela Morelo y Luciano Pereyra</div>
+      </div>
+      <div class="indicator stable"></div>
+      <button class="vote-btn">Votar</button>
+    </div>
+
+    <div class="ranking-item">
+      <div class="ranking-number">10</div>
+      <div class="play-btn"></div>
+      <div class="song-info">
+        <div class="song-title">Tu jardín con enanitos</div>
+        <div class="song-artist">Roze Oficial, Max Carra, Valen, RAMKY EN LOS CONTROLES</div>
+      </div>
+      <div class="indicator up"></div>
+      <button class="vote-btn">Votar</button>
+    </div>
+
+  </div>
 </body>
 </html>
