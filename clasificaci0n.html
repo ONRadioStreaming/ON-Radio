@@ -3,399 +3,371 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ranking ON</title>
+<title>Ranking ON Radio</title>
 <style>
-  @font-face {
-    font-family: 'BenjaminGothicHeavy';
-    src: url('BenjaminGothicHeavy.woff2') format('woff2'),
-         url('BenjaminGothicHeavy.woff') format('woff');
-    font-weight: normal;
-    font-style: normal;
-  }
+@import url('https://fonts.cdnfonts.com/css/benjamin-gothic-heavy');
 
-  body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background-color: black;
-    color: white;
-  }
+body {
+  margin: 0;
+  padding: 0;
+  background: url('fondoranking2.jpg') no-repeat center top;
+  background-size: cover;
+  font-family: Arial, sans-serif;
+  color: white;
+}
 
-  /* HEADER */
-  .header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 20px 30px;
-    position: relative;
-  }
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 150px 50px 50px 50px;
+  position: relative;
+}
 
-  .header .title {
-    font-size: 1.5rem;
-    font-weight: bold;
-    display: flex;
-    align-items: center;
+.title {
+  text-align: center;
+  font-size: 3em;
+  color: #00ffff;
+  text-transform: uppercase;
+  text-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff;
+  margin-bottom: 50px;
+  position: relative;
+}
+
+.title::after {
+  content: '⬇';
+  position: absolute;
+  bottom: -40px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 2em;
+  color: #00ffff;
+}
+
+.logo {
+  position: absolute;
+  top: 20px;
+  right: 50px;
+  width: 80px;
+  height: auto;
+}
+
+.ranking-on {
+  position: absolute;
+  top: 150px;
+  left: 20px;
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  font-size: 2.5em;
+  color: #00ffff;
+  font-weight: bold;
+}
+
+.track-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.track {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(0,0,0,0.5);
+  padding: 10px 20px;
+  border-radius: 10px;
+}
+
+.track-left {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.track-number {
+  font-family: 'Benjamin Gothic Heavy', sans-serif;
+  font-size: 2.5em;
+  width: 50px;
+  text-align: center;
+}
+
+.track-number.first {
+  color: red;
+  font-size: 3em;
+}
+
+.play-button {
+  width: 40px;
+  height: 40px;
+  border: 2px solid white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.play-button::after {
+  content: '▶';
+  color: white;
+  font-size: 1em;
+  margin-left: 2px;
+}
+
+.track-info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.track-info .title {
+  font-weight: bold;
+  font-size: 1.2em;
+}
+
+.track-info .artist {
+  font-weight: normal;
+  font-size: 1em;
+}
+
+.track-right {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.indicator {
+  width: 15px;
+  height: 15px;
+  display: inline-block;
+}
+
+.indicator.up {
+  clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+  background-color: green;
+}
+
+.indicator.down {
+  clip-path: polygon(50% 100%, 0% 0%, 100% 0%);
+  background-color: red;
+}
+
+.indicator.stable {
+  width: 15px;
+  height: 15px;
+  background-color: yellow;
+}
+
+.vote-button {
+  background-color: red;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.footer {
+  text-align: center;
+  font-size: 1.2em;
+  margin-top: 50px;
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+  .container {
+    padding: 120px 20px 50px 20px;
+  }
+  .track {
+    flex-direction: column;
+    align-items: flex-start;
     gap: 10px;
   }
-
-  .header .title .arrow {
-    width: 24px;
-    height: 24px;
-    border-left: 4px solid white;
-    border-bottom: 4px solid white;
-    transform: rotate(-45deg);
-    margin-top: 5px;
-  }
-
-  .header img {
-    height: 50px;
-  }
-
-  /* Ranking ON lateral */
-  .ranking-on {
-    position: absolute;
-    top: 50px;
-    left: 30px;
-    font-size: 1.2rem;
-    font-weight: bold;
-    color: #00ace6;
-  }
-
-  /* CONTAINER */
-  .ranking-container {
-    max-width: 1080px;
-    margin: 150px auto 50px auto; /* margen superior ajustable */
-    padding: 0 20px;
-  }
-
-  .track {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px 15px;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
-    flex-wrap: wrap;
-  }
-
-  .track-left {
-    display: flex;
-    align-items: center;
-    flex: 1;
-    min-width: 0;
-  }
-
-  .track-number {
-    font-family: 'BenjaminGothicHeavy', sans-serif;
-    font-size: 2rem;
-    margin-right: 15px;
-    flex-shrink: 0;
-  }
-
-  .track-number.rank1 {
-    color: red;
-    font-size: 2.5rem;
-  }
-
-  .player-btn {
-    width: 35px;
-    height: 35px;
-    border: 2px solid white;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-right: 15px;
-    cursor: pointer;
-    flex-shrink: 0;
-  }
-
-  .player-btn:hover {
-    background-color: rgba(255,255,255,0.1);
-  }
-
-  .track-info {
-    min-width: 0;
-  }
-
-  .track-info .title {
-    font-weight: bold;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .track-info .artist {
-    font-weight: normal;
-    font-size: 0.9rem;
-    color: #ccc;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
   .track-right {
-    display: flex;
-    align-items: center;
-    flex-shrink: 0;
-    margin-left: 10px;
+    align-self: flex-end;
   }
-
-  .indicator {
-    width: 15px;
-    height: 15px;
-    margin-right: 10px;
-  }
-
-  .indicator.up {
-    clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
-    background-color: green;
-  }
-
-  .indicator.down {
-    clip-path: polygon(50% 100%, 0% 0%, 100% 0%);
-    background-color: red;
-  }
-
-  .indicator.stable {
-    width: 12px;
-    height: 12px;
-    background-color: yellow;
-    display: inline-block;
-    margin-right: 10px;
-  }
-
-  .vote-btn {
-    background-color: red;
-    color: white;
-    border: none;
-    padding: 5px 12px;
-    cursor: pointer;
-    border-radius: 5px;
-    font-weight: bold;
-  }
-
-  .vote-btn:disabled {
-    background-color: grey;
-    cursor: not-allowed;
-  }
-
-  /* FOOTER */
-  footer {
-    text-align: center;
-    padding: 20px 0;
-    font-size: 1.2rem;
-    color: #ccc;
-  }
-
-  @media (max-width: 600px) {
-    .track-left {
-      flex-basis: 70%;
-    }
-
-    .track-right {
-      flex-basis: 30%;
-      justify-content: flex-end;
-    }
-
-    .track-info .title, .track-info .artist {
-      white-space: normal;
-    }
-  }
+}
 </style>
 </head>
 <body>
+<img src="logotipo.png" class="logo" alt="Logo ON Radio">
+<div class="ranking-on">RANKING ON</div>
+<div class="container">
+  <div class="title">VOTÁ TU TEMA PREFERIDO</div>
 
-<div class="header">
-  <div class="title">
-    Votá tu tema preferido
-    <div class="arrow"></div>
+  <div class="track-list">
+
+    <div class="track">
+      <div class="track-left">
+        <div class="track-number first">1</div>
+        <div class="play-button" onclick="playTrack(1)"></div>
+        <div class="track-info">
+          <div class="title">Típica Argentina (Zum Zum Zum)</div>
+          <div class="artist">Nico Valdi x Chofer x El Lobo</div>
+        </div>
+      </div>
+      <div class="track-right">
+        <div class="indicator up"></div>
+        <button class="vote-button" onclick="voteTrack()">VOTAR</button>
+      </div>
+    </div>
+
+    <div class="track">
+      <div class="track-left">
+        <div class="track-number">2</div>
+        <div class="play-button" onclick="playTrack(2)"></div>
+        <div class="track-info">
+          <div class="title">Music Sessions Vol. 0/66</div>
+          <div class="artist">Daddy Yankee - BZRP</div>
+        </div>
+      </div>
+      <div class="track-right">
+        <div class="indicator down"></div>
+        <button class="vote-button" onclick="voteTrack()">VOTAR</button>
+      </div>
+    </div>
+
+    <div class="track">
+      <div class="track-left">
+        <div class="track-number">3</div>
+        <div class="play-button" onclick="playTrack(3)"></div>
+        <div class="track-info">
+          <div class="title">La Villa</div>
+          <div class="artist">Ryan Castro, Kapo, Gangsta</div>
+        </div>
+      </div>
+      <div class="track-right">
+        <div class="indicator stable"></div>
+        <button class="vote-button" onclick="voteTrack()">VOTAR</button>
+      </div>
+    </div>
+
+    <div class="track">
+      <div class="track-left">
+        <div class="track-number">4</div>
+        <div class="play-button" onclick="playTrack(4)"></div>
+        <div class="track-info">
+          <div class="title">Hace calor</div>
+          <div class="artist">María Becerra, El Alfa y Xross</div>
+        </div>
+      </div>
+      <div class="track-right">
+        <div class="indicator up"></div>
+        <button class="vote-button" onclick="voteTrack()">VOTAR</button>
+      </div>
+    </div>
+
+    <div class="track">
+      <div class="track-left">
+        <div class="track-number">5</div>
+        <div class="play-button" onclick="playTrack(5)"></div>
+        <div class="track-info">
+          <div class="title">Ladrón</div>
+          <div class="artist">Luck Ra, Karina, Zaira, Bauletti</div>
+        </div>
+      </div>
+      <div class="track-right">
+        <div class="indicator down"></div>
+        <button class="vote-button" onclick="voteTrack()">VOTAR</button>
+      </div>
+    </div>
+
+    <div class="track">
+      <div class="track-left">
+        <div class="track-number">6</div>
+        <div class="play-button" onclick="playTrack(6)"></div>
+        <div class="track-info">
+          <div class="title">Paisaje</div>
+          <div class="artist">Ke Personajes y Karina La Princesita</div>
+        </div>
+      </div>
+      <div class="track-right">
+        <div class="indicator stable"></div>
+        <button class="vote-button" onclick="voteTrack()">VOTAR</button>
+      </div>
+    </div>
+
+    <div class="track">
+      <div class="track-left">
+        <div class="track-number">7</div>
+        <div class="play-button" onclick="playTrack(7)"></div>
+        <div class="track-info">
+          <div class="title">La Perla</div>
+          <div class="artist">Rosalía</div>
+        </div>
+      </div>
+      <div class="track-right">
+        <div class="indicator up"></div>
+        <button class="vote-button" onclick="voteTrack()">VOTAR</button>
+      </div>
+    </div>
+
+    <div class="track">
+      <div class="track-left">
+        <div class="track-number">8</div>
+        <div class="play-button" onclick="playTrack(8)"></div>
+        <div class="track-info">
+          <div class="title">The Fate of Ophelia</div>
+          <div class="artist">Taylor Swift</div>
+        </div>
+      </div>
+      <div class="track-right">
+        <div class="indicator down"></div>
+        <button class="vote-button" onclick="voteTrack()">VOTAR</button>
+      </div>
+    </div>
+
+    <div class="track">
+      <div class="track-left">
+        <div class="track-number">9</div>
+        <div class="play-button" onclick="playTrack(9)"></div>
+        <div class="track-info">
+          <div class="title">Una y Otra Vez</div>
+          <div class="artist">Marcela Morelo y Luciano Pereyra</div>
+        </div>
+      </div>
+      <div class="track-right">
+        <div class="indicator stable"></div>
+        <button class="vote-button" onclick="voteTrack()">VOTAR</button>
+      </div>
+    </div>
+
+    <div class="track">
+      <div class="track-left">
+        <div class="track-number">10</div>
+        <div class="play-button" onclick="playTrack(10)"></div>
+        <div class="track-info">
+          <div class="title">Tu jardín con enanitos</div>
+          <div class="artist">Roze Oficial, Max Carra, Valen, RAMKY EN LOS CONTROLES</div>
+        </div>
+      </div>
+      <div class="track-right">
+        <div class="indicator up"></div>
+        <button class="vote-button" onclick="voteTrack()">VOTAR</button>
+      </div>
+    </div>
+
   </div>
-  <img src="logotipo.png" alt="Logotipo">
-  <div class="ranking-on">Ranking ON</div>
+
+  <div class="footer">www.laonradio.com.ar</div>
 </div>
-
-<div class="ranking-container">
-  <!-- TRACKS -->
-  <div class="track">
-    <div class="track-left">
-      <div class="track-number rank1">1</div>
-      <div class="player-btn" onclick="playTrack(1)">▶</div>
-      <div class="track-info">
-        <div class="title">Típica Argentina (Zum Zum Zum)</div>
-        <div class="artist">Nico Valdi x Chofer x El Lobo</div>
-      </div>
-    </div>
-    <div class="track-right">
-      <div class="indicator up"></div>
-      <button class="vote-btn" onclick="voteTrack(this,1)">Votar</button>
-    </div>
-  </div>
-
-  <!-- TRACK 2 -->
-  <div class="track">
-    <div class="track-left">
-      <div class="track-number">2</div>
-      <div class="player-btn" onclick="playTrack(2)">▶</div>
-      <div class="track-info">
-        <div class="title">Music Sessions Vol. 0/66</div>
-        <div class="artist">Daddy Yankee - BZRP</div>
-      </div>
-    </div>
-    <div class="track-right">
-      <div class="indicator down"></div>
-      <button class="vote-btn" onclick="voteTrack(this,2)">Votar</button>
-    </div>
-  </div>
-
-  <!-- TRACK 3 -->
-  <div class="track">
-    <div class="track-left">
-      <div class="track-number">3</div>
-      <div class="player-btn" onclick="playTrack(3)">▶</div>
-      <div class="track-info">
-        <div class="title">La Villa</div>
-        <div class="artist">Ryan Castro, Kapo, Gangsta</div>
-      </div>
-    </div>
-    <div class="track-right">
-      <div class="indicator stable"></div>
-      <button class="vote-btn" onclick="voteTrack(this,3)">Votar</button>
-    </div>
-  </div>
-
-  <!-- TRACK 4 -->
-  <div class="track">
-    <div class="track-left">
-      <div class="track-number">4</div>
-      <div class="player-btn" onclick="playTrack(4)">▶</div>
-      <div class="track-info">
-        <div class="title">Hace calor</div>
-        <div class="artist">María Becerra, El Alfa y Xross</div>
-      </div>
-    </div>
-    <div class="track-right">
-      <div class="indicator up"></div>
-      <button class="vote-btn" onclick="voteTrack(this,4)">Votar</button>
-    </div>
-  </div>
-
-  <!-- TRACK 5 -->
-  <div class="track">
-    <div class="track-left">
-      <div class="track-number">5</div>
-      <div class="player-btn" onclick="playTrack(5)">▶</div>
-      <div class="track-info">
-        <div class="title">Ladrón</div>
-        <div class="artist">Luck Ra, Karina, Zaira, Bauletti</div>
-      </div>
-    </div>
-    <div class="track-right">
-      <div class="indicator down"></div>
-      <button class="vote-btn" onclick="voteTrack(this,5)">Votar</button>
-    </div>
-  </div>
-
-  <!-- TRACK 6 -->
-  <div class="track">
-    <div class="track-left">
-      <div class="track-number">6</div>
-      <div class="player-btn" onclick="playTrack(6)">▶</div>
-      <div class="track-info">
-        <div class="title">Paisaje</div>
-        <div class="artist">Ke Personajes y Karina La Princesita</div>
-      </div>
-    </div>
-    <div class="track-right">
-      <div class="indicator stable"></div>
-      <button class="vote-btn" onclick="voteTrack(this,6)">Votar</button>
-    </div>
-  </div>
-
-  <!-- TRACK 7 -->
-  <div class="track">
-    <div class="track-left">
-      <div class="track-number">7</div>
-      <div class="player-btn" onclick="playTrack(7)">▶</div>
-      <div class="track-info">
-        <div class="title">La Perla</div>
-        <div class="artist">Rosalía</div>
-      </div>
-    </div>
-    <div class="track-right">
-      <div class="indicator up"></div>
-      <button class="vote-btn" onclick="voteTrack(this,7)">Votar</button>
-    </div>
-  </div>
-
-  <!-- TRACK 8 -->
-  <div class="track">
-    <div class="track-left">
-      <div class="track-number">8</div>
-      <div class="player-btn" onclick="playTrack(8)">▶</div>
-      <div class="track-info">
-        <div class="title">The Fate of Ophelia</div>
-        <div class="artist">Taylor Swift</div>
-      </div>
-    </div>
-    <div class="track-right">
-      <div class="indicator down"></div>
-      <button class="vote-btn" onclick="voteTrack(this,8)">Votar</button>
-    </div>
-  </div>
-
-  <!-- TRACK 9 -->
-  <div class="track">
-    <div class="track-left">
-      <div class="track-number">9</div>
-      <div class="player-btn" onclick="playTrack(9)">▶</div>
-      <div class="track-info">
-        <div class="title">Una y Otra Vez</div>
-        <div class="artist">Marcela Morelo y Luciano Pereyra</div>
-      </div>
-    </div>
-    <div class="track-right">
-      <div class="indicator stable"></div>
-      <button class="vote-btn" onclick="voteTrack(this,9)">Votar</button>
-    </div>
-  </div>
-
-  <!-- TRACK 10 -->
-  <div class="track">
-    <div class="track-left">
-      <div class="track-number">10</div>
-      <div class="player-btn" onclick="playTrack(10)">▶</div>
-      <div class="track-info">
-        <div class="title">Tu jardín con enanitos</div>
-        <div class="artist">Roze Oficial, Max Carra, Valen, RAMKY EN LOS CONTROLES</div>
-      </div>
-    </div>
-    <div class="track-right">
-      <div class="indicator down"></div>
-      <button class="vote-btn" onclick="voteTrack(this,10)">Votar</button>
-    </div>
-  </div>
-
-</div>
-
-<footer>
-  www.laonradio.com.ar
-</footer>
 
 <script>
-function playTrack(trackNumber){
-  alert("Reproduciendo Track #" + trackNumber);
+let voted = false;
+
+function playTrack(num) {
+  alert('Reproduciendo track número ' + num);
 }
 
-function voteTrack(button, trackNumber){
-  const today = new Date().toISOString().slice(0,10);
-  const voteKey = "vote_" + trackNumber;
-  if(localStorage.getItem(voteKey) === today){
-    alert("Ya votaste hoy este tema. Volvé mañana.");
+function voteTrack() {
+  if (voted) {
+    alert('Gracias por votar en el ranking de ON Radio. Te esperamos mañana para volver a votar.');
     return;
   }
-  localStorage.setItem(voteKey, today);
-  alert("Votaste el track #" + trackNumber);
-  button.disabled = true;
+  voted = true;
+  alert('Gracias por votar en el ranking de ON Radio. Te esperamos mañana si querés volver a votar a tu artista favorito.');
 }
 </script>
+
 </body>
 </html>
