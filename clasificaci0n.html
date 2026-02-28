@@ -3,259 +3,399 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ranking ON Radio</title>
+<title>Ranking ON</title>
 <style>
-  /* Fondo */
+  @font-face {
+    font-family: 'BenjaminGothicHeavy';
+    src: url('BenjaminGothicHeavy.woff2') format('woff2'),
+         url('BenjaminGothicHeavy.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+  }
+
   body {
     margin: 0;
-    padding: 0;
     font-family: Arial, sans-serif;
-    background: url('fondovertical1.png') no-repeat center top;
-    background-size: cover;
+    background-color: black;
     color: white;
   }
 
-  /* Contenedor de ranking */
-  .ranking-container {
-    max-width: 1486px;
-    margin: 150px auto 50px auto; /* margen superior ajustable */
-    padding: 0 50px; /* margen lateral interno */
-  }
-
-  /* Cada renglón de tema */
-  .ranking-item {
+  /* HEADER */
+  .header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 10px 0;
-    border-bottom: 1px solid rgba(255,255,255,0.2);
-    font-size: 18px;
+    padding: 20px 30px;
+    position: relative;
   }
 
-  /* Número del ranking */
-  .ranking-number {
-    width: 50px;
-    text-align: center;
+  .header .title {
+    font-size: 1.5rem;
     font-weight: bold;
-    font-size: 28px;
-  }
-  .ranking-number.first {
-    font-size: 40px;
-    color: red;
+    display: flex;
+    align-items: center;
+    gap: 10px;
   }
 
-  /* Play dentro de círculo */
-  .play-btn {
-    width: 30px;
-    height: 30px;
+  .header .title .arrow {
+    width: 24px;
+    height: 24px;
+    border-left: 4px solid white;
+    border-bottom: 4px solid white;
+    transform: rotate(-45deg);
+    margin-top: 5px;
+  }
+
+  .header img {
+    height: 50px;
+  }
+
+  /* Ranking ON lateral */
+  .ranking-on {
+    position: absolute;
+    top: 50px;
+    left: 30px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #00ace6;
+  }
+
+  /* CONTAINER */
+  .ranking-container {
+    max-width: 1080px;
+    margin: 150px auto 50px auto; /* margen superior ajustable */
+    padding: 0 20px;
+  }
+
+  .track {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 15px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    flex-wrap: wrap;
+  }
+
+  .track-left {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .track-number {
+    font-family: 'BenjaminGothicHeavy', sans-serif;
+    font-size: 2rem;
+    margin-right: 15px;
+    flex-shrink: 0;
+  }
+
+  .track-number.rank1 {
+    color: red;
+    font-size: 2.5rem;
+  }
+
+  .player-btn {
+    width: 35px;
+    height: 35px;
     border: 2px solid white;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-right: 10px;
+    margin-right: 15px;
     cursor: pointer;
-  }
-  .play-btn::after {
-    content: '';
-    display: block;
-    width: 0;
-    height: 0;
-    border-left: 10px solid white;
-    border-top: 6px solid transparent;
-    border-bottom: 6px solid transparent;
+    flex-shrink: 0;
   }
 
-  /* Contenido del tema */
-  .song-info {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
+  .player-btn:hover {
+    background-color: rgba(255,255,255,0.1);
   }
-  .song-title {
+
+  .track-info {
+    min-width: 0;
+  }
+
+  .track-info .title {
     font-weight: bold;
-  }
-  .song-artist {
-    font-weight: normal;
-    font-size: 16px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
-  /* Indicador */
-  .indicator {
-    width: 20px;
-    height: 20px;
-    margin-right: 10px;
+  .track-info .artist {
+    font-weight: normal;
+    font-size: 0.9rem;
+    color: #ccc;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .track-right {
     display: flex;
     align-items: center;
-    justify-content: center;
-  }
-  .indicator.up {
-    width: 0;
-    height: 0;
-    border-left: 8px solid transparent;
-    border-right: 8px solid transparent;
-    border-bottom: 15px solid green;
-  }
-  .indicator.down {
-    width: 0;
-    height: 0;
-    border-left: 8px solid transparent;
-    border-right: 8px solid transparent;
-    border-top: 15px solid red;
-  }
-  .indicator.stable {
-    width: 15px;
-    height: 15px;
-    background-color: yellow;
+    flex-shrink: 0;
+    margin-left: 10px;
   }
 
-  /* Botón votar */
+  .indicator {
+    width: 15px;
+    height: 15px;
+    margin-right: 10px;
+  }
+
+  .indicator.up {
+    clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+    background-color: green;
+  }
+
+  .indicator.down {
+    clip-path: polygon(50% 100%, 0% 0%, 100% 0%);
+    background-color: red;
+  }
+
+  .indicator.stable {
+    width: 12px;
+    height: 12px;
+    background-color: yellow;
+    display: inline-block;
+    margin-right: 10px;
+  }
+
   .vote-btn {
     background-color: red;
     color: white;
     border: none;
     padding: 5px 12px;
     cursor: pointer;
+    border-radius: 5px;
     font-weight: bold;
   }
 
-  /* Responsive */
-  @media (max-width: 768px) {
-    .ranking-container {
-      margin: 150px 20px 50px 20px;
+  .vote-btn:disabled {
+    background-color: grey;
+    cursor: not-allowed;
+  }
+
+  /* FOOTER */
+  footer {
+    text-align: center;
+    padding: 20px 0;
+    font-size: 1.2rem;
+    color: #ccc;
+  }
+
+  @media (max-width: 600px) {
+    .track-left {
+      flex-basis: 70%;
     }
-    .ranking-number {
-      width: 40px;
-      font-size: 24px;
+
+    .track-right {
+      flex-basis: 30%;
+      justify-content: flex-end;
     }
-    .ranking-number.first {
-      font-size: 32px;
-    }
-    .song-title {
-      font-size: 16px;
-    }
-    .song-artist {
-      font-size: 14px;
-    }
-    .vote-btn {
-      padding: 4px 8px;
-      font-size: 14px;
+
+    .track-info .title, .track-info .artist {
+      white-space: normal;
     }
   }
 </style>
 </head>
 <body>
-  <div class="ranking-container">
-    <div class="ranking-item">
-      <div class="ranking-number first">1</div>
-      <div class="play-btn"></div>
-      <div class="song-info">
-        <div class="song-title">Típica Argentina (Zum Zum Zum)</div>
-        <div class="song-artist">Nico Valdi x Chofer x El Lobo</div>
-      </div>
-      <div class="indicator up"></div>
-      <button class="vote-btn">Votar</button>
-    </div>
 
-    <div class="ranking-item">
-      <div class="ranking-number">2</div>
-      <div class="play-btn"></div>
-      <div class="song-info">
-        <div class="song-title">Music Sessions Vol. 0/66</div>
-        <div class="song-artist">Daddy Yankee - BZRP</div>
-      </div>
-      <div class="indicator down"></div>
-      <button class="vote-btn">Votar</button>
-    </div>
-
-    <div class="ranking-item">
-      <div class="ranking-number">3</div>
-      <div class="play-btn"></div>
-      <div class="song-info">
-        <div class="song-title">La Villa</div>
-        <div class="song-artist">Ryan Castro, Kapo, Gangsta</div>
-      </div>
-      <div class="indicator stable"></div>
-      <button class="vote-btn">Votar</button>
-    </div>
-
-    <div class="ranking-item">
-      <div class="ranking-number">4</div>
-      <div class="play-btn"></div>
-      <div class="song-info">
-        <div class="song-title">Hace calor</div>
-        <div class="song-artist">María Becerra, El Alfa y Xross</div>
-      </div>
-      <div class="indicator up"></div>
-      <button class="vote-btn">Votar</button>
-    </div>
-
-    <div class="ranking-item">
-      <div class="ranking-number">5</div>
-      <div class="play-btn"></div>
-      <div class="song-info">
-        <div class="song-title">Ladrón</div>
-        <div class="song-artist">Luck Ra, Karina, Zaira, Bauletti</div>
-      </div>
-      <div class="indicator down"></div>
-      <button class="vote-btn">Votar</button>
-    </div>
-
-    <div class="ranking-item">
-      <div class="ranking-number">6</div>
-      <div class="play-btn"></div>
-      <div class="song-info">
-        <div class="song-title">Paisaje</div>
-        <div class="song-artist">Ke Personajes y Karina La Princesita</div>
-      </div>
-      <div class="indicator stable"></div>
-      <button class="vote-btn">Votar</button>
-    </div>
-
-    <div class="ranking-item">
-      <div class="ranking-number">7</div>
-      <div class="play-btn"></div>
-      <div class="song-info">
-        <div class="song-title">La Perla</div>
-        <div class="song-artist">Rosalía</div>
-      </div>
-      <div class="indicator up"></div>
-      <button class="vote-btn">Votar</button>
-    </div>
-
-    <div class="ranking-item">
-      <div class="ranking-number">8</div>
-      <div class="play-btn"></div>
-      <div class="song-info">
-        <div class="song-title">The Fate of Ophelia</div>
-        <div class="song-artist">Taylor Swift</div>
-      </div>
-      <div class="indicator down"></div>
-      <button class="vote-btn">Votar</button>
-    </div>
-
-    <div class="ranking-item">
-      <div class="ranking-number">9</div>
-      <div class="play-btn"></div>
-      <div class="song-info">
-        <div class="song-title">Una y Otra Vez</div>
-        <div class="song-artist">Marcela Morelo y Luciano Pereyra</div>
-      </div>
-      <div class="indicator stable"></div>
-      <button class="vote-btn">Votar</button>
-    </div>
-
-    <div class="ranking-item">
-      <div class="ranking-number">10</div>
-      <div class="play-btn"></div>
-      <div class="song-info">
-        <div class="song-title">Tu jardín con enanitos</div>
-        <div class="song-artist">Roze Oficial, Max Carra, Valen, RAMKY EN LOS CONTROLES</div>
-      </div>
-      <div class="indicator up"></div>
-      <button class="vote-btn">Votar</button>
-    </div>
-
+<div class="header">
+  <div class="title">
+    Votá tu tema preferido
+    <div class="arrow"></div>
   </div>
+  <img src="logotipo.png" alt="Logotipo">
+  <div class="ranking-on">Ranking ON</div>
+</div>
+
+<div class="ranking-container">
+  <!-- TRACKS -->
+  <div class="track">
+    <div class="track-left">
+      <div class="track-number rank1">1</div>
+      <div class="player-btn" onclick="playTrack(1)">▶</div>
+      <div class="track-info">
+        <div class="title">Típica Argentina (Zum Zum Zum)</div>
+        <div class="artist">Nico Valdi x Chofer x El Lobo</div>
+      </div>
+    </div>
+    <div class="track-right">
+      <div class="indicator up"></div>
+      <button class="vote-btn" onclick="voteTrack(this,1)">Votar</button>
+    </div>
+  </div>
+
+  <!-- TRACK 2 -->
+  <div class="track">
+    <div class="track-left">
+      <div class="track-number">2</div>
+      <div class="player-btn" onclick="playTrack(2)">▶</div>
+      <div class="track-info">
+        <div class="title">Music Sessions Vol. 0/66</div>
+        <div class="artist">Daddy Yankee - BZRP</div>
+      </div>
+    </div>
+    <div class="track-right">
+      <div class="indicator down"></div>
+      <button class="vote-btn" onclick="voteTrack(this,2)">Votar</button>
+    </div>
+  </div>
+
+  <!-- TRACK 3 -->
+  <div class="track">
+    <div class="track-left">
+      <div class="track-number">3</div>
+      <div class="player-btn" onclick="playTrack(3)">▶</div>
+      <div class="track-info">
+        <div class="title">La Villa</div>
+        <div class="artist">Ryan Castro, Kapo, Gangsta</div>
+      </div>
+    </div>
+    <div class="track-right">
+      <div class="indicator stable"></div>
+      <button class="vote-btn" onclick="voteTrack(this,3)">Votar</button>
+    </div>
+  </div>
+
+  <!-- TRACK 4 -->
+  <div class="track">
+    <div class="track-left">
+      <div class="track-number">4</div>
+      <div class="player-btn" onclick="playTrack(4)">▶</div>
+      <div class="track-info">
+        <div class="title">Hace calor</div>
+        <div class="artist">María Becerra, El Alfa y Xross</div>
+      </div>
+    </div>
+    <div class="track-right">
+      <div class="indicator up"></div>
+      <button class="vote-btn" onclick="voteTrack(this,4)">Votar</button>
+    </div>
+  </div>
+
+  <!-- TRACK 5 -->
+  <div class="track">
+    <div class="track-left">
+      <div class="track-number">5</div>
+      <div class="player-btn" onclick="playTrack(5)">▶</div>
+      <div class="track-info">
+        <div class="title">Ladrón</div>
+        <div class="artist">Luck Ra, Karina, Zaira, Bauletti</div>
+      </div>
+    </div>
+    <div class="track-right">
+      <div class="indicator down"></div>
+      <button class="vote-btn" onclick="voteTrack(this,5)">Votar</button>
+    </div>
+  </div>
+
+  <!-- TRACK 6 -->
+  <div class="track">
+    <div class="track-left">
+      <div class="track-number">6</div>
+      <div class="player-btn" onclick="playTrack(6)">▶</div>
+      <div class="track-info">
+        <div class="title">Paisaje</div>
+        <div class="artist">Ke Personajes y Karina La Princesita</div>
+      </div>
+    </div>
+    <div class="track-right">
+      <div class="indicator stable"></div>
+      <button class="vote-btn" onclick="voteTrack(this,6)">Votar</button>
+    </div>
+  </div>
+
+  <!-- TRACK 7 -->
+  <div class="track">
+    <div class="track-left">
+      <div class="track-number">7</div>
+      <div class="player-btn" onclick="playTrack(7)">▶</div>
+      <div class="track-info">
+        <div class="title">La Perla</div>
+        <div class="artist">Rosalía</div>
+      </div>
+    </div>
+    <div class="track-right">
+      <div class="indicator up"></div>
+      <button class="vote-btn" onclick="voteTrack(this,7)">Votar</button>
+    </div>
+  </div>
+
+  <!-- TRACK 8 -->
+  <div class="track">
+    <div class="track-left">
+      <div class="track-number">8</div>
+      <div class="player-btn" onclick="playTrack(8)">▶</div>
+      <div class="track-info">
+        <div class="title">The Fate of Ophelia</div>
+        <div class="artist">Taylor Swift</div>
+      </div>
+    </div>
+    <div class="track-right">
+      <div class="indicator down"></div>
+      <button class="vote-btn" onclick="voteTrack(this,8)">Votar</button>
+    </div>
+  </div>
+
+  <!-- TRACK 9 -->
+  <div class="track">
+    <div class="track-left">
+      <div class="track-number">9</div>
+      <div class="player-btn" onclick="playTrack(9)">▶</div>
+      <div class="track-info">
+        <div class="title">Una y Otra Vez</div>
+        <div class="artist">Marcela Morelo y Luciano Pereyra</div>
+      </div>
+    </div>
+    <div class="track-right">
+      <div class="indicator stable"></div>
+      <button class="vote-btn" onclick="voteTrack(this,9)">Votar</button>
+    </div>
+  </div>
+
+  <!-- TRACK 10 -->
+  <div class="track">
+    <div class="track-left">
+      <div class="track-number">10</div>
+      <div class="player-btn" onclick="playTrack(10)">▶</div>
+      <div class="track-info">
+        <div class="title">Tu jardín con enanitos</div>
+        <div class="artist">Roze Oficial, Max Carra, Valen, RAMKY EN LOS CONTROLES</div>
+      </div>
+    </div>
+    <div class="track-right">
+      <div class="indicator down"></div>
+      <button class="vote-btn" onclick="voteTrack(this,10)">Votar</button>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  www.laonradio.com.ar
+</footer>
+
+<script>
+function playTrack(trackNumber){
+  alert("Reproduciendo Track #" + trackNumber);
+}
+
+function voteTrack(button, trackNumber){
+  const today = new Date().toISOString().slice(0,10);
+  const voteKey = "vote_" + trackNumber;
+  if(localStorage.getItem(voteKey) === today){
+    alert("Ya votaste hoy este tema. Volvé mañana.");
+    return;
+  }
+  localStorage.setItem(voteKey, today);
+  alert("Votaste el track #" + trackNumber);
+  button.disabled = true;
+}
+</script>
 </body>
 </html>
