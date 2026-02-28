@@ -1,197 +1,221 @@
-<!DOCTYPE html><html lang="es">
+<!DOCTYPE html>
+<html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Ranking ON Radio</title>
 <style>
-  body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: url('fondoranking.jpg') no-repeat center center fixed;
-    background-size: cover;
-    color: white;
-  }
-  header {
-    text-align: center;
-    margin-top: 20px;
-  }
-  header img {
-    width: 180px;
-  }
-  h1 {
-    font-size: 2em;
-    font-weight: bold;
-    margin: 10px 0;
-  }
-  .tema {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: rgba(0,0,0,0.6);
-    margin: 10px auto;
-    padding: 10px;
-    max-width: 900px;
-    border-radius: 8px;
-    flex-wrap: wrap;
-  }
-  .info-tema {
-    display: flex;
-    align-items: center;
-    flex: 1 1 300px;
-  }
-  .info-tema img {
-    width: 80px;
-    height: 80px;
-    object-fit: cover;
-    margin-right: 15px;
-    border-radius: 5px;
-  }
-  .info-texto {
-    display: flex;
-    flex-direction: column;
-  }
-  .info-texto .nombre {
-    font-weight: bold;
-    font-size: 1.1em;
-  }
-  .reproductor-boton {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    flex: 1 1 200px;
-    margin-top: 10px;
-  }
-  audio {
-    width: 200px;
-  }
-  button {
-    background-color: red;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    cursor: pointer;
-    border-radius: 5px;
-    font-weight: bold;
-  }
-  footer {
-    background: rgba(0,0,0,0.7);
-    text-align: center;
-    padding: 15px 10px;
-    margin-top: 20px;
-    font-size: 0.9em;
-  }
-  @media (max-width: 600px) {
-    .tema {
-      flex-direction: column;
-      max-width: 95%;
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: #000; /* fondo negro */
     }
-    .reproductor-boton {
-      width: 100%;
-      justify-content: space-between;
+
+    .ranking-container {
+        width: 800px;
+        margin: 40px auto;
+        padding: 20px;
+        background: url('fondo_ranking.png') no-repeat center center;
+        background-size: cover;
+        border-radius: 10px;
+        color: white;
     }
-    audio {
-      width: 70%;
+
+    .ranking-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 15px;
+        margin: 10px 0;
+        border-bottom: 1px solid rgba(255,255,255,0.2);
     }
-  }
+
+    .ranking-item:nth-child(1) {
+        background-color: rgba(255,0,0,0.3); /* destacar primer lugar */
+        font-weight: bold;
+    }
+
+    .rank-num {
+        width: 30px;
+        text-align: center;
+        font-size: 18px;
+    }
+
+    .indicator {
+        width: 20px;
+        height: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+    }
+
+    .up { color: limegreen; }
+    .down { color: red; }
+    .stable { color: yellow; }
+
+    .play-button {
+        width: 25px;
+        height: 25px;
+        background-color: white;
+        clip-path: polygon(0% 0%, 0% 100%, 100% 50%);
+        cursor: pointer;
+        margin: 0 15px;
+    }
+
+    .song-info {
+        flex: 1;
+        margin-left: 10px;
+    }
+
+    .song-title {
+        font-size: 16px;
+    }
+
+    .song-artist {
+        font-size: 14px;
+        color: #ccc;
+    }
+
+    .vote-button {
+        padding: 6px 12px;
+        border: none;
+        border-radius: 4px;
+        background-color: #ff0000;
+        color: white;
+        cursor: pointer;
+        font-weight: bold;
+    }
+
+    .vote-button:disabled {
+        background-color: #555;
+        cursor: not-allowed;
+    }
 </style>
 </head>
 <body>
-<header>
-  <img src="logotipo.png" alt="Logo ON Radio">
-  <h1>Votá en el ranking ON</h1>
-</header>
-<main id="ranking"></main>
-<footer>
-  Derechos reservados a ON Radio<br>
-  Dale ON a la música que más te gusta!
-</footer><!-- Firebase --><script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
-import { getDatabase, ref, get, child, update } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
+<div class="ranking-container">
 
-const firebaseConfig = {
-  apiKey: "AIzaSyC8XXef5k8hLmNL8ufIJsc7Sx5KTlRFdH8",
-  authDomain: "on-radio-ranking.firebaseapp.com",
-  databaseURL: "https://on-radio-ranking-default-rtdb.firebaseio.com",
-  projectId: "on-radio-ranking",
-  storageBucket: "on-radio-ranking.firebasestorage.app",
-  messagingSenderId: "311635352358",
-  appId: "1:311635352358:web:257ff4821987f07d31ffe7"
-};
+  <!-- Item 1 -->
+  <div class="ranking-item">
+    <div class="rank-num">1</div>
+    <div class="indicator up">&#9650;</div>
+    <div class="play-button"></div>
+    <div class="song-info">
+        <div class="song-title">SI TE VAS</div>
+        <div class="song-artist">Mauricio Jade</div>
+    </div>
+    <button class="vote-button">Votar</button>
+  </div>
 
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
-const rankingContainer = document.getElementById('ranking');
+  <!-- Item 2 -->
+  <div class="ranking-item">
+    <div class="rank-num">2</div>
+    <div class="indicator down">&#9660;</div>
+    <div class="play-button"></div>
+    <div class="song-info">
+        <div class="song-title">TÚ NO VUELVES</div>
+        <div class="song-artist">Luis Pedraza</div>
+    </div>
+    <button class="vote-button">Votar</button>
+  </div>
 
-// Mostrar mensaje de votación solo una vez por día
-function canVoteToday(temaKey) {
-  const lastVote = localStorage.getItem('voto_' + temaKey);
-  if (!lastVote) return true;
-  const today = new Date().toDateString();
-  return lastVote !== today;
-}
+  <!-- Item 3 -->
+  <div class="ranking-item">
+    <div class="rank-num">3</div>
+    <div class="indicator stable">&#9654;</div>
+    <div class="play-button"></div>
+    <div class="song-info">
+        <div class="song-title">FERIADO</div>
+        <div class="song-artist">Akinorite & DaBock</div>
+    </div>
+    <button class="vote-button">Votar</button>
+  </div>
 
-function markVoted(temaKey) {
-  const today = new Date().toDateString();
-  localStorage.setItem('voto_' + temaKey, today);
-}
+  <!-- Item 4 -->
+  <div class="ranking-item">
+    <div class="rank-num">4</div>
+    <div class="indicator up">&#9650;</div>
+    <div class="play-button"></div>
+    <div class="song-info">
+        <div class="song-title">ME ELEVA</div>
+        <div class="song-artist">Yahis</div>
+    </div>
+    <button class="vote-button">Votar</button>
+  </div>
 
-// Cargar temas desde Firebase
-async function cargarTemas() {
-  const dbRef = ref(db);
-  try {
-    const snapshot = await get(child(dbRef, 'temas'));
-    if (snapshot.exists()) {
-      let temas = Object.entries(snapshot.val());
-      // Aleatorizar orden
-      temas.sort(() => Math.random() - 0.5);
-      temas.forEach(([key, tema]) => {
-        const temaDiv = document.createElement('div');
-        temaDiv.className = 'tema';
+  <!-- Item 5 -->
+  <div class="ranking-item">
+    <div class="rank-num">5</div>
+    <div class="indicator down">&#9660;</div>
+    <div class="play-button"></div>
+    <div class="song-info">
+        <div class="song-title">INSTINTO ANIMAL</div>
+        <div class="song-artist">Nico Ruiz</div>
+    </div>
+    <button class="vote-button">Votar</button>
+  </div>
 
-        temaDiv.innerHTML = `
-          <div class="info-tema">
-            <img src="${tema.imagen}" alt="${tema.nombre}">
-            <div class="info-texto">
-              <span class="nombre">${tema.nombre}</span>
-              <span class="artista">${tema.artista}</span>
-            </div>
-          </div>
-          <div class="reproductor-boton">
-            <audio controls>
-              <source src="${tema.audio}" type="audio/mpeg">
-              Tu navegador no soporta audio.
-            </audio>
-            <button onclick="votarTema('${key}')">Votar</button>
-          </div>
-        `;
+  <!-- Item 6 -->
+  <div class="ranking-item">
+    <div class="rank-num">6</div>
+    <div class="indicator stable">&#9654;</div>
+    <div class="play-button"></div>
+    <div class="song-info">
+        <div class="song-title">CARINITO</div>
+        <div class="song-artist">Cristóbal Gacitúa</div>
+    </div>
+    <button class="vote-button">Votar</button>
+  </div>
 
-        rankingContainer.appendChild(temaDiv);
-      });
-    } else {
-      rankingContainer.innerHTML = '<p>No hay temas cargados.</p>';
-    }
-  } catch (error) {
-    console.error(error);
-  }
-}
+  <!-- Item 7 -->
+  <div class="ranking-item">
+    <div class="rank-num">7</div>
+    <div class="indicator up">&#9650;</div>
+    <div class="play-button"></div>
+    <div class="song-info">
+        <div class="song-title">CASAMIENTO</div>
+        <div class="song-artist">Nata!</div>
+    </div>
+    <button class="vote-button">Votar</button>
+  </div>
 
-async function votarTema(temaKey) {
-  if (!canVoteToday(temaKey)) {
-    alert('Ya votaste este tema hoy. Volvé mañana para votar otra vez.');
-    return;
-  }
-  try {
-    const temaRef = ref(db, 'temas/' + temaKey + '/votos');
-    const snapshot = await get(temaRef);
-    const votosActuales = snapshot.exists() ? snapshot.val() : 0;
-    await update(ref(db, 'temas/' + temaKey), { votos: votosActuales + 1 });
-    markVoted(temaKey);
-    alert('Gracias por votar tu tema preferido.\nRecordá que podés votar una sola vez por día.\nVolvé mañana para votar otra vez.');
-  } catch (error) {
-    console.error(error);
-  }
-}
+  <!-- Item 8 -->
+  <div class="ranking-item">
+    <div class="rank-num">8</div>
+    <div class="indicator down">&#9660;</div>
+    <div class="play-button"></div>
+    <div class="song-info">
+        <div class="song-title">ERES</div>
+        <div class="song-artist">Juan Ángel</div>
+    </div>
+    <button class="vote-button">Votar</button>
+  </div>
 
-cargarTemas();
-</script></body>
+  <!-- Item 9 -->
+  <div class="ranking-item">
+    <div class="rank-num">9</div>
+    <div class="indicator stable">&#9654;</div>
+    <div class="play-button"></div>
+    <div class="song-info">
+        <div class="song-title">VEN A MÍ</div>
+        <div class="song-artist">Tani.st4r</div>
+    </div>
+    <button class="vote-button">Votar</button>
+  </div>
+
+  <!-- Item 10 -->
+  <div class="ranking-item">
+    <div class="rank-num">10</div>
+    <div class="indicator down">&#9660;</div>
+    <div class="play-button"></div>
+    <div class="song-info">
+        <div class="song-title">MI VIDA ANTES DE TI</div>
+        <div class="song-artist">Duo Miel Canela</div>
+    </div>
+    <button class="vote-button">Votar</button>
+  </div>
+
+</div>
+</body>
 </html>
