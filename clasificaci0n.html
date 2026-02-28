@@ -10,113 +10,100 @@
       --cyan:#18e0ff;
       --red:#e60000;
       --glass: rgba(0,0,0,.45);
-      --glass2: rgba(0,0,0,.55);
       --text:#ffffff;
-      --muted: rgba(255,255,255,.75);
+      --muted: rgba(255,255,255,.78);
     }
-
     *{ box-sizing:border-box; }
     html,body{ height:100%; }
     body{
       margin:0;
       font-family: Arial, Helvetica, sans-serif;
       color: var(--text);
-      background:#000;
-      /* Fondo que vos ya subiste al repo */
-      background-image: url("fondoranking2.jpg");
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      background-attachment: fixed;
+      background:#000 url("fondoranking2.jpg") center/cover no-repeat fixed;
     }
 
-    /* Contenedor general */
-    .wrap{
-      min-height:100vh;
-      display:flex;
-      flex-direction:column;
-    }
+    .wrap{ min-height:100vh; display:flex; flex-direction:column; }
 
-    /* Header */
+    /* Diagnóstico */
+    .diag{
+      position:fixed;
+      top:10px;
+      left:10px;
+      z-index:9999;
+      max-width:min(520px, calc(100vw - 20px));
+      background:rgba(0,0,0,.65);
+      border:1px solid rgba(255,255,255,.15);
+      border-radius:10px;
+      padding:10px 12px;
+      font-size:12px;
+      line-height:1.25;
+      backdrop-filter: blur(4px);
+      display:none;
+      white-space:pre-wrap;
+    }
+    .diag.show{ display:block; }
+    .diag b{ color: var(--cyan); }
+
     .topbar{
-      position: sticky;
-      top: 0;
-      z-index: 10;
-      padding: 14px 14px 10px;
+      position: sticky; top: 0; z-index: 10;
+      padding: 16px 14px 8px;
       background: linear-gradient(to bottom, rgba(0,0,0,.65), rgba(0,0,0,0));
       backdrop-filter: blur(2px);
     }
-
     .toprow{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
+      display:flex; align-items:center; justify-content:space-between; gap:12px;
     }
-
-    .logo{
-      width:86px;
-      height:auto;
-      filter: drop-shadow(0 2px 8px rgba(0,0,0,.6));
-      flex: 0 0 auto;
-    }
-
-    .titlebox{
-      flex:1 1 auto;
-      text-align:center;
-      line-height:1.05;
-      padding: 6px 8px;
-    }
-
+    .titlebox{ flex:1 1 auto; text-align:center; }
     .title{
-      font-weight: 900;
-      letter-spacing: 2px;
-      text-transform: uppercase;
+      font-weight:900; letter-spacing:2px; text-transform:uppercase;
       color: var(--cyan);
-      text-shadow:
-        0 0 8px rgba(24,224,255,.45),
-        0 0 16px rgba(24,224,255,.25);
-      font-size: clamp(20px, 4vw, 44px);
+      text-shadow: 0 0 10px rgba(24,224,255,.35), 0 0 20px rgba(24,224,255,.22);
+      font-size: clamp(22px, 4.2vw, 46px);
+      margin:0;
     }
 
-    /* Flecha alineada a la columna de VOTAR */
+    /* Flecha: a la columna de VOTAR */
     .arrow-row{
       display:flex;
       justify-content:flex-end;
-      padding-right: 16px; /* ajusta la “columna votar” */
+      padding-right: 24px;
       margin-top: 6px;
     }
     .arrow{
-      width: 0;
-      height: 0;
-      border-left: 10px solid transparent;
-      border-right: 10px solid transparent;
-      border-top: 18px solid var(--cyan);
+      width:0;height:0;
+      border-left:10px solid transparent;
+      border-right:10px solid transparent;
+      border-top:18px solid var(--cyan);
       filter: drop-shadow(0 0 8px rgba(24,224,255,.35));
-      opacity:.9;
+      opacity:.95;
     }
 
-    /* Ranking vertical decorativo */
+    .logo{
+      width:86px; height:auto;
+      filter: drop-shadow(0 2px 8px rgba(0,0,0,.6));
+      flex:0 0 auto;
+    }
+
+    /* Ranking vertical */
     .side-ranking{
       position: fixed;
-      left: 8px;
-      top: 140px;
+      left: 10px;
+      top: 150px;
       writing-mode: vertical-rl;
       transform: rotate(180deg);
       font-weight: 900;
       letter-spacing: 2px;
-      color: rgba(24,224,255,.6);
-      text-shadow: 0 0 12px rgba(24,224,255,.25);
+      color: rgba(24,224,255,.55);
+      text-shadow: 0 0 12px rgba(24,224,255,.22);
       user-select:none;
       pointer-events:none;
       font-size: 28px;
     }
 
-    /* Lista */
     .list{
       width: min(1100px, 100%);
       margin: 0 auto;
-      padding: 12px 12px 80px;
+      padding: 10px 12px 90px;
     }
 
     .row{
@@ -131,16 +118,20 @@
       border: 1px solid rgba(255,255,255,.08);
       box-shadow: 0 10px 30px rgba(0,0,0,.35);
     }
-
-    /* Top 1 destacado */
     .row.top1{
       background: linear-gradient(90deg, rgba(230,0,0,.22), rgba(0,0,0,.48));
       border-color: rgba(230,0,0,.25);
     }
 
-    /* Número */
+    /* Número con “cuerpo” (si la tipografía no existe, cae a Arial Black) */
+    @font-face{
+      font-family: "Benjamin Gothic Heavy";
+      src: local("Benjamin Gothic Heavy");
+      font-display: swap;
+    }
     .pos{
       text-align:center;
+      font-family: "Benjamin Gothic Heavy", "Arial Black", Arial, sans-serif;
       font-weight:900;
       font-size: 28px;
       color:#fff;
@@ -152,59 +143,31 @@
       text-shadow: 0 0 10px rgba(230,0,0,.35);
     }
 
-    /* Play */
     .playbtn{
-      width: 44px;
-      height: 44px;
+      width: 44px; height: 44px;
       border-radius: 999px;
       border: 2px solid rgba(255,255,255,.45);
       background: rgba(0,0,0,.2);
-      display:grid;
-      place-items:center;
+      display:grid; place-items:center;
       cursor:pointer;
       transition: transform .08s ease, border-color .15s ease;
       user-select:none;
     }
     .playbtn:hover{ transform: scale(1.03); border-color: rgba(24,224,255,.7); }
     .playicon{
-      width: 0; height: 0;
-      border-left: 12px solid rgba(255,255,255,.9);
+      width:0;height:0;
+      border-left: 12px solid rgba(255,255,255,.92);
       border-top: 7px solid transparent;
       border-bottom: 7px solid transparent;
-      margin-left: 2px;
+      margin-left:2px;
     }
-    .pauseicon{
-      width: 14px;
-      height: 14px;
-      display:flex;
-      gap:4px;
-    }
-    .pauseicon span{
-      display:block;
-      width:5px;
-      height:14px;
-      background: rgba(255,255,255,.9);
-    }
+    .pauseicon{ width:14px;height:14px; display:flex; gap:4px; }
+    .pauseicon span{ width:5px;height:14px; background: rgba(255,255,255,.92); display:block; }
 
-    /* Texto */
-    .meta .song{
-      font-weight: 800;
-      font-size: 16px;
-      letter-spacing:.3px;
-    }
-    .meta .artist{
-      font-size: 13px;
-      color: var(--muted);
-      margin-top: 4px;
-    }
+    .meta .song{ font-weight:900; font-size:16px; }
+    .meta .artist{ font-size:13px; color: var(--muted); margin-top:4px; }
 
-    /* Indicador */
-    .trend{
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      height: 24px;
-    }
+    .trend{ display:flex; justify-content:center; align-items:center; height:24px; }
     .tri-up{
       width:0;height:0;
       border-left: 8px solid transparent;
@@ -220,64 +183,54 @@
       filter: drop-shadow(0 0 6px rgba(255,59,59,.25));
     }
     .sq-stable{
-      width: 12px;
-      height: 12px;
-      background: #ffd500;
-      border-radius: 3px;
+      width:12px;height:12px;
+      background:#ffd500;
+      border-radius:3px;
       filter: drop-shadow(0 0 6px rgba(255,213,0,.25));
     }
 
-    /* Botón Votar */
     .vote{
       justify-self:end;
-      width: 108px;
-      height: 40px;
-      border-radius: 10px;
-      border: 0;
+      width:108px; height:40px;
+      border-radius:10px;
+      border:0;
       background: var(--red);
-      color: #fff;
+      color:#fff;
       font-weight: 900;
       letter-spacing: 1px;
       cursor:pointer;
       box-shadow: 0 10px 22px rgba(230,0,0,.25);
     }
-    .vote:disabled{
-      opacity:.55;
-      cursor:not-allowed;
-      box-shadow:none;
-    }
+    .vote:disabled{ opacity:.55; cursor:not-allowed; box-shadow:none; }
 
-    /* Footer */
     .footer{
       margin-top:auto;
       padding: 12px 12px 16px;
       text-align:center;
       background: linear-gradient(to top, rgba(0,0,0,.65), rgba(0,0,0,0));
       color: rgba(255,255,255,.85);
-      font-weight: 700;
+      font-weight: 800;
       letter-spacing: .5px;
     }
 
-    /* Mobile ajustes */
     @media (max-width: 520px){
       .logo{ width:72px; }
-      .row{
-        grid-template-columns: 56px 50px 1fr 26px 96px;
-        padding: 10px 10px;
-      }
+      .row{ grid-template-columns: 56px 50px 1fr 26px 96px; padding:10px; }
       .vote{ width:96px; }
-      .side-ranking{ font-size: 22px; top: 125px; }
-      .arrow-row{ padding-right: 10px; }
+      .side-ranking{ font-size: 22px; top: 135px; }
+      .arrow-row{ padding-right: 14px; }
     }
   </style>
 </head>
 
 <body>
+  <div id="diag" class="diag"></div>
+
   <div class="wrap">
     <div class="topbar">
       <div class="toprow">
         <div class="titlebox">
-          <div class="title">VOTÁ TU TEMA PREFERIDO</div>
+          <h1 class="title">VOTÁ TU TEMA PREFERIDO</h1>
           <div class="arrow-row"><div class="arrow" title="Votá acá abajo"></div></div>
         </div>
         <img class="logo" src="logotipo.png" alt="ON Radio">
@@ -286,20 +239,40 @@
 
     <div class="side-ranking">RANKING ON</div>
 
-    <main class="list" id="lista">
-      <!-- Se llena por JS -->
-    </main>
+    <main class="list" id="lista"></main>
 
     <footer class="footer">www.laonradio.com.ar</footer>
   </div>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
-    import {
-      getDatabase, ref, get, runTransaction
-    } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
+  <!-- Firebase compat (sin módulos) -->
+  <script src="https://www.gstatic.com/firebasejs/12.9.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/12.9.0/firebase-database-compat.js"></script>
 
-    // ✅ Tu config (la misma que me pasaste)
+  <script>
+    const diag = document.getElementById("diag");
+    function logDiag(msg){
+      diag.classList.add("show");
+      diag.textContent += msg + "\n";
+    }
+
+    // Anti-cache (para que GitHub Pages no te muestre “lo viejo”)
+    const CACHE_BUSTER = Date.now();
+
+    // 1 voto por día TOTAL (no por tema)
+    const LS_KEY_DATE  = "onradio_vote_date";
+    const LS_KEY_TRACK = "onradio_vote_track";
+
+    function todayKey(){
+      const d = new Date();
+      return d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0") + "-" + String(d.getDate()).padStart(2,"0");
+    }
+    function hasVotedToday(){ return localStorage.getItem(LS_KEY_DATE) === todayKey(); }
+    function setVoted(trackId){
+      localStorage.setItem(LS_KEY_DATE, todayKey());
+      localStorage.setItem(LS_KEY_TRACK, trackId);
+    }
+
+    // Tu config
     const firebaseConfig = {
       apiKey: "AIzaSyC8XXef5k8hLmNL8ufIJsc7Sx5KTlRFdH8",
       authDomain: "on-radio-ranking.firebaseapp.com",
@@ -310,84 +283,17 @@
       appId: "1:311635352358:web:257ff4821987f07d31ffe7"
     };
 
-    const app = initializeApp(firebaseConfig);
-    const db  = getDatabase(app);
-
-    // ✅ Anti-cache para GitHub Pages (evita “sigue igual” por caché)
-    const CACHE_BUSTER = Date.now();
-
-    // 1 voto por día TOTAL
-    const LS_KEY_DATE  = "onradio_vote_date";
-    const LS_KEY_TRACK = "onradio_vote_track";
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
 
     const listaEl = document.getElementById("lista");
 
-    // Manejo de audio (uno a la vez)
+    // Audio: uno a la vez
     let currentAudio = null;
-    let currentBtn   = null;
-
-    function todayKey(){
-      const d = new Date();
-      const yyyy = d.getFullYear();
-      const mm = String(d.getMonth()+1).padStart(2,"0");
-      const dd = String(d.getDate()).padStart(2,"0");
-      return ${yyyy}-${mm}-${dd};
-    }
-
-    function hasVotedToday(){
-      return localStorage.getItem(LS_KEY_DATE) === todayKey();
-    }
-
-    function votedTrackToday(){
-      if(!hasVotedToday()) return null;
-      return localStorage.getItem(LS_KEY_TRACK);
-    }
-
-    function setVoted(trackId){
-      localStorage.setItem(LS_KEY_DATE, todayKey());
-      localStorage.setItem(LS_KEY_TRACK, trackId);
-    }
-
-    // Detecta si tus datos están en /temas o en raíz
-    async function loadTemasSmart(){
-      // Intento 1: /temas
-      const temasSnap = await get(ref(db, "temas"));
-      if (temasSnap.exists() && typeof temasSnap.val() === "object") {
-        const v = temasSnap.val();
-        // Si adentro hay claves tipo hacecalor, tipica, etc.
-        if (Object.keys(v).length > 0) return { basePath: "temas", data: v };
-      }
-
-      // Intento 2: raíz
-      const rootSnap = await get(ref(db, "/"));
-      if (rootSnap.exists() && typeof rootSnap.val() === "object") {
-        const v = rootSnap.val();
-        // Filtra solo objetos que parecen “tema” (tienen audio y nombre o artista)
-        const filtered = {};
-        for (const [k,val] of Object.entries(v)) {
-          if (val && typeof val === "object" && ("audio" in val) && ("nombre" in val || "artista" in val)) {
-            filtered[k] = val;
-          }
-        }
-        if (Object.keys(filtered).length > 0) return { basePath: "", data: filtered };
-      }
-
-      return { basePath: "temas", data: {} };
-    }
-
-    function normalizeTema(id, t){
-      return {
-        id,
-        nombre: (t?.nombre ?? id).toString(),
-        artista: (t?.artista ?? "").toString(),
-        audio: (t?.audio ?? "").toString(),
-        votos: Number(t?.votos ?? 0)
-      };
-    }
+    let currentReset = null;
 
     function trendIcon(pos){
-      // Demo: alterna para que veas los 3 estados.
-      // Después lo cambiamos a “comparar ranking anterior” si querés.
+      // placeholder visual (después lo hacemos real con histórico si querés)
       if (pos % 3 === 1) return "up";
       if (pos % 3 === 2) return "down";
       return "stable";
@@ -397,29 +303,60 @@
       const d = document.createElement("div");
       d.className = "trend";
       if(kind === "up"){
-        const x = document.createElement("div");
-        x.className = "tri-up";
-        d.appendChild(x);
+        const x = document.createElement("div"); x.className = "tri-up"; d.appendChild(x);
       } else if(kind === "down"){
-        const x = document.createElement("div");
-        x.className = "tri-down";
-        d.appendChild(x);
+        const x = document.createElement("div"); x.className = "tri-down"; d.appendChild(x);
       } else {
-        const x = document.createElement("div");
-        x.className = "sq-stable";
-        d.appendChild(x);
+        const x = document.createElement("div"); x.className = "sq-stable"; d.appendChild(x);
       }
       return d;
+    }
+
+    function normalizeTema(id, t){
+      return {
+        id,
+        nombre: String(t && t.nombre ? t.nombre : id),
+        artista: String(t && t.artista ? t.artista : ""),
+        audio: String(t && t.audio ? t.audio : ""),
+        votos: Number(t && t.votos != null ? t.votos : 0)
+      };
+    }
+
+    async function loadTemasSmart(){
+      // Intento 1: /temas
+      const snapTemas = await db.ref("temas").get();
+      if (snapTemas.exists()) {
+        const v = snapTemas.val();
+        if (v && typeof v === "object" && Object.keys(v).length) {
+          return { basePath: "temas", data: v };
+        }
+      }
+
+      // Intento 2: raíz
+      const snapRoot = await db.ref("/").get();
+      if (snapRoot.exists()) {
+        const v = snapRoot.val();
+        const filtered = {};
+        if (v && typeof v === "object") {
+          for (const k in v) {
+            const val = v[k];
+            if (val && typeof val === "object" && ("audio" in val) && ("nombre" in val || "artista" in val)) {
+              filtered[k] = val;
+            }
+          }
+        }
+        if (Object.keys(filtered).length) return { basePath: "", data: filtered };
+      }
+
+      return { basePath: "temas", data: {} };
     }
 
     function render(temas, basePath){
       listaEl.innerHTML = "";
 
-      // Orden: votos desc
       temas.sort((a,b) => b.votos - a.votos);
 
-      const votedId = votedTrackToday();
-      const votedToday = hasVotedToday();
+      const voted = hasVotedToday();
 
       temas.forEach((t, idx) => {
         const pos = idx + 1;
@@ -427,12 +364,10 @@
         const row = document.createElement("div");
         row.className = "row" + (pos === 1 ? " top1" : "");
 
-        // Pos
         const posEl = document.createElement("div");
         posEl.className = "pos";
         posEl.textContent = String(pos);
 
-        // Play button
         const playBtn = document.createElement("div");
         playBtn.className = "playbtn";
         playBtn.setAttribute("role","button");
@@ -442,10 +377,10 @@
         playIcon.className = "playicon";
         playBtn.appendChild(playIcon);
 
-        const audio = new Audio(${t.audio}?v=${CACHE_BUSTER});
+        const audio = new Audio(`${t.audio}?v=${CACHE_BUSTER}`);
         audio.preload = "none";
 
-        const setPlayState = (isPlaying) => {
+        function setPlayState(isPlaying){
           playBtn.innerHTML = "";
           if(isPlaying){
             const p = document.createElement("div");
@@ -457,21 +392,19 @@
             pi.className = "playicon";
             playBtn.appendChild(pi);
           }
-        };
+        }
 
         playBtn.addEventListener("click", async () => {
-          // Pausa lo que esté sonando
           if(currentAudio && currentAudio !== audio){
             currentAudio.pause();
             currentAudio.currentTime = 0;
-            if(currentBtn) currentBtn(); // callback para resetear icono
+            if(currentReset) currentReset();
           }
-
           if(audio.paused){
             try{
               await audio.play();
               currentAudio = audio;
-              currentBtn = () => setPlayState(false);
+              currentReset = () => setPlayState(false);
               setPlayState(true);
             }catch(e){
               alert("No pude reproducir el audio. Revisá que el .mp3 exista con ese nombre exacto en GitHub.");
@@ -482,57 +415,45 @@
             setPlayState(false);
           }
         });
-
         audio.addEventListener("ended", () => setPlayState(false));
 
-        // Meta
         const meta = document.createElement("div");
         meta.className = "meta";
-
         const song = document.createElement("div");
         song.className = "song";
         song.textContent = t.nombre;
-
         const artist = document.createElement("div");
         artist.className = "artist";
         artist.textContent = t.artista;
-
         meta.appendChild(song);
         meta.appendChild(artist);
 
-        // Trend + Vote
         const trend = makeTrendEl(trendIcon(pos));
 
         const voteBtn = document.createElement("button");
         voteBtn.className = "vote";
-        voteBtn.textContent = votedToday ? "VOTADO" : "VOTAR";
-        voteBtn.disabled = votedToday;
+        voteBtn.textContent = voted ? "VOTADO" : "VOTAR";
+        voteBtn.disabled = voted;
 
         voteBtn.addEventListener("click", async () => {
           if(hasVotedToday()){
             alert("Gracias por votar tu tema preferido. Recordá que podés votar una sola vez por día. Volvé mañana para votar otra vez.");
             return;
           }
-
-          // Incrementa votos con transaction
-          const path = basePath ? ${basePath}/${t.id}/votos : ${t.id}/votos;
-          const votosRef = ref(db, path);
+          const path = basePath ? `${basePath}/${t.id}/votos` : `${t.id}/votos`;
 
           try{
-            await runTransaction(votosRef, (current) => {
-              const n = Number(current ?? 0);
+            await db.ref(path).transaction((current) => {
+              const n = Number(current || 0);
               return n + 1;
             });
 
             setVoted(t.id);
-
             alert("Gracias por votar tu tema preferido. Recordá que podés votar una sola vez por día. Volvé mañana para votar otra vez.");
-
-            // Recarga ranking para reordenar
-            boot();
+            boot(); // re-ordenar por votos
           }catch(e){
-            alert("No pude registrar el voto. Revisá las reglas de Firebase (write=true) o conexión.");
-            console.error(e);
+            alert("No pude registrar el voto. Revisá las reglas de Firebase o conexión.");
+            logDiag("ERROR VOTO: " + (e && e.message ? e.message : String(e)));
           }
         });
 
@@ -547,18 +468,33 @@
     }
 
     async function boot(){
+      diag.textContent = "";
+      logDiag("DIAG: arrancando…");
       try{
+        logDiag("Firebase DB URL: " + firebaseConfig.databaseURL);
+
         const { basePath, data } = await loadTemasSmart();
 
-        const temas = Object.entries(data).map(([id, t]) => normalizeTema(id, t));
+        const keys = data ? Object.keys(data) : [];
+        logDiag("Nodo detectado: " + (basePath ? "/" + basePath : "/(raíz)"));
+        logDiag("Cantidad de temas: " + keys.length);
 
-        // Si por alguna razón vinieran más/menos, igual muestra lo que haya
+        if(!keys.length){
+          logDiag("⚠️ No hay datos para renderizar. Revisá que exista /temas en Firebase.");
+          listaEl.innerHTML = `<div style="padding:16px;background:rgba(0,0,0,.55);border-radius:12px;border:1px solid rgba(255,255,255,.12)">
+            No se encontró el nodo <b>temas</b> en Firebase o está vacío.
+          </div>`;
+          return;
+        }
+
+        const temas = keys.map(k => normalizeTema(k, data[k]));
         render(temas, basePath);
 
-      }catch(err){
-        console.error(err);
+        logDiag("✅ Render OK. (Si no ves filas, hay error de CSS/HTML, no de Firebase).");
+      }catch(e){
+        logDiag("❌ ERROR GENERAL: " + (e && e.message ? e.message : String(e)));
         listaEl.innerHTML = `<div style="padding:16px;background:rgba(0,0,0,.55);border-radius:12px">
-          No pude cargar el ranking. Revisá conexión / ruta Firebase / nombres de archivos.
+          Error cargando ranking. Mirá el panel DIAG arriba.
         </div>`;
       }
     }
