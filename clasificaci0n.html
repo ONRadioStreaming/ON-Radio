@@ -2,220 +2,244 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Ranking ON Radio</title>
 <style>
-    body {
-        margin: 0;
-        font-family: Arial, sans-serif;
-        background: #000; /* fondo negro */
-    }
-
-    .ranking-container {
-        width: 800px;
-        margin: 40px auto;
-        padding: 20px;
-        background: url('fondo_ranking.png') no-repeat center center;
-        background-size: cover;
-        border-radius: 10px;
-        color: white;
-    }
-
-    .ranking-item {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 10px 15px;
-        margin: 10px 0;
-        border-bottom: 1px solid rgba(255,255,255,0.2);
-    }
-
-    .ranking-item:nth-child(1) {
-        background-color: rgba(255,0,0,0.3); /* destacar primer lugar */
-        font-weight: bold;
-    }
-
-    .rank-num {
-        width: 30px;
-        text-align: center;
-        font-size: 18px;
-    }
-
-    .indicator {
-        width: 20px;
-        height: 20px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 14px;
-    }
-
-    .up { color: limegreen; }
-    .down { color: red; }
-    .stable { color: yellow; }
-
-    .play-button {
-        width: 25px;
-        height: 25px;
-        background-color: white;
-        clip-path: polygon(0% 0%, 0% 100%, 100% 50%);
-        cursor: pointer;
-        margin: 0 15px;
-    }
-
-    .song-info {
-        flex: 1;
-        margin-left: 10px;
-    }
-
-    .song-title {
-        font-size: 16px;
-    }
-
-    .song-artist {
-        font-size: 14px;
-        color: #ccc;
-    }
-
-    .vote-button {
-        padding: 6px 12px;
-        border: none;
-        border-radius: 4px;
-        background-color: #ff0000;
-        color: white;
-        cursor: pointer;
-        font-weight: bold;
-    }
-
-    .vote-button:disabled {
-        background-color: #555;
-        cursor: not-allowed;
-    }
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
+  body {
+    background: url('fondoranking.png') no-repeat center center;
+    background-size: cover;
+    color: white;
+  }
+  .ranking-container {
+    width: 90%;
+    max-width: 1000px;
+    margin: 50px auto;
+    background: rgba(0,0,0,0.6);
+    padding: 20px;
+    border-radius: 10px;
+  }
+  .ranking-title {
+    text-align: center;
+    font-size: 2em;
+    margin-bottom: 20px;
+  }
+  .tema {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(30,30,30,0.6);
+    padding: 10px 15px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+  }
+  .tema.highlight { background: rgba(255,0,0,0.5); }
+  .info-tema {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .numero {
+    font-size: 1.5em;
+    font-weight: bold;
+    width: 40px;
+  }
+  .flecha {
+    width: 12px;
+    height: 12px;
+    margin-right: 5px;
+  }
+  .play-btn {
+    width: 30px;
+    height: 30px;
+    border: 2px solid white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    margin-right: 10px;
+  }
+  .play-btn:after {
+    content: '';
+    border-left: 10px solid white;
+    border-top: 6px solid transparent;
+    border-bottom: 6px solid transparent;
+    display: block;
+  }
+  .votar-btn {
+    background: red;
+    color: white;
+    border: none;
+    padding: 5px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  .info-text {
+    display: flex;
+    flex-direction: column;
+  }
+  .nombre-tema { font-weight: bold; }
+  .artista { font-size: 0.9em; color: #ccc; }
 </style>
 </head>
 <body>
+
 <div class="ranking-container">
+  <div class="ranking-title">Ranking ON</div>
 
-  <!-- Item 1 -->
-  <div class="ranking-item">
-    <div class="rank-num">1</div>
-    <div class="indicator up">&#9650;</div>
-    <div class="play-button"></div>
-    <div class="song-info">
-        <div class="song-title">SI TE VAS</div>
-        <div class="song-artist">Mauricio Jade</div>
+  <!-- Temas -->
+  <div class="tema highlight">
+    <div class="info-tema">
+      <div class="numero">1</div>
+      <div class="info-text">
+        <div class="nombre-tema">Ladrón</div>
+        <div class="artista">Luck Ra y Karina</div>
+      </div>
     </div>
-    <button class="vote-button">Votar</button>
+    <div class="acciones">
+      <img class="flecha" src="flecha-verde.png" alt="subió">
+      <div class="play-btn"></div>
+      <button class="votar-btn">Votar</button>
+    </div>
   </div>
 
-  <!-- Item 2 -->
-  <div class="ranking-item">
-    <div class="rank-num">2</div>
-    <div class="indicator down">&#9660;</div>
-    <div class="play-button"></div>
-    <div class="song-info">
-        <div class="song-title">TÚ NO VUELVES</div>
-        <div class="song-artist">Luis Pedraza</div>
+  <div class="tema">
+    <div class="info-tema">
+      <div class="numero">2</div>
+      <div class="info-text">
+        <div class="nombre-tema">Hace Calor</div>
+        <div class="artista">María Becerra, El Alfa, Xross</div>
+      </div>
     </div>
-    <button class="vote-button">Votar</button>
+    <div class="acciones">
+      <img class="flecha" src="flecha-amarilla.png" alt="estable">
+      <div class="play-btn"></div>
+      <button class="votar-btn">Votar</button>
+    </div>
   </div>
 
-  <!-- Item 3 -->
-  <div class="ranking-item">
-    <div class="rank-num">3</div>
-    <div class="indicator stable">&#9654;</div>
-    <div class="play-button"></div>
-    <div class="song-info">
-        <div class="song-title">FERIADO</div>
-        <div class="song-artist">Akinorite & DaBock</div>
+  <div class="tema">
+    <div class="info-tema">
+      <div class="numero">3</div>
+      <div class="info-text">
+        <div class="nombre-tema">La Villa</div>
+        <div class="artista">Ryan Castro, Kapo, Gangsta</div>
+      </div>
     </div>
-    <button class="vote-button">Votar</button>
+    <div class="acciones">
+      <img class="flecha" src="flecha-roja.png" alt="bajó">
+      <div class="play-btn"></div>
+      <button class="votar-btn">Votar</button>
+    </div>
   </div>
 
-  <!-- Item 4 -->
-  <div class="ranking-item">
-    <div class="rank-num">4</div>
-    <div class="indicator up">&#9650;</div>
-    <div class="play-button"></div>
-    <div class="song-info">
-        <div class="song-title">ME ELEVA</div>
-        <div class="song-artist">Yahis</div>
+  <div class="tema">
+    <div class="info-tema">
+      <div class="numero">4</div>
+      <div class="info-text">
+        <div class="nombre-tema">Lumar</div>
+        <div class="artista">Marcela Morelo y Luciano Pereyra</div>
+      </div>
     </div>
-    <button class="vote-button">Votar</button>
+    <div class="acciones">
+      <img class="flecha" src="flecha-amarilla.png" alt="estable">
+      <div class="play-btn"></div>
+      <button class="votar-btn">Votar</button>
+    </div>
   </div>
 
-  <!-- Item 5 -->
-  <div class="ranking-item">
-    <div class="rank-num">5</div>
-    <div class="indicator down">&#9660;</div>
-    <div class="play-button"></div>
-    <div class="song-info">
-        <div class="song-title">INSTINTO ANIMAL</div>
-        <div class="song-artist">Nico Ruiz</div>
+  <div class="tema">
+    <div class="info-tema">
+      <div class="numero">5</div>
+      <div class="info-text">
+        <div class="nombre-tema">Paisaje</div>
+        <div class="artista">Ke Personajes y Karina</div>
+      </div>
     </div>
-    <button class="vote-button">Votar</button>
+    <div class="acciones">
+      <img class="flecha" src="flecha-amarilla.png" alt="estable">
+      <div class="play-btn"></div>
+      <button class="votar-btn">Votar</button>
+    </div>
   </div>
 
-  <!-- Item 6 -->
-  <div class="ranking-item">
-    <div class="rank-num">6</div>
-    <div class="indicator stable">&#9654;</div>
-    <div class="play-button"></div>
-    <div class="song-info">
-        <div class="song-title">CARINITO</div>
-        <div class="song-artist">Cristóbal Gacitúa</div>
+  <div class="tema">
+    <div class="info-tema">
+      <div class="numero">6</div>
+      <div class="info-text">
+        <div class="nombre-tema">Típica Argentina</div>
+        <div class="artista">Nico Valdi x Chofer x El Lobo</div>
+      </div>
     </div>
-    <button class="vote-button">Votar</button>
+    <div class="acciones">
+      <img class="flecha" src="flecha-amarilla.png" alt="estable">
+      <div class="play-btn"></div>
+      <button class="votar-btn">Votar</button>
+    </div>
   </div>
 
-  <!-- Item 7 -->
-  <div class="ranking-item">
-    <div class="rank-num">7</div>
-    <div class="indicator up">&#9650;</div>
-    <div class="play-button"></div>
-    <div class="song-info">
-        <div class="song-title">CASAMIENTO</div>
-        <div class="song-artist">Nata!</div>
+  <div class="tema">
+    <div class="info-tema">
+      <div class="numero">7</div>
+      <div class="info-text">
+        <div class="nombre-tema">Papi</div>
+        <div class="artista">Daddy Yankee - BZRP</div>
+      </div>
     </div>
-    <button class="vote-button">Votar</button>
+    <div class="acciones">
+      <img class="flecha" src="flecha-amarilla.png" alt="estable">
+      <div class="play-btn"></div>
+      <button class="votar-btn">Votar</button>
+    </div>
   </div>
 
-  <!-- Item 8 -->
-  <div class="ranking-item">
-    <div class="rank-num">8</div>
-    <div class="indicator down">&#9660;</div>
-    <div class="play-button"></div>
-    <div class="song-info">
-        <div class="song-title">ERES</div>
-        <div class="song-artist">Juan Ángel</div>
+  <div class="tema">
+    <div class="info-tema">
+      <div class="numero">8</div>
+      <div class="info-text">
+        <div class="nombre-tema">La Perla</div>
+        <div class="artista">Rosalía</div>
+      </div>
     </div>
-    <button class="vote-button">Votar</button>
+    <div class="acciones">
+      <img class="flecha" src="flecha-amarilla.png" alt="estable">
+      <div class="play-btn"></div>
+      <button class="votar-btn">Votar</button>
+    </div>
   </div>
 
-  <!-- Item 9 -->
-  <div class="ranking-item">
-    <div class="rank-num">9</div>
-    <div class="indicator stable">&#9654;</div>
-    <div class="play-button"></div>
-    <div class="song-info">
-        <div class="song-title">VEN A MÍ</div>
-        <div class="song-artist">Tani.st4r</div>
+  <div class="tema">
+    <div class="info-tema">
+      <div class="numero">9</div>
+      <div class="info-text">
+        <div class="nombre-tema">Taylor</div>
+        <div class="artista">Taylor Swift</div>
+      </div>
     </div>
-    <button class="vote-button">Votar</button>
+    <div class="acciones">
+      <img class="flecha" src="flecha-amarilla.png" alt="estable">
+      <div class="play-btn"></div>
+      <button class="votar-btn">Votar</button>
+    </div>
   </div>
 
-  <!-- Item 10 -->
-  <div class="ranking-item">
-    <div class="rank-num">10</div>
-    <div class="indicator down">&#9660;</div>
-    <div class="play-button"></div>
-    <div class="song-info">
-        <div class="song-title">MI VIDA ANTES DE TI</div>
-        <div class="song-artist">Duo Miel Canela</div>
+  <div class="tema">
+    <div class="info-tema">
+      <div class="numero">10</div>
+      <div class="info-text">
+        <div class="nombre-tema">Tu Jardín con Enanitos</div>
+        <div class="artista">Roze Oficial</div>
+      </div>
     </div>
-    <button class="vote-button">Votar</button>
+    <div class="acciones">
+      <img class="flecha" src="flecha-amarilla.png" alt="estable">
+      <div class="play-btn"></div>
+      <button class="votar-btn">Votar</button>
+    </div>
   </div>
 
 </div>
+
 </body>
 </html>
