@@ -5,226 +5,231 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Ranking ON Radio</title>
 <style>
-    /* Reset y cuerpo */
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-        font-family: Arial, sans-serif;
-        background: url('fondoranking.png') no-repeat center center fixed;
-        background-size: cover;
-        overflow-x: hidden;
-        color: #fff;
-    }
+  /* Fondo completo */
+  body {
+    margin: 0;
+    padding: 0;
+    background: url('fondoranking.png') no-repeat center center fixed;
+    background-size: cover;
+    font-family: Arial, sans-serif;
+    color: white;
+    overflow-x: hidden;
+  }
 
-    /* Rectángulo central */
-    .ranking-container {
-        position: absolute;
-        left: 305.93px;
-        top: 188.85px;
-        width: 1486px;
-        height: 769px;
-        background: rgba(0,0,0,0.4);
-        overflow-y: auto;
-        padding: 20px;
-        border: 3px solid rgba(255,0,0,0.7);
-        border-radius: 8px;
-    }
+  /* Rectángulo central */
+  #rankingRect {
+    position: absolute;
+    width: 1486px;
+    height: 769px;
+    left: 305.93px;
+    top: 188.85px;
+    background: rgba(0,0,0,0.6);
+    border: 3px solid rgb(255,0,0); /* rojo LED */
+    box-sizing: border-box;
+    padding: 20px;
+    overflow-y: auto;
+  }
 
-    /* Renglones */
-    .ranking-item {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-bottom: 15px;
-        padding: 10px;
-        background: rgba(50,50,50,0.6);
-        border-radius: 5px;
-        transition: background 0.3s;
-    }
+  /* Cada renglón de tema */
+  .tema {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    margin-bottom: 8px;
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+    min-height: 60px;
+  }
 
-    .ranking-item:first-child {
-        background: rgba(255,0,0,0.7);
-        font-weight: bold;
-    }
+  .tema-info {
+    display: flex;
+    align-items: center;
+  }
 
-    /* Número de puesto */
-    .puesto {
-        font-size: 2em;
-        width: 50px;
-        text-align: center;
-        flex-shrink: 0;
-    }
+  .numero {
+    width: 40px;
+    font-weight: bold;
+    text-align: center;
+    font-size: 24px;
+    margin-right: 10px;
+  }
 
-    .puesto:first-child { font-size: 3em; }
+  .numero.primer {
+    font-size: 36px;
+    color: rgb(255,50,50);
+  }
 
-    /* Indicador subida/bajada/estable */
-    .indicador {
-        width: 15px;
-        height: 15px;
-        margin-left: 10px;
-        flex-shrink: 0;
-    }
+  .flecha {
+    width: 12px;
+    height: 12px;
+    margin-right: 10px;
+  }
 
-    .subio { border-bottom: 15px solid green; border-left: 7.5px solid transparent; border-right: 7.5px solid transparent; }
-    .bajo { border-bottom: 15px solid red; border-left: 7.5px solid transparent; border-right: 7.5px solid transparent; transform: rotate(180deg); }
-    .estable { border-bottom: 15px solid yellow; border-left: 7.5px solid transparent; border-right: 7.5px solid transparent; }
+  .texto {
+    display: flex;
+    flex-direction: column;
+  }
 
-    /* Información tema/artista */
-    .info {
-        flex-grow: 1;
-        margin-left: 20px;
-    }
-    .info .tema { font-weight: bold; font-size: 1.2em; }
-    .info .artista { font-size: 1em; }
+  .titulo {
+    font-weight: bold;
+  }
 
-    /* Controles */
-    .controls {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 5px;
-        flex-shrink: 0;
-    }
+  .artista {
+    font-weight: normal;
+    font-size: 0.9em;
+  }
 
-    .play-btn {
-        width: 30px;
-        height: 30px;
-        border: 2px solid #fff;
-        border-radius: 50%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        cursor: pointer;
-    }
-    .play-btn::before {
-        content: '';
-        display: inline-block;
-        margin-left: 2px;
-        width: 0;
-        height: 0;
-        border-left: 10px solid #fff;
-        border-top: 6px solid transparent;
-        border-bottom: 6px solid transparent;
-    }
+  .controles {
+    display: flex;
+    align-items: center;
+  }
 
-    .vote-btn {
-        padding: 5px 10px;
-        background-color: #ff0000;
-        color: #fff;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-    }
-    .vote-btn.disabled {
-        background-color: #888;
-        cursor: not-allowed;
-    }
+  .play-btn {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 2px solid white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 10px;
+    cursor: pointer;
+  }
 
-    /* Scroll styling */
-    .ranking-container::-webkit-scrollbar {
-        width: 10px;
+  .play-btn:after {
+    content: '';
+    display: block;
+    width: 0;
+    height: 0;
+    border-left: 10px solid white;
+    border-top: 6px solid transparent;
+    border-bottom: 6px solid transparent;
+  }
+
+  .votar-btn {
+    background: rgb(255,0,0);
+    border: none;
+    color: white;
+    padding: 5px 12px;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 0.9em;
+  }
+
+  /* Scroll adaptativo */
+  @media (max-width: 1600px){
+    #rankingRect {
+      width: 90%;
+      left: 5%;
     }
-    .ranking-container::-webkit-scrollbar-track {
-        background: rgba(0,0,0,0.2);
+  }
+
+  @media (max-width: 768px){
+    #rankingRect {
+      width: 95%;
+      height: 80%;
+      top: 10%;
+      left: 2.5%;
     }
-    .ranking-container::-webkit-scrollbar-thumb {
-        background: rgba(255,0,0,0.7);
-        border-radius: 5px;
-    }
+  }
 </style>
 </head>
 <body>
 
-<div class="ranking-container" id="rankingContainer">
-    <!-- Renglones generados por JS -->
-</div>
+<div id="rankingRect"></div>
 
 <script>
-const temas = [
-    {nombre:"Típica Argentina", artista:"Nico Valdi x Chofer x El Lobo", audio:"tipica.mp3"},
-    {nombre:"Music Sessions", artista:"Daddy Yankee - BZRP", audio:"papi.mp3"},
-    {nombre:"La Villa", artista:"Ryan Castro, Kapo, Gangsta", audio:"lavilla.mp3"},
-    {nombre:"Hace Calor", artista:"María Becerra, El Alfa, Xross", audio:"hacecalor.mp3"},
-    {nombre:"Ladrón", artista:"Luck Ra y Karina", audio:"chorro.mp3"},
-    {nombre:"Paisaje", artista:"Ke Personajes y Karina", audio:"paisaje.mp3"},
-    {nombre:"La Perla", artista:"Rosalía", audio:"laperla.mp3"},
-    {nombre:"The Fate of Ophelia", artista:"Taylor Swift", audio:"taylor.mp3"},
-    {nombre:"Una y Otra Vez", artista:"Marcela Morelo y Luciano Pereyra", audio:"lumar.mp3"},
-    {nombre:"Tu Jardín con Enanitos", artista:"Roze Oficial", audio:"tujardin.mp3"}
-];
+const temas = {
+  "tipica": {"nombre":"Típica Argentina","artista":"Nico Valdi x Chofer x El Lobo","imagen":"tipica.jpg","audio":"tipica.mp3","votos":0},
+  "papi": {"nombre":"Music Sessions","artista":"Daddy Yankee - BZRP","imagen":"corriente.jpg","audio":"papi.mp3","votos":0},
+  "lavilla": {"nombre":"La Villa","artista":"Ryan Castro, Kapo, Gangsta","imagen":"lavilla.jpg","audio":"lavilla.mp3","votos":0},
+  "hacecalor": {"nombre":"Hace Calor","artista":"María Becerra, El Alfa, Xross","imagen":"hacecalor.jpg","audio":"hacecalor.mp3","votos":0},
+  "ladron": {"nombre":"Ladrón","artista":"Luck Ra y Karina","imagen":"chorro.jpg","audio":"chorro.mp3","votos":0},
+  "paisaje": {"nombre":"Paisaje","artista":"Ke Personajes y Karina","imagen":"paisaje.jpg","audio":"paisaje.mp3","votos":0},
+  "perla": {"nombre":"La Perla","artista":"Rosalía","imagen":"laperla.jpg","audio":"laperla.mp3","votos":0},
+  "taylor": {"nombre":"The Fate of Ophelia","artista":"Taylor Swift","imagen":"taylor.jpg","audio":"taylor.mp3","votos":0},
+  "lumar": {"nombre":"Una y Otra Vez","artista":"Marcela Morelo y Luciano Pereyra","imagen":"lumar.jpg","audio":"lumar.mp3","votos":0},
+  "tujardin": {"nombre":"Tu Jardín con Enanitos","artista":"Roze Oficial","imagen":"tujardin.jpg","audio":"tujardin.MP3","votos":0}
+};
 
-// Generar renglones
-const container = document.getElementById('rankingContainer');
+// Función para generar renglones
+function generarRanking() {
+  const cont = document.getElementById('rankingRect');
+  cont.innerHTML = '';
+  let indice = 1;
+  const votosGuardados = JSON.parse(localStorage.getItem('votosDia')) || {};
+  Object.entries(temas).sort((a,b)=>b[1].votos-a[1].votos).forEach(([key,tema])=>{
+    const row = document.createElement('div');
+    row.className = 'tema';
 
-function crearRenglones() {
-    temas.forEach((tema, index) => {
-        const item = document.createElement('div');
-        item.className = 'ranking-item';
+    const info = document.createElement('div');
+    info.className = 'tema-info';
 
-        // Número de puesto
-        const puesto = document.createElement('div');
-        puesto.className = 'puesto';
-        puesto.textContent = index + 1;
+    const numero = document.createElement('div');
+    numero.className = 'numero' + (indice===1?' primer':'');
+    numero.textContent = indice;
 
-        // Indicador (mockup inicial: estable)
-        const indicador = document.createElement('div');
-        indicador.className = 'indicador estable';
+    const flecha = document.createElement('div');
+    flecha.className = 'flecha';
+    // aquí puedes cambiar color según subió/bajó/estable, por ahora amarillo
+    flecha.style.borderLeft = '6px solid yellow';
+    flecha.style.borderTop = '6px solid transparent';
+    flecha.style.borderBottom = '6px solid transparent';
 
-        // Info tema/artista
-        const info = document.createElement('div');
-        info.className = 'info';
-        const nombreTema = document.createElement('div');
-        nombreTema.className = 'tema';
-        nombreTema.textContent = tema.nombre;
-        const nombreArtista = document.createElement('div');
-        nombreArtista.className = 'artista';
-        nombreArtista.textContent = tema.artista;
-        info.appendChild(nombreTema);
-        info.appendChild(nombreArtista);
+    const texto = document.createElement('div');
+    texto.className = 'texto';
+    const titulo = document.createElement('div');
+    titulo.className = 'titulo';
+    titulo.textContent = tema.nombre;
+    const artista = document.createElement('div');
+    artista.className = 'artista';
+    artista.textContent = tema.artista;
 
-        // Controles
-        const controls = document.createElement('div');
-        controls.className = 'controls';
-        const playBtn = document.createElement('div');
-        playBtn.className = 'play-btn';
-        const audio = new Audio(tema.audio);
-        let playing = false;
-        playBtn.addEventListener('click', () => {
-            if (!playing) { audio.play(); playing = true; }
-            else { audio.pause(); playing = false; }
-        });
+    texto.appendChild(titulo);
+    texto.appendChild(artista);
+    info.appendChild(numero);
+    info.appendChild(flecha);
+    info.appendChild(texto);
 
-        const voteBtn = document.createElement('button');
-        voteBtn.className = 'vote-btn';
-        voteBtn.textContent = 'Votar';
+    const controles = document.createElement('div');
+    controles.className = 'controles';
 
-        // Lógica voto 1 por día
-        const voteKey = 'voto_'+tema.nombre.replace(/\s+/g,'');
-        const hoy = new Date().toISOString().slice(0,10);
-        const lastVote = localStorage.getItem(voteKey);
-        if(lastVote === hoy){ voteBtn.classList.add('disabled'); voteBtn.textContent = 'Ya votaste'; }
+    const play = document.createElement('div');
+    play.className = 'play-btn';
+    play.onclick = ()=>{
+      const audio = new Audio(tema.audio);
+      audio.play();
+    };
 
-        voteBtn.addEventListener('click', () => {
-            if(!voteBtn.classList.contains('disabled')){
-                localStorage.setItem(voteKey, hoy);
-                voteBtn.classList.add('disabled');
-                voteBtn.textContent = 'Ya votaste';
-                alert('Voto registrado para ' + tema.nombre);
-            }
-        });
+    const votar = document.createElement('button');
+    votar.className = 'votar-btn';
+    // manejo 1 voto por día usando localStorage
+    votar.onclick = ()=>{
+      const hoy = new Date().toISOString().slice(0,10);
+      if(votosGuardados[key]===hoy){
+        alert('Ya votaste hoy por este tema. Volvé mañana.');
+      } else {
+        tema.votos++;
+        votosGuardados[key]=hoy;
+        localStorage.setItem('votosDia',JSON.stringify(votosGuardados));
+        generarRanking(); // reordenar
+      }
+    };
+    votar.textContent = 'Votar';
 
-        controls.appendChild(indicador);
-        controls.appendChild(playBtn);
-        controls.appendChild(voteBtn);
+    controles.appendChild(play);
+    controles.appendChild(votar);
 
-        item.appendChild(puesto);
-        item.appendChild(info);
-        item.appendChild(controls);
+    row.appendChild(info);
+    row.appendChild(controles);
 
-        container.appendChild(item);
-    });
+    cont.appendChild(row);
+    indice++;
+  });
 }
 
-crearRenglones();
+// Inicializar ranking
+generarRanking();
 </script>
 
 </body>
