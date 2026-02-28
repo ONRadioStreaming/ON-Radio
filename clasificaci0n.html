@@ -1,373 +1,573 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ranking ON Radio</title>
-<style>
-@import url('https://fonts.cdnfonts.com/css/benjamin-gothic-heavy');
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Ranking ON Radio</title>
 
-body {
-  margin: 0;
-  padding: 0;
-  background: url('fondoranking2.jpg') no-repeat center top;
-  background-size: cover;
-  font-family: Arial, sans-serif;
-  color: white;
-}
+  <style>
+    :root{
+      --bg:#000;
+      --card: rgba(0,0,0,.55);
+      --card2: rgba(0,0,0,.72);
+      --text:#fff;
+      --muted: rgba(255,255,255,.75);
+      --cyan:#19e0ff;
+      --red:#ff1b1b;
+      --yellow:#ffd400;
+      --green:#23ff6f;
+      --shadow: 0 10px 30px rgba(0,0,0,.45);
+    }
 
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 150px 50px 50px 50px;
-  position: relative;
-}
+    /* Si algún día subís la fuente, ponela en el repo y descomentá:
+       - benjamin-gothic-heavy.woff2 en /ON-Radio/
+    */
+    /* @font-face{
+      font-family:"Benjamin Gothic Heavy";
+      src: url("benjamin-gothic-heavy.woff2") format("woff2");
+      font-weight: 900;
+      font-style: normal;
+      font-display: swap;
+    } */
 
-.title {
-  text-align: center;
-  font-size: 3em;
-  color: #00ffff;
-  text-transform: uppercase;
-  text-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff;
-  margin-bottom: 50px;
-  position: relative;
-}
+    html,body{height:100%}
+    body{
+      margin:0;
+      color:var(--text);
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: var(--bg);
+      /* FONDO */
+      background-image: url("fondoranking2.jpg");
+      background-size: cover;
+      background-position: center top;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+    }
 
-.title::after {
-  content: '⬇';
-  position: absolute;
-  bottom: -40px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 2em;
-  color: #00ffff;
-}
+    /* overlay suave para que se lea todo */
+    .veil{
+      min-height:100%;
+      background: linear-gradient(to bottom, rgba(0,0,0,.55), rgba(0,0,0,.65));
+    }
 
-.logo {
-  position: absolute;
-  top: 20px;
-  right: 50px;
-  width: 80px;
-  height: auto;
-}
+    .wrap{
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 18px 14px 24px;
+    }
 
-.ranking-on {
-  position: absolute;
-  top: 150px;
-  left: 20px;
-  writing-mode: vertical-rl;
-  text-orientation: mixed;
-  font-size: 2.5em;
-  color: #00ffff;
-  font-weight: bold;
-}
+    header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding: 6px 0 10px;
+    }
 
-.track-list {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
+    .logo{
+      width: 160px;
+      height: auto;
+      filter: drop-shadow(0 8px 18px rgba(0,0,0,.55));
+    }
 
-.track {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: rgba(0,0,0,0.5);
-  padding: 10px 20px;
-  border-radius: 10px;
-}
+    .titleBlock{
+      flex:1;
+      text-align:center;
+      position:relative;
+      padding: 6px 8px;
+    }
 
-.track-left {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
+    .title{
+      margin:0;
+      font-weight:900;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      line-height: 1.02;
+      font-size: clamp(22px, 4.2vw, 44px);
+      color: var(--cyan);
+      text-shadow:
+        0 0 10px rgba(25,224,255,.45),
+        0 0 22px rgba(25,224,255,.25);
+    }
 
-.track-number {
-  font-family: 'Benjamin Gothic Heavy', sans-serif;
-  font-size: 2.5em;
-  width: 50px;
-  text-align: center;
-}
+    /* Flecha centrada pero alineada VISUALMENTE hacia la columna de votar
+       (en móvil la columna está a la derecha; la empujamos un toque a la derecha) */
+    .arrow{
+      margin-top: 6px;
+      display:inline-block;
+      transform: translateX(28%);
+      width: 0; height: 0;
+      border-left: 10px solid transparent;
+      border-right: 10px solid transparent;
+      border-top: 16px solid var(--cyan);
+      filter: drop-shadow(0 0 10px rgba(25,224,255,.35));
+    }
 
-.track-number.first {
-  color: red;
-  font-size: 3em;
-}
+    /* Ranking ON vertical (decorativo) */
+    .sideLabel{
+      position: fixed;
+      left: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      font-weight: 900;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: rgba(25,224,255,.28);
+      text-shadow: 0 0 12px rgba(25,224,255,.14);
+      user-select:none;
+      pointer-events:none;
+      font-size: 22px;
+    }
 
-.play-button {
-  width: 40px;
-  height: 40px;
-  border: 2px solid white;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-}
+    /* Lista */
+    .list{
+      margin-top: 8px;
+      display:flex;
+      flex-direction:column;
+      gap: 10px;
+    }
 
-.play-button::after {
-  content: '▶';
-  color: white;
-  font-size: 1em;
-  margin-left: 2px;
-}
+    .row{
+      background: var(--card);
+      border: 1px solid rgba(255,255,255,.08);
+      box-shadow: var(--shadow);
+      border-radius: 14px;
+      padding: 10px 12px;
+      display:grid;
+      grid-template-columns: 56px 54px 1fr 46px 110px;
+      align-items:center;
+      gap: 10px;
+    }
 
-.track-info {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-}
+    .row.top1{
+      background: linear-gradient(90deg, rgba(255,27,27,.28), rgba(0,0,0,.62));
+      border-color: rgba(255,27,27,.25);
+    }
 
-.track-info .title {
-  font-weight: bold;
-  font-size: 1.2em;
-}
+    .pos{
+      font-family: "Benjamin Gothic Heavy", Impact, "Arial Black", system-ui, sans-serif;
+      font-weight: 900;
+      font-size: 28px;
+      line-height: 1;
+      text-align:center;
+      color: #fff;
+      text-shadow: 0 0 14px rgba(255,255,255,.12);
+    }
 
-.track-info .artist {
-  font-weight: normal;
-  font-size: 1em;
-}
+    .row.top1 .pos{
+      color: var(--red);
+      font-size: 34px;
+      text-shadow: 0 0 18px rgba(255,27,27,.35);
+    }
 
-.track-right {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
+    .playBtn{
+      width: 44px;
+      height: 44px;
+      border-radius: 999px;
+      border: 2px solid rgba(255,255,255,.32);
+      background: rgba(0,0,0,.35);
+      display:grid;
+      place-items:center;
+      cursor:pointer;
+      transition: transform .08s ease, border-color .12s ease;
+    }
+    .playBtn:active{ transform: scale(.98); }
+    .playBtn:hover{ border-color: rgba(25,224,255,.55); }
 
-.indicator {
-  width: 15px;
-  height: 15px;
-  display: inline-block;
-}
+    .playIcon{
+      width:0;height:0;
+      border-top:8px solid transparent;
+      border-bottom:8px solid transparent;
+      border-left: 13px solid rgba(255,255,255,.92);
+      margin-left: 2px;
+    }
+    .pauseIcon{
+      width: 14px;
+      height: 14px;
+      display:flex;
+      gap:4px;
+    }
+    .pauseIcon span{
+      width:5px;height:14px;background: rgba(255,255,255,.92);
+      border-radius: 2px;
+    }
 
-.indicator.up {
-  clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
-  background-color: green;
-}
+    .meta{
+      min-width: 0;
+    }
+    .song{
+      font-weight: 900;
+      font-size: 16px;
+      line-height: 1.15;
+      margin:0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .artist{
+      margin: 2px 0 0;
+      font-size: 13px;
+      color: var(--muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
 
-.indicator.down {
-  clip-path: polygon(50% 100%, 0% 0%, 100% 0%);
-  background-color: red;
-}
+    /* Indicadores */
+    .delta{
+      display:flex;
+      justify-content:center;
+      align-items:center;
+    }
+    .up{
+      width:0;height:0;
+      border-left: 10px solid transparent;
+      border-right: 10px solid transparent;
+      border-bottom: 16px solid var(--green);
+      filter: drop-shadow(0 0 8px rgba(35,255,111,.22));
+    }
+    .down{
+      width:0;height:0;
+      border-left: 10px solid transparent;
+      border-right: 10px solid transparent;
+      border-top: 16px solid var(--red);
+      filter: drop-shadow(0 0 8px rgba(255,27,27,.22));
+    }
+    .flat{
+      width: 14px;
+      height: 14px;
+      background: var(--yellow);
+      border-radius: 3px;
+      filter: drop-shadow(0 0 8px rgba(255,212,0,.18));
+    }
 
-.indicator.stable {
-  width: 15px;
-  height: 15px;
-  background-color: yellow;
-}
+    .voteBtn{
+      justify-self:end;
+      width: 110px;
+      height: 44px;
+      border-radius: 10px;
+      border: none;
+      background: var(--red);
+      color: #fff;
+      font-weight: 900;
+      letter-spacing: .06em;
+      cursor:pointer;
+      box-shadow: 0 10px 18px rgba(255,27,27,.18);
+    }
+    .voteBtn:active{ transform: scale(.99); }
+    .voteBtn[disabled]{
+      opacity: .55;
+      cursor: not-allowed;
+      filter: grayscale(.2);
+    }
 
-.vote-button {
-  background-color: red;
-  color: white;
-  border: none;
-  padding: 8px 15px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-weight: bold;
-}
+    footer{
+      margin-top: 18px;
+      background: var(--card2);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 12px;
+      padding: 10px 12px;
+      text-align:center;
+      color: rgba(255,255,255,.85);
+      font-weight: 700;
+      letter-spacing: .04em;
+    }
 
-.footer {
-  text-align: center;
-  font-size: 1.2em;
-  margin-top: 50px;
-}
+    /* Mobile: hacemos que no se rompa y que se scrollee bien */
+    @media (max-width: 560px){
+      body{ background-attachment: scroll; }
+      .logo{ width: 120px; }
+      .sideLabel{ display:none; }
 
-/* Responsivo */
-@media (max-width: 768px) {
-  .container {
-    padding: 120px 20px 50px 20px;
-  }
-  .track {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
-  }
-  .track-right {
-    align-self: flex-end;
-  }
-}
-</style>
+      .row{
+        grid-template-columns: 48px 48px 1fr 34px 90px;
+        padding: 10px 10px;
+        border-radius: 12px;
+      }
+      .pos{ font-size: 24px; }
+      .row.top1 .pos{ font-size: 30px; }
+      .voteBtn{ width: 90px; height: 42px; }
+      .song{ font-size: 15px; }
+      .artist{ font-size: 12.5px; }
+      .arrow{ transform: translateX(34%); }
+    }
+  </style>
 </head>
+
 <body>
-<img src="logotipo.png" class="logo" alt="Logo ON Radio">
-<div class="ranking-on">RANKING ON</div>
-<div class="container">
-  <div class="title">VOTÁ TU TEMA PREFERIDO</div>
+  <div class="veil">
+    <div class="sideLabel">RANKING ON</div>
 
-  <div class="track-list">
-
-    <div class="track">
-      <div class="track-left">
-        <div class="track-number first">1</div>
-        <div class="play-button" onclick="playTrack(1)"></div>
-        <div class="track-info">
-          <div class="title">Típica Argentina (Zum Zum Zum)</div>
-          <div class="artist">Nico Valdi x Chofer x El Lobo</div>
+    <div class="wrap">
+      <header>
+        <div class="titleBlock">
+          <h1 class="title">VOTÁ TU TEMA PREFERIDO</h1>
+          <div class="arrow" aria-hidden="true"></div>
         </div>
-      </div>
-      <div class="track-right">
-        <div class="indicator up"></div>
-        <button class="vote-button" onclick="voteTrack()">VOTAR</button>
-      </div>
-    </div>
+        <img class="logo" src="logotipo.png" alt="ON Radio" />
+      </header>
 
-    <div class="track">
-      <div class="track-left">
-        <div class="track-number">2</div>
-        <div class="play-button" onclick="playTrack(2)"></div>
-        <div class="track-info">
-          <div class="title">Music Sessions Vol. 0/66</div>
-          <div class="artist">Daddy Yankee - BZRP</div>
-        </div>
-      </div>
-      <div class="track-right">
-        <div class="indicator down"></div>
-        <button class="vote-button" onclick="voteTrack()">VOTAR</button>
-      </div>
-    </div>
+      <main>
+        <div id="list" class="list"></div>
+      </main>
 
-    <div class="track">
-      <div class="track-left">
-        <div class="track-number">3</div>
-        <div class="play-button" onclick="playTrack(3)"></div>
-        <div class="track-info">
-          <div class="title">La Villa</div>
-          <div class="artist">Ryan Castro, Kapo, Gangsta</div>
-        </div>
-      </div>
-      <div class="track-right">
-        <div class="indicator stable"></div>
-        <button class="vote-button" onclick="voteTrack()">VOTAR</button>
-      </div>
+      <footer>www.laonradio.com.ar</footer>
     </div>
-
-    <div class="track">
-      <div class="track-left">
-        <div class="track-number">4</div>
-        <div class="play-button" onclick="playTrack(4)"></div>
-        <div class="track-info">
-          <div class="title">Hace calor</div>
-          <div class="artist">María Becerra, El Alfa y Xross</div>
-        </div>
-      </div>
-      <div class="track-right">
-        <div class="indicator up"></div>
-        <button class="vote-button" onclick="voteTrack()">VOTAR</button>
-      </div>
-    </div>
-
-    <div class="track">
-      <div class="track-left">
-        <div class="track-number">5</div>
-        <div class="play-button" onclick="playTrack(5)"></div>
-        <div class="track-info">
-          <div class="title">Ladrón</div>
-          <div class="artist">Luck Ra, Karina, Zaira, Bauletti</div>
-        </div>
-      </div>
-      <div class="track-right">
-        <div class="indicator down"></div>
-        <button class="vote-button" onclick="voteTrack()">VOTAR</button>
-      </div>
-    </div>
-
-    <div class="track">
-      <div class="track-left">
-        <div class="track-number">6</div>
-        <div class="play-button" onclick="playTrack(6)"></div>
-        <div class="track-info">
-          <div class="title">Paisaje</div>
-          <div class="artist">Ke Personajes y Karina La Princesita</div>
-        </div>
-      </div>
-      <div class="track-right">
-        <div class="indicator stable"></div>
-        <button class="vote-button" onclick="voteTrack()">VOTAR</button>
-      </div>
-    </div>
-
-    <div class="track">
-      <div class="track-left">
-        <div class="track-number">7</div>
-        <div class="play-button" onclick="playTrack(7)"></div>
-        <div class="track-info">
-          <div class="title">La Perla</div>
-          <div class="artist">Rosalía</div>
-        </div>
-      </div>
-      <div class="track-right">
-        <div class="indicator up"></div>
-        <button class="vote-button" onclick="voteTrack()">VOTAR</button>
-      </div>
-    </div>
-
-    <div class="track">
-      <div class="track-left">
-        <div class="track-number">8</div>
-        <div class="play-button" onclick="playTrack(8)"></div>
-        <div class="track-info">
-          <div class="title">The Fate of Ophelia</div>
-          <div class="artist">Taylor Swift</div>
-        </div>
-      </div>
-      <div class="track-right">
-        <div class="indicator down"></div>
-        <button class="vote-button" onclick="voteTrack()">VOTAR</button>
-      </div>
-    </div>
-
-    <div class="track">
-      <div class="track-left">
-        <div class="track-number">9</div>
-        <div class="play-button" onclick="playTrack(9)"></div>
-        <div class="track-info">
-          <div class="title">Una y Otra Vez</div>
-          <div class="artist">Marcela Morelo y Luciano Pereyra</div>
-        </div>
-      </div>
-      <div class="track-right">
-        <div class="indicator stable"></div>
-        <button class="vote-button" onclick="voteTrack()">VOTAR</button>
-      </div>
-    </div>
-
-    <div class="track">
-      <div class="track-left">
-        <div class="track-number">10</div>
-        <div class="play-button" onclick="playTrack(10)"></div>
-        <div class="track-info">
-          <div class="title">Tu jardín con enanitos</div>
-          <div class="artist">Roze Oficial, Max Carra, Valen, RAMKY EN LOS CONTROLES</div>
-        </div>
-      </div>
-      <div class="track-right">
-        <div class="indicator up"></div>
-        <button class="vote-button" onclick="voteTrack()">VOTAR</button>
-      </div>
-    </div>
-
   </div>
 
-  <div class="footer">www.laonradio.com.ar</div>
-</div>
+  <!-- Un solo reproductor para todo -->
+  <audio id="player" preload="none"></audio>
 
-<script>
-let voted = false;
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+    import { getDatabase, ref, onValue, runTransaction, update } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
 
-function playTrack(num) {
-  alert('Reproduciendo track número ' + num);
-}
+    const firebaseConfig = {
+      apiKey: "AIzaSyC8XXef5k8hLmNL8ufIJsc7Sx5KTlRFdH8",
+      authDomain: "on-radio-ranking.firebaseapp.com",
+      databaseURL: "https://on-radio-ranking-default-rtdb.firebaseio.com",
+      projectId: "on-radio-ranking",
+      storageBucket: "on-radio-ranking.firebasestorage.app",
+      messagingSenderId: "311635352358",
+      appId: "1:311635352358:web:257ff4821987f07d31ffe7"
+    };
 
-function voteTrack() {
-  if (voted) {
-    alert('Gracias por votar en el ranking de ON Radio. Te esperamos mañana para volver a votar.');
-    return;
-  }
-  voted = true;
-  alert('Gracias por votar en el ranking de ON Radio. Te esperamos mañana si querés volver a votar a tu artista favorito.');
-}
-</script>
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
 
+    // --- Config ---
+    const TEMAS_PATH = "temas";
+    const listEl = document.getElementById("list");
+    const audioEl = document.getElementById("player");
+
+    // Voto 1 vez por día (total, no por tema)
+    const todayKey = () => {
+      const d = new Date();
+      const yyyy = d.getFullYear();
+      const mm = String(d.getMonth()+1).padStart(2,"0");
+      const dd = String(d.getDate()).padStart(2,"0");
+      return ${yyyy}-${mm}-${dd};
+    };
+    const LS_VOTE_DAY = "onrank_vote_day";   // guarda YYYY-MM-DD
+    const LS_LAST_ORDER = "onrank_last_order"; // array de ids para flechas
+
+    function alreadyVotedToday(){
+      return localStorage.getItem(LS_VOTE_DAY) === todayKey();
+    }
+    function markVotedToday(){
+      localStorage.setItem(LS_VOTE_DAY, todayKey());
+    }
+
+    // Flechas: comparamos orden actual vs último orden guardado en este dispositivo
+    function getLastOrder(){
+      try{
+        const raw = localStorage.getItem(LS_LAST_ORDER);
+        if(!raw) return null;
+        const arr = JSON.parse(raw);
+        return Array.isArray(arr) ? arr : null;
+      }catch{ return null; }
+    }
+    function setLastOrder(ids){
+      localStorage.setItem(LS_LAST_ORDER, JSON.stringify(ids));
+    }
+
+    // --- Player ---
+    let currentId = null;
+    function setPlayButtonState(btn, isPlaying){
+      btn.innerHTML = "";
+      if(isPlaying){
+        const p = document.createElement("div");
+        p.className = "pauseIcon";
+        p.innerHTML = "<span></span><span></span>";
+        btn.appendChild(p);
+      } else {
+        const i = document.createElement("div");
+        i.className = "playIcon";
+        btn.appendChild(i);
+      }
+    }
+
+    function playTrack(trackId, audioFile, btn){
+      // Si tocan el mismo: toggle
+      if(currentId === trackId){
+        if(audioEl.paused){
+          audioEl.play().catch(()=>{});
+          setPlayButtonState(btn, true);
+        }else{
+          audioEl.pause();
+          setPlayButtonState(btn, false);
+        }
+        return;
+      }
+
+      // Frenamos cualquiera que estaba
+      const prevBtn = document.querySelector([data-play="${CSS.escape(currentId ?? "")}"]);
+      if(prevBtn) setPlayButtonState(prevBtn, false);
+
+      currentId = trackId;
+      audioEl.src = audioFile; // relativo al repo
+      audioEl.play().catch(()=>{});
+      setPlayButtonState(btn, true);
+    }
+
+    audioEl.addEventListener("ended", ()=>{
+      const btn = document.querySelector([data-play="${CSS.escape(currentId ?? "")}"]);
+      if(btn) setPlayButtonState(btn, false);
+      currentId = null;
+    });
+
+    // --- UI ---
+    function makeDeltaIcon(kind){
+      const d = document.createElement("div");
+      d.className = "delta";
+      const icon = document.createElement("div");
+      if(kind === "up") icon.className = "up";
+      else if(kind === "down") icon.className = "down";
+      else icon.className = "flat";
+      d.appendChild(icon);
+      return d;
+    }
+
+    function render(temasObj){
+      // Convertimos a array
+      const temasArr = Object.entries(temasObj || {}).map(([id, t]) => ({
+        id,
+        nombre: t?.nombre ?? id,
+        artista: t?.artista ?? "",
+        audio: t?.audio ?? "",
+        votos: Number(t?.votos ?? 0)
+      }));
+
+      // Orden por votos desc, y por nombre para desempate estable
+      temasArr.sort((a,b)=>{
+        if(b.votos !== a.votos) return b.votos - a.votos;
+        return (a.nombre || "").localeCompare(b.nombre || "", "es");
+      });
+
+      // Limitamos a 10 por seguridad
+      const top10 = temasArr.slice(0,10);
+
+      // Flechas por cambio de ranking en este dispositivo
+      const last = getLastOrder();
+      const idsNow = top10.map(x=>x.id);
+
+      listEl.innerHTML = "";
+
+      const voted = alreadyVotedToday();
+
+      top10.forEach((t, idx)=>{
+        const row = document.createElement("div");
+        row.className = "row" + (idx===0 ? " top1" : "");
+
+        // Posición
+        const pos = document.createElement("div");
+        pos.className = "pos";
+        pos.textContent = String(idx+1);
+
+        // Play
+        const playBtn = document.createElement("button");
+        playBtn.className = "playBtn";
+        playBtn.type = "button";
+        playBtn.setAttribute("data-play", t.id);
+        setPlayButtonState(playBtn, false);
+
+        // Audio file: relativo al repo
+        // OJO: si en Firebase tenés "hacecalor.mp3", queda "hacecalor.mp3"
+        const audioFile = t.audio;
+
+        playBtn.addEventListener("click", ()=>{
+          if(!audioFile){
+            alert("Este tema no tiene audio cargado todavía.");
+            return;
+          }
+          playTrack(t.id, audioFile, playBtn);
+        });
+
+        // Meta
+        const meta = document.createElement("div");
+        meta.className = "meta";
+        const song = document.createElement("p");
+        song.className = "song";
+        song.textContent = t.nombre;
+        const artist = document.createElement("p");
+        artist.className = "artist";
+        artist.textContent = t.artista || "—";
+        meta.appendChild(song);
+        meta.appendChild(artist);
+
+        // Delta
+        let deltaKind = "flat";
+        if(last){
+          const prevIndex = last.indexOf(t.id);
+          if(prevIndex === -1) deltaKind = "flat";
+          else if(prevIndex > idx) deltaKind = "up";
+          else if(prevIndex < idx) deltaKind = "down";
+          else deltaKind = "flat";
+        }else{
+          deltaKind = "flat";
+        }
+        const delta = makeDeltaIcon(deltaKind);
+
+        // Vote
+        const voteBtn = document.createElement("button");
+        voteBtn.className = "voteBtn";
+        voteBtn.type = "button";
+        voteBtn.textContent = "VOTAR";
+        voteBtn.disabled = voted;
+
+        voteBtn.addEventListener("click", async ()=>{
+          if(alreadyVotedToday()){
+            alert("Gracias por votar tu tema preferido. Recordá que podés votar una sola vez por día. Volvé mañana para votar otra vez. 🎵");
+            return;
+          }
+
+          // Transacción: suma 1 voto al tema elegido
+          const votesRef = ref(db, ${TEMAS_PATH}/${t.id}/votos);
+          try{
+            await runTransaction(votesRef, (current)=>{
+              const n = Number(current ?? 0);
+              return n + 1;
+            });
+
+            // Marcamos el voto del día (bloquea TODOS los botones)
+            markVotedToday();
+
+            // Mensaje final
+            alert("Gracias por votar tu tema preferido. Recordá que podés votar una sola vez por día. Volvé mañana para votar otra vez. 🎵");
+
+            // Deshabilitamos todos los botones
+            document.querySelectorAll(".voteBtn").forEach(b=>b.disabled = true);
+
+          }catch(e){
+            console.error(e);
+            alert("Uy… no pude registrar el voto. Probá de nuevo en unos segundos.");
+          }
+        });
+
+        row.appendChild(pos);
+        row.appendChild(playBtn);
+        row.appendChild(meta);
+        row.appendChild(delta);
+        row.appendChild(voteBtn);
+
+        listEl.appendChild(row);
+      });
+
+      // Guardamos orden actual para flechas de próxima visita
+      setLastOrder(idsNow);
+    }
+
+    // --- Firebase listen ---
+    const temasRef = ref(db, TEMAS_PATH);
+    onValue(temasRef, (snap)=>{
+      const data = snap.val() || {};
+      render(data);
+    }, (err)=>{
+      console.error(err);
+      listEl.innerHTML = "<div style='padding:12px;background:rgba(0,0,0,.55);border-radius:12px;border:1px solid rgba(255,255,255,.1)'>No pude leer Firebase. Revisá reglas o conexión.</div>";
+    });
+  </script>
 </body>
 </html>
