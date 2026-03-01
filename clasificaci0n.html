@@ -1,719 +1,594 @@
 <!doctype html>
 <html lang="es">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Ranking ON</title>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>ON Radio - Ranking</title>
 
-  <!-- ===== Estilos ===== -->
   <style>
     :root{
-      --cyan:#18d7ff;
-      --red:#e40000;
-      --card:#0a0a0acc;
-      --card2:#0a0a0a99;
+      --red:#ff1a1a;
+      --red2:#b80000;
       --white:#ffffff;
-      --muted:#cfcfcf;
-      --shadow: 0 12px 30px rgba(0,0,0,.55);
-      --radius: 22px;
+      --muted:rgba(255,255,255,.72);
+      --glass:rgba(0,0,0,.55);
+      --stroke:rgba(255,255,255,.10);
+      --shadow:0 18px 45px rgba(0,0,0,.60);
+      --radius:22px;
     }
-
     *{box-sizing:border-box}
     body{
       margin:0;
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
       color:var(--white);
-      min-height:100vh;
-      background:
-        radial-gradient(circle at 20% 10%, rgba(255,0,0,.10), transparent 40%),
-        radial-gradient(circle at 70% 40%, rgba(24,215,255,.10), transparent 40%),
-        #000;
+      background: #000 url('fondoranking2.jpg') no-repeat center top fixed;
+      background-size: cover;
       overflow-x:hidden;
     }
 
-    /* Fondo imagen (la cargás vos en el repo) */
-    .bg{
-      position:fixed;
-      inset:0;
-      background:url("fondoranking2.jpg") center/cover no-repeat;
-      filter: contrast(1.05) brightness(.85);
-      z-index:-2;
-    }
-    .bg::after{
-      content:"";
-      position:absolute; inset:0;
-      background:linear-gradient(to bottom, rgba(0,0,0,.35), rgba(0,0,0,.55));
-      z-index:-1;
+    /* Capa para mejorar legibilidad sin “matar” el fondo */
+    .veil{
+      position:fixed; inset:0;
+      background:
+        radial-gradient(900px 500px at 50% 0%, rgba(0,0,0,.25), rgba(0,0,0,.55) 70%),
+        linear-gradient(180deg, rgba(0,0,0,.20), rgba(0,0,0,.70));
+      pointer-events:none;
+      z-index:0;
     }
 
-    /* Contenedor general */
     .wrap{
-      width:min(1100px, 94vw);
-      margin: 18px auto 40px;
       position:relative;
-      padding-left: 64px; /* lugar para el RANKING ON sticky */
+      z-index:1;
+      width:min(980px, 100%);
+      margin:0 auto;
+      padding:16px 14px 80px;
     }
 
-    /* Header superior */
+    /* Barra superior */
     .top{
+      position:sticky;
+      top:10px;
+      z-index:50;
       display:flex;
       align-items:center;
-      gap:14px;
-      padding: 14px 16px;
-      border-radius: 26px;
-      background: rgba(0,0,0,.55);
+      justify-content:space-between;
+      gap:12px;
+      padding:12px 12px;
+      border-radius:18px;
+      background:rgba(0,0,0,.55);
+      border:1px solid var(--stroke);
       box-shadow: var(--shadow);
-      backdrop-filter: blur(6px);
-      border: 1px solid rgba(255,255,255,.06);
-      position:relative;
+      backdrop-filter: blur(10px);
     }
+
     .logo{
-      width:84px; height:auto;
-      flex:0 0 auto;
-      filter: drop-shadow(0 6px 10px rgba(0,0,0,.6));
+      display:flex;
+      align-items:center;
+      gap:10px;
+      min-width:120px;
+    }
+    .logo img{
+      width:110px;
+      height:auto;
+      display:block;
     }
 
     .titleBox{
       flex:1;
       text-align:center;
-      line-height:1.0;
-      padding-right: 68px; /* espacio para flecha derecha */
+      line-height:1.05;
     }
-
-    /* Título LED moderno */
     .title{
-      margin:0;
-      font-weight: 900;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      color: var(--cyan);
-      font-size: clamp(26px, 4.5vw, 46px);
+      font-weight:950;
+      letter-spacing:2px;
+      text-transform:uppercase;
+      font-size:clamp(18px, 4.3vw, 34px);
+      color:#e8f7ff;
       text-shadow:
-        0 0 6px rgba(24,215,255,.55),
-        0 0 18px rgba(24,215,255,.35),
-        0 0 34px rgba(24,215,255,.20);
+        0 0 14px rgba(255,255,255,.12),
+        0 0 18px rgba(0,180,255,.12);
     }
 
-    /* Flecha animada apuntando “zona votar” */
-    .arrowHint{
-      position:absolute;
-      right:18px;
-      top: 50%;
-      transform: translateY(-8px);
-      width: 44px; height: 44px;
-      display:grid; place-items:center;
-      pointer-events:none;
-      filter: drop-shadow(0 6px 12px rgba(0,0,0,.75));
+    /* Flecha animada roja apuntando a la columna de votar */
+    .arrowWrap{
+      width:88px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
     }
-    .arrowHint::before{
-      content:"";
+    .arrowDown{
       width:0;height:0;
       border-left:14px solid transparent;
       border-right:14px solid transparent;
-      border-top:22px solid var(--red);
-      animation: bounce 1.1s infinite ease-in-out, blink 1.0s infinite linear;
+      border-top:24px solid var(--red);
+      filter: drop-shadow(0 0 10px rgba(255,26,26,.55));
+      animation: bob 1.05s ease-in-out infinite, blink 1.2s linear infinite;
     }
-    @keyframes bounce{
-      0%,100%{ transform: translateY(0); }
-      50%{ transform: translateY(10px); }
-    }
-    @keyframes blink{
-      0%,100%{ filter: brightness(1); opacity:1; }
-      50%{ filter: brightness(1.6); opacity:.65; }
-    }
+    @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(7px)}}
+    @keyframes blink{0%,100%{opacity:1}50%{opacity:.35}}
 
-    .footerSite{
-      margin: 12px auto 0;
-      text-align:center;
-      font-weight: 800;
-      letter-spacing: .8px;
-      color:#fff;
-      text-shadow: 0 6px 14px rgba(0,0,0,.85);
-      font-size: clamp(16px, 2.8vw, 22px);
-      opacity:.95;
-    }
-
-    /* RANKING ON sticky lateral (blanco, abajo->arriba) */
-    .side{
+    /* RANKING ON vertical fijo (blanco, lectura de abajo hacia arriba) */
+    .rail{
       position:fixed;
-      left: 10px;
-      top: 54%;
+      left:10px;
+      top:50%;
       transform: translateY(-50%);
-      z-index:10;
+      z-index:40;
       pointer-events:none;
     }
-    .sideText{
+    .railText{
       writing-mode: vertical-rl;
-      transform: rotate(180deg); /* lee de abajo hacia arriba */
-      font-weight: 900;
-      letter-spacing: 4px;
-      text-transform: uppercase;
-      color: #fff;
-      opacity: .90;
-      font-size: clamp(20px, 3.8vw, 44px);
-      text-shadow: 0 0 10px rgba(0,0,0,.8);
+      transform: rotate(180deg); /* abajo -> arriba */
+      font-weight:1000;
+      letter-spacing:10px;
+      text-transform:uppercase;
+      font-size: clamp(22px, 3.8vw, 44px);
+      color: rgba(255,255,255,.92);
+      text-shadow: 0 0 20px rgba(255,255,255,.10);
     }
 
     /* Lista */
-    #list{
-      margin-top: 18px;
+    .list{
+      margin-top:16px;
       display:flex;
       flex-direction:column;
-      gap: 14px;
-      padding-bottom: 36px;
+      gap:12px;
+      padding-left: 44px; /* deja aire para el rail */
     }
 
-    /* Tarjeta de tema */
     .row{
-      display:grid;
-      grid-template-columns: 66px 62px 1fr 18px 132px;
-      align-items:center;
-      gap: 14px;
-      padding: 14px 14px;
-      border-radius: var(--radius);
-      background: rgba(0,0,0,.60);
-      border: 1px solid rgba(255,255,255,.06);
+      background: rgba(0,0,0,.52);
+      border:1px solid rgba(255,255,255,.10);
       box-shadow: var(--shadow);
-      backdrop-filter: blur(6px);
-      position:relative;
-      overflow:hidden;
-    }
-
-    /* Marco LED rojo suave */
-    .row::before{
-      content:"";
-      position:absolute; inset:0;
       border-radius: var(--radius);
-      box-shadow: inset 0 0 0 1px rgba(255,0,0,.25), 0 0 16px rgba(255,0,0,.18);
-      pointer-events:none;
-      opacity:.85;
+      padding:12px;
+      display:grid;
+      grid-template-columns: 70px 60px 1fr 26px 132px;
+      gap:12px;
+      align-items:center;
+      backdrop-filter: blur(10px);
     }
 
-    /* Puesto 1 destacado */
-    .row.top1{
-      background: rgba(80,0,0,.40);
-      border: 1px solid rgba(255,0,0,.25);
-    }
-    .row.top1::before{
-      box-shadow: inset 0 0 0 1px rgba(255,0,0,.45), 0 0 22px rgba(255,0,0,.28);
-      opacity:1;
-    }
-
-    /* Numeración (Benjamin Gothic Heavy si la subís; si no, fallback) */
-    @font-face{
-      font-family: "BenjaminGothicHeavy";
-      src: url("benjamin-gothic-heavy.woff2") format("woff2");
-      font-display: swap;
-    }
+    /* Puesto */
     .num{
-      font-family: "BenjaminGothicHeavy", "Arial Black", Impact, system-ui, sans-serif;
-      font-weight: 900;
-      text-align:center;
+      font-weight:1000;
+      font-size: 44px;
       line-height:1;
-      color:#fff;
-      font-size: 42px;
-      text-shadow: 0 10px 18px rgba(0,0,0,.75);
+      text-align:center;
+      color:rgba(255,255,255,.95);
+      text-shadow: 0 0 12px rgba(255,255,255,.10);
+      /* tipografía “con cuerpo”: si el user la tiene, la toma; si no, cae a Impact */
+      font-family: "Benjamin Gothic Heavy", Impact, "Arial Black", system-ui, sans-serif;
     }
-    .top1 .num{
-      color: var(--red);
+    .num.top1{
+      color:#ff6a6a;
       font-size: 52px;
-      text-shadow: 0 0 10px rgba(255,0,0,.35), 0 10px 18px rgba(0,0,0,.75);
+      text-shadow: 0 0 16px rgba(255,26,26,.25);
     }
 
-    /* Play */
+    /* Play/Pause */
     .playBtn{
-      width: 54px; height: 54px;
-      border-radius: 999px;
-      border: 2px solid rgba(255,255,255,.85);
-      display:grid; place-items:center;
+      width:54px; height:54px;
+      border-radius:999px;
+      border:2px solid rgba(255,255,255,.92);
+      background: rgba(0,0,0,.18);
+      display:flex;
+      align-items:center;
+      justify-content:center;
       cursor:pointer;
+      transition: transform .10s ease;
       user-select:none;
-      background: rgba(0,0,0,.25);
-      transition: transform .08s ease, filter .12s ease, border-color .12s ease;
     }
-    .playBtn:active{ transform: scale(.97); }
+    .playBtn:active{transform: scale(.97)}
     .playIcon{
       width:0;height:0;
-      border-left: 14px solid rgba(255,255,255,.95);
-      border-top: 9px solid transparent;
-      border-bottom: 9px solid transparent;
-      margin-left: 3px;
+      border-top:9px solid transparent;
+      border-bottom:9px solid transparent;
+      border-left:14px solid rgba(255,255,255,.95);
+      margin-left:3px;
     }
-    .playBtn.playing{
-      border-color: rgba(255,0,0,.95);
-      filter: drop-shadow(0 0 10px rgba(255,0,0,.35));
+    .pauseIcon{
+      width:16px; height:18px;
+      display:flex; gap:5px;
     }
-    .playBtn.playing .playIcon{
-      /* icono PAUSA */
-      width: 16px; height: 18px;
-      border: none;
-      margin-left: 0;
-      background:
-        linear-gradient(to right, rgba(255,255,255,.95) 0 6px, transparent 6px 10px, rgba(255,255,255,.95) 10px 16px);
+    .pauseIcon span{
+      width:5px; height:18px;
+      background: rgba(255,255,255,.95);
+      border-radius:2px;
     }
 
-    .meta{ min-width:0; }
-    .track{
-      font-weight: 900;
-      font-size: 20px;
-      color:#fff;
-      margin:0;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
+    /* Texto */
+    .meta{min-width:0}
+    .song{
+      font-weight:950;
+      font-size: 22px;
+      line-height:1.05;
+      margin-bottom:4px;
+      color:rgba(255,255,255,.96);
+      word-break: break-word;
     }
     .artist{
-      margin:4px 0 0;
+      font-weight:750;
+      font-size: 16px;
       color: var(--muted);
-      font-size: 15px;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
+      word-break: break-word;
     }
 
-    /* Indicador: ▲ verde, ▼ rojo, ■ amarillo */
-    .trend{
-      width: 14px; height: 14px;
-      display:inline-block;
-      justify-self:center;
-      filter: drop-shadow(0 6px 10px rgba(0,0,0,.7));
+    /* Movimiento (triángulos + cuadrado) */
+    .move{
+      width:22px;height:22px;
+      border-radius:6px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background: rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.10);
+      font-weight:1000;
+      user-select:none;
     }
-    .trend.up{
-      width:0;height:0;
-      border-left:7px solid transparent;
-      border-right:7px solid transparent;
-      border-bottom:12px solid #2bff7a;
-    }
-    .trend.down{
-      width:0;height:0;
-      border-left:7px solid transparent;
-      border-right:7px solid transparent;
-      border-top:12px solid #ff2b2b;
-    }
-    .trend.same{
-      background:#ffd000;
-      border-radius:3px;
-      box-shadow: 0 0 10px rgba(255,208,0,.25);
-    }
+    .move.up{ color:#6cff6c; border-color: rgba(108,255,108,.25); }
+    .move.down{ color:#ff6a6a; border-color: rgba(255,106,106,.25); }
+    .move.same{ color:#ffd36a; border-color: rgba(255,211,106,.25); }
 
-    /* Botón votar */
+    /* Votar */
     .voteBtn{
-      justify-self:end;
-      border:none;
-      border-radius: 18px;
-      padding: 14px 22px;
-      font-weight: 900;
-      letter-spacing: .6px;
-      text-transform: uppercase;
-      color:#fff;
-      background: var(--red);
+      width:132px;
+      height:52px;
+      border-radius:18px;
+      border:0;
       cursor:pointer;
-      box-shadow: 0 12px 18px rgba(0,0,0,.55);
-      transition: transform .08s ease, filter .12s ease;
-      min-width: 120px;
-    }
-    .voteBtn:active{ transform: scale(.98); }
-    .voteBtn[disabled]{
-      opacity:.55;
-      cursor:not-allowed;
-      filter: grayscale(.2);
-    }
-
-    /* Toast */
-    .toast{
-      position:fixed;
-      left:50%;
-      bottom: 20px;
-      transform: translateX(-50%);
-      background: rgba(0,0,0,.78);
-      border: 1px solid rgba(255,255,255,.08);
+      font-weight:950;
+      letter-spacing:.4px;
+      background: linear-gradient(180deg, var(--red), var(--red2));
       color:#fff;
-      padding: 12px 14px;
-      border-radius: 14px;
-      box-shadow: var(--shadow);
-      max-width: 92vw;
-      z-index: 9999;
-      display:none;
-      font-weight:700;
+      box-shadow: 0 10px 22px rgba(255,26,26,.22);
+      transition: transform .10s ease, opacity .15s ease;
     }
+    .voteBtn:active{transform: scale(.98)}
+    .voteBtn[disabled]{opacity:.55; cursor:not-allowed}
 
-    /* Debug overlay opcional */
-    .diag{
-      position:fixed;
-      left:10px;
-      top:10px;
-      background: rgba(0,0,0,.72);
+    .foot{
+      margin-top:18px;
+      padding:14px 12px;
+      text-align:center;
+      background: rgba(0,0,0,.60);
       border:1px solid rgba(255,255,255,.08);
-      padding:10px;
-      border-radius: 12px;
-      z-index: 9999;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-      font-size:12px;
-      line-height:1.35;
-      display:none; /* poné block si querés */
-      max-width: 92vw;
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      color: rgba(255,255,255,.82);
+      font-weight:800;
     }
 
-    /* Responsivo */
+    .errorBox{
+      margin: 14px auto 0;
+      padding: 10px 12px;
+      border: 1px solid rgba(255,106,106,.35);
+      background: rgba(255,26,26,.10);
+      border-radius: 12px;
+      color: rgba(255,255,255,.95);
+      font-weight:850;
+      display:none;
+    }
+
+    @media (max-width: 760px){
+      .logo img{width:100px}
+      .row{grid-template-columns: 62px 56px 1fr 24px 122px}
+      .num{font-size:40px}
+      .num.top1{font-size:48px}
+      .song{font-size:20px}
+      .voteBtn{width:122px;height:50px}
+    }
+
     @media (max-width: 520px){
-      .wrap{ padding-left: 56px; }
-      .logo{ width:72px; }
       .row{
-        grid-template-columns: 56px 58px 1fr 16px 120px;
-        gap: 12px;
+        grid-template-columns: 58px 56px 1fr;
+        grid-template-rows: auto auto;
+        gap:10px 12px;
       }
-      .num{ font-size: 38px; }
-      .top1 .num{ font-size: 48px; }
-      .track{ font-size: 18px; }
-      .artist{ font-size: 14px; }
-      .voteBtn{ padding: 12px 16px; min-width: 110px; }
-      .playBtn{ width: 52px; height: 52px; }
+      .num{grid-row:1/3}
+      .playBtn{grid-row:1/3}
+      .meta{grid-column:3/4; grid-row:1/2}
+      .move{grid-column:3/4; grid-row:2/3; justify-self:start}
+      .voteBtn{grid-column:3/4; grid-row:2/3; justify-self:end}
+      .arrowWrap{width:64px}
     }
   </style>
-
-  <!-- Firebase compat (para runTransaction) -->
-  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-database-compat.js"></script>
 </head>
 
 <body>
-  <div class="bg"></div>
-
-  <div class="side"><div class="sideText">RANKING ON</div></div>
+  <div class="veil"></div>
+  <div class="rail"><div class="railText">RANKING ON</div></div>
 
   <div class="wrap">
     <div class="top">
-      <img class="logo" src="logotipo.png" alt="ON Radio" />
-      <div class="titleBox">
-        <h1 class="title">VOTÁ TU TEMA<br/>PREFERIDO</h1>
+      <div class="logo">
+        <img src="logotipo.png" alt="ON Radio">
       </div>
-      <div class="arrowHint" aria-hidden="true"></div>
+
+      <div class="titleBox">
+        <div class="title">VOTÁ TU TEMA PREFERIDO</div>
+      </div>
+
+      <div class="arrowWrap" title="Votá abajo">
+        <div class="arrowDown"></div>
+      </div>
     </div>
 
-    <div class="footerSite">www.laonradio.com.ar</div>
+    <div id="errorBox" class="errorBox"></div>
 
-    <div id="list"></div>
+    <div id="list" class="list"></div>
+
+    <div class="foot">www.laonradio.com.ar</div>
   </div>
 
-  <div id="toast" class="toast"></div>
-  <div id="diag" class="diag"></div>
+  <!-- Firebase compat (más estable para copiar/pegar) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 
   <script>
     /*********
-     * 0) CONFIG FIREBASE
+     * FIREBASE (TU CONFIG)
      *********/
-          const firebaseConfig = {
-    apiKey: "AIzaSyC8XXef5k8hLmNL8ufIJsc7Sx5KTlRFdH8",
-    authDomain: "on-radio-ranking.firebaseapp.com",
-    databaseURL: "https://on-radio-ranking-default-rtdb.firebaseio.com",
-    projectId: "on-radio-ranking",
-    storageBucket: "on-radio-ranking.firebasestorage.app",
-    messagingSenderId: "311635352358",
-    appId: "1:311635352358:web:257ff4821987f07d31ffe7"
-  };
-// ====== PEGÁ ACÁ TU CONFIG (el mismo que ya usabas) ======
-      // apiKey: "...",
-      // authDomain: "...",
-      // databaseURL: "https://on-radio-ranking-default-rtdb.firebaseio.com",
-      // projectId: "...",
-      // storageBucket: "...",
-      // messagingSenderId: "...",
-      // appId: "..."
+    const firebaseConfig = {
+      apiKey: "AIzaSyC8XXef5k8hLmNL8ufIJsc7Sx5KTlRFdH8",
+      authDomain: "on-radio-ranking.firebaseapp.com",
+      databaseURL: "https://on-radio-ranking-default-rtdb.firebaseio.com",
+      projectId: "on-radio-ranking",
+      storageBucket: "on-radio-ranking.firebasestorage.app",
+      messagingSenderId: "311635352358",
+      appId: "1:311635352358:web:257ff4821987f07d31ffe7"
     };
 
-    // Si no pegaste config, cortamos con mensaje claro
-    function requireConfig(){
-      if(!firebaseConfig || !firebaseConfig.databaseURL){
-        showToast("Falta pegar firebaseConfig (databaseURL). Sin eso no puede cargar el ranking.");
-        throw new Error("Missing firebaseConfig.databaseURL");
-      }
-    }
-
-    /*********
-     * 1) Helpers UI
-     *********/
-    const $list = document.getElementById("list");
-    const $toast = document.getElementById("toast");
-    const $diag  = document.getElementById("diag");
-
-    function showToast(msg){
-      $toast.textContent = msg;
-      $toast.style.display = "block";
-      clearTimeout(showToast._t);
-      showToast._t = setTimeout(()=> $toast.style.display="none", 3200);
-    }
-
-    function setDiag(lines){
-      // $diag.style.display = "block"; // descomentá si querés ver diag siempre
-      $diag.innerHTML = lines.map(l => escapeHtml(l)).join("<br>");
-    }
-    function escapeHtml(s){
-      return (s+"").replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
-    }
-
-    // Capturar errores para que NO “desaparezca todo” sin aviso
-    window.addEventListener("error", (e)=>{
-      console.error(e.error || e.message);
-      showToast("Error de script: mirá Consola (F12) o mandame captura del error.");
-    });
-
-    /*********
-     * 2) 1 voto por día TOTAL
-     *********/
-    function todayKey(){
-      const d = new Date();
-      const y = d.getFullYear();
-      const m = String(d.getMonth()+1).padStart(2,"0");
-      const day = String(d.getDate()).padStart(2,"0");
-      return ${y}-${m}-${day};
-    }
-    const VOTE_LOCK_KEY = "onradio_vote_lock_day";
-
-    function canVoteToday(){
-      return localStorage.getItem(VOTE_LOCK_KEY) !== todayKey();
-    }
-    function lockVoteToday(){
-      localStorage.setItem(VOTE_LOCK_KEY, todayKey());
-    }
-
-    /*********
-     * 3) Audio: 1 solo player global
-     *********/
-    const audio = new Audio();
-    audio.preload = "none";
-    let currentKey = null;
-
-    function stopAudio(){
-      audio.pause();
-      audio.currentTime = 0;
-      currentKey = null;
-      document.querySelectorAll(".playBtn").forEach(b => b.classList.remove("playing"));
-    }
-
-    audio.addEventListener("ended", ()=>{
-      currentKey = null;
-      document.querySelectorAll(".playBtn").forEach(b => b.classList.remove("playing"));
-    });
-
-    /*********
-     * 4) Firebase + ranking
-     *********/
-    requireConfig();
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    const temasRef = db.ref("temas");
-    const metaLastOrderRef = db.ref("meta/lastOrder"); // { key: position } o array
-    const metaLastWriteRef = db.ref("meta/lastOrderUpdatedAt");
+    /*********
+     * 1 VOTO TOTAL POR DÍA
+     *********/
+    const VOTE_COOLDOWN_MS = 24 * 60 * 60 * 1000;
+    const DAILY_KEY = "onradio_vote_daily_ts";
 
-    // Debounce para actualizar meta sin spamear
-    let saveOrderTimer = null;
-
-    async function loadLastOrder(){
-      const snap = await metaLastOrderRef.get();
-      return snap.exists() ? snap.val() : null;
+    function canVoteToday(){
+      const t = Number(localStorage.getItem(DAILY_KEY) || "0");
+      return (Date.now() - t) > VOTE_COOLDOWN_MS;
+    }
+    function markVotedToday(){
+      localStorage.setItem(DAILY_KEY, String(Date.now()));
+    }
+    function remainingMs(){
+      const t = Number(localStorage.getItem(DAILY_KEY) || "0");
+      const remain = VOTE_COOLDOWN_MS - (Date.now() - t);
+      return Math.max(0, remain);
+    }
+    function fmtRemain(ms){
+      const total = Math.ceil(ms/1000);
+      const h = Math.floor(total/3600);
+      const m = Math.floor((total%3600)/60);
+      if(h>0) return ${h}h ${m}m;
+      return ${m}m;
     }
 
-    function computeTrends(sortedKeys, lastOrder){
-      // lastOrder puede ser:
-      // - objeto { key: posAnterior }
-      // - array ["hacecalor","ladron",...]
-      const lastPos = {};
-      if(Array.isArray(lastOrder)){
-        lastOrder.forEach((k, i)=> lastPos[k]=i+1);
-      }else if(lastOrder && typeof lastOrder === "object"){
-        Object.keys(lastOrder).forEach(k=> lastPos[k]=Number(lastOrder[k]));
+    /*********
+     * AUDIO: play/pause real
+     * - 1 solo tema sonando
+     *********/
+    const audio = new Audio();
+    audio.preload = "none";
+    let currentId = null;
+
+    function setBtnPlay(btn){
+      btn.innerHTML = '<div class="playIcon"></div>';
+      btn.dataset.state = "play";
+      btn.title = "Reproducir";
+    }
+    function setBtnPause(btn){
+      btn.innerHTML = '<div class="pauseIcon"><span></span><span></span></div>';
+      btn.dataset.state = "pause";
+      btn.title = "Pausar";
+    }
+    function stopAll(){
+      audio.pause();
+      audio.currentTime = 0;
+      currentId = null;
+      document.querySelectorAll(".playBtn").forEach(setBtnPlay);
+    }
+    audio.addEventListener("ended", () => {
+      currentId = null;
+      document.querySelectorAll(".playBtn").forEach(setBtnPlay);
+    });
+
+    /*********
+     * UI helpers
+     *********/
+    const listEl = document.getElementById("list");
+    const errorBox = document.getElementById("errorBox");
+    function showError(msg){
+      errorBox.style.display = "block";
+      errorBox.textContent = msg;
+    }
+    function clearError(){
+      errorBox.style.display = "none";
+      errorBox.textContent = "";
+    }
+    function esc(s){
+      return String(s||"")
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
+    // movimientos (sólo con posiciones anteriores de esta sesión)
+    let prevPos = new Map(); // id -> pos
+
+    function moveBadge(prev, now){
+      if(!prev) return {cls:"same", txt:"■"};
+      const delta = prev - now; // + subió
+      if(delta > 0) return {cls:"up", txt:"▲"};
+      if(delta < 0) return {cls:"down", txt:"▼"};
+      return {cls:"same", txt:"■"};
+    }
+
+    function render(arr){
+      if(!arr.length){
+        listEl.innerHTML = `<div style="padding-left:44px; font-weight:900; color:rgba(255,255,255,.85);">
+          No se están leyendo temas desde Firebase. (Revisá reglas o que exista el nodo <b>/temas</b>.)
+        </div>`;
+        return;
       }
 
-      const trends = {};
-      sortedKeys.forEach((k, idx)=>{
-        const now = idx+1;
-        const prev = lastPos[k];
-        if(!prev) trends[k] = "same";
-        else if(now < prev) trends[k] = "up";
-        else if(now > prev) trends[k] = "down";
-        else trends[k] = "same";
-      });
-      return trends;
-    }
+      const newPos = new Map();
+      arr.forEach((t,i)=> newPos.set(t.id, i+1));
 
-    function scheduleSaveOrder(sortedKeys){
-      clearTimeout(saveOrderTimer);
-      saveOrderTimer = setTimeout(async ()=>{
-        try{
-          // Guardamos array para simpleza
-          await metaLastOrderRef.set(sortedKeys);
-          await metaLastWriteRef.set(Date.now());
-        }catch(err){
-          console.warn("No se pudo guardar meta/lastOrder:", err);
-        }
-      }, 700);
-    }
+      const voteAllowed = canVoteToday();
+      const voteText = voteAllowed ? "VOTAR" : YA VOTASTE;
 
-    function renderList(temasObj, trends){
-      const entries = Object.entries(temasObj || {});
-      // Normalizamos, por si falta votos
-      const arr = entries.map(([key, t])=>({
-        key,
-        nombre: (t && t.nombre) ? String(t.nombre) : key,
-        artista: (t && t.artista) ? String(t.artista) : "",
-        audio: (t && t.audio) ? String(t.audio) : "",
-        votos: (t && typeof t.votos === "number") ? t.votos : Number(t.votos || 0)
-      }));
+      listEl.innerHTML = arr.map((t,i)=>{
+        const pos = i+1;
+        const top1 = pos===1 ? "top1" : "";
+        const badge = moveBadge(prevPos.get(t.id), pos);
 
-      // Orden por votos desc, y por nombre como desempate estable
-      arr.sort((a,b)=>{
-        if(b.votos !== a.votos) return b.votos - a.votos;
-        return a.nombre.localeCompare(b.nombre);
-      });
+        return `
+          <div class="row">
+            <div class="num ${top1}">${pos}</div>
 
-      // Top 10
-      const top10 = arr.slice(0, 10);
+            <button class="playBtn" data-id="${esc(t.id)}" data-audio="${esc(t.audio || "")}" data-state="play" aria-label="Play">
+              <div class="playIcon"></div>
+            </button>
 
-      // Guardamos el orden actual para comparar a futuro
-      scheduleSaveOrder(top10.map(x=>x.key));
+            <div class="meta">
+              <div class="song">${esc(t.nombre || t.id)}</div>
+              <div class="artist">${esc(t.artista || "")}</div>
+            </div>
 
-      // Render
-      $list.innerHTML = "";
-      const lock = !canVoteToday();
+            <div class="move ${badge.cls}" title="Movimiento">${badge.txt}</div>
 
-      top10.forEach((t, idx)=>{
-        const pos = idx+1;
+            <button class="voteBtn" data-id="${esc(t.id)}" ${voteAllowed ? "" : "disabled"}>
+              ${voteText}
+            </button>
+          </div>
+        `;
+      }).join("");
 
-        const row = document.createElement("div");
-        row.className = "row" + (pos===1 ? " top1" : "");
-        row.dataset.key = t.key;
+      prevPos = newPos;
 
-        const num = document.createElement("div");
-        num.className = "num";
-        num.textContent = pos;
-
-        const play = document.createElement("div");
-        play.className = "playBtn";
-        play.title = "Reproducir / Pausar";
-        play.innerHTML = <div class="playIcon"></div>;
-        play.addEventListener("click", ()=>{
-          // Si no hay audio cargado, avisamos
-          if(!t.audio){
-            showToast("Este tema no tiene audio asignado en Firebase.");
+      // listeners play/pause
+      document.querySelectorAll(".playBtn").forEach(btn=>{
+        btn.addEventListener("click", ()=>{
+          clearError();
+          const id = btn.dataset.id;
+          const file = btn.dataset.audio; // ej: "papi.mp3"
+          if(!file){
+            showError("Este tema no tiene archivo MP3 cargado en el campo 'audio'.");
             return;
           }
 
-          // Si es el mismo tema: toggle play/pause
-          if(currentKey === t.key){
+          // mismo tema = toggle
+          if(currentId === id){
             if(audio.paused){
-              audio.play().catch(()=> showToast("No se pudo reproducir (bloqueo del navegador). Tocá play otra vez."));
-              play.classList.add("playing");
+              audio.play().catch(()=> showError("No pude reproducir el MP3 (revisá nombre/archivo)."));
+              setBtnPause(btn);
             }else{
               audio.pause();
-              play.classList.remove("playing");
+              setBtnPlay(btn);
             }
             return;
           }
 
-          // Si es otro: parar anterior + cargar nuevo
-          stopAudio();
-          currentKey = t.key;
-          audio.src = t.audio; // mp3 en la raíz del repo (como tus archivos)
-          audio.play().catch(()=> showToast("No se pudo reproducir (bloqueo del navegador). Tocá play otra vez."));
-          play.classList.add("playing");
+          // tema nuevo
+          stopAll();
+          currentId = id;
+          audio.src = file; // ASUME mp3 en la raíz del repo
+          audio.play().then(()=>{
+            document.querySelectorAll(".playBtn").forEach(setBtnPlay);
+            setBtnPause(btn);
+          }).catch((e)=>{
+            currentId = null;
+            setBtnPlay(btn);
+            showError("No pude reproducir el MP3. Revisá que el archivo exista y el nombre coincida EXACTO.");
+            console.error(e);
+          });
         });
+      });
 
-        const meta = document.createElement("div");
-        meta.className = "meta";
-        meta.innerHTML = `
-          <p class="track">${escapeHtml(t.nombre)}</p>
-          <p class="artist">${escapeHtml(t.artista)}</p>
-        `;
-
-        const trend = document.createElement("span");
-        const tr = trends?.[t.key] || "same";
-        trend.className = "trend " + (tr==="up" ? "up" : tr==="down" ? "down" : "same");
-
-        const vote = document.createElement("button");
-        vote.className = "voteBtn";
-        vote.textContent = lock ? "YA VOTASTE" : "VOTAR";
-        vote.disabled = lock;
-
-        vote.addEventListener("click", async ()=>{
+      // listeners votar
+      document.querySelectorAll(".voteBtn").forEach(btn=>{
+        btn.addEventListener("click", async ()=>{
+          clearError();
           if(!canVoteToday()){
-            showToast("Ya votaste hoy. Volvé mañana 😉");
+            alert("Gracias por votar en el Ranking ON! Recordá que podés votar una sola vez por día. Volvé mañana para votar otra vez.");
             return;
           }
 
+          const id = btn.dataset.id;
+          btn.disabled = true;
+
           try{
-            vote.disabled = true;
+            // suma voto de forma segura (transacción)
+            const ref = db.ref("temas/" + id + "/votos");
+            await ref.transaction(curr => (Number(curr || 0) + 1));
 
-            // Transaction: incrementa votos de forma segura
-            const votosRef = db.ref(temas/${t.key}/votos);
-            await votosRef.transaction((cur)=>{
-              if(typeof cur !== "number") cur = Number(cur || 0);
-              return cur + 1;
-            });
+            markVotedToday();
+            alert("Gracias por votar en el Ranking ON! Recordá que podés votar una sola vez por día. Volvé mañana para votar otra vez.");
 
-            lockVoteToday();
-
-            // Bloquea todos los botones
+            // deshabilitar TODOS los botones (porque es 1 voto total/día)
             document.querySelectorAll(".voteBtn").forEach(b=>{
               b.disabled = true;
               b.textContent = "YA VOTASTE";
             });
 
-            showToast("¡Gracias por votar en el Ranking ON! Volvé mañana 🔥");
-
-          }catch(err){
-            console.error(err);
-            vote.disabled = false;
-            showToast("No se pudo registrar el voto. Revisá reglas / conexión.");
+          }catch(e){
+            console.error(e);
+            showError("Error al votar. Revisá reglas de Firebase (write) o permisos.");
+            btn.disabled = false;
           }
         });
-
-        row.append(num, play, meta, trend, vote);
-        $list.appendChild(row);
       });
 
-      // Si hay audio sonando y re-renderizó, mantener icono del actual
-      if(currentKey){
-        const btn = document.querySelector(.row[data-key="${CSS.escape(currentKey)}"] .playBtn);
-        if(btn && !audio.paused) btn.classList.add("playing");
+      // si ya votó hoy: deshabilita todos y listo
+      if(!canVoteToday()){
+        document.querySelectorAll(".voteBtn").forEach(b=>{
+          b.disabled = true;
+          b.textContent = "YA VOTASTE";
+        });
       }
     }
 
-    async function boot(){
-      setDiag([
-        "DIAG: arrancando...",
-        "Nodo: /temas",
-        "Tip: si no renderiza, es error de JS/CSS/IDs."
-      ]);
+    /*********
+     * LECTURA Firebase: /temas
+     *********/
+    function start(){
+      clearError();
+      db.ref("temas").on("value", (snap)=>{
+        const val = snap.val();
+        if(!val){
+          render([]);
+          return;
+        }
 
-      const lastOrder = await loadLastOrder();
+        const arr = Object.keys(val).map(id=>{
+          const d = val[id] || {};
+          return {
+            id,
+            nombre: d.nombre || id,
+            artista: d.artista || "",
+            audio: d.audio || "",
+            votos: Number(d.votos || 0)
+          };
+        });
 
-      temasRef.on("value", (snap)=>{
-        const temas = snap.val() || {};
-        const keys = Object.keys(temas);
+        // orden por votos desc + desempate alfabético
+        arr.sort((a,b)=> (b.votos - a.votos) || a.nombre.localeCompare(b.nombre, "es"));
 
-        setDiag([
-          "DIAG: OK",
-          "Nodo detectado: /temas",
-          "Cantidad de temas: " + keys.length,
-          "Renderizando..."
-        ]);
-
-        // Calculamos orden actual (para trends)
-        const arr = Object.entries(temas).map(([k,t])=>({
-          key:k,
-          votos: (t && typeof t.votos==="number") ? t.votos : Number(t?.votos || 0),
-          nombre: (t && t.nombre) ? String(t.nombre) : k
-        }));
-        arr.sort((a,b)=> (b.votos-a.votos) || a.nombre.localeCompare(b.nombre));
-        const sortedKeys = arr.slice(0,10).map(x=>x.key);
-
-        const trends = computeTrends(sortedKeys, lastOrder);
-        renderList(temas, trends);
+        render(arr);
+      }, (err)=>{
+        console.error(err);
+        showError("No se pudo leer /temas. Revisá reglas Firebase (read) y que estés en el proyecto correcto.");
       });
     }
 
-    boot();
+    start();
   </script>
 </body>
 </html>
