@@ -1,280 +1,315 @@
 <!doctype html>
 <html lang="es">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>Ranking ON</title>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Ranking ON</title>
 
-  <style>
-    :root{
-      --red:#e50914;
-      --cyan:#19d3ff;
-      --glass:rgba(0,0,0,.55);
-      --border:rgba(255,255,255,.10);
-      --shadow:0 18px 34px rgba(0,0,0,.45);
-    }
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
-      color:#fff;
-      background:
-        linear-gradient(rgba(0,0,0,.62),rgba(0,0,0,.78)),
-        url("fondoranking2.jpg") center/cover fixed;
-      min-height:100vh;
-    }
+<style>
+:root{
+  --red:#e50914;
+  --cyan:#19d3ff;
+  --yellow:#ffc400;
+  --green:#2bdc63;
+  --glass:rgba(0,0,0,.55);
+  --border:rgba(255,255,255,.10);
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
+  color:#fff;
+  background:
+    linear-gradient(rgba(0,0,0,.65),rgba(0,0,0,.75)),
+    url("fondoranking2.jpg") center/cover fixed;
+}
 
-    .topWrap{padding:16px 12px 10px; display:flex; justify-content:center;}
-    .topBar{
-      width:min(980px, 100%);
-      display:grid;
-      grid-template-columns:84px 1fr 70px;
-      align-items:center;
-      gap:10px;
-      padding:14px;
-      border-radius:22px;
-      background:rgba(0,0,0,.60);
-      border:1px solid var(--border);
-      box-shadow:var(--shadow);
-      backdrop-filter:blur(8px);
-    }
-    .logo{width:70px; height:auto; display:block; filter:drop-shadow(0 8px 14px rgba(0,0,0,.55));}
-    .titleBox{text-align:center; line-height:1.05;}
-    .titleLine{
-      font-weight:1000;
-      letter-spacing:3px;
-      font-size:clamp(22px, 3.6vw, 40px);
-      text-transform:uppercase;
-    }
-    .titleLine .w{color:#fff}
-    .titleLine .r{color:var(--red)}
-    .subLine{
-      margin-top:6px;
-      font-weight:900;
-      letter-spacing:2px;
-      font-size:clamp(12px, 2.2vw, 18px);
-      color:var(--cyan);
-      text-shadow:0 0 16px rgba(25,211,255,.55);
-      text-transform:uppercase;
-    }
-    .arrow{
-      justify-self:end;
-      width:0;height:0;
-      border-left:16px solid transparent;
-      border-right:16px solid transparent;
-      border-top:26px solid var(--red);
-      filter:drop-shadow(0 10px 16px rgba(229,9,20,.35));
-      animation:arrowMove 1.4s ease-in-out infinite, arrowBlink 1.4s ease-in-out infinite;
-    }
-    @keyframes arrowMove{0%{transform:translateY(0)}50%{transform:translateY(10px)}100%{transform:translateY(0)}}
-    @keyframes arrowBlink{0%{opacity:1}50%{opacity:.55}100%{opacity:1}}
+/* Header */
+.headerWrap{padding:18px 12px 10px;}
+.header{
+  max-width:980px;
+  margin:0 auto;
+  background:rgba(0,0,0,.55);
+  border:1px solid rgba(255,255,255,.10);
+  border-radius:22px;
+  box-shadow:0 16px 32px rgba(0,0,0,.45);
+  backdrop-filter:blur(7px);
+  display:grid;
+  grid-template-columns:92px 1fr 70px;
+  align-items:center;
+  gap:10px;
+  padding:14px 14px;
+}
+.logo{width:78px; justify-self:start;}
+.titleBox{ text-align:center; line-height:1.05; }
+.title{
+  margin:0;
+  font-weight:900;
+  letter-spacing:2px;
+  font-size:clamp(22px,3.6vw,40px);
+}
+.title .w{color:#fff;}
+.title .r{color:var(--red);}
+.subtitle{
+  margin:6px 0 0;
+  font-weight:900;
+  letter-spacing:2px;
+  color:var(--cyan);
+  text-shadow:0 0 14px rgba(25,211,255,.45);
+  font-size:clamp(12px,2.2vw,18px);
+}
+.arrowDown{
+  justify-self:end;
+  width:0;height:0;
+  border-left:14px solid transparent;
+  border-right:14px solid transparent;
+  border-top:22px solid var(--red);
+  animation:arrowMove 1.6s ease-in-out infinite, arrowBlink 1.6s ease-in-out infinite;
+  filter:drop-shadow(0 0 12px rgba(229,9,20,.55));
+}
+@keyframes arrowMove{0%{transform:translateY(0)}50%{transform:translateY(10px)}100%{transform:translateY(0)}}
+@keyframes arrowBlink{0%{opacity:1}50%{opacity:.55}100%{opacity:1}}
 
-    .status{
-      width:min(980px, 100%);
-      margin:10px auto 0;
-      padding:12px 14px;
-      border-radius:16px;
-      background:rgba(0,0,0,.55);
-      border:1px solid var(--border);
-      box-shadow:var(--shadow);
-      font-weight:800;
-      opacity:.97;
-    }
-    .status.ok{border-color:rgba(43,220,99,.35)}
-    .status.bad{border-color:rgba(229,9,20,.35)}
-    .status small{display:block; opacity:.85; margin-top:4px; font-weight:700}
+/* Status */
+.statusWrap{padding:6px 12px 0;}
+.status{
+  max-width:980px;
+  margin:0 auto;
+  padding:10px 14px;
+  border-radius:16px;
+  background:rgba(0,0,0,.45);
+  border:1px solid rgba(255,255,255,.08);
+  font-weight:800;
+  letter-spacing:.4px;
+}
+.status.ok{border-color:rgba(43,220,99,.35)}
+.status.err{border-color:rgba(229,9,20,.45)}
+.status.warn{border-color:rgba(255,196,0,.45)}
+.small{opacity:.85; font-weight:700}
 
-    .wrap{padding:8px 12px 26px; display:flex; justify-content:center;}
-    .list{width:min(980px, 100%); display:flex; flex-direction:column; gap:14px; margin-top:6px;}
+/* Lista */
+.listWrap{padding:12px 12px 30px;}
+.list{
+  max-width:980px;
+  margin:0 auto;
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+}
+.row{
+  display:grid;
+  grid-template-columns:56px 52px 1fr 120px;
+  align-items:center;
+  gap:12px;
+  padding:14px;
+  border-radius:18px;
+  background:var(--glass);
+  border:1px solid var(--border);
+  box-shadow:0 16px 32px rgba(0,0,0,.4);
+  backdrop-filter:blur(6px);
+}
+.num{
+  font-family:Impact,Arial Black,system-ui;
+  font-size:38px;
+  text-align:center;
+}
+.play{
+  width:46px;height:46px;
+  border-radius:50%;
+  border:2px solid rgba(255,255,255,.85);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+}
+.play svg{fill:#fff;width:18px}
+.song{font-weight:900;font-size:18px;margin:0}
+.artist{margin:4px 0 0;font-size:14px;opacity:.85}
+.vote{
+  width:120px;height:46px;
+  border:0;border-radius:16px;
+  background:var(--red);color:#fff;
+  font-weight:900;cursor:pointer;
+}
+.vote:disabled{opacity:.45;cursor:not-allowed}
 
-    .row{
-      display:grid;
-      grid-template-columns:60px 54px 1fr 120px;
-      align-items:center;
-      gap:12px;
-      padding:14px;
-      border-radius:22px;
-      background:var(--glass);
-      border:1px solid var(--border);
-      box-shadow:var(--shadow);
-      backdrop-filter:blur(6px);
-    }
-    .row.top1{border:1px solid rgba(229,9,20,.45); box-shadow:0 0 26px rgba(229,9,20,.22);}
-    .num{font-weight:1000; font-size:42px; text-align:center; opacity:.95;}
-    .row.top1 .num{color:var(--red)}
+.footer{
+  text-align:center;
+  padding:8px 0 18px;
+  font-weight:800;
+  opacity:.85;
+}
 
-    .play{
-      width:48px;height:48px;
-      border-radius:50%;
-      border:2px solid rgba(255,255,255,.7);
-      display:flex; align-items:center; justify-content:center;
-      cursor:pointer;
-      background:rgba(0,0,0,.35);
-    }
-    .play svg{fill:#fff;width:18px;height:18px;margin-left:2px}
-
-    .info .song{margin:0; font-weight:1000; font-size:18px;}
-    .info .artist{margin:4px 0 0; opacity:.82; font-size:14px;}
-
-    .vote{
-      width:120px; height:46px;
-      border:0; border-radius:16px;
-      background:var(--red);
-      color:#fff; font-weight:1000;
-      cursor:pointer; letter-spacing:1px;
-    }
-    .vote:disabled{opacity:.45; cursor:not-allowed}
-
-    .footer{text-align:center; padding:14px 0 24px; font-weight:800; opacity:.85;}
-
-    @media (max-width:520px){
-      .topBar{grid-template-columns:70px 1fr 60px}
-      .logo{width:62px}
-      .row{grid-template-columns:54px 52px 1fr 106px}
-      .vote{width:106px}
-    }
-  </style>
+@media(max-width:520px){
+  .header{grid-template-columns:80px 1fr 64px}
+  .logo{width:68px}
+  .row{grid-template-columns:46px 46px 1fr 105px}
+  .vote{width:105px}
+}
+</style>
 </head>
 
 <body>
 
-  <div class="topWrap">
-    <div class="topBar">
-      <img src="logotipo.png" class="logo" alt="ON Radio">
-      <div class="titleBox">
-        <div class="titleLine"><span class="w">RANKING</span> <span class="r">ON</span></div>
-        <div class="subLine">VOTÁ TU TEMA FAVORITO</div>
-      </div>
-      <div class="arrow" aria-hidden="true"></div>
+<div class="headerWrap">
+  <div class="header">
+    <img src="logotipo.png" class="logo" alt="ON Radio">
+    <div class="titleBox">
+      <h1 class="title"><span class="w">RANKING</span> <span class="r">ON</span></h1>
+      <div class="subtitle">VOTÁ TU TEMA FAVORITO</div>
     </div>
+    <div class="arrowDown" aria-hidden="true"></div>
   </div>
+</div>
 
-  <div id="status" class="status">Cargando temas…</div>
+<div class="statusWrap">
+  <div id="status" class="status warn">Cargando temas… <span class="small">(conectando a Firebase)</span></div>
+</div>
 
-  <div class="wrap">
-    <div class="list" id="list"></div>
-  </div>
+<div class="listWrap">
+  <div class="list" id="list"></div>
+</div>
 
-  <div class="footer">www.laonradio.com.ar</div>
+<div class="footer">www.laonradio.com.ar</div>
 
-  <!-- ✅ Firebase COMPAT (sin modules) -->
-  <script src="https://www.gstatic.com/firebasejs/12.10.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/12.10.0/firebase-database-compat.js"></script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
+import {
+  getDatabase, ref, get, child, runTransaction
+} from "https://www.gstatic.com/firebasejs/12.10.0/firebase-database.js";
 
-  <script>
-    const status = document.getElementById("status");
-    const list = document.getElementById("list");
-    const audio = new Audio();
-    audio.preload = "none";
+/** ✅ TU CONFIG (la que me pasaste) */
+const firebaseConfig = {
+  apiKey: "AIzaSyC8XXef5k8hLmNL8ufIJsc7Sx5KTlRFdH8",
+  authDomain: "on-radio-ranking.firebaseapp.com",
+  databaseURL: "https://on-radio-ranking-default-rtdb.firebaseio.com",
+  projectId: "on-radio-ranking",
+  storageBucket: "on-radio-ranking.firebasestorage.app",
+  messagingSenderId: "311635352358",
+  appId: "1:311635352358:web:257ff4821987f07d31ffe7"
+};
 
-    function setStatusOk(msg, extra=""){
-      status.className = "status ok";
-      status.innerHTML = msg + (extra ? <small>${extra}</small> : "");
-    }
-    function setStatusBad(msg, extra=""){
-      status.className = "status bad";
-      status.innerHTML = msg + (extra ? <small>${extra}</small> : "");
-    }
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
 
-    function today(){ return new Date().toISOString().slice(0,10); }
-    function votedToday(){ return localStorage.getItem("on_vote") === today(); }
-    function lockVote(){ localStorage.setItem("on_vote", today()); }
+const statusEl = document.getElementById("status");
+const listEl = document.getElementById("list");
+const audio = new Audio();
 
-    function escapeHtml(s){
-      return String(s).replace(/[&<>"']/g, (c) => ({
-        "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
-      }[c]));
-    }
+function setStatus(type, msg, small=""){
+  statusEl.className = "status " + type;
+  statusEl.innerHTML = msg + (small ? ` <span class="small">${small}</span>` : "");
+}
 
-    // ✅ Tu config real
-    const firebaseConfig = {
-      apiKey: "AIzaSyC8XXef5k8hLmNL8ufIJsc7Sx5KTlRFdH8",
-      authDomain: "on-radio-ranking.firebaseapp.com",
-      databaseURL: "https://on-radio-ranking-default-rtdb.firebaseio.com",
-      projectId: "on-radio-ranking",
-      storageBucket: "on-radio-ranking.firebasestorage.app",
-      messagingSenderId: "311635352358",
-      appId: "1:311635352358:web:257ff4821987f07d31ffe7"
+function today(){ return new Date().toISOString().slice(0,10); }
+function votedToday(){ return localStorage.getItem("on_vote")==today(); }
+function lockVote(){ localStorage.setItem("on_vote",today()); }
+
+function normalizeTemas(raw){
+  // raw puede venir como {id:{...}, id2:{...}} o como null
+  const temas = Object.entries(raw || {}).map(([id,t])=>({
+    id,
+    nombre: t?.nombre ?? "(Sin nombre)",
+    artista: t?.artista ?? "",
+    audio: t?.audio ?? "",
+    votos: Number(t?.votos ?? 0)
+  }));
+  temas.sort((a,b)=>b.votos - a.votos);
+  return temas;
+}
+
+function render(temas){
+  listEl.innerHTML = "";
+  temas.forEach((t,i)=>{
+    const row = document.createElement("div");
+    row.className = "row";
+    row.innerHTML = `
+      <div class="num">${i+1}</div>
+      <div class="play" title="Reproducir">
+        <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+      </div>
+      <div>
+        <p class="song">${t.nombre}</p>
+        <p class="artist">${t.artista}</p>
+      </div>
+      <button class="vote" ${votedToday() ? "disabled":""}>VOTAR</button>
+    `;
+
+    row.querySelector(".play").onclick = ()=>{
+      if(!t.audio){
+        alert("Este tema no tiene archivo de audio cargado.");
+        return;
+      }
+      audio.src = t.audio; // ej: "papi.mp3" (en el mismo directorio)
+      audio.play().catch(()=>alert("No pude reproducir el audio (revisá el nombre del archivo)."));
     };
 
-    try{
-      firebase.initializeApp(firebaseConfig);
-      const db = firebase.database();
+    row.querySelector(".vote").onclick = async ()=>{
+      if(votedToday()){
+        alert("Ya votaste hoy. Volvé mañana.");
+        return;
+      }
+      // ✅ Intento votar en /temas/id/votos y si no existe /temas, intento en /id/votos
+      try{
+        const temasSnap = await get(ref(db, "temas"));
+        const base = temasSnap.exists() ? "temas/" : "";
+        await runTransaction(ref(db, base + t.id + "/votos"), v => (v||0)+1);
+        lockVote();
+        alert("Gracias por votar. Volvé mañana.");
+        location.reload();
+      }catch(err){
+        console.error(err);
+        alert("No pude registrar el voto. Revisá permisos de Firebase.");
+      }
+    };
 
-      const temasRef = db.ref("temas");
+    listEl.appendChild(row);
+  });
+}
 
-      temasRef.on("value", (snap) => {
-        const data = snap.val();
+async function boot(){
+  try{
+    setStatus("warn", "Cargando temas…", "(leyendo base de datos)");
 
-        if(!data){
-          list.innerHTML = "";
-          setStatusBad("No hay datos en /temas.", "En Firebase debe existir la ruta 'temas' con tus canciones.");
-          return;
-        }
-
-        const temas = Object.entries(data).map(([id, t]) => ({
-          id,
-          nombre: t && t.nombre ? t.nombre : "",
-          artista: t && t.artista ? t.artista : "",
-          audio: t && t.audio ? t.audio : "",
-          votos: Number((t && t.votos) ? t.votos : 0)
-        })).sort((a,b) => b.votos - a.votos);
-
-        list.innerHTML = "";
-
-        temas.forEach((t, i) => {
-          const row = document.createElement("div");
-          row.className = "row" + (i===0 ? " top1" : "");
-          const disabled = votedToday() ? "disabled" : "";
-
-          row.innerHTML = `
-            <div class="num">${i+1}</div>
-            <div class="play" title="Reproducir">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
-            </div>
-            <div class="info">
-              <p class="song">${escapeHtml(t.nombre || "(Sin nombre)")}</p>
-              <p class="artist">${escapeHtml(t.artista || "")}</p>
-            </div>
-            <button class="vote" ${disabled}>VOTAR</button>
-          `;
-
-          row.querySelector(".play").onclick = () => {
-            if(!t.audio){
-              alert("Este tema no tiene archivo de audio asignado.");
-              return;
-            }
-            audio.src = t.audio;
-            audio.play().catch(() => alert("Tocá play de nuevo: el navegador bloqueó el audio al primer intento."));
-          };
-
-          row.querySelector(".vote").onclick = async () => {
-            if(votedToday()){
-              alert("Ya votaste hoy. Volvé mañana.");
-              return;
-            }
-            try{
-              await db.ref("temas/" + t.id + "/votos").transaction(v => (Number(v||0) + 1));
-              lockVote();
-              alert("Gracias por votar. Volvé mañana.");
-            }catch(err){
-              setStatusBad("No se pudo registrar el voto.", String(err && err.message ? err.message : err));
-              alert("Error al votar. Mirá el cartel de arriba.");
-            }
-          };
-
-          list.appendChild(row);
-        });
-
-        setStatusOk(Temas cargados: ${temas.length}, votedToday() ? "Hoy ya votaste (bloqueado por 24hs)." : "Podés votar 1 vez por día.");
-      }, (err) => {
-        setStatusBad("Firebase no permite leer /temas.", String(err && err.message ? err.message : err));
-      });
-
-    }catch(e){
-      setStatusBad("Se rompió el script al iniciar Firebase.", String(e && e.message ? e.message : e));
+    // 1) pruebo /temas
+    const snapTemas = await get(ref(db, "temas"));
+    if(snapTemas.exists()){
+      const temas = normalizeTemas(snapTemas.val());
+      setStatus("ok", Cargados ${temas.length} temas ✅, "(desde /temas)");
+      render(temas);
+      return;
     }
-  </script>
+
+    // 2) si /temas no existe, pruebo raíz /
+    const snapRoot = await get(ref(db, "/"));
+    const rootVal = snapRoot.val();
+
+    // Si la raíz tiene cosas "de sistema" (raro), filtramos por objetos que tengan "nombre"
+    const cleaned = {};
+    for(const [k,v] of Object.entries(rootVal || {})){
+      if(v && typeof v === "object" && ("nombre" in v || "artista" in v || "votos" in v)){
+        cleaned[k] = v;
+      }
+    }
+
+    const temas = normalizeTemas(cleaned);
+    if(temas.length === 0){
+      setStatus("err", "No encontré temas en /temas ni en la raíz ❌", "(revisá dónde están guardados en Firebase)");
+      return;
+    }
+
+    setStatus("ok", Cargados ${temas.length} temas ✅, "(desde raíz /)");
+    render(temas);
+
+  } catch (err){
+    console.error("Firebase error:", err);
+    // Esto te va a decir EXACTO si es permisos (permission_denied)
+    setStatus("err", "Error Firebase ❌", String(err?.message || err));
+  }
+}
+
+boot();
+</script>
 
 </body>
 </html>
