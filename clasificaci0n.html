@@ -95,7 +95,7 @@ body{
 
 .row{
   display:grid;
-  grid-template-columns:55px 50px 1fr 20px 110px;
+  grid-template-columns:55px 50px 1fr 44px 110px;
   align-items:center;
   gap:10px;
   padding:14px;
@@ -107,12 +107,12 @@ body{
 }
 
 .row.top1{
-  border:1px solid rgba(229,9,20,.4);
-  box-shadow:0 0 20px rgba(229,9,20,.2);
+  border:1px solid rgba(229,9,20,.45);
+  box-shadow:0 0 24px rgba(229,9,20,.22);
 }
 
 .num{
-  font-family:"Benjamin Gothic Heavy",Impact,Arial Black;
+  font-family:Impact, Arial Black, system-ui;
   font-size:36px;
   text-align:center;
 }
@@ -125,15 +125,17 @@ body{
 .play{
   width:46px;height:46px;
   border-radius:50%;
-  border:2px solid #fff;
+  border:2px solid rgba(255,255,255,.75);
   display:flex;
   align-items:center;
   justify-content:center;
   cursor:pointer;
+  user-select:none;
 }
-.play svg{
-  fill:#fff;
-  width:18px;
+.play svg{ fill:#fff; width:18px; opacity:.95; }
+.row.playing .play{
+  border-color:var(--cyan);
+  box-shadow:0 0 18px rgba(25,211,255,.25);
 }
 
 /* Info */
@@ -141,32 +143,25 @@ body{
   font-weight:900;
   font-size:18px;
   margin:0;
+  line-height:1.15;
 }
 .artist{
-  margin:4px 0 0;
+  margin:6px 0 0;
   font-size:14px;
   opacity:.8;
 }
 
-/* Trend */
-.trend{
-  width:14px;height:14px;
-  border-radius:3px;
-}
-.trend.up{
-  width:0;height:0;
-  border-left:8px solid transparent;
-  border-right:8px solid transparent;
-  border-bottom:14px solid var(--green);
-}
-.trend.down{
-  width:0;height:0;
-  border-left:8px solid transparent;
-  border-right:8px solid transparent;
-  border-top:14px solid var(--red);
-}
-.trend.stable{
-  background:var(--yellow);
+/* Votos */
+.votos{
+  height:44px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:14px;
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.08);
+  font-weight:900;
+  letter-spacing:.5px;
 }
 
 /* Votar */
@@ -190,7 +185,28 @@ body{
   text-align:center;
   padding:10px 0 20px;
   font-weight:700;
-  opacity:.8;
+  opacity:.85;
+}
+
+/* Toast */
+.toast{
+  position:fixed;
+  left:50%;
+  bottom:18px;
+  transform:translateX(-50%);
+  background:rgba(0,0,0,.78);
+  border:1px solid rgba(255,255,255,.10);
+  padding:10px 14px;
+  border-radius:12px;
+  font-weight:800;
+  letter-spacing:.2px;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .25s ease, transform .25s ease;
+}
+.toast.show{
+  opacity:1;
+  transform:translateX(-50%) translateY(-6px);
 }
 
 /* Responsive */
@@ -199,18 +215,18 @@ body{
   .side{font-size:38px}
   .logo{width:70px}
   .row{
-    grid-template-columns:45px 45px 1fr 18px 95px;
+    grid-template-columns:45px 45px 1fr 40px 95px;
   }
   .vote{width:95px}
 }
 </style>
 </head>
-<body>
 
+<body>
 <div class="side">RANKING ON</div>
 
 <div class="header">
-  <img src="logotipo.png" class="logo">
+  <img src="logotipo.png" class="logo" alt="ON Radio">
   <h1 class="title">VOTÁ TU TEMA PREFERIDO</h1>
   <div class="arrowDown"></div>
 </div>
@@ -218,88 +234,167 @@ body{
 <div class="list" id="list"></div>
 
 <div class="footer">www.laonradio.com.ar</div>
+<div class="toast" id="toast"></div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
 import { getDatabase, ref, onValue, runTransaction } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
 
+/* =========================
+   1) CONFIG FIREBASE (TUYO)
+   ========================= */
 const firebaseConfig = {
-  apiKey: "AIzaSyC8XX...",
+  apiKey: "AIzaSyC8XXef5k8hLmNL8ufIJsC7Sx5KT1RFdH8",
   authDomain: "on-radio-ranking.firebaseapp.com",
   databaseURL: "https://on-radio-ranking-default-rtdb.firebaseio.com",
   projectId: "on-radio-ranking",
-  storageBucket: "on-radio-ranking.appspot.com",
+  storageBucket: "on-radio-ranking.firebasestorage.app",
   messagingSenderId: "311635352358",
   appId: "1:311635352358:web:257ff4821987f07d31ffe7"
 };
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
-const temasRef = ref(db,"temas");
+
+/* OJO: tu nodo es "temas" */
+const temasRef = ref(db, "temas");
+
 const list = document.getElementById("list");
+const toastEl = document.getElementById("toast");
+
+/* Un solo audio sonando */
 const audio = new Audio();
+let currentId = null;
+
+function toast(msg){
+  toastEl.textContent = msg;
+  toastEl.classList.add("show");
+  clearTimeout(toastEl._t);
+  toastEl._t = setTimeout(()=>toastEl.classList.remove("show"), 1700);
+}
 
 function today(){
   return new Date().toISOString().slice(0,10);
 }
 function votedToday(){
-  return localStorage.getItem("on_vote")==today();
+  return localStorage.getItem("on_vote") === today();
 }
 function lockVote(){
-  localStorage.setItem("on_vote",today());
+  localStorage.setItem("on_vote", today());
 }
 
-onValue(temasRef,(snap)=>{
-  const data=snap.val();
-  if(!data) return;
+function iconPlay(){
+  return <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>;
+}
+function iconPause(){
+  return <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5h4v14H7zm6 0h4v14h-4z"/></svg>;
+}
 
-  const temas=Object.entries(data).map(([id,t])=>({
+function safeText(s){
+  return String(s ?? "").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;");
+}
+
+/* Render */
+onValue(temasRef, (snap) => {
+  const data = snap.val();
+  if(!data){
+    list.innerHTML = "";
+    toast("No hay temas en la base todavía.");
+    return;
+  }
+
+  const temas = Object.entries(data).map(([id, t]) => ({
     id,
-    nombre:t.nombre,
-    artista:t.artista,
-    audio:t.audio,
-    votos:Number(t.votos||0)
+    nombre: t.nombre ?? id,
+    artista: t.artista ?? "",
+    audio: t.audio ?? "",
+    votos: Number(t.votos || 0)
   }));
 
-  temas.sort((a,b)=>b.votos-a.votos);
-  list.innerHTML="";
+  temas.sort((a,b)=> b.votos - a.votos);
 
-  temas.forEach((t,i)=>{
-    const row=document.createElement("div");
-    row.className="row"+(i===0?" top1":"");
+  list.innerHTML = "";
 
-    row.innerHTML=`
+  temas.forEach((t, i) => {
+    const row = document.createElement("div");
+    row.className = "row" + (i===0 ? " top1" : "") + (t.id===currentId ? " playing" : "");
+
+    row.innerHTML = `
       <div class="num">${i+1}</div>
-      <div class="play">
-        <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+
+      <div class="play" title="Reproducir / Pausar">
+        ${t.id===currentId && !audio.paused ? iconPause() : iconPlay()}
       </div>
+
       <div>
-        <p class="song">${t.nombre}</p>
-        <p class="artist">${t.artista}</p>
+        <p class="song">${safeText(t.nombre)}</p>
+        <p class="artist">${safeText(t.artista)}</p>
       </div>
-      <div class="trend stable"></div>
-      <button class="vote" ${votedToday()?"disabled":""}>VOTAR</button>
+
+      <div class="votos" title="Votos">${t.votos}</div>
+
+      <button class="vote" ${votedToday() ? "disabled" : ""}>VOTAR</button>
     `;
 
-    row.querySelector(".play").onclick=()=>{
-      audio.src=t.audio;
-      audio.play();
-    };
-
-    row.querySelector(".vote").onclick=async()=>{
-      if(votedToday()){
-        alert("Ya votaste hoy. Volvé mañana.");
+    /* PLAY/PAUSE */
+    row.querySelector(".play").onclick = async () => {
+      if(!t.audio){
+        toast("Este tema no tiene audio cargado.");
         return;
       }
-      await runTransaction(ref(db,"temas/"+t.id+"/votos"),v=>(v||0)+1);
-      lockVote();
-      alert("Gracias por votar. Volvé mañana.");
+
+      // Si clickeas el mismo tema => toggle play/pause
+      if(currentId === t.id){
+        if(audio.paused){
+          await audio.play().catch(()=>{});
+          toast("▶ Reproduciendo");
+        }else{
+          audio.pause();
+          toast("⏸ Pausa");
+        }
+      }else{
+        currentId = t.id;
+        audio.pause();
+        audio.currentTime = 0;
+        audio.src = t.audio;     // mp3 en el mismo lugar que el html
+        await audio.play().catch(()=>{});
+        toast("▶ Reproduciendo");
+      }
+
+      // re-render suave: actualizo iconos sin romper todo
+      // (simple: volvemos a pedir render con un truquito)
+      // forzamos un repaint minimal:
+      // (la base se vuelve a re-renderizar igual con onValue cuando cambie votos)
+      document.querySelectorAll(".row").forEach(r=>r.classList.remove("playing"));
+      row.classList.add("playing");
+      row.querySelector(".play").innerHTML = (!audio.paused && currentId===t.id) ? iconPause() : iconPlay();
+    };
+
+    audio.onended = () => {
+      currentId = null;
+      document.querySelectorAll(".row").forEach(r=>r.classList.remove("playing"));
+    };
+
+    /* VOTAR */
+    row.querySelector(".vote").onclick = async () => {
+      if(votedToday()){
+        toast("Ya votaste hoy. Volvé mañana.");
+        return;
+      }
+
+      try{
+        await runTransaction(ref(db, temas/${t.id}/votos), (v) => (Number(v)||0) + 1);
+        lockVote();
+        toast("Gracias por votar 🙌");
+      }catch(e){
+        console.error(e);
+        toast("Error al votar (reglas de Firebase).");
+      }
     };
 
     list.appendChild(row);
   });
 });
 </script>
-
 </body>
 </html>
