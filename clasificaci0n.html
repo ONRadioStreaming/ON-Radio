@@ -1,595 +1,406 @@
 <!doctype html>
 <html lang="es">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>ON Radio - Ranking</title>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Ranking ON</title>
 
-  <style>
-    :root{
-      --red:#ff1a1a;
-      --red2:#b80000;
-      --white:#ffffff;
-      --muted:rgba(255,255,255,.72);
-      --glass:rgba(0,0,0,.55);
-      --stroke:rgba(255,255,255,.10);
-      --shadow:0 18px 45px rgba(0,0,0,.60);
-      --radius:22px;
-    }
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      color:var(--white);
-      background: #000 url('fondoranking2.jpg') no-repeat center top fixed;
-      background-size: cover;
-      overflow-x:hidden;
-    }
-
-    /* Capa para mejorar legibilidad sin “matar” el fondo */
-    .veil{
-      position:fixed; inset:0;
-      background:
-        radial-gradient(900px 500px at 50% 0%, rgba(0,0,0,.25), rgba(0,0,0,.55) 70%),
-        linear-gradient(180deg, rgba(0,0,0,.20), rgba(0,0,0,.70));
-      pointer-events:none;
-      z-index:0;
-    }
-
-    .wrap{
-      position:relative;
-      z-index:1;
-      width:min(980px, 100%);
-      margin:0 auto;
-      padding:16px 14px 80px;
-    }
-
-    /* Barra superior */
-    .top{
-      position:sticky;
-      top:10px;
-      z-index:50;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      padding:12px 12px;
-      border-radius:18px;
-      background:rgba(0,0,0,.55);
-      border:1px solid var(--stroke);
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(10px);
-    }
-
-    .logo{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      min-width:120px;
-    }
-    .logo img{
-      width:110px;
-      height:auto;
-      display:block;
-    }
-
-    .titleBox{
-      flex:1;
-      text-align:center;
-      line-height:1.05;
-    }
-    .title{
-      font-weight:950;
-      letter-spacing:2px;
-      text-transform:uppercase;
-      font-size:clamp(18px, 4.3vw, 34px);
-      color:#e8f7ff;
-      text-shadow:
-        0 0 14px rgba(255,255,255,.12),
-        0 0 18px rgba(0,180,255,.12);
-    }
-
-    /* Flecha animada roja apuntando a la columna de votar */
-    .arrowWrap{
-      width:88px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-    }
-    .arrowDown{
-      width:0;height:0;
-      border-left:14px solid transparent;
-      border-right:14px solid transparent;
-      border-top:24px solid var(--red);
-      filter: drop-shadow(0 0 10px rgba(255,26,26,.55));
-      animation: bob 1.05s ease-in-out infinite, blink 1.2s linear infinite;
-    }
-    @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(7px)}}
-    @keyframes blink{0%,100%{opacity:1}50%{opacity:.35}}
-
-    /* RANKING ON vertical fijo (blanco, lectura de abajo hacia arriba) */
-    .rail{
-      position:fixed;
-      left:10px;
-      top:50%;
-      transform: translateY(-50%);
-      z-index:40;
-      pointer-events:none;
-    }
-    .railText{
-      writing-mode: vertical-rl;
-      transform: rotate(180deg); /* abajo -> arriba */
-      font-weight:1000;
-      letter-spacing:10px;
-      text-transform:uppercase;
-      font-size: clamp(22px, 3.8vw, 44px);
-      color: rgba(255,255,255,.92);
-      text-shadow: 0 0 20px rgba(255,255,255,.10);
-    }
-
-    /* Lista */
-    .list{
-      margin-top:16px;
-      display:flex;
-      flex-direction:column;
-      gap:12px;
-      padding-left: 44px; /* deja aire para el rail */
-    }
-
-    .row{
-      background: rgba(0,0,0,.52);
-      border:1px solid rgba(255,255,255,.10);
-      box-shadow: var(--shadow);
-      border-radius: var(--radius);
-      padding:12px;
-      display:grid;
-      grid-template-columns: 70px 60px 1fr 26px 132px;
-      gap:12px;
-      align-items:center;
-      backdrop-filter: blur(10px);
-    }
-
-    /* Puesto */
-    .num{
-      font-weight:1000;
-      font-size: 44px;
-      line-height:1;
-      text-align:center;
-      color:rgba(255,255,255,.95);
-      text-shadow: 0 0 12px rgba(255,255,255,.10);
-      /* tipografía “con cuerpo”: si el user la tiene, la toma; si no, cae a Impact */
-      font-family: "Benjamin Gothic Heavy", Impact, "Arial Black", system-ui, sans-serif;
-    }
-    .num.top1{
-      color:#ff6a6a;
-      font-size: 52px;
-      text-shadow: 0 0 16px rgba(255,26,26,.25);
-    }
-
-    /* Play/Pause */
-    .playBtn{
-      width:54px; height:54px;
-      border-radius:999px;
-      border:2px solid rgba(255,255,255,.92);
-      background: rgba(0,0,0,.18);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      cursor:pointer;
-      transition: transform .10s ease;
-      user-select:none;
-    }
-    .playBtn:active{transform: scale(.97)}
-    .playIcon{
-      width:0;height:0;
-      border-top:9px solid transparent;
-      border-bottom:9px solid transparent;
-      border-left:14px solid rgba(255,255,255,.95);
-      margin-left:3px;
-    }
-    .pauseIcon{
-      width:16px; height:18px;
-      display:flex; gap:5px;
-    }
-    .pauseIcon span{
-      width:5px; height:18px;
-      background: rgba(255,255,255,.95);
-      border-radius:2px;
-    }
-
-    /* Texto */
-    .meta{min-width:0}
-    .song{
-      font-weight:950;
-      font-size: 22px;
-      line-height:1.05;
-      margin-bottom:4px;
-      color:rgba(255,255,255,.96);
-      word-break: break-word;
-    }
-    .artist{
-      font-weight:750;
-      font-size: 16px;
-      color: var(--muted);
-      word-break: break-word;
-    }
-
-    /* Movimiento (triángulos + cuadrado) */
-    .move{
-      width:22px;height:22px;
-      border-radius:6px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      background: rgba(255,255,255,.06);
-      border:1px solid rgba(255,255,255,.10);
-      font-weight:1000;
-      user-select:none;
-    }
-    .move.up{ color:#6cff6c; border-color: rgba(108,255,108,.25); }
-    .move.down{ color:#ff6a6a; border-color: rgba(255,106,106,.25); }
-    .move.same{ color:#ffd36a; border-color: rgba(255,211,106,.25); }
-
-    /* Votar */
-    .voteBtn{
-      width:132px;
-      height:52px;
-      border-radius:18px;
-      border:0;
-      cursor:pointer;
-      font-weight:950;
-      letter-spacing:.4px;
-      background: linear-gradient(180deg, var(--red), var(--red2));
-      color:#fff;
-      box-shadow: 0 10px 22px rgba(255,26,26,.22);
-      transition: transform .10s ease, opacity .15s ease;
-    }
-    .voteBtn:active{transform: scale(.98)}
-    .voteBtn[disabled]{opacity:.55; cursor:not-allowed}
-
-    .foot{
-      margin-top:18px;
-      padding:14px 12px;
-      text-align:center;
-      background: rgba(0,0,0,.60);
-      border:1px solid rgba(255,255,255,.08);
-      border-radius: 18px;
-      box-shadow: var(--shadow);
-      color: rgba(255,255,255,.82);
-      font-weight:800;
-    }
-
-    .errorBox{
-      margin: 14px auto 0;
-      padding: 10px 12px;
-      border: 1px solid rgba(255,106,106,.35);
-      background: rgba(255,26,26,.10);
-      border-radius: 12px;
-      color: rgba(255,255,255,.95);
-      font-weight:850;
-      display:none;
-    }
-
-    @media (max-width: 760px){
-      .logo img{width:100px}
-      .row{grid-template-columns: 62px 56px 1fr 24px 122px}
-      .num{font-size:40px}
-      .num.top1{font-size:48px}
-      .song{font-size:20px}
-      .voteBtn{width:122px;height:50px}
-    }
-
-    @media (max-width: 520px){
-      .row{
-        grid-template-columns: 58px 56px 1fr;
-        grid-template-rows: auto auto;
-        gap:10px 12px;
-      }
-      .num{grid-row:1/3}
-      .playBtn{grid-row:1/3}
-      .meta{grid-column:3/4; grid-row:1/2}
-      .move{grid-column:3/4; grid-row:2/3; justify-self:start}
-      .voteBtn{grid-column:3/4; grid-row:2/3; justify-self:end}
-      .arrowWrap{width:64px}
-    }
-  </style>
-</head>
-
-<body>
-  <div class="veil"></div>
-  <div class="rail"><div class="railText">RANKING ON</div></div>
-
-  <div class="wrap">
-    <div class="top">
-      <div class="logo">
-        <img src="logotipo.png" alt="ON Radio">
-      </div>
-
-      <div class="titleBox">
-        <div class="title">VOTÁ TU TEMA PREFERIDO</div>
-      </div>
-
-      <div class="arrowWrap" title="Votá abajo">
-        <div class="arrowDown"></div>
-      </div>
-    </div>
-
-    <div id="errorBox" class="errorBox"></div>
-
-    <div id="list" class="list"></div>
-
-    <div class="foot">www.laonradio.com.ar</div>
-  </div>
-
-  <!-- Firebase compat (más estable para copiar/pegar) -->
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
-
-  <script>
-    /*********
-     * FIREBASE (TU CONFIG)
-     *********/
-    const firebaseConfig = {
-      apiKey: "AIzaSyC8XXef5k8hLmNL8ufIJsc7Sx5KTlRFdH8",
-      authDomain: "on-radio-ranking.firebaseapp.com",
-      databaseURL: "https://on-radio-ranking-default-rtdb.firebaseio.com",
-      projectId: "on-radio-ranking",
-      storageBucket: "on-radio-ranking.firebasestorage.app",
-      messagingSenderId: "311635352358",
-      appId: "1:311635352358:web:257ff4821987f07d31ffe7"
-    };
-
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
-
-    /*********
-     * 1 VOTO TOTAL POR DÍA
-     *********/
-    const VOTE_COOLDOWN_MS = 24 * 60 * 60 * 1000;
-    const DAILY_KEY = "onradio_vote_daily_ts";
-
-    function canVoteToday(){
-      const t = Number(localStorage.getItem(DAILY_KEY) || "0");
-      return (Date.now() - t) > VOTE_COOLDOWN_MS;
-    }
-    function markVotedToday(){
-      localStorage.setItem(DAILY_KEY, String(Date.now()));
-    }
-    function remainingMs(){
-      const t = Number(localStorage.getItem(DAILY_KEY) || "0");
-      const remain = VOTE_COOLDOWN_MS - (Date.now() - t);
-      return Math.max(0, remain);
-    }
-    function fmtRemain(ms){
-  const total = Math.ceil(ms/1000);
-  const h = Math.floor(total/3600);
-  const m = Math.floor((total%3600)/60);
-
-  if(h>0) return ${h}h ${m}m;
-  return ${m}m;
+<style>
+:root{
+  --red:#e50914;
+  --cyan:#19d3ff;
+  --yellow:#ffc400;
+  --green:#2bdc63;
+  --glass:rgba(0,0,0,.55);
+  --border:rgba(255,255,255,.08);
 }
 
-    /*********
-     * AUDIO: play/pause real
-     * - 1 solo tema sonando
-     *********/
-    const audio = new Audio();
-    audio.preload = "none";
-    let currentId = null;
+*{box-sizing:border-box}
 
-    function setBtnPlay(btn){
-      btn.innerHTML = '<div class="playIcon"></div>';
-      btn.dataset.state = "play";
-      btn.title = "Reproducir";
-    }
-    function setBtnPause(btn){
-      btn.innerHTML = '<div class="pauseIcon"><span></span><span></span></div>';
-      btn.dataset.state = "pause";
-      btn.title = "Pausar";
-    }
-    function stopAll(){
-      audio.pause();
-      audio.currentTime = 0;
-      currentId = null;
-      document.querySelectorAll(".playBtn").forEach(setBtnPlay);
-    }
-    audio.addEventListener("ended", () => {
-      currentId = null;
-      document.querySelectorAll(".playBtn").forEach(setBtnPlay);
-    });
+body{
+  margin:0;
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
+  color:#fff;
+  background:
+    linear-gradient(rgba(0,0,0,.65),rgba(0,0,0,.75)),
+    url("fondoranking2.jpg") center/cover fixed;
+}
 
-    /*********
-     * UI helpers
-     *********/
-    const listEl = document.getElementById("list");
-    const errorBox = document.getElementById("errorBox");
-    function showError(msg){
-      errorBox.style.display = "block";
-      errorBox.textContent = msg;
-    }
-    function clearError(){
-      errorBox.style.display = "none";
-      errorBox.textContent = "";
-    }
-    function esc(s){
-      return String(s||"")
-        .replaceAll("&","&amp;")
-        .replaceAll("<","&lt;")
-        .replaceAll(">","&gt;")
-        .replaceAll('"',"&quot;")
-        .replaceAll("'","&#039;");
+/* Lateral fijo */
+.side{
+  position:fixed;
+  left:12px;
+  top:50%;
+  transform:translateY(-50%);
+  writing-mode:vertical-rl;
+  transform-origin:center;
+  font-weight:900;
+  letter-spacing:8px;
+  font-size:46px;
+  opacity:.18;
+  pointer-events:none;
+}
+
+/* Header */
+.header{
+  padding:20px 14px 10px 70px;
+  position:relative;
+  text-align:center;
+}
+
+.logo{
+  position:absolute;
+  left:14px;
+  top:14px;
+  width:85px;
+}
+
+.title{
+  font-weight:900;
+  font-size:clamp(26px,4vw,44px);
+  letter-spacing:3px;
+  color:var(--cyan);
+  text-shadow:0 0 14px rgba(25,211,255,.4);
+  margin:0;
+}
+
+.arrowDown{
+  margin:14px auto 0;
+  width:0;height:0;
+  border-left:14px solid transparent;
+  border-right:14px solid transparent;
+  border-top:22px solid var(--red);
+  animation:arrowMove 1.6s ease-in-out infinite,
+            arrowBlink 1.6s ease-in-out infinite;
+}
+
+@keyframes arrowMove{
+  0%{transform:translateY(0)}
+  50%{transform:translateY(10px)}
+  100%{transform:translateY(0)}
+}
+@keyframes arrowBlink{
+  0%{opacity:1}
+  50%{opacity:.6}
+  100%{opacity:1}
+}
+
+/* Lista */
+.list{
+  padding:10px 14px 40px 70px;
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+}
+
+.row{
+  display:grid;
+  grid-template-columns:55px 50px 1fr 20px 110px;
+  align-items:center;
+  gap:10px;
+  padding:14px;
+  border-radius:18px;
+  background:var(--glass);
+  border:1px solid var(--border);
+  box-shadow:0 16px 32px rgba(0,0,0,.4);
+  backdrop-filter:blur(6px);
+}
+
+.row.top1{
+  border:1px solid rgba(229,9,20,.4);
+  box-shadow:0 0 20px rgba(229,9,20,.2);
+}
+
+.num{
+  font-family:Impact,Arial Black,system-ui;
+  font-size:36px;
+  text-align:center;
+}
+.row.top1 .num{
+  font-size:44px;
+  color:var(--red);
+}
+
+/* Play */
+.play{
+  width:46px;height:46px;
+  border-radius:50%;
+  border:2px solid #fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  user-select:none;
+}
+.play svg{
+  fill:#fff;
+  width:18px;
+}
+
+/* Info */
+.song{
+  font-weight:900;
+  font-size:18px;
+  margin:0;
+}
+.artist{
+  margin:4px 0 0;
+  font-size:14px;
+  opacity:.8;
+}
+
+/* Trend */
+.trend{
+  width:14px;height:14px;
+  border-radius:3px;
+}
+.trend.up{
+  width:0;height:0;
+  border-left:8px solid transparent;
+  border-right:8px solid transparent;
+  border-bottom:14px solid var(--green);
+}
+.trend.down{
+  width:0;height:0;
+  border-left:8px solid transparent;
+  border-right:8px solid transparent;
+  border-top:14px solid var(--red);
+}
+.trend.stable{
+  background:var(--yellow);
+}
+
+/* Votar */
+.vote{
+  width:110px;
+  height:44px;
+  border:0;
+  border-radius:14px;
+  background:var(--red);
+  color:#fff;
+  font-weight:900;
+  cursor:pointer;
+}
+.vote:disabled{
+  opacity:.4;
+  cursor:not-allowed;
+}
+
+/* Footer */
+.footer{
+  text-align:center;
+  padding:10px 0 20px;
+  font-weight:700;
+  opacity:.8;
+}
+
+/* Responsive */
+@media(max-width:520px){
+  .header,.list{padding-left:60px}
+  .side{font-size:38px}
+  .logo{width:70px}
+  .row{
+    grid-template-columns:45px 45px 1fr 18px 95px;
+  }
+  .vote{width:95px}
+}
+</style>
+</head>
+<body>
+
+<div class="side">RANKING ON</div>
+
+<div class="header">
+  <img src="logotipo.png" class="logo" alt="ON Radio">
+  <h1 class="title">VOTÁ TU TEMA PREFERIDO</h1>
+  <div class="arrowDown"></div>
+</div>
+
+<div class="list" id="list"></div>
+
+<div class="footer">www.laonradio.com.ar</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+import { getDatabase, ref, onValue, runTransaction } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
+
+/* =========================
+   0) PEGÁ ACÁ TU CONFIG REAL
+   (completo, sin "...")
+========================= */
+const firebaseConfig = {
+  apiKey: "PEGAR_API_KEY_COMPLETA",
+  authDomain: "on-radio-ranking.firebaseapp.com",
+  databaseURL: "https://on-radio-ranking-default-rtdb.firebaseio.com",
+  projectId: "on-radio-ranking",
+  storageBucket: "on-radio-ranking.appspot.com",
+  messagingSenderId: "311635352358",
+  appId: "1:311635352358:web:257ff4821987f07d31ffe7"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+// TU NODO REAL
+const temasRef = ref(db, "temas");
+
+const list = document.getElementById("list");
+const audio = new Audio();
+audio.preload = "none";
+
+let currentId = null; // tema sonando
+
+function today(){
+  return new Date().toISOString().slice(0,10);
+}
+function votedToday(){
+  return localStorage.getItem("on_vote_date") === today();
+}
+function lockVote(){
+  localStorage.setItem("on_vote_date", today());
+}
+
+// Ranking anterior para flechas (sube/baja/igual)
+function getPrevRankMap(){
+  try{
+    return JSON.parse(localStorage.getItem("on_prev_rank") || "{}");
+  }catch{
+    return {};
+  }
+}
+function setPrevRankMap(map){
+  localStorage.setItem("on_prev_rank", JSON.stringify(map));
+}
+
+function playIcon(){
+  return <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>;
+}
+function pauseIcon(){
+  return <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h4v14H6zm8 0h4v14h-4z"/></svg>;
+}
+
+function safeText(s){
+  return String(s ?? "").replace(/[&<>"']/g, m => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+  }[m]));
+}
+
+onValue(temasRef, (snap)=>{
+  const data = snap.val();
+  if(!data){
+    list.innerHTML = "";
+    return;
+  }
+
+  const temas = Object.entries(data).map(([id,t])=>({
+    id,
+    nombre: t?.nombre ?? id,
+    artista: t?.artista ?? "",
+    audio: t?.audio ?? "",
+    votos: Number(t?.votos ?? 0)
+  }));
+
+  temas.sort((a,b)=> b.votos - a.votos);
+
+  // prev rank map
+  const prev = getPrevRankMap();
+  const nowMap = {};
+  temas.forEach((t, idx) => nowMap[t.id] = idx + 1);
+  setPrevRankMap(nowMap);
+
+  list.innerHTML = "";
+
+  temas.forEach((t, i)=>{
+    const prevPos = prev[t.id];          // antes
+    const nowPos  = i + 1;               // ahora
+
+    let trendClass = "stable";
+    if(typeof prevPos === "number"){
+      if(nowPos < prevPos) trendClass = "up";
+      else if(nowPos > prevPos) trendClass = "down";
+      else trendClass = "stable";
+    }else{
+      // primera vez que aparece: lo dejamos "stable"
+      trendClass = "stable";
     }
 
-    // movimientos (sólo con posiciones anteriores de esta sesión)
-    let prevPos = new Map(); // id -> pos
+    const row = document.createElement("div");
+    row.className = "row" + (i===0 ? " top1" : "");
 
-    function moveBadge(prev, now){
-      if(!prev) return {cls:"same", txt:"■"};
-      const delta = prev - now; // + subió
-      if(delta > 0) return {cls:"up", txt:"▲"};
-      if(delta < 0) return {cls:"down", txt:"▼"};
-      return {cls:"same", txt:"■"};
-    }
+    row.innerHTML = `
+      <div class="num">${nowPos}</div>
+      <div class="play" title="Reproducir / Pausar">${(currentId===t.id && !audio.paused) ? pauseIcon() : playIcon()}</div>
+      <div>
+        <p class="song">${safeText(t.nombre)}</p>
+        <p class="artist">${safeText(t.artista)}</p>
+      </div>
+      <div class="trend ${trendClass}"></div>
+      <button class="vote" ${votedToday() ? "disabled" : ""}>VOTAR</button>
+    `;
 
-    function render(arr){
-      if(!arr.length){
-        listEl.innerHTML = `<div style="padding-left:44px; font-weight:900; color:rgba(255,255,255,.85);">
-          No se están leyendo temas desde Firebase. (Revisá reglas o que exista el nodo <b>/temas</b>.)
-        </div>`;
+    const playBtn = row.querySelector(".play");
+    const voteBtn = row.querySelector(".vote");
+
+    playBtn.onclick = async ()=>{
+      if(!t.audio){
+        alert("Este tema no tiene archivo de audio configurado.");
         return;
       }
 
-      const newPos = new Map();
-      arr.forEach((t,i)=> newPos.set(t.id, i+1));
-
-      const voteAllowed = canVoteToday();
-      const voteText = voteAllowed ? "VOTAR" : YA VOTASTE;
-
-      listEl.innerHTML = arr.map((t,i)=>{
-        const pos = i+1;
-        const top1 = pos===1 ? "top1" : "";
-        const badge = moveBadge(prevPos.get(t.id), pos);
-
-        return `
-          <div class="row">
-            <div class="num ${top1}">${pos}</div>
-
-            <button class="playBtn" data-id="${esc(t.id)}" data-audio="${esc(t.audio || "")}" data-state="play" aria-label="Play">
-              <div class="playIcon"></div>
-            </button>
-
-            <div class="meta">
-              <div class="song">${esc(t.nombre || t.id)}</div>
-              <div class="artist">${esc(t.artista || "")}</div>
-            </div>
-
-            <div class="move ${badge.cls}" title="Movimiento">${badge.txt}</div>
-
-            <button class="voteBtn" data-id="${esc(t.id)}" ${voteAllowed ? "" : "disabled"}>
-              ${voteText}
-            </button>
-          </div>
-        `;
-      }).join("");
-
-      prevPos = newPos;
-
-      // listeners play/pause
-      document.querySelectorAll(".playBtn").forEach(btn=>{
-        btn.addEventListener("click", ()=>{
-          clearError();
-          const id = btn.dataset.id;
-          const file = btn.dataset.audio; // ej: "papi.mp3"
-          if(!file){
-            showError("Este tema no tiene archivo MP3 cargado en el campo 'audio'.");
-            return;
-          }
-
-          // mismo tema = toggle
-          if(currentId === id){
-            if(audio.paused){
-              audio.play().catch(()=> showError("No pude reproducir el MP3 (revisá nombre/archivo)."));
-              setBtnPause(btn);
-            }else{
-              audio.pause();
-              setBtnPlay(btn);
-            }
-            return;
-          }
-
-          // tema nuevo
-          stopAll();
-          currentId = id;
-          audio.src = file; // ASUME mp3 en la raíz del repo
-          audio.play().then(()=>{
-            document.querySelectorAll(".playBtn").forEach(setBtnPlay);
-            setBtnPause(btn);
-          }).catch((e)=>{
-            currentId = null;
-            setBtnPlay(btn);
-            showError("No pude reproducir el MP3. Revisá que el archivo exista y el nombre coincida EXACTO.");
-            console.error(e);
-          });
-        });
-      });
-
-      // listeners votar
-      document.querySelectorAll(".voteBtn").forEach(btn=>{
-        btn.addEventListener("click", async ()=>{
-          clearError();
-          if(!canVoteToday()){
-            alert("Gracias por votar en el Ranking ON! Recordá que podés votar una sola vez por día. Volvé mañana para votar otra vez.");
-            return;
-          }
-
-          const id = btn.dataset.id;
-          btn.disabled = true;
-
-          try{
-            // suma voto de forma segura (transacción)
-            const ref = db.ref("temas/" + id + "/votos");
-            await ref.transaction(curr => (Number(curr || 0) + 1));
-
-            markVotedToday();
-            alert("Gracias por votar en el Ranking ON! Recordá que podés votar una sola vez por día. Volvé mañana para votar otra vez.");
-
-            // deshabilitar TODOS los botones (porque es 1 voto total/día)
-            document.querySelectorAll(".voteBtn").forEach(b=>{
-              b.disabled = true;
-              b.textContent = "YA VOTASTE";
-            });
-
-          }catch(e){
-            console.error(e);
-            showError("Error al votar. Revisá reglas de Firebase (write) o permisos.");
-            btn.disabled = false;
-          }
-        });
-      });
-
-      // si ya votó hoy: deshabilita todos y listo
-      if(!canVoteToday()){
-        document.querySelectorAll(".voteBtn").forEach(b=>{
-          b.disabled = true;
-          b.textContent = "YA VOTASTE";
-        });
-      }
-    }
-
-    /*********
-     * LECTURA Firebase: /temas
-     *********/
-    function start(){
-      clearError();
-      db.ref("temas").on("value", (snap)=>{
-        const val = snap.val();
-        if(!val){
-          render([]);
-          return;
+      // si es el mismo tema: toggle
+      if(currentId === t.id){
+        if(audio.paused){
+          await audio.play().catch(()=>{});
+          playBtn.innerHTML = pauseIcon();
+        }else{
+          audio.pause();
+          playBtn.innerHTML = playIcon();
         }
+        return;
+      }
 
-        const arr = Object.keys(val).map(id=>{
-          const d = val[id] || {};
-          return {
-            id,
-            nombre: d.nombre || id,
-            artista: d.artista || "",
-            audio: d.audio || "",
-            votos: Number(d.votos || 0)
-          };
-        });
+      // si es otro tema: cortar el anterior y reproducir nuevo
+      currentId = t.id;
+      audio.pause();
+      audio.currentTime = 0;
+      audio.src = t.audio; // archivo mp3 en el repo (ruta relativa)
+      await audio.play().catch(()=>{});
 
-        // orden por votos desc + desempate alfabético
-        arr.sort((a,b)=> (b.votos - a.votos) || a.nombre.localeCompare(b.nombre, "es"));
+      // refrescar íconos de todos
+      document.querySelectorAll(".play").forEach(el => el.innerHTML = playIcon());
+      playBtn.innerHTML = pauseIcon();
+    };
 
-        render(arr);
-      }, (err)=>{
-        console.error(err);
-        showError("No se pudo leer /temas. Revisá reglas Firebase (read) y que estés en el proyecto correcto.");
-      });
-    }
+    audio.onended = ()=>{
+      // cuando termina, poner ícono play en todos
+      currentId = null;
+      document.querySelectorAll(".play").forEach(el => el.innerHTML = playIcon());
+    };
 
-    start();
-  </script>
+    voteBtn.onclick = async ()=>{
+      if(votedToday()){
+        alert("Ya votaste hoy. Volvé mañana.");
+        return;
+      }
+
+      voteBtn.disabled = true;
+
+      try{
+        await runTransaction(ref(db, temas/${t.id}/votos), (v)=> (Number(v||0) + 1));
+        lockVote();
+        alert("Gracias por votar. Volvé mañana.");
+      }catch(e){
+        voteBtn.disabled = false;
+        console.error(e);
+        alert("No se pudo registrar el voto. Probá de nuevo.");
+      }
+    };
+
+    list.appendChild(row);
+  });
+
+});
+</script>
+
 </body>
 </html>
