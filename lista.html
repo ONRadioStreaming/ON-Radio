@@ -9,10 +9,8 @@
 :root{
   --red:#e50914;
   --cyan:#19d3ff;
-  --yellow:#ffc400;
-  --green:#2bdc63;
   --glass:rgba(0,0,0,.55);
-  --border:rgba(255,255,255,.08);
+  --border:rgba(255,255,255,.10);
 }
 
 *{box-sizing:border-box}
@@ -26,56 +24,69 @@ body{
     url("fondoranking2.jpg") center/cover fixed;
 }
 
-/* ================= HEADER RECTANGULAR ================= */
+/* Header - rectángulo */
+.headerWrap{
+  padding:16px 14px 10px;
+}
 
-.headerBox{
-  margin:18px 14px 10px;
-  padding:16px;
-  border-radius:22px;
-  background:linear-gradient(180deg, rgba(0,0,0,.75), rgba(0,0,0,.5));
-  border:1px solid rgba(255,255,255,.08);
-  box-shadow:0 20px 40px rgba(0,0,0,.45);
-  display:grid;
-  grid-template-columns:80px 1fr 60px;
+.header{
+  position:relative;
+  display:flex;
   align-items:center;
+  gap:12px;
+  padding:14px 16px;
+  border-radius:22px;
+  background:var(--glass);
+  border:1px solid var(--border);
+  box-shadow:0 16px 32px rgba(0,0,0,.45);
   backdrop-filter:blur(8px);
 }
 
 .logo{
-  width:70px;
+  width:74px;
+  flex:0 0 auto;
 }
 
-.titleMain{
+.headerCenter{
+  flex:1 1 auto;
+  text-align:center;
+  line-height:1.05;
+}
+
+.bigTitle{
   margin:0;
-  text-align:center;
-  font-family:"Benjamin Gothic Heavy",Impact,"Arial Black";
-  font-size:clamp(26px,4vw,42px);
+  font-weight:900;
   letter-spacing:3px;
+  font-size:clamp(22px,3.6vw,40px);
+  text-transform:uppercase;
 }
-
-.titleMain .white{color:#fff}
-.titleMain .red{color:var(--red)}
-
-.titleSub{
-  text-align:center;
-  margin-top:6px;
+.bigTitle .w{color:#fff}
+.bigTitle .r{color:var(--red)}
+.subTitle{
+  margin:6px 0 0;
   font-weight:900;
   letter-spacing:2px;
+  font-size:clamp(14px,2.4vw,20px);
   color:var(--cyan);
-  text-shadow:0 0 14px rgba(25,211,255,.4);
-  font-size:clamp(14px,2vw,20px);
+  text-shadow:0 0 14px rgba(25,211,255,.45);
+  text-transform:uppercase;
 }
 
+/* Flecha dentro del rectángulo (derecha) */
+.arrowBox{
+  flex:0 0 auto;
+  width:54px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
 .arrowDown{
   width:0;height:0;
   border-left:14px solid transparent;
   border-right:14px solid transparent;
   border-top:22px solid var(--red);
-  animation:arrowMove 1.6s ease-in-out infinite,
-            arrowBlink 1.6s ease-in-out infinite;
-  justify-self:center;
+  animation:arrowMove 1.6s ease-in-out infinite, arrowBlink 1.6s ease-in-out infinite;
 }
-
 @keyframes arrowMove{
   0%{transform:translateY(0)}
   50%{transform:translateY(10px)}
@@ -83,12 +94,11 @@ body{
 }
 @keyframes arrowBlink{
   0%{opacity:1}
-  50%{opacity:.6}
+  50%{opacity:.55}
   100%{opacity:1}
 }
 
-/* ================= LISTA ================= */
-
+/* Lista */
 .list{
   padding:10px 14px 40px;
   display:flex;
@@ -98,24 +108,24 @@ body{
 
 .row{
   display:grid;
-  grid-template-columns:55px 50px 1fr 20px 110px;
+  grid-template-columns:60px 52px 1fr 20px 118px;
   align-items:center;
   gap:10px;
   padding:14px;
   border-radius:18px;
   background:var(--glass);
-  border:1px solid var(--border);
+  border:1px solid rgba(255,255,255,.08);
   box-shadow:0 16px 32px rgba(0,0,0,.4);
   backdrop-filter:blur(6px);
 }
 
 .row.top1{
-  border:1px solid rgba(229,9,20,.4);
-  box-shadow:0 0 20px rgba(229,9,20,.2);
+  border:1px solid rgba(229,9,20,.45);
+  box-shadow:0 0 20px rgba(229,9,20,.22);
 }
 
 .num{
-  font-family:"Benjamin Gothic Heavy",Impact,"Arial Black";
+  font-family:"Benjamin Gothic Heavy",Impact,Arial Black;
   font-size:36px;
   text-align:center;
 }
@@ -124,19 +134,24 @@ body{
   color:var(--red);
 }
 
-/* Play */
+/* Play/Pause */
 .play{
   width:46px;height:46px;
   border-radius:50%;
-  border:2px solid #fff;
+  border:2px solid rgba(255,255,255,.85);
   display:flex;
   align-items:center;
   justify-content:center;
   cursor:pointer;
+  user-select:none;
 }
 .play svg{
   fill:#fff;
   width:18px;
+}
+.play.playing{
+  border-color:rgba(25,211,255,.95);
+  box-shadow:0 0 14px rgba(25,211,255,.25);
 }
 
 /* Info */
@@ -148,19 +163,20 @@ body{
 .artist{
   margin:4px 0 0;
   font-size:14px;
-  opacity:.8;
+  opacity:.85;
 }
 
 /* Trend */
-.trend.stable{
-  background:var(--yellow);
+.trend{
   width:14px;height:14px;
   border-radius:3px;
+  background:#ffc400;
+  opacity:.9;
 }
 
 /* Votar */
 .vote{
-  width:110px;
+  width:118px;
   height:44px;
   border:0;
   border-radius:14px;
@@ -174,132 +190,198 @@ body{
   cursor:not-allowed;
 }
 
+/* Footer */
 .footer{
   text-align:center;
   padding:10px 0 20px;
   font-weight:700;
-  opacity:.8;
+  opacity:.85;
+}
+
+/* Responsive */
+@media(max-width:520px){
+  .logo{width:64px}
+  .row{
+    grid-template-columns:52px 48px 1fr 18px 104px;
+  }
+  .vote{width:104px}
 }
 </style>
 </head>
+
 <body>
 
-<div class="headerBox">
-  <img src="logotipo.png" class="logo">
-  <div>
-    <h1 class="titleMain">
-      <span class="white">RANKING</span> 
-      <span class="red">ON!</span>
-    </h1>
-    <div class="titleSub">VOTÁ TU TEMA PREFERIDO</div>
+<div class="headerWrap">
+  <div class="header">
+    <img src="logotipo.png" class="logo" alt="ON Radio">
+    <div class="headerCenter">
+      <h1 class="bigTitle"><span class="w">RANKING</span> <span class="r">ON!</span></h1>
+      <div class="subTitle">VOTÁ TU TEMA FAVORITO</div>
+    </div>
+    <div class="arrowBox">
+      <div class="arrowDown"></div>
+    </div>
   </div>
-  <div class="arrowDown"></div>
 </div>
 
 <div class="list" id="list"></div>
+
 <div class="footer">www.laonradio.com.ar</div>
 
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
-import { getDatabase, ref, onValue, runTransaction } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
+import { getDatabase, ref, onValue, runTransaction } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-database.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyC8XX...",
+  apiKey: "AIzaSyC8XXef5k8hLmNL8ufIJsc7Sx5KTlRFdH8",
   authDomain: "on-radio-ranking.firebaseapp.com",
   databaseURL: "https://on-radio-ranking-default-rtdb.firebaseio.com",
   projectId: "on-radio-ranking",
-  storageBucket: "on-radio-ranking.appspot.com",
+  storageBucket: "on-radio-ranking.firebasestorage.app",
   messagingSenderId: "311635352358",
   appId: "1:311635352358:web:257ff4821987f07d31ffe7"
 };
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
-const temasRef = ref(db,"temas");
+
+const temasRef = ref(db, "temas");
 const list = document.getElementById("list");
 
+// Un solo audio para todo
 const audio = new Audio();
-let currentButton = null;
+audio.preload = "none";
 
-function today(){
-  return new Date().toISOString().slice(0,10);
-}
-function votedToday(){
-  return localStorage.getItem("on_vote")==today();
-}
-function lockVote(){
-  localStorage.setItem("on_vote",today());
+let currentId = null;   // id del tema reproduciendo
+let currentBtn = null;  // botón play actual
+
+const ICON_PLAY = <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>;
+const ICON_PAUSE = <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>;
+
+function today(){ return new Date().toISOString().slice(0,10); }
+function votedToday(){ return localStorage.getItem("on_vote") === today(); }
+function lockVote(){ localStorage.setItem("on_vote", today()); }
+
+function setPlayUI(btn, playing){
+  if(!btn) return;
+  btn.classList.toggle("playing", playing);
+  btn.innerHTML = playing ? ICON_PAUSE : ICON_PLAY;
 }
 
-function playIcon(){
-  return <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>;
-}
-function pauseIcon(){
-  return <svg viewBox="0 0 24 24"><path d="M6 5h4v14H6zm8 0h4v14h-4z"/></svg>;
+function stopCurrent(){
+  audio.pause();
+  audio.currentTime = 0;
+  setPlayUI(currentBtn, false);
+  currentId = null;
+  currentBtn = null;
 }
 
-onValue(temasRef,(snap)=>{
-  const data=snap.val();
-  if(!data) return;
+audio.addEventListener("ended", ()=>{
+  setPlayUI(currentBtn, false);
+  currentId = null;
+  currentBtn = null;
+});
 
-  const temas=Object.entries(data).map(([id,t])=>({
+onValue(temasRef, (snap)=>{
+  const data = snap.val();
+  if(!data){
+    list.innerHTML = "";
+    return;
+  }
+
+  const temas = Object.entries(data).map(([id,t])=>({
     id,
-    nombre:t.nombre,
-    artista:t.artista,
-    audio:t.audio,
-    votos:Number(t.votos||0)
+    nombre: t.nombre ?? "",
+    artista: t.artista ?? "",
+    audio: t.audio ?? "",
+    votos: Number(t.votos || 0)
   }));
 
   temas.sort((a,b)=>b.votos-a.votos);
-  list.innerHTML="";
+  list.innerHTML = "";
 
   temas.forEach((t,i)=>{
-    const row=document.createElement("div");
-    row.className="row"+(i===0?" top1":"");
+    const row = document.createElement("div");
+    row.className = "row" + (i===0 ? " top1" : "");
 
-    row.innerHTML=`
+    row.innerHTML = `
       <div class="num">${i+1}</div>
-      <div class="play">${playIcon()}</div>
+      <div class="play" title="Play / Pausa">${ICON_PLAY}</div>
       <div>
-        <p class="song">${t.nombre}</p>
-        <p class="artist">${t.artista}</p>
+        <p class="song">${escapeHtml(t.nombre)}</p>
+        <p class="artist">${escapeHtml(t.artista)}</p>
       </div>
-      <div class="trend stable"></div>
-      <button class="vote" ${votedToday()?"disabled":""}>VOTAR</button>
+      <div class="trend" title="Movimiento"></div>
+      <button class="vote" ${votedToday() ? "disabled" : ""}>VOTAR</button>
     `;
 
-    const playBtn=row.querySelector(".play");
+    const playBtn = row.querySelector(".play");
+    const voteBtn = row.querySelector(".vote");
 
-    playBtn.onclick=()=>{
-      if(audio.src===t.audio && !audio.paused){
-        audio.pause();
-        playBtn.innerHTML=playIcon();
+    // Si este tema es el que estaba sonando, reflejamos UI
+    if(currentId === t.id && !audio.paused){
+      currentBtn = playBtn;
+      setPlayUI(playBtn, true);
+    }
+
+    playBtn.onclick = ()=>{
+      // Si tocan el mismo tema => toggle play/pause
+      if(currentId === t.id){
+        if(audio.paused){
+          audio.play();
+          setPlayUI(playBtn, true);
+        }else{
+          audio.pause();
+          setPlayUI(playBtn, false);
+        }
         return;
       }
 
-      if(currentButton){
-        currentButton.innerHTML=playIcon();
-      }
+      // Si tocan otro tema => frena el anterior y reproduce este
+      if(currentId !== null) stopCurrent();
 
-      audio.src=t.audio;
-      audio.play();
-      playBtn.innerHTML=pauseIcon();
-      currentButton=playBtn;
+      currentId = t.id;
+      currentBtn = playBtn;
+
+      audio.src = t.audio;
+      audio.play().then(()=>{
+        setPlayUI(playBtn, true);
+      }).catch(()=>{
+        // si el navegador bloquea autoplay/errores de audio
+        stopCurrent();
+        alert("No se pudo reproducir el audio. Probá tocando de nuevo.");
+      });
     };
 
-    row.querySelector(".vote").onclick=async()=>{
+    voteBtn.onclick = async ()=>{
       if(votedToday()){
         alert("Ya votaste hoy. Volvé mañana.");
         return;
       }
-      await runTransaction(ref(db,"temas/"+t.id+"/votos"),v=>(v||0)+1);
-      lockVote();
-      alert("Gracias por votar. Volvé mañana.");
+      try{
+        await runTransaction(ref(db, "temas/"+t.id+"/votos"), v => (v||0) + 1);
+        lockVote();
+        alert("Gracias por votar. Volvé mañana.");
+        // Deshabilita todos los botones después de votar
+        document.querySelectorAll(".vote").forEach(b=>b.disabled=true);
+      }catch(e){
+        alert("No se pudo registrar el voto. Probá de nuevo.");
+      }
     };
 
     list.appendChild(row);
   });
 });
+
+// helper: evitar que rompa el HTML si hay comillas o símbolos raros
+function escapeHtml(s){
+  return String(s)
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
 </script>
 
 </body>
