@@ -1,0 +1,514 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Ranking ON</title>
+
+  <style>
+    :root{
+      --bgOverlay1: rgba(0,0,0,.55);
+      --bgOverlay2: rgba(0,0,0,.78);
+
+      --white:#ffffff;
+      --red:#e50914;
+      --cyan:#19d3ff;
+      --yellow:#ffc400;
+      --green:#2bdc63;
+
+      --glass: rgba(0,0,0,.52);
+      --border: rgba(255,255,255,.10);
+      --shadow: rgba(0,0,0,.55);
+
+      --containerMax: 980px;    /* ancho “pro” para desktop */
+      --radius: 18px;
+    }
+
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      color:var(--white);
+      font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial;
+      background:
+        linear-gradient(var(--bgOverlay1),var(--bgOverlay2)),
+        url("fondoranking2.jpg") center/cover fixed no-repeat;
+    }
+
+    /* Contenedor central */
+    .container{
+      width: min(var(--containerMax), calc(100% - 22px));
+      margin: 18px auto 26px;
+    }
+
+    /* Header */
+    .header{
+      position: relative;
+      display: grid;
+      grid-template-columns: 96px 1fr 86px;
+      gap: 12px;
+      align-items: center;
+      padding: 14px 14px;
+      border-radius: 22px;
+      background: rgba(0,0,0,.58);
+      border: 1px solid var(--border);
+      box-shadow: 0 18px 40px var(--shadow);
+      backdrop-filter: blur(8px);
+    }
+
+    .logo{
+      width: 86px;
+      height: auto;
+      display:block;
+      filter: drop-shadow(0 10px 18px rgba(0,0,0,.65));
+    }
+
+    .headText{
+      text-align:center;
+      line-height: 1.1;
+      user-select:none;
+    }
+
+    .headTitle{
+      margin: 0;
+      font-weight: 900;
+      letter-spacing: 4px;
+      font-size: clamp(24px, 4.2vw, 44px);
+      text-transform: uppercase;
+    }
+    .headTitle .w{ color: var(--white); }
+    .headTitle .r{ color: var(--red); }
+
+    .headSub{
+      margin: 6px 0 0;
+      font-weight: 900;
+      letter-spacing: 2px;
+      font-size: clamp(12px, 2.2vw, 18px);
+      text-transform: uppercase;
+      color: var(--cyan);
+      text-shadow:
+        0 0 10px rgba(25,211,255,.55),
+        0 0 22px rgba(25,211,255,.28);
+    }
+
+    /* Flecha animada (dentro del header, a la derecha) */
+    .arrowWrap{
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      height: 100%;
+    }
+    .arrow{
+      width: 0; height: 0;
+      border-left: 14px solid transparent;
+      border-right: 14px solid transparent;
+      border-top: 24px solid var(--red);
+      filter: drop-shadow(0 0 10px rgba(229,9,20,.45));
+      animation: arrowMove 1.35s ease-in-out infinite, arrowBlink 1.35s ease-in-out infinite;
+    }
+    @keyframes arrowMove{
+      0%{ transform: translateY(-2px); }
+      50%{ transform: translateY(10px); }
+      100%{ transform: translateY(-2px); }
+    }
+    @keyframes arrowBlink{
+      0%{ opacity:1; }
+      50%{ opacity:.55; }
+      100%{ opacity:1; }
+    }
+
+    /* Lista */
+    .list{
+      margin-top: 14px;
+      display:flex;
+      flex-direction:column;
+      gap: 12px;
+    }
+
+    .row{
+      display:grid;
+      grid-template-columns: 62px 54px 1fr 22px 118px; /* num | play | info | trend | votar */
+      gap: 12px;
+      align-items:center;
+      padding: 14px 14px;
+      border-radius: var(--radius);
+      background: var(--glass);
+      border: 1px solid var(--border);
+      box-shadow: 0 16px 34px rgba(0,0,0,.42);
+      backdrop-filter: blur(8px);
+      overflow:hidden;
+    }
+
+    .row.top1{
+      border: 1px solid rgba(229,9,20,.45);
+      box-shadow: 0 0 22px rgba(229,9,20,.22), 0 18px 34px rgba(0,0,0,.5);
+    }
+
+    /* Número con “cuerpo” */
+    .num{
+      font-family: "Benjamin Gothic Heavy", Impact, "Arial Black", system-ui;
+      font-weight: 900;
+      font-size: 34px;
+      text-align:center;
+      line-height:1;
+      color: var(--white);
+      text-shadow: 0 8px 18px rgba(0,0,0,.55);
+    }
+    .row.top1 .num{
+      font-size: 44px;
+      color: var(--red);
+      text-shadow: 0 0 16px rgba(229,9,20,.30);
+    }
+
+    /* Play circular */
+    .playBtn{
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      border: 2px solid rgba(255,255,255,.92);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      cursor:pointer;
+      user-select:none;
+      background: rgba(0,0,0,.15);
+      transition: transform .12s ease, background .12s ease;
+    }
+    .playBtn:active{ transform: scale(.97); }
+    .playBtn svg{
+      width: 18px;
+      height: 18px;
+      fill: rgba(255,255,255,.95);
+      display:block;
+    }
+
+    .info{ min-width:0; }
+    .song{
+      margin: 0;
+      font-weight: 900;
+      font-size: 18px;
+      letter-spacing:.2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .artist{
+      margin: 5px 0 0;
+      opacity:.82;
+      font-size: 13.5px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Trend (sube / baja / estable) */
+    .trend{
+      width: 0; height: 0;
+      justify-self:center;
+      filter: drop-shadow(0 0 8px rgba(0,0,0,.35));
+    }
+    .trend.up{
+      border-left: 9px solid transparent;
+      border-right: 9px solid transparent;
+      border-bottom: 16px solid var(--green);
+    }
+    .trend.down{
+      border-left: 9px solid transparent;
+      border-right: 9px solid transparent;
+      border-top: 16px solid var(--red);
+    }
+    .trend.stable{
+      width: 14px; height: 14px;
+      background: var(--yellow);
+      border-radius: 4px;
+    }
+
+    /* Votar */
+    .voteBtn{
+      width: 118px;
+      height: 44px;
+      border: 0;
+      border-radius: 14px;
+      background: var(--red);
+      color: var(--white);
+      font-weight: 900;
+      letter-spacing: .5px;
+      cursor:pointer;
+      box-shadow: 0 10px 18px rgba(229,9,20,.18);
+      transition: transform .12s ease, opacity .12s ease;
+      justify-self:end;
+    }
+    .voteBtn:active{ transform: scale(.98); }
+    .voteBtn[disabled]{
+      opacity:.42;
+      cursor:not-allowed;
+      box-shadow:none;
+    }
+
+    /* Footer */
+    .footer{
+      margin-top: 14px;
+      text-align:center;
+      font-weight: 800;
+      letter-spacing: .8px;
+      opacity: .85;
+      padding: 10px 0 6px;
+      user-select:none;
+    }
+
+    /* Responsive */
+    @media (max-width: 560px){
+      .header{
+        grid-template-columns: 78px 1fr 62px;
+        padding: 12px 12px;
+      }
+      .logo{ width: 70px; }
+      .row{
+        grid-template-columns: 52px 48px 1fr 20px 96px;
+        padding: 12px 12px;
+      }
+      .voteBtn{ width: 96px; height: 42px; }
+      .song{ font-size: 16px; }
+      .artist{ font-size: 12.5px; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+
+    <div class="header">
+      <img src="logotipo.png" class="logo" alt="ON Radio">
+      <div class="headText">
+        <h1 class="headTitle"><span class="w">RANKING</span> <span class="r">ON</span></h1>
+        <div class="headSub">VOTÁ TU TEMA FAVORITO</div>
+      </div>
+      <div class="arrowWrap" aria-hidden="true">
+        <div class="arrow"></div>
+      </div>
+    </div>
+
+    <div class="list" id="list"></div>
+
+    <div class="footer">www.laonradio.com.ar</div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getDatabase, ref, onValue, runTransaction } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
+
+    // ✅ TU CONFIG REAL (la que me pasaste completa)
+    const firebaseConfig = {
+      apiKey: "AIzaSyC8XXef5k8hLmNL8ufIJsc7Sx5KTlRFdH8",
+      authDomain: "on-radio-ranking.firebaseapp.com",
+      databaseURL: "https://on-radio-ranking-default-rtdb.firebaseio.com",
+      projectId: "on-radio-ranking",
+      storageBucket: "on-radio-ranking.firebasestorage.app",
+      messagingSenderId: "311635352358",
+      appId: "1:311635352358:web:257ff4821987f07d31ffe7"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    // 🔥 NODO CORRECTO
+    const temasRef = ref(db, "temas");
+
+    const listEl = document.getElementById("list");
+
+    // Audio global (para cortar uno cuando suena otro)
+    const audio = new Audio();
+    let currentlyPlayingId = null;
+
+    // --------- 1 voto por día TOTAL (no por tema) ----------
+    const VOTE_KEY = "onradio_vote_day";
+    function todayKey(){
+      return new Date().toISOString().slice(0,10);
+    }
+    function hasVotedToday(){
+      return localStorage.getItem(VOTE_KEY) === todayKey();
+    }
+    function lockVoteToday(){
+      localStorage.setItem(VOTE_KEY, todayKey());
+    }
+
+    // --------- Tendencia real (comparando ranking anterior) ----------
+    const ORDER_KEY = "onradio_prev_order";
+    function loadPrevOrder(){
+      try{
+        return JSON.parse(localStorage.getItem(ORDER_KEY) || "[]");
+      }catch{
+        return [];
+      }
+    }
+    function savePrevOrder(ids){
+      localStorage.setItem(ORDER_KEY, JSON.stringify(ids));
+    }
+    function trendFor(id, currentIndex, prevIds){
+      const prevIndex = prevIds.indexOf(id);
+      if(prevIndex === -1) return "stable";      // nuevo o sin historial
+      if(currentIndex < prevIndex) return "up";  // subió
+      if(currentIndex > prevIndex) return "down";// bajó
+      return "stable";                           // igual
+    }
+
+    function playIcon(){
+      return <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>;
+    }
+    function pauseIcon(){
+      return <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h4v14H6zm8 0h4v14h-4z"/></svg>;
+    }
+
+    function setPlayButtonState(btn, isPlaying){
+      btn.innerHTML = isPlaying ? pauseIcon() : playIcon();
+      btn.setAttribute("aria-label", isPlaying ? "Pausar" : "Reproducir");
+    }
+
+    function stopAudio(){
+      audio.pause();
+      audio.currentTime = 0;
+      currentlyPlayingId = null;
+    }
+
+    // Render principal
+    onValue(temasRef, (snap) => {
+      const data = snap.val();
+      if(!data){
+        listEl.innerHTML = "";
+        return;
+      }
+
+      const temas = Object.entries(data).map(([id, t]) => ({
+        id,
+        nombre: String(t.nombre || ""),
+        artista: String(t.artista || ""),
+        audio: String(t.audio || ""),
+        votos: Number(t.votos || 0)
+      }));
+
+      // Orden por votos desc
+      temas.sort((a,b) => b.votos - a.votos);
+
+      const prevIds = loadPrevOrder();
+      const newIds = temas.map(t => t.id);
+      savePrevOrder(newIds);
+
+      const voted = hasVotedToday();
+
+      listEl.innerHTML = "";
+
+      temas.forEach((t, i) => {
+        const row = document.createElement("div");
+        row.className = "row" + (i===0 ? " top1" : "");
+
+        const trend = trendFor(t.id, i, prevIds);
+        let trendHtml = <div class="trend stable" title="Se mantiene"></div>;
+        if(trend === "up") trendHtml = <div class="trend up" title="Subió"></div>;
+        if(trend === "down") trendHtml = <div class="trend down" title="Bajó"></div>;
+        if(trend === "stable") trendHtml = <div class="trend stable" title="Se mantiene"></div>;
+
+        row.innerHTML = `
+          <div class="num">${i+1}</div>
+
+          <div class="playBtn" role="button" tabindex="0" aria-label="Reproducir">
+            ${playIcon()}
+          </div>
+
+          <div class="info">
+            <p class="song">${escapeHtml(t.nombre)}</p>
+            <p class="artist">${escapeHtml(t.artista)}</p>
+          </div>
+
+          ${trendHtml}
+
+          <button class="voteBtn" ${voted ? "disabled" : ""}>VOTAR</button>
+        `;
+
+        const playBtn = row.querySelector(".playBtn");
+        const voteBtn = row.querySelector(".voteBtn");
+
+        // Play/Pause real (y corta el anterior)
+        const togglePlay = () => {
+          if(!t.audio){
+            alert("Este tema no tiene audio configurado.");
+            return;
+          }
+
+          // Si toco el mismo tema que suena
+          if(currentlyPlayingId === t.id){
+            if(!audio.paused){
+              audio.pause();
+              setPlayButtonState(playBtn, false);
+            }else{
+              audio.play().catch(()=>{});
+              setPlayButtonState(playBtn, true);
+            }
+            return;
+          }
+
+          // Si estaba sonando otro, lo corto y reseteo botones
+          stopAudio();
+          // Reset visual de todos los botones de play
+          document.querySelectorAll(".playBtn").forEach(b => setPlayButtonState(b, false));
+
+          // Reproduzco este
+          audio.src = t.audio;
+          currentlyPlayingId = t.id;
+          audio.play().then(()=>{
+            setPlayButtonState(playBtn, true);
+          }).catch(()=>{
+            currentlyPlayingId = null;
+            setPlayButtonState(playBtn, false);
+          });
+        };
+
+        playBtn.addEventListener("click", togglePlay);
+        playBtn.addEventListener("keydown", (e)=>{
+          if(e.key === "Enter" || e.key === " "){
+            e.preventDefault();
+            togglePlay();
+          }
+        });
+
+        // Cuando termina el audio, vuelvo a icono play
+        audio.addEventListener("ended", ()=>{
+          currentlyPlayingId = null;
+          document.querySelectorAll(".playBtn").forEach(b => setPlayButtonState(b, false));
+        }, { once:false });
+
+        // Votar: 1 voto por día TOTAL
+        voteBtn.addEventListener("click", async ()=>{
+          if(hasVotedToday()){
+            alert("Ya votaste hoy. Volvé mañana para votar otra vez.");
+            return;
+          }
+
+          try{
+            await runTransaction(ref(db, temas/${t.id}/votos), (v) => (v || 0) + 1);
+            lockVoteToday();
+
+            // Bloqueo todos
+            document.querySelectorAll(".voteBtn").forEach(b => b.disabled = true);
+
+            alert("Gracias por votar tu tema preferido. Recordá que podés votar una sola vez por día. Volvé mañana para votar otra vez.");
+          }catch(err){
+            alert("No se pudo registrar el voto. Probá de nuevo.");
+          }
+        });
+
+        listEl.appendChild(row);
+      });
+    });
+
+    // Escape básico para evitar romper HTML si hay comillas raras
+    function escapeHtml(str){
+      return String(str)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+  </script>
+</body>
+</html>
