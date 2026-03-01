@@ -9,7 +9,10 @@
 :root{
   --red:#e50914;
   --cyan:#19d3ff;
+  --yellow:#ffc400;
+  --green:#2bdc63;
   --glass:rgba(0,0,0,.55);
+  --glass2:rgba(0,0,0,.70);
   --border:rgba(255,255,255,.10);
 }
 
@@ -20,73 +23,78 @@ body{
   font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
   color:#fff;
   background:
-    linear-gradient(rgba(0,0,0,.65),rgba(0,0,0,.75)),
+    linear-gradient(rgba(0,0,0,.65),rgba(0,0,0,.78)),
     url("fondoranking2.jpg") center/cover fixed;
 }
 
-/* Header - rectángulo */
+/* ===== Header (rectángulo superior) ===== */
 .headerWrap{
-  padding:16px 14px 10px;
+  padding:14px 12px 8px;
 }
 
-.header{
+.headerBar{
   position:relative;
-  display:flex;
+  display:grid;
+  grid-template-columns: 88px 1fr 70px;
   align-items:center;
-  gap:12px;
-  padding:14px 16px;
+  gap:10px;
+
+  padding:14px 14px;
   border-radius:22px;
-  background:var(--glass);
+  background:linear-gradient(180deg, rgba(0,0,0,.78), rgba(0,0,0,.55));
   border:1px solid var(--border);
-  box-shadow:0 16px 32px rgba(0,0,0,.45);
-  backdrop-filter:blur(8px);
+  box-shadow:0 16px 34px rgba(0,0,0,.45);
+  backdrop-filter: blur(7px);
 }
 
 .logo{
-  width:74px;
-  flex:0 0 auto;
+  width:78px;
+  justify-self:start;
 }
 
-.headerCenter{
-  flex:1 1 auto;
+.titles{
   text-align:center;
   line-height:1.05;
 }
 
-.bigTitle{
+.hTitle{
   margin:0;
   font-weight:900;
   letter-spacing:3px;
-  font-size:clamp(22px,3.6vw,40px);
-  text-transform:uppercase;
-}
-.bigTitle .w{color:#fff}
-.bigTitle .r{color:var(--red)}
-.subTitle{
-  margin:6px 0 0;
-  font-weight:900;
-  letter-spacing:2px;
-  font-size:clamp(14px,2.4vw,20px);
-  color:var(--cyan);
-  text-shadow:0 0 14px rgba(25,211,255,.45);
+  font-size:clamp(22px,4.2vw,42px);
   text-transform:uppercase;
 }
 
-/* Flecha dentro del rectángulo (derecha) */
+.hTitle .rank{color:#fff;}
+.hTitle .on{color:var(--red);}
+
+.subTitle{
+  margin:8px 0 0;
+  font-weight:900;
+  font-size:clamp(14px,2.6vw,18px);
+  letter-spacing:2px;
+  color:var(--cyan);
+  text-shadow: 0 0 14px rgba(25,211,255,.45);
+  text-transform:uppercase;
+}
+
 .arrowBox{
-  flex:0 0 auto;
-  width:54px;
+  justify-self:end;
+  width:52px;
+  height:52px;
   display:flex;
   align-items:center;
   justify-content:center;
 }
+
 .arrowDown{
   width:0;height:0;
   border-left:14px solid transparent;
   border-right:14px solid transparent;
   border-top:22px solid var(--red);
-  animation:arrowMove 1.6s ease-in-out infinite, arrowBlink 1.6s ease-in-out infinite;
+  animation:arrowMove 1.5s ease-in-out infinite, arrowBlink 1.5s ease-in-out infinite;
 }
+
 @keyframes arrowMove{
   0%{transform:translateY(0)}
   50%{transform:translateY(10px)}
@@ -98,47 +106,63 @@ body{
   100%{opacity:1}
 }
 
-/* Lista */
+/* ===== Estado (cartel) ===== */
+.status{
+  margin:10px 12px 4px;
+  padding:12px 14px;
+  border-radius:16px;
+  background:var(--glass2);
+  border:1px solid rgba(255,255,255,.10);
+  box-shadow:0 14px 26px rgba(0,0,0,.38);
+  font-weight:800;
+  letter-spacing:.3px;
+  display:none;
+}
+.status.show{display:block;}
+.status.ok{border-color:rgba(43,220,99,.35)}
+.status.err{border-color:rgba(229,9,20,.35)}
+.status.warn{border-color:rgba(255,196,0,.35)}
+
+/* ===== Lista ===== */
 .list{
-  padding:10px 14px 40px;
+  padding:10px 12px 28px;
   display:flex;
   flex-direction:column;
-  gap:16px;
+  gap:14px;
 }
 
 .row{
   display:grid;
-  grid-template-columns:60px 52px 1fr 20px 118px;
+  grid-template-columns:60px 54px 1fr 22px 120px;
   align-items:center;
   gap:10px;
   padding:14px;
   border-radius:18px;
   background:var(--glass);
-  border:1px solid rgba(255,255,255,.08);
+  border:1px solid var(--border);
   box-shadow:0 16px 32px rgba(0,0,0,.4);
   backdrop-filter:blur(6px);
 }
 
 .row.top1{
   border:1px solid rgba(229,9,20,.45);
-  box-shadow:0 0 20px rgba(229,9,20,.22);
+  box-shadow:0 0 22px rgba(229,9,20,.22);
 }
 
 .num{
-  font-family:"Benjamin Gothic Heavy",Impact,Arial Black;
-  font-size:36px;
+  font-family:Impact, Arial Black, system-ui;
+  font-size:40px;
   text-align:center;
 }
 .row.top1 .num{
-  font-size:44px;
+  font-size:48px;
   color:var(--red);
 }
 
-/* Play/Pause */
 .play{
-  width:46px;height:46px;
+  width:48px;height:48px;
   border-radius:50%;
-  border:2px solid rgba(255,255,255,.85);
+  border:2px solid rgba(255,255,255,.75);
   display:flex;
   align-items:center;
   justify-content:center;
@@ -147,14 +171,9 @@ body{
 }
 .play svg{
   fill:#fff;
-  width:18px;
-}
-.play.playing{
-  border-color:rgba(25,211,255,.95);
-  box-shadow:0 0 14px rgba(25,211,255,.25);
+  width:20px;
 }
 
-/* Info */
 .song{
   font-weight:900;
   font-size:18px;
@@ -163,20 +182,17 @@ body{
 .artist{
   margin:4px 0 0;
   font-size:14px;
-  opacity:.85;
+  opacity:.82;
 }
 
-/* Trend */
 .trend{
   width:14px;height:14px;
   border-radius:3px;
-  background:#ffc400;
-  opacity:.9;
 }
+.trend.stable{background:var(--yellow);}
 
-/* Votar */
 .vote{
-  width:118px;
+  width:120px;
   height:44px;
   border:0;
   border-radius:14px;
@@ -185,26 +201,18 @@ body{
   font-weight:900;
   cursor:pointer;
 }
-.vote:disabled{
-  opacity:.4;
-  cursor:not-allowed;
-}
+.vote:disabled{opacity:.4; cursor:not-allowed;}
 
-/* Footer */
 .footer{
   text-align:center;
-  padding:10px 0 20px;
-  font-weight:700;
+  padding:8px 0 18px;
+  font-weight:800;
   opacity:.85;
 }
 
-/* Responsive */
 @media(max-width:520px){
-  .logo{width:64px}
-  .row{
-    grid-template-columns:52px 48px 1fr 18px 104px;
-  }
-  .vote{width:104px}
+  .row{grid-template-columns:52px 48px 1fr 20px 110px;}
+  .vote{width:110px}
 }
 </style>
 </head>
@@ -212,26 +220,27 @@ body{
 <body>
 
 <div class="headerWrap">
-  <div class="header">
-    <img src="logotipo.png" class="logo" alt="ON Radio">
-    <div class="headerCenter">
-      <h1 class="bigTitle"><span class="w">RANKING</span> <span class="r">ON!</span></h1>
+  <div class="headerBar">
+    <img src="logotipo.png" class="logo" alt="ON! Radio">
+    <div class="titles">
+      <h1 class="hTitle"><span class="rank">RANKING</span> <span class="on">ON!</span></h1>
       <div class="subTitle">VOTÁ TU TEMA FAVORITO</div>
     </div>
-    <div class="arrowBox">
+    <div class="arrowBox" aria-hidden="true">
       <div class="arrowDown"></div>
     </div>
   </div>
 </div>
 
+<div id="status" class="status show warn">Cargando temas…</div>
 <div class="list" id="list"></div>
-
 <div class="footer">www.laonradio.com.ar</div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
 import { getDatabase, ref, onValue, runTransaction } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-database.js";
 
+/* === TU CONFIG REAL (la que me pasaste) === */
 const firebaseConfig = {
   apiKey: "AIzaSyC8XXef5k8hLmNL8ufIJsc7Sx5KTlRFdH8",
   authDomain: "on-radio-ranking.firebaseapp.com",
@@ -242,145 +251,156 @@ const firebaseConfig = {
   appId: "1:311635352358:web:257ff4821987f07d31ffe7"
 };
 
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
-
-const temasRef = ref(db, "temas");
+const statusEl = document.getElementById("status");
 const list = document.getElementById("list");
 
-// Un solo audio para todo
-const audio = new Audio();
-audio.preload = "none";
+function setStatus(text, type="warn"){
+  statusEl.textContent = text;
+  statusEl.className = "status show " + type;
+}
+function hideStatus(){
+  statusEl.className = "status";
+}
 
-let currentId = null;   // id del tema reproduciendo
-let currentBtn = null;  // botón play actual
-
-const ICON_PLAY = <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>;
-const ICON_PAUSE = <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>;
-
+/* === Voto diario === */
 function today(){ return new Date().toISOString().slice(0,10); }
 function votedToday(){ return localStorage.getItem("on_vote") === today(); }
 function lockVote(){ localStorage.setItem("on_vote", today()); }
 
-function setPlayUI(btn, playing){
-  if(!btn) return;
-  btn.classList.toggle("playing", playing);
-  btn.innerHTML = playing ? ICON_PAUSE : ICON_PLAY;
-}
+/* === Audio play/pause === */
+const audio = new Audio();
+let currentId = null;
+let isPlaying = false;
 
-function stopCurrent(){
-  audio.pause();
-  audio.currentTime = 0;
-  setPlayUI(currentBtn, false);
-  currentId = null;
-  currentBtn = null;
+function playIcon(){
+  return <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>;
+}
+function pauseIcon(){
+  return <svg viewBox="0 0 24 24"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>;
+}
+function setPlayButton(el, playing){
+  el.innerHTML = playing ? pauseIcon() : playIcon();
 }
 
 audio.addEventListener("ended", ()=>{
-  setPlayUI(currentBtn, false);
+  isPlaying = false;
   currentId = null;
-  currentBtn = null;
+  document.querySelectorAll(".play").forEach(btn=>setPlayButton(btn, false));
 });
 
-onValue(temasRef, (snap)=>{
-  const data = snap.val();
-  if(!data){
-    list.innerHTML = "";
-    return;
-  }
+/* === Firebase === */
+setStatus("Cargando temas… (conectando a Firebase)", "warn");
 
-  const temas = Object.entries(data).map(([id,t])=>({
-    id,
-    nombre: t.nombre ?? "",
-    artista: t.artista ?? "",
-    audio: t.audio ?? "",
-    votos: Number(t.votos || 0)
-  }));
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+const temasRef = ref(db, "temas");
 
-  temas.sort((a,b)=>b.votos-a.votos);
-  list.innerHTML = "";
+onValue(
+  temasRef,
+  (snap)=>{
+    const data = snap.val();
 
-  temas.forEach((t,i)=>{
-    const row = document.createElement("div");
-    row.className = "row" + (i===0 ? " top1" : "");
-
-    row.innerHTML = `
-      <div class="num">${i+1}</div>
-      <div class="play" title="Play / Pausa">${ICON_PLAY}</div>
-      <div>
-        <p class="song">${escapeHtml(t.nombre)}</p>
-        <p class="artist">${escapeHtml(t.artista)}</p>
-      </div>
-      <div class="trend" title="Movimiento"></div>
-      <button class="vote" ${votedToday() ? "disabled" : ""}>VOTAR</button>
-    `;
-
-    const playBtn = row.querySelector(".play");
-    const voteBtn = row.querySelector(".vote");
-
-    // Si este tema es el que estaba sonando, reflejamos UI
-    if(currentId === t.id && !audio.paused){
-      currentBtn = playBtn;
-      setPlayUI(playBtn, true);
+    if(!data){
+      list.innerHTML = "";
+      setStatus("No hay temas en Firebase (ruta /temas vacía).", "warn");
+      return;
     }
 
-    playBtn.onclick = ()=>{
-      // Si tocan el mismo tema => toggle play/pause
-      if(currentId === t.id){
-        if(audio.paused){
-          audio.play();
-          setPlayUI(playBtn, true);
-        }else{
-          audio.pause();
-          setPlayUI(playBtn, false);
+    const temas = Object.entries(data).map(([id,t])=>({
+      id,
+      nombre: t.nombre ?? "",
+      artista: t.artista ?? "",
+      audio: t.audio ?? "",
+      votos: Number(t.votos || 0)
+    }));
+
+    temas.sort((a,b)=>b.votos-a.votos);
+    list.innerHTML = "";
+
+    temas.forEach((t,i)=>{
+      const row = document.createElement("div");
+      row.className = "row" + (i===0 ? " top1" : "");
+      row.innerHTML = `
+        <div class="num">${i+1}</div>
+        <div class="play" title="Play/Pausa">${playIcon()}</div>
+        <div>
+          <p class="song">${escapeHtml(t.nombre)}</p>
+          <p class="artist">${escapeHtml(t.artista)}</p>
+        </div>
+        <div class="trend stable"></div>
+        <button class="vote" ${votedToday()?"disabled":""}>VOTAR</button>
+      `;
+
+      const playBtn = row.querySelector(".play");
+      playBtn.onclick = async ()=>{
+        // si clickeo el mismo tema que está sonando => toggle pause/play
+        if(currentId === t.id){
+          if(isPlaying){
+            audio.pause();
+            isPlaying = false;
+            setPlayButton(playBtn, false);
+          }else{
+            await audio.play().catch(()=>{});
+            isPlaying = true;
+            setPlayButton(playBtn, true);
+          }
+          return;
         }
-        return;
-      }
 
-      // Si tocan otro tema => frena el anterior y reproduce este
-      if(currentId !== null) stopCurrent();
+        // si es otro tema => parar el anterior, arrancar éste
+        document.querySelectorAll(".play").forEach(btn=>setPlayButton(btn, false));
+        currentId = t.id;
+        audio.src = t.audio;
+        await audio.play().then(()=>{
+          isPlaying = true;
+          setPlayButton(playBtn, true);
+        }).catch((e)=>{
+          isPlaying = false;
+          setPlayButton(playBtn, false);
+          setStatus("No se pudo reproducir el audio (revisá la URL del mp3).", "warn");
+          console.error(e);
+        });
+      };
 
-      currentId = t.id;
-      currentBtn = playBtn;
+      row.querySelector(".vote").onclick = async()=>{
+        if(votedToday()){
+          alert("Ya votaste hoy. Volvé mañana.");
+          return;
+        }
+        try{
+          await runTransaction(ref(db, "temas/"+t.id+"/votos"), v => (v||0)+1);
+          lockVote();
+          // deshabilito todos
+          document.querySelectorAll(".vote").forEach(b=>b.disabled=true);
+          alert("Gracias por votar. Volvé mañana.");
+        }catch(e){
+          console.error(e);
+          setStatus("Error al votar (permiso de Firebase).", "err");
+          alert("No se pudo registrar el voto. Revisá permisos de Firebase.");
+        }
+      };
 
-      audio.src = t.audio;
-      audio.play().then(()=>{
-        setPlayUI(playBtn, true);
-      }).catch(()=>{
-        // si el navegador bloquea autoplay/errores de audio
-        stopCurrent();
-        alert("No se pudo reproducir el audio. Probá tocando de nuevo.");
-      });
-    };
+      list.appendChild(row);
+    });
 
-    voteBtn.onclick = async ()=>{
-      if(votedToday()){
-        alert("Ya votaste hoy. Volvé mañana.");
-        return;
-      }
-      try{
-        await runTransaction(ref(db, "temas/"+t.id+"/votos"), v => (v||0) + 1);
-        lockVote();
-        alert("Gracias por votar. Volvé mañana.");
-        // Deshabilita todos los botones después de votar
-        document.querySelectorAll(".vote").forEach(b=>b.disabled=true);
-      }catch(e){
-        alert("No se pudo registrar el voto. Probá de nuevo.");
-      }
-    };
+    hideStatus();
+  },
+  (err)=>{
+    console.error(err);
+    list.innerHTML = "";
+    // Mensaje humano, sin “código críptico”
+    if(String(err?.code||"").includes("permission-denied")){
+      setStatus("Firebase bloqueó el acceso: PERMISO DENEGADO. Hay que ajustar Rules del Realtime Database.", "err");
+    }else{
+      setStatus("Error conectando a Firebase: " + (err?.message || err), "err");
+    }
+  }
+);
 
-    list.appendChild(row);
-  });
-});
-
-// helper: evitar que rompa el HTML si hay comillas o símbolos raros
 function escapeHtml(s){
-  return String(s)
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;")
-    .replaceAll("'","&#039;");
+  return String(s).replace(/[&<>"']/g, m => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+  }[m]));
 }
 </script>
 
