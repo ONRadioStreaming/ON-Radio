@@ -1,305 +1,744 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Ranking ON</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ranking ON! - ON Radio</title>
 
-<style>
-:root{
-  --red:#e50914;
-  --cyan:#19d3ff;
-  --yellow:#ffc400;
-  --green:#2bdc63;
-  --glass:rgba(0,0,0,.55);
-  --border:rgba(255,255,255,.08);
-}
+  <style>
+    :root{
+      --bg: #000;
+      --panel: rgba(0,0,0,.58);
+      --panel-strong: rgba(0,0,0,.72);
+      --text: #fff;
+      --muted: rgba(255,255,255,.75);
+      --accent: #ff2b2b;
+      --accent2: #7c4dff;
+      --good: #33d17a;
+      --bad: #ff4d4d;
+      --hold: #ffd24a;
+      --stroke: rgba(255,255,255,.14);
+      --shadow: 0 10px 25px rgba(0,0,0,.45);
+    }
 
-*{box-sizing:border-box}
+    /* Tipografía “con cuerpo” para números:
+       Benjamin Gothic Heavy es una fuente de Windows/Office en algunos equipos.
+       Si el navegador no la tiene, cae a alternativas “pesadas”. */
+    @font-face{
+      font-family: "Benjamin Gothic Heavy";
+      src: local("Benjamin Gothic Heavy");
+      font-display: swap;
+    }
 
-body{
-  margin:0;
-  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
-  color:#fff;
-  background:
-    linear-gradient(rgba(0,0,0,.65),rgba(0,0,0,.75)),
-    url("fondoranking2.jpg") center/cover fixed;
-}
+    *{ box-sizing: border-box; }
+    html, body { height: 100%; }
+    body{
+      margin:0;
+      font-family: Arial, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      overflow-x: hidden;
+    }
 
-/* Lateral fijo */
-.side{
-  position:fixed;
-  left:12px;
-  top:50%;
-  transform:translateY(-50%);
-  writing-mode:vertical-rl;
-  transform-origin:center;
-  font-weight:900;
-  letter-spacing:8px;
-  font-size:46px;
-  opacity:.18;
-  pointer-events:none;
-}
+    /* Fondo: para que se vea COMPLETO, usamos contain (no crop).
+       Si preferís que “llene” y recorte, cambiá contain -> cover. */
+    .bg{
+      position: fixed;
+      inset: 0;
+      background: url('fondoranking2.jpg') center center no-repeat;
+      background-size: contain;
+      background-color: #000;
+      z-index: -2;
+    }
+    .bg::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      background: radial-gradient(circle at 50% 30%, rgba(0,0,0,.35), rgba(0,0,0,.82));
+      z-index:-1;
+    }
 
-/* Header */
-.header{
-  padding:20px 14px 10px 70px;
-  position:relative;
-  text-align:center;
-}
+    /* Layout principal */
+    .wrap{
+      position: relative;
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 18px 16px 26px;
+      min-height: 100vh;
+    }
 
-.logo{
-  position:absolute;
-  left:14px;
-  top:14px;
-  width:85px;
-}
+    /* Lateral fijo “RANKING ON” */
+    .side{
+      position: fixed;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 3;
+      pointer-events: none;
+      opacity: .95;
+      mix-blend-mode: screen;
+    }
+    .side span{
+      display: inline-block;
+      writing-mode: vertical-rl;     /* vertical */
+      transform: rotate(180deg);     /* para leer de abajo hacia arriba */
+      font-weight: 900;
+      letter-spacing: .18em;
+      color: #fff;
+      font-size: clamp(18px, 2.4vw, 30px);
+      text-shadow: 0 0 12px rgba(255,255,255,.25);
+    }
 
-.title{
-  font-weight:900;
-  font-size:clamp(26px,4vw,44px);
-  letter-spacing:3px;
-  color:var(--cyan);
-  text-shadow:0 0 14px rgba(25,211,255,.4);
-  margin:0;
-}
+    /* Header */
+    .header{
+      display:flex;
+      align-items:center;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 10px 0 12px;
+      padding: 14px 14px;
+      background: rgba(0,0,0,.38);
+      border: 1px solid var(--stroke);
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(4px);
+    }
+    .logo{
+      display:flex;
+      align-items:center;
+      gap: 12px;
+      min-width: 0;
+    }
+    .logo img{
+      width: 180px; /* parecido al index */
+      max-width: 42vw;
+      height:auto;
+      display:block;
+      filter: drop-shadow(0 6px 14px rgba(0,0,0,.55));
+    }
 
-.arrowDown{
-  margin:14px auto 0;
-  width:0;height:0;
-  border-left:14px solid transparent;
-  border-right:14px solid transparent;
-  border-top:22px solid var(--red);
-  animation:arrowMove 1.6s ease-in-out infinite,
-            arrowBlink 1.6s ease-in-out infinite;
-}
+    .title{
+      flex:1;
+      text-align:center;
+      min-width: 0;
+      padding: 6px 8px 2px;
+    }
+    .title h1{
+      margin:0;
+      font-weight: 900;
+      letter-spacing: .04em;
+      font-size: clamp(18px, 2.2vw, 28px);
+      color: #fff;
+      text-shadow:
+        0 0 10px rgba(124,77,255,.55),
+        0 0 22px rgba(255,43,43,.35),
+        0 2px 0 rgba(0,0,0,.55);
+    }
 
-@keyframes arrowMove{
-  0%{transform:translateY(0)}
-  50%{transform:translateY(10px)}
-  100%{transform:translateY(0)}
-}
-@keyframes arrowBlink{
-  0%{opacity:1}
-  50%{opacity:.6}
-  100%{opacity:1}
-}
+    /* Flecha animada apuntando a la columna votar */
+    .arrowHint{
+      margin-top: 6px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap: 10px;
+      color: rgba(255,255,255,.9);
+      font-weight: 700;
+      font-size: 12px;
+      user-select:none;
+    }
+    .arrow{
+      width: 18px;
+      height: 18px;
+      position: relative;
+      transform: translateY(0);
+      animation: bob 1.1s infinite ease-in-out;
+      filter: drop-shadow(0 0 10px rgba(255,43,43,.45));
+    }
+    .arrow::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      border-right: 3px solid var(--accent);
+      border-bottom: 3px solid var(--accent);
+      transform: rotate(45deg);
+      border-radius: 2px;
+    }
+    @keyframes bob{
+      0%,100%{ transform: translateY(0); opacity: .85; }
+      50%{ transform: translateY(6px); opacity: 1; }
+    }
 
-/* Lista */
-.list{
-  padding:10px 14px 40px 70px;
-  display:flex;
-  flex-direction:column;
-  gap:16px;
-}
+    /* Tabla/listado */
+    .panel{
+      margin-top: 12px;
+      padding: 12px;
+      background: rgba(0,0,0,.35);
+      border: 1px solid var(--stroke);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(4px);
+    }
 
-.row{
-  display:grid;
-  grid-template-columns:55px 50px 1fr 20px 110px;
-  align-items:center;
-  gap:10px;
-  padding:14px;
-  border-radius:18px;
-  background:var(--glass);
-  border:1px solid var(--border);
-  box-shadow:0 16px 32px rgba(0,0,0,.4);
-  backdrop-filter:blur(6px);
-}
+    .list{
+      display:flex;
+      flex-direction: column;
+      gap: 10px;
+      padding: 6px;
+    }
 
-.row.top1{
-  border:1px solid rgba(229,9,20,.4);
-  box-shadow:0 0 20px rgba(229,9,20,.2);
-}
+    /* Renglón */
+    .row{
+      display:grid;
+      grid-template-columns: 56px 50px 1fr 70px 110px; /* num | play | texto | trend | votar */
+      align-items:center;
+      gap: 10px;
+      padding: 12px 12px;
+      border-radius: 14px;
+      background: var(--panel);
+      border: 1px solid rgba(255,255,255,.10);
+      box-shadow: 0 8px 18px rgba(0,0,0,.35);
+    }
+    .row.top1{
+      background: linear-gradient(90deg, rgba(255,43,43,.55), rgba(0,0,0,.55));
+      border-color: rgba(255,43,43,.35);
+    }
 
-.num{
-  font-family:"Benjamin Gothic Heavy",Impact,Arial Black;
-  font-size:36px;
-  text-align:center;
-}
-.row.top1 .num{
-  font-size:44px;
-  color:var(--red);
-}
+    .rankNum{
+      font-family: "Benjamin Gothic Heavy", "Impact", "Arial Black", "Segoe UI Black", sans-serif;
+      font-weight: 900;
+      text-align:center;
+      line-height: 1;
+      font-size: 28px;
+      color: #fff;
+      text-shadow: 0 2px 0 rgba(0,0,0,.55);
+    }
+    .row.top1 .rankNum{
+      color: var(--accent);
+      font-size: 36px;
+      text-shadow: 0 0 10px rgba(255,43,43,.35), 0 2px 0 rgba(0,0,0,.6);
+    }
 
-/* Play */
-.play{
-  width:46px;height:46px;
-  border-radius:50%;
-  border:2px solid #fff;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  cursor:pointer;
-}
-.play svg{
-  fill:#fff;
-  width:18px;
-}
+    /* Play/Pause */
+    .playBtn{
+      width: 42px;
+      height: 42px;
+      border-radius: 999px;
+      border: 2px solid rgba(255,255,255,.8);
+      background: rgba(0,0,0,.35);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      cursor:pointer;
+      transition: transform .12s ease, background .12s ease, border-color .12s ease;
+      box-shadow: 0 8px 18px rgba(0,0,0,.35);
+    }
+    .playBtn:hover{ transform: scale(1.04); }
+    .playBtn svg{ width: 18px; height: 18px; fill: #fff; }
+    .playBtn.playing{
+      border-color: rgba(255,43,43,.95);
+      background: rgba(255,43,43,.18);
+    }
 
-/* Info */
-.song{
-  font-weight:900;
-  font-size:18px;
-  margin:0;
-}
-.artist{
-  margin:4px 0 0;
-  font-size:14px;
-  opacity:.8;
-}
+    .meta{
+      min-width: 0;
+    }
+    .song{
+      font-weight: 900;
+      letter-spacing: .01em;
+      font-size: 14px;
+      color: #fff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .artist{
+      margin-top: 4px;
+      font-size: 12px;
+      color: var(--muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
 
-/* Trend */
-.trend{
-  width:14px;height:14px;
-  border-radius:3px;
-}
-.trend.up{
-  width:0;height:0;
-  border-left:8px solid transparent;
-  border-right:8px solid transparent;
-  border-bottom:14px solid var(--green);
-}
-.trend.down{
-  width:0;height:0;
-  border-left:8px solid transparent;
-  border-right:8px solid transparent;
-  border-top:14px solid var(--red);
-}
-.trend.stable{
-  background:var(--yellow);
-}
+    /* Tendencia */
+    .trend{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap: 8px;
+      user-select:none;
+    }
+    .tri{
+      width: 0;
+      height: 0;
+      border-left: 8px solid transparent;
+      border-right: 8px solid transparent;
+      filter: drop-shadow(0 0 10px rgba(0,0,0,.35));
+    }
+    .tri.up{ border-bottom: 14px solid var(--good); }
+    .tri.down{ border-top: 14px solid var(--bad); }
+    .sq{
+      width: 12px; height: 12px;
+      background: var(--hold);
+      border-radius: 3px;
+      box-shadow: 0 0 10px rgba(255,210,74,.25);
+    }
 
-/* Votar */
-.vote{
-  width:110px;
-  height:44px;
-  border:0;
-  border-radius:14px;
-  background:var(--red);
-  color:#fff;
-  font-weight:900;
-  cursor:pointer;
-}
-.vote:disabled{
-  opacity:.4;
-  cursor:not-allowed;
-}
+    /* Votar */
+    .voteWrap{
+      display:flex;
+      align-items:center;
+      justify-content:flex-end;
+      gap: 10px;
+    }
+    .voteBtn{
+      appearance:none;
+      border: 0;
+      cursor:pointer;
+      padding: 10px 14px;
+      border-radius: 999px;
+      font-weight: 900;
+      letter-spacing: .06em;
+      font-size: 12px;
+      color: #fff;
+      background: linear-gradient(90deg, rgba(255,43,43,.95), rgba(124,77,255,.85));
+      box-shadow: 0 10px 22px rgba(255,43,43,.12);
+      transition: transform .12s ease, filter .12s ease, opacity .12s ease;
+      white-space: nowrap;
+    }
+    .voteBtn:hover{ transform: translateY(-1px); filter: brightness(1.05); }
+    .voteBtn:active{ transform: translateY(0); }
 
-/* Footer */
-.footer{
-  text-align:center;
-  padding:10px 0 20px;
-  font-weight:700;
-  opacity:.8;
-}
+    .voteBtn[disabled]{
+      opacity:.55;
+      cursor:not-allowed;
+      filter: grayscale(.15);
+    }
 
-/* Responsive */
-@media(max-width:520px){
-  .header,.list{padding-left:60px}
-  .side{font-size:38px}
-  .logo{width:70px}
-  .row{
-    grid-template-columns:45px 45px 1fr 18px 95px;
-  }
-  .vote{width:95px}
-}
-</style>
+    /* Footer */
+    footer{
+      margin-top: 14px;
+      padding: 12px 14px;
+      text-align:center;
+      background: rgba(0,0,0,.55);
+      border: 1px solid var(--stroke);
+      border-radius: 14px;
+      font-size: 12px;
+      color: rgba(255,255,255,.85);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(4px);
+    }
+    footer b{ color: #fff; }
+
+    /* Mensajes (modal simple) */
+    .modalBack{
+      position: fixed;
+      inset:0;
+      background: rgba(0,0,0,.6);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      z-index: 50;
+      padding: 16px;
+    }
+    .modal{
+      width: min(520px, 100%);
+      background: rgba(10,10,10,.92);
+      border: 1px solid rgba(255,255,255,.14);
+      border-radius: 16px;
+      box-shadow: 0 18px 40px rgba(0,0,0,.6);
+      padding: 16px 16px 12px;
+    }
+    .modal h3{
+      margin: 0 0 8px;
+      font-size: 16px;
+      letter-spacing: .02em;
+    }
+    .modal p{
+      margin: 0 0 12px;
+      color: rgba(255,255,255,.85);
+      font-size: 13px;
+      line-height: 1.35;
+    }
+    .modal .actions{
+      display:flex;
+      justify-content:flex-end;
+      gap: 10px;
+    }
+    .modal button{
+      border:0;
+      padding: 10px 14px;
+      border-radius: 999px;
+      font-weight: 900;
+      cursor:pointer;
+      color:#fff;
+      background: rgba(255,255,255,.10);
+    }
+    .modal button.primary{
+      background: linear-gradient(90deg, rgba(255,43,43,.95), rgba(124,77,255,.85));
+    }
+
+    /* Responsive: en celulares, apilamos mejor sin perder botones */
+    @media (max-width: 520px){
+      .side{ left: 6px; }
+      .logo img{ width: 155px; }
+      .row{
+        grid-template-columns: 52px 46px 1fr 54px 92px;
+        gap: 8px;
+        padding: 10px;
+      }
+      .rankNum{ font-size: 26px; }
+      .row.top1 .rankNum{ font-size: 34px; }
+      .playBtn{ width: 40px; height: 40px; }
+      .song{ font-size: 13px; }
+      .artist{ font-size: 11px; }
+      .voteBtn{ padding: 9px 12px; font-size: 11px; }
+    }
+  </style>
 </head>
+
 <body>
+  <div class="bg" aria-hidden="true"></div>
+  <div class="side" aria-hidden="true"><span>RANKING ON</span></div>
 
-<div class="side">RANKING ON</div>
-
-<div class="header">
-  <img src="logotipo.png" class="logo">
-  <h1 class="title">VOTÁ TU TEMA PREFERIDO</h1>
-  <div class="arrowDown"></div>
-</div>
-
-<div class="list" id="list"></div>
-
-<div class="footer">www.laonradio.com.ar</div>
-
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
-import { getDatabase, ref, onValue, runTransaction } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyC8XX...",
-  authDomain: "on-radio-ranking.firebaseapp.com",
-  databaseURL: "https://on-radio-ranking-default-rtdb.firebaseio.com",
-  projectId: "on-radio-ranking",
-  storageBucket: "on-radio-ranking.appspot.com",
-  messagingSenderId: "311635352358",
-  appId: "1:311635352358:web:257ff4821987f07d31ffe7"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
-const temasRef = ref(db,"temas");
-const list = document.getElementById("list");
-const audio = new Audio();
-
-function today(){
-  return new Date().toISOString().slice(0,10);
-}
-function votedToday(){
-  return localStorage.getItem("on_vote")==today();
-}
-function lockVote(){
-  localStorage.setItem("on_vote",today());
-}
-
-onValue(temasRef,(snap)=>{
-  const data=snap.val();
-  if(!data) return;
-
-  const temas=Object.entries(data).map(([id,t])=>({
-    id,
-    nombre:t.nombre,
-    artista:t.artista,
-    audio:t.audio,
-    votos:Number(t.votos||0)
-  }));
-
-  temas.sort((a,b)=>b.votos-a.votos);
-  list.innerHTML="";
-
-  temas.forEach((t,i)=>{
-    const row=document.createElement("div");
-    row.className="row"+(i===0?" top1":"");
-
-    row.innerHTML=`
-      <div class="num">${i+1}</div>
-      <div class="play">
-        <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+  <div class="wrap">
+    <div class="header">
+      <div class="logo">
+        <img src="logotipo.png" alt="ON Radio" />
       </div>
-      <div>
-        <p class="song">${t.nombre}</p>
-        <p class="artist">${t.artista}</p>
-      </div>
-      <div class="trend stable"></div>
-      <button class="vote" ${votedToday()?"disabled":""}>VOTAR</button>
-    `;
 
-    row.querySelector(".play").onclick=()=>{
-      audio.src=t.audio;
-      audio.play();
+      <div class="title">
+        <h1>VOTÁ TU TEMA PREFERIDO</h1>
+        <div class="arrowHint" title="Votá acá">
+          <span style="opacity:.85">↓</span>
+          <span>Los botones están a la derecha</span>
+          <span class="arrow" aria-hidden="true"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div id="list" class="list" aria-live="polite">
+        <!-- Se carga desde Firebase -->
+      </div>
+    </div>
+
+    <footer>
+      <b>www.laonradio.com.ar</b>
+    </footer>
+  </div>
+
+  <!-- Modal -->
+  <div id="modalBack" class="modalBack" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="modal">
+      <h3 id="modalTitle">Mensaje</h3>
+      <p id="modalText">...</p>
+      <div class="actions">
+        <button id="modalOk" class="primary">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase + lógica -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+    import { getDatabase, ref, onValue, runTransaction } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
+
+    // === TU CONFIG (la que me pasaste) ===
+    const firebaseConfig = {
+      apiKey: "AIzaSyC8XXef5k8hLmNL8ufIJsc7Sx5KTlRFdH8",
+      authDomain: "on-radio-ranking.firebaseapp.com",
+      databaseURL: "https://on-radio-ranking-default-rtdb.firebaseio.com",
+      projectId: "on-radio-ranking",
+      storageBucket: "on-radio-ranking.firebasestorage.app",
+      messagingSenderId: "311635352358",
+      appId: "1:311635352358:web:257ff4821987f07d31ffe7"
     };
 
-    row.querySelector(".vote").onclick=async()=>{
-      if(votedToday()){
-        alert("Ya votaste hoy. Volvé mañana.");
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    // ===== Helpers UI =====
+    const listEl = document.getElementById("list");
+    const modalBack = document.getElementById("modalBack");
+    const modalTitle = document.getElementById("modalTitle");
+    const modalText = document.getElementById("modalText");
+    const modalOk = document.getElementById("modalOk");
+
+    function showModal(title, text){
+      modalTitle.textContent = title;
+      modalText.textContent = text;
+      modalBack.style.display = "flex";
+      modalBack.setAttribute("aria-hidden", "false");
+    }
+    function hideModal(){
+      modalBack.style.display = "none";
+      modalBack.setAttribute("aria-hidden", "true");
+    }
+    modalOk.addEventListener("click", hideModal);
+    modalBack.addEventListener("click", (e)=>{ if(e.target === modalBack) hideModal(); });
+
+    // ===== Un voto por día (GLOBAL por dispositivo) =====
+    const LS_DATE_KEY = "onrank_vote_date";
+    const LS_THEME_KEY = "onrank_voted_theme";
+    function todayKey(){
+      const d = new Date();
+      const yyyy = d.getFullYear();
+      const mm = String(d.getMonth()+1).padStart(2,"0");
+      const dd = String(d.getDate()).padStart(2,"0");
+      return ${yyyy}-${mm}-${dd};
+    }
+    function hasVotedToday(){
+      return localStorage.getItem(LS_DATE_KEY) === todayKey();
+    }
+    function markVoted(themeId){
+      localStorage.setItem(LS_DATE_KEY, todayKey());
+      localStorage.setItem(LS_THEME_KEY, themeId);
+    }
+
+    // ===== Audio: play/pause real, uno solo sonando =====
+    const audio = new Audio();
+    audio.preload = "none";
+    let currentThemeId = null;
+    let currentBtn = null;
+
+    function setButtonState(btn, isPlaying){
+      if(!btn) return;
+      btn.classList.toggle("playing", isPlaying);
+      btn.setAttribute("aria-pressed", String(isPlaying));
+      btn.innerHTML = isPlaying ? pauseSvg() : playSvg();
+    }
+
+    function playSvg(){
+      return `
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M8 5v14l11-7z"></path>
+        </svg>`;
+    }
+    function pauseSvg(){
+      return `
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M6 5h4v14H6zM14 5h4v14h-4z"></path>
+        </svg>`;
+    }
+
+    audio.addEventListener("ended", ()=>{
+      setButtonState(currentBtn, false);
+      currentThemeId = null;
+      currentBtn = null;
+    });
+
+    function togglePlay(themeId, audioFile, btn){
+      // Si tocó el mismo tema: toggle pause/play
+      if(currentThemeId === themeId){
+        if(audio.paused){
+          audio.play().catch(()=>{});
+          setButtonState(btn, true);
+        }else{
+          audio.pause();
+          setButtonState(btn, false);
+        }
         return;
       }
-      await runTransaction(ref(db,"temas/"+t.id+"/votos"),v=>(v||0)+1);
-      lockVote();
-      alert("Gracias por votar. Volvé mañana.");
-    };
 
-    list.appendChild(row);
-  });
-});
-</script>
+      // Cambió de tema: parar anterior
+      if(currentBtn) setButtonState(currentBtn, false);
 
+      currentThemeId = themeId;
+      currentBtn = btn;
+
+      audio.src = audioFile; // archivos en la MISMA carpeta del html
+      audio.play().then(()=>{
+        setButtonState(btn, true);
+      }).catch(()=>{
+        setButtonState(btn, false);
+        showModal("Ups…", "No pude reproducir el audio. Revisá que el mp3 exista y que el nombre coincida exacto.");
+      });
+    }
+
+    // ===== Flechas reales (sube/baja/estable) =====
+    // Esto compara contra el ranking anterior que vio ESTE dispositivo.
+    // Para flechas “globales para todos” hay que guardar snapshot semanal/diario en Firebase (te lo armo si lo querés).
+    const LS_LAST_ORDER = "onrank_last_order";
+    function loadLastOrder(){
+      try{
+        const raw = localStorage.getItem(LS_LAST_ORDER);
+        return raw ? JSON.parse(raw) : null;
+      }catch{
+        return null;
+      }
+    }
+    function saveLastOrder(order){
+      try{ localStorage.setItem(LS_LAST_ORDER, JSON.stringify(order)); }catch{}
+    }
+
+    function trendFor(themeId, newIndex, lastOrder){
+      if(!lastOrder || !Array.isArray(lastOrder)) return "hold";
+      const oldIndex = lastOrder.indexOf(themeId);
+      if(oldIndex === -1) return "hold";
+      if(newIndex < oldIndex) return "up";
+      if(newIndex > oldIndex) return "down";
+      return "hold";
+    }
+
+    function trendIcon(kind){
+      if(kind === "up") return <div class="tri up" title="Subió"></div>;
+      if(kind === "down") return <div class="tri down" title="Bajó"></div>;
+      return <div class="sq" title="Se mantiene"></div>;
+    }
+
+    // ===== Render =====
+    function renderList(items){
+      listEl.innerHTML = "";
+      const lastOrder = loadLastOrder();
+
+      // order = array de ids en el orden actual
+      const order = items.map(x => x.id);
+
+      items.forEach((t, idx)=>{
+        const isTop1 = idx === 0;
+        const trend = trendFor(t.id, idx, lastOrder);
+
+        const row = document.createElement("div");
+        row.className = "row" + (isTop1 ? " top1" : "");
+
+        // N° (1 más grande y rojo ya lo maneja CSS en top1)
+        const num = document.createElement("div");
+        num.className = "rankNum";
+        num.textContent = String(idx + 1);
+
+        // Play
+        const play = document.createElement("button");
+        play.className = "playBtn";
+        play.type = "button";
+        play.setAttribute("aria-label", Reproducir ${t.nombre});
+        play.innerHTML = playSvg();
+
+        // Texto
+        const meta = document.createElement("div");
+        meta.className = "meta";
+        const song = document.createElement("div");
+        song.className = "song";
+        song.textContent = t.nombre;
+        const artist = document.createElement("div");
+        artist.className = "artist";
+        artist.textContent = t.artista;
+        meta.appendChild(song);
+        meta.appendChild(artist);
+
+        // Tendencia
+        const trendEl = document.createElement("div");
+        trendEl.className = "trend";
+        trendEl.innerHTML = trendIcon(trend);
+
+        // Votar
+        const voteWrap = document.createElement("div");
+        voteWrap.className = "voteWrap";
+
+        const voteBtn = document.createElement("button");
+        voteBtn.className = "voteBtn";
+        voteBtn.type = "button";
+        voteBtn.textContent = "VOTAR";
+        voteBtn.setAttribute("data-id", t.id);
+
+        // Estado voto (1 por día)
+        if(hasVotedToday()){
+          voteBtn.disabled = true;
+          voteBtn.textContent = "YA VOTASTE";
+        }
+
+        voteWrap.appendChild(voteBtn);
+
+        // Ensamble
+        row.appendChild(num);
+        row.appendChild(play);
+        row.appendChild(meta);
+        row.appendChild(trendEl);
+        row.appendChild(voteWrap);
+
+        // Eventos
+        play.addEventListener("click", ()=>{
+          // audioFile: se asume que está en la MISMA carpeta que el html
+          togglePlay(t.id, t.audio, play);
+        });
+
+        voteBtn.addEventListener("click", async ()=>{
+          if(hasVotedToday()){
+            showModal(
+              "Ya votaste hoy ✅",
+              "Gracias por votar tu tema preferido. Recordá que podés votar una sola vez por día. Volvé mañana para votar otra vez."
+            );
+            return;
+          }
+
+          // Incremento seguro en Firebase
+          const voteRef = ref(db, temas/${t.id}/votos);
+          try{
+            await runTransaction(voteRef, (current)=>{
+              if(current === null || current === undefined) return 1;
+              if(typeof current === "number") return current + 1;
+              // si por algún motivo no es número:
+              return 1;
+            });
+
+            markVoted(t.id);
+
+            // Bloqueo UI inmediato
+            document.querySelectorAll(".voteBtn").forEach(b=>{
+              b.disabled = true;
+              b.textContent = "YA VOTASTE";
+            });
+
+            showModal(
+              "¡Gracias por votar en el Ranking ON! 🎵",
+              "Tu voto fue registrado correctamente.\nRecordá que podés votar una sola vez por día. Volvé mañana para votar otra vez."
+            );
+
+          }catch(e){
+            showModal("Error 😕", "No pude registrar el voto. Probá de nuevo en un rato.");
+          }
+        });
+
+        listEl.appendChild(row);
+      });
+
+      // Guardar el orden actual para flechas (próxima carga)
+      saveLastOrder(order);
+    }
+
+    // ===== Carga desde RTDB =====
+    // Espera estructura:
+    // temas: { tipica:{nombre,artista,audio,votos}, papi:{...}, ... }
+    const temasRef = ref(db, "temas");
+
+    onValue(temasRef, (snap)=>{
+      const data = snap.val();
+      if(!data){
+        listEl.innerHTML = <div style="padding:12px;color:rgba(255,255,255,.85)">No hay temas cargados en Firebase.</div>;
+        return;
+      }
+
+      // Convertir objeto -> array
+      const items = Object.entries(data).map(([id, obj])=>{
+        return {
+          id,
+          nombre: obj?.nombre ?? id,
+          artista: obj?.artista ?? "",
+          audio: obj?.audio ?? "",
+          votos: typeof obj?.votos === "number" ? obj.votos : 0
+        };
+      });
+
+      // Orden por votos DESC
+      items.sort((a,b)=> (b.votos - a.votos));
+
+      // Top 10
+      renderList(items.slice(0,10));
+    }, (err)=>{
+      listEl.innerHTML = <div style="padding:12px;color:rgba(255,255,255,.85)">Error leyendo Firebase. Revisá reglas/URL.</div>;
+    });
+
+  </script>
 </body>
 </html>
