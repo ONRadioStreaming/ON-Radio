@@ -14,7 +14,6 @@
   --glass:rgba(0,0,0,.55);
   --border:rgba(255,255,255,.08);
 }
-
 *{box-sizing:border-box}
 
 body{
@@ -28,125 +27,74 @@ body{
 
 /* Header */
 .header{
-  padding:16px 14px 10px;
-  position:relative;
-  text-align:center;
-}
-
-.headerBox{
-  position:relative;
-  margin:14px auto 0;
-  max-width:980px;
+  margin:18px 14px 10px;
+  padding:14px 14px;
   border-radius:22px;
   background:rgba(0,0,0,.55);
-  border:1px solid rgba(255,255,255,.10);
-  box-shadow:0 18px 40px rgba(0,0,0,.45);
-  backdrop-filter:blur(7px);
-  padding:14px 18px;
+  border:1px solid rgba(255,255,255,.08);
+  box-shadow:0 18px 36px rgba(0,0,0,.45);
+  backdrop-filter:blur(6px);
   display:grid;
-  grid-template-columns:90px 1fr 90px;
+  grid-template-columns:80px 1fr 70px;
   align-items:center;
   gap:10px;
 }
 
-.logo{
-  width:82px;
-  justify-self:start;
-}
+.logo{width:72px; justify-self:start;}
 
-.titleWrap{
-  text-align:center;
-}
-
-.bigTitle{
+.titles{ text-align:center; line-height:1.05;}
+.h1{
   margin:0;
-  font-weight:1000;
+  font-weight:900;
   letter-spacing:3px;
-  font-size:clamp(26px,4vw,42px);
-  text-shadow:0 0 14px rgba(0,0,0,.35);
+  font-size:clamp(22px,4vw,38px);
 }
-.bigTitle .rank{color:#fff}
-.bigTitle .on{color:var(--red)}
-.subTitle{
+.h1 .rank{color:#fff}
+.h1 .on{color:#ff4a55}
+.sub{
   margin:6px 0 0;
   font-weight:900;
-  letter-spacing:2px;
+  letter-spacing:3px;
   color:var(--cyan);
-  text-shadow:0 0 16px rgba(25,211,255,.45);
-  font-size:clamp(14px,2.2vw,18px);
+  text-shadow:0 0 14px rgba(25,211,255,.35);
+  font-size:clamp(14px,2.5vw,18px);
 }
 
-/* Flecha (dentro del rectángulo, lateral derecho) */
-.arrowWrap{
-  justify-self:end;
-  width:60px;
-  height:60px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
+.arrowWrap{justify-self:end;}
 .arrowDown{
   width:0;height:0;
-  border-left:16px solid transparent;
-  border-right:16px solid transparent;
-  border-top:26px solid var(--red);
-  animation:arrowMove 1.3s ease-in-out infinite, arrowBlink 1.3s ease-in-out infinite;
-  filter:drop-shadow(0 0 10px rgba(229,9,20,.35));
+  border-left:14px solid transparent;
+  border-right:14px solid transparent;
+  border-top:22px solid var(--red);
+  animation:arrowMove 1.6s ease-in-out infinite, arrowBlink 1.6s ease-in-out infinite;
+  filter:drop-shadow(0 0 10px rgba(229,9,20,.25));
 }
+@keyframes arrowMove{0%{transform:translateY(0)}50%{transform:translateY(10px)}100%{transform:translateY(0)}}
+@keyframes arrowBlink{0%{opacity:1}50%{opacity:.55}100%{opacity:1}}
 
-@keyframes arrowMove{
-  0%{transform:translateY(0)}
-  50%{transform:translateY(10px)}
-  100%{transform:translateY(0)}
-}
-@keyframes arrowBlink{
-  0%{opacity:1}
-  50%{opacity:.55}
-  100%{opacity:1}
-}
-
-/* Estado / cartel */
+/* Estado */
 .status{
-  max-width:980px;
-  margin:12px auto 0;
+  margin:10px 14px 0;
   padding:12px 14px;
-  border-radius:16px;
+  border-radius:18px;
   background:rgba(0,0,0,.55);
-  border:1px solid rgba(255,255,255,.10);
-  box-shadow:0 12px 26px rgba(0,0,0,.35);
+  border:1px solid rgba(255,255,255,.08);
   display:flex;
-  gap:10px;
-  align-items:center;
   justify-content:space-between;
-}
-.pill{
-  display:inline-flex;
-  gap:8px;
   align-items:center;
-  font-weight:900;
-  letter-spacing:.4px;
+  gap:12px;
 }
-.dot{
-  width:10px;height:10px;border-radius:999px;
-  background:var(--yellow);
-  box-shadow:0 0 12px rgba(255,196,0,.35);
-}
-.small{
-  opacity:.85;
-  font-weight:700;
-  font-size:13px;
-}
+.badge{display:flex; align-items:center; gap:10px; font-weight:900;}
+.dot{width:10px;height:10px;border-radius:50%; background:var(--yellow); box-shadow:0 0 10px rgba(255,196,0,.25);}
+.right{opacity:.85; font-weight:800}
 
 /* Lista */
 .list{
-  max-width:980px;
-  margin:14px auto 0;
-  padding:10px 14px 40px;
+  padding:12px 14px 34px;
   display:flex;
   flex-direction:column;
   gap:16px;
 }
-
 .row{
   display:grid;
   grid-template-columns:55px 50px 1fr 20px 110px;
@@ -159,21 +107,17 @@ body{
   box-shadow:0 16px 32px rgba(0,0,0,.4);
   backdrop-filter:blur(6px);
 }
-
 .row.top1{
   border:1px solid rgba(229,9,20,.4);
-  box-shadow:0 0 22px rgba(229,9,20,.22);
+  box-shadow:0 0 20px rgba(229,9,20,.2);
 }
 
 .num{
-  font-family:Impact,Arial Black,system-ui;
+  font-family:Impact, Arial Black, system-ui;
   font-size:36px;
   text-align:center;
 }
-.row.top1 .num{
-  font-size:44px;
-  color:var(--red);
-}
+.row.top1 .num{font-size:44px;color:var(--red)}
 
 /* Play */
 .play{
@@ -186,100 +130,51 @@ body{
   cursor:pointer;
   user-select:none;
 }
-.play svg{
-  fill:#fff;
-  width:18px;
-}
+.play svg{fill:#fff;width:18px}
 
 /* Info */
-.song{
-  font-weight:900;
-  font-size:18px;
-  margin:0;
-}
-.artist{
-  margin:4px 0 0;
-  font-size:14px;
-  opacity:.8;
-}
+.song{font-weight:900;font-size:18px;margin:0}
+.artist{margin:4px 0 0;font-size:14px;opacity:.8}
 
 /* Trend */
-.trend{
-  width:14px;height:14px;
-  border-radius:3px;
-}
-.trend.up{
-  width:0;height:0;
-  border-left:8px solid transparent;
-  border-right:8px solid transparent;
-  border-bottom:14px solid var(--green);
-}
-.trend.down{
-  width:0;height:0;
-  border-left:8px solid transparent;
-  border-right:8px solid transparent;
-  border-top:14px solid var(--red);
-}
-.trend.stable{
-  background:var(--yellow);
-}
+.trend{width:14px;height:14px;border-radius:3px}
+.trend.up{width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent;border-bottom:14px solid var(--green)}
+.trend.down{width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent;border-top:14px solid var(--red)}
+.trend.stable{background:var(--yellow)}
 
 /* Votar */
 .vote{
-  width:110px;
-  height:44px;
-  border:0;
-  border-radius:14px;
-  background:var(--red);
-  color:#fff;
-  font-weight:900;
-  cursor:pointer;
+  width:110px;height:44px;border:0;border-radius:14px;
+  background:var(--red);color:#fff;font-weight:900;cursor:pointer;
 }
-.vote:disabled{
-  opacity:.4;
-  cursor:not-allowed;
-}
+.vote:disabled{opacity:.4;cursor:not-allowed}
 
 /* Footer */
-.footer{
-  text-align:center;
-  padding:10px 0 20px;
-  font-weight:800;
-  opacity:.85;
-}
+.footer{text-align:center;padding:10px 0 20px;font-weight:800;opacity:.85}
 
 /* Responsive */
 @media(max-width:520px){
-  .headerBox{
-    grid-template-columns:80px 1fr 70px;
-    padding:12px 12px;
-  }
-  .logo{width:70px}
-  .row{
-    grid-template-columns:45px 45px 1fr 18px 95px;
-  }
+  .row{grid-template-columns:45px 45px 1fr 18px 95px}
   .vote{width:95px}
+  .logo{width:64px}
 }
 </style>
 </head>
+
 <body>
 
 <div class="header">
-  <div class="headerBox">
-    <img src="logotipo.png" class="logo" alt="ON Radio">
-    <div class="titleWrap">
-      <h1 class="bigTitle"><span class="rank">RANKING</span> <span class="on">ON!</span></h1>
-      <div class="subTitle">VOTÁ TU TEMA FAVORITO</div>
-    </div>
-    <div class="arrowWrap" aria-hidden="true">
-      <div class="arrowDown"></div>
-    </div>
+  <img src="logotipo.png" class="logo" alt="ON Radio">
+  <div class="titles">
+    <div class="h1"><span class="rank">RANKING</span> <span class="on">ON!</span></div>
+    <div class="sub">VOTÁ TU TEMA FAVORITO</div>
   </div>
+  <div class="arrowWrap"><div class="arrowDown"></div></div>
+</div>
 
-  <div class="status" id="statusBox">
-    <div class="pill"><span class="dot" id="statusDot"></span> <span id="statusText">Conectando…</span></div>
-    <div class="small" id="statusDetail">Esperando datos</div>
-  </div>
+<div class="status" id="status">
+  <div class="badge"><span class="dot" id="dot"></span><span id="statusLeft">Conectando…</span></div>
+  <div class="right" id="statusRight">Esperando datos</div>
 </div>
 
 <div class="list" id="list"></div>
@@ -291,7 +186,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/fireba
 import { getDatabase, ref, onValue, runTransaction } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-database.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyC8XXef5k8hLmNL8ufIJsc7Sx5KTlRFdH8",
+    apiKey: "AIzaSyC8XXef5k8hLmNL8ufIJsc7Sx5KTlRFdH8",
     authDomain: "on-radio-ranking.firebaseapp.com",
     databaseURL: "https://on-radio-ranking-default-rtdb.firebaseio.com",
     projectId: "on-radio-ranking",
@@ -300,140 +195,122 @@ const firebaseConfig = {
     appId: "1:311635352358:web:257ff4821987f07d31ffe7"
   };
 
-const statusDot = document.getElementById("statusDot");
-const statusText = document.getElementById("statusText");
-const statusDetail = document.getElementById("statusDetail");
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+const temasRef = ref(db, "temas");
 
-function setStatus(kind, text, detail){
-  statusText.textContent = text;
-  statusDetail.textContent = detail || "";
-  if(kind === "ok"){
-    statusDot.style.background = "var(--green)";
-    statusDot.style.boxShadow = "0 0 12px rgba(43,220,99,.35)";
-  } else if(kind === "bad"){
-    statusDot.style.background = "var(--red)";
-    statusDot.style.boxShadow = "0 0 12px rgba(229,9,20,.35)";
-  } else {
-    statusDot.style.background = "var(--yellow)";
-    statusDot.style.boxShadow = "0 0 12px rgba(255,196,0,.35)";
-  }
-}
-
-let app, db;
-try{
-  app = initializeApp(firebaseConfig);
-  db = getDatabase(app);
-  setStatus("mid","Conectando…","Firebase inicializado");
-}catch(e){
-  console.error("Firebase init error:", e);
-  setStatus("bad","Error al iniciar Firebase","Revisá consola (F12) – init falló");
-}
-
-const temasRef = ref(db,"temas");
 const list = document.getElementById("list");
+const statusLeft = document.getElementById("statusLeft");
+const statusRight = document.getElementById("statusRight");
+const dot = document.getElementById("dot");
 
-// Audio con play/pause real
 const audio = new Audio();
 let currentId = null;
 let isPlaying = false;
+
+const ICON_PLAY = <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>;
+const ICON_PAUSE = <svg viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>;
+
+function setStatus(mode, left, right){
+  // mode: "yellow" | "green" | "red"
+  const colors = { yellow:"#ffc400", green:"#2bdc63", red:"#e50914" };
+  dot.style.background = colors[mode] || colors.yellow;
+  dot.style.boxShadow = 0 0 10px ${colors[mode] || colors.yellow}55;
+  statusLeft.textContent = left;
+  statusRight.textContent = right;
+}
 
 function today(){ return new Date().toISOString().slice(0,10); }
 function votedToday(){ return localStorage.getItem("on_vote")==today(); }
 function lockVote(){ localStorage.setItem("on_vote",today()); }
 
-// Iconos
-const ICON_PLAY = <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>;
-const ICON_PAUSE = <svg viewBox="0 0 24 24"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>;
-
-function setPlayIcon(el, playing){
-  el.innerHTML = playing ? ICON_PAUSE : ICON_PLAY;
+function stopAudio(){
+  audio.pause();
+  audio.currentTime = 0;
+  isPlaying = false;
+  currentId = null;
+  // Volver todos los iconos a play
+  document.querySelectorAll(".play").forEach(p => p.innerHTML = ICON_PLAY);
 }
 
-onValue(temasRef,(snap)=>{
+audio.addEventListener("ended", () => {
+  isPlaying = false;
+  currentId = null;
+  document.querySelectorAll(".play").forEach(p => p.innerHTML = ICON_PLAY);
+});
+
+setStatus("yellow","Conectando…","Esperando datos");
+
+onValue(temasRef, (snap) => {
   const data = snap.val();
 
   if(!data){
-    setStatus("bad","No hay datos en /temas","Firebase conectó pero la ruta está vacía");
+    setStatus("yellow","Conectado","Sin datos en /temas");
     list.innerHTML = "";
     return;
   }
 
   const temas = Object.entries(data).map(([id,t])=>({
     id,
-    nombre: t.nombre || "Sin título",
+    nombre: t.nombre || "",
     artista: t.artista || "",
     audio: t.audio || "",
-    votos: Number(t.votos||0)
+    votos: Number(t.votos || 0)
   }));
 
   temas.sort((a,b)=>b.votos-a.votos);
 
-  setStatus("ok","Conectado","Temas cargados: " + temas.length);
+  setStatus("green","OK","Cargados: " + temas.length + " temas");
   list.innerHTML = "";
 
   temas.forEach((t,i)=>{
-    const row=document.createElement("div");
-    row.className="row"+(i===0?" top1":"");
+    const row = document.createElement("div");
+    row.className = "row" + (i===0 ? " top1" : "");
 
-    row.innerHTML=`
+    row.innerHTML = `
       <div class="num">${i+1}</div>
-      <div class="play" role="button" aria-label="Reproducir/Pausar">
-        ${ICON_PLAY}
-      </div>
+      <div class="play" aria-label="play">${ICON_PLAY}</div>
       <div>
-        <p class="song">${escapeHtml(t.nombre)}</p>
-        <p class="artist">${escapeHtml(t.artista)}</p>
+        <p class="song">${t.nombre}</p>
+        <p class="artist">${t.artista}</p>
       </div>
       <div class="trend stable"></div>
       <button class="vote" ${votedToday()?"disabled":""}>VOTAR</button>
     `;
 
-    const playEl = row.querySelector(".play");
+    const playBtn = row.querySelector(".play");
     const voteBtn = row.querySelector(".vote");
 
-    // Play/Pause real
-    playEl.onclick = ()=>{
-      if(!t.audio){
-        alert("Este tema no tiene link de audio cargado.");
-        return;
-      }
-
-      // si es el mismo tema
+    playBtn.onclick = () => {
+      // Si toco el MISMO tema: toggle pausa / play
       if(currentId === t.id){
         if(isPlaying){
           audio.pause();
           isPlaying = false;
-          setPlayIcon(playEl,false);
+          playBtn.innerHTML = ICON_PLAY;
         }else{
-          audio.play().catch(err=>console.error(err));
+          audio.play();
           isPlaying = true;
-          setPlayIcon(playEl,true);
+          playBtn.innerHTML = ICON_PAUSE;
         }
         return;
       }
 
-      // cambio de tema
+      // Si toco OTRO tema: paro el anterior, cargo nuevo y arranco
+      stopAudio();
       currentId = t.id;
       audio.src = t.audio;
       audio.play().then(()=>{
         isPlaying = true;
-        // reset iconos de otras filas
-        document.querySelectorAll(".play").forEach(p=>setPlayIcon(p,false));
-        setPlayIcon(playEl,true);
-      }).catch(err=>{
-        console.error("Audio play error:", err);
-        alert("No se pudo reproducir el audio. Revisá el link del mp3.");
+        // Pongo pausa solo al botón actual
+        playBtn.innerHTML = ICON_PAUSE;
+      }).catch((e)=>{
+        setStatus("red","Error de audio","No se pudo reproducir");
+        console.error(e);
       });
     };
 
-    // cuando termina el audio, vuelve a play
-    audio.onended = ()=>{
-      isPlaying = false;
-      currentId = null;
-      document.querySelectorAll(".play").forEach(p=>setPlayIcon(p,false));
-    };
-
-    voteBtn.onclick = async()=>{
+    voteBtn.onclick = async () => {
       if(votedToday()){
         alert("Ya votaste hoy. Volvé mañana.");
         return;
@@ -441,25 +318,25 @@ onValue(temasRef,(snap)=>{
       try{
         await runTransaction(ref(db,"temas/"+t.id+"/votos"), v => (v||0)+1);
         lockVote();
+        // Deshabilito todos los botones
+        document.querySelectorAll(".vote").forEach(b=>b.disabled=true);
         alert("Gracias por votar. Volvé mañana.");
-      }catch(e){
-        console.error("Vote error:", e);
-        alert("No se pudo registrar el voto. Revisá reglas de Firebase.");
+      }catch(err){
+        setStatus("red","Error al votar", String(err?.code || err?.message || err));
+        alert("No se pudo votar. Probá de nuevo.");
+        console.error(err);
       }
     };
 
     list.appendChild(row);
   });
-}, (err)=>{
-  console.error("onValue error:", err);
-  setStatus("bad","No se puede leer Firebase","Probable: reglas/permiso o config");
-});
 
-function escapeHtml(str){
-  return String(str).replace(/[&<>"']/g, s => ({
-    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
-  }[s]));
-}
+}, (err) => {
+  // ✅ Acá vemos el error REAL (PERMISSION_DENIED / etc.)
+  setStatus("red","Error Firebase", String(err?.code || err?.message || err));
+  list.innerHTML = "";
+  console.error(err);
+});
 </script>
 
 </body>
