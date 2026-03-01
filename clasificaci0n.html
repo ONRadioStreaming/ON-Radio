@@ -361,12 +361,13 @@
       return Math.max(0, remain);
     }
     function fmtRemain(ms){
-      const total = Math.ceil(ms/1000);
-      const h = Math.floor(total/3600);
-      const m = Math.floor((total%3600)/60);
-      if(h>0) return ${h}h ${m}m;
-return ${m}m;
-    }
+  const total = Math.ceil(ms/1000);
+  const h = Math.floor(total/3600);
+  const m = Math.floor((total%3600)/60);
+
+  if(h>0) return ${h}h ${m}m;
+  return ${m}m;
+}
 
     /*********
      * AUDIO: play/pause real
