@@ -1,486 +1,502 @@
 <!doctype html>
-window.addEventListener("error", (e) => {
-  const box = document.createElement("pre");
-  box.style.cssText = "position:fixed;left:10px;right:10px;bottom:10px;max-height:45vh;overflow:auto;background:#000;color:#0f0;padding:10px;z-index:999999;border:2px solid #0f0;font-size:12px;white-space:pre-wrap";
-  box.textContent = "ERROR JS:\n" + (e.message || e.error || e);
-  document.body.appendChild(box);
-});
-
-window.addEventListener("unhandledrejection", (e) => {
-  const box = document.createElement("pre");
-  box.style.cssText = "position:fixed;left:10px;right:10px;bottom:10px;max-height:45vh;overflow:auto;background:#000;color:#ff0;padding:10px;z-index:999999;border:2px solid #ff0;font-size:12px;white-space:pre-wrap";
-  box.textContent = "PROMISE REJECTED:\n" + (e.reason?.message || e.reason || e);
-  document.body.appendChild(box);
-});
 <html lang="es">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Ranking ON!</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ranking ON</title>
 
-<style>
-:root{
-  --red:#e50914;
-  --cyan:#19d3ff;
-  --yellow:#ffc400;
-  --green:#2bdc63;
-  --glass:rgba(0,0,0,.55);
-  --border:rgba(255,255,255,.10);
-}
+  <style>
+    :root{
+      --red:#e50914;
+      --cyan:#19d3ff;
+      --yellow:#ffc400;
+      --green:#2bdc63;
+      --glass: rgba(0,0,0,.55);
+      --border: rgba(255,255,255,.10);
+      --text: #fff;
+      --muted: rgba(255,255,255,.75);
+    }
 
-*{box-sizing:border-box}
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      color: var(--text);
+      background:
+        linear-gradient(rgba(0,0,0,.65), rgba(0,0,0,.75)),
+        url("fondoranking2.jpg") center/cover fixed;
+      min-height:100vh;
+    }
 
-body{
-  margin:0;
-  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
-  color:#fff;
-  background:
-    linear-gradient(rgba(0,0,0,.65),rgba(0,0,0,.75)),
-    url("fondoranking2.jpg") center/cover fixed;
-}
+    .wrap{
+      width:min(980px, 94vw);
+      margin:18px auto 30px;
+    }
 
-/* Header */
-.header{
-  position:relative;
-  margin:16px auto 10px;
-  width:min(980px,calc(100% - 22px));
-  padding:16px 16px 14px 96px;
-  border-radius:22px;
-  background:rgba(0,0,0,.60);
-  border:1px solid var(--border);
-  box-shadow:0 16px 34px rgba(0,0,0,.45);
-  backdrop-filter:blur(6px);
-}
+    .header{
+      background: rgba(0,0,0,.55);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      padding: 16px 16px;
+      display:flex;
+      align-items:center;
+      gap:14px;
+      position:relative;
+      overflow:hidden;
+      backdrop-filter: blur(6px);
+    }
 
-.logo{
-  position:absolute;
-  left:14px;
-  top:14px;
-  width:78px;
-}
+    .logo{
+      width:64px; height:64px;
+      object-fit:contain;
+      filter: drop-shadow(0 6px 12px rgba(0,0,0,.6));
+      flex: 0 0 auto;
+    }
 
-.hTop{
-  display:flex;
-  align-items:baseline;
-  justify-content:center;
-  gap:14px;
-  margin:0;
-  line-height:1;
-}
-.hTop .rank{
-  font-weight:900;
-  letter-spacing:6px;
-  font-size:clamp(26px,4vw,44px);
-}
-.hTop .on{
-  font-family:"Benjamin Gothic Heavy",Impact,Arial Black;
-  font-weight:900;
-  letter-spacing:2px;
-  font-size:clamp(28px,4vw,48px);
-  color:var(--red);
-}
-.hSub{
-  margin:10px 0 0;
-  text-align:center;
-  font-weight:900;
-  font-size:clamp(14px,2.6vw,18px);
-  letter-spacing:4px;
-  color:var(--cyan);
-  text-shadow:0 0 14px rgba(25,211,255,.35);
-}
+    .titleBox{ flex:1; text-align:center; }
+    .title{
+      margin:0;
+      font-size: clamp(28px, 4.2vw, 46px);
+      font-weight: 900;
+      letter-spacing: 2px;
+    }
+    .title .on{ color:#ff4b55; }
+    .subtitle{
+      margin: 4px 0 0;
+      font-size: clamp(14px, 2.2vw, 20px);
+      font-weight: 800;
+      letter-spacing: 4px;
+      color: var(--cyan);
+    }
 
-/* Flecha (a la derecha, apuntando abajo) */
-.arrowDown{
-  position:absolute;
-  right:16px;
-  top:50%;
-  transform:translateY(-20%);
-  width:0;height:0;
-  border-left:14px solid transparent;
-  border-right:14px solid transparent;
-  border-top:22px solid var(--red);
-  animation:arrowMove 1.6s ease-in-out infinite, arrowBlink 1.6s ease-in-out infinite;
-}
+    .arrow{
+      width:0; height:0;
+      border-left: 14px solid transparent;
+      border-right: 14px solid transparent;
+      border-top: 22px solid #c4121a;
+      filter: drop-shadow(0 6px 14px rgba(0,0,0,.8));
+      margin-right:8px;
+      flex: 0 0 auto;
+      opacity:.95;
+      transform: translateY(2px);
+    }
 
-@keyframes arrowMove{
-  0%{transform:translateY(-20%)}
-  50%{transform:translateY(-2%)}
-  100%{transform:translateY(-20%)}
-}
-@keyframes arrowBlink{
-  0%{opacity:1}
-  50%{opacity:.55}
-  100%{opacity:1}
-}
+    .statusBar{
+      margin:14px 0 14px;
+      background: rgba(0,0,0,.50);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 12px 14px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 10px;
+      backdrop-filter: blur(6px);
+    }
+    .statusLeft{
+      display:flex; align-items:center; gap:10px;
+      font-weight: 800;
+      color: var(--muted);
+    }
+    .dot{
+      width:12px; height:12px; border-radius:50%;
+      background: var(--yellow);
+      box-shadow: 0 0 18px rgba(255,196,0,.55);
+    }
+    .statusRight{
+      font-weight: 800;
+      color: var(--muted);
+    }
 
-/* Estado */
-.status{
-  margin:10px auto 0;
-  width:min(980px,calc(100% - 22px));
-  padding:12px 16px;
-  border-radius:16px;
-  background:rgba(0,0,0,.50);
-  border:1px solid rgba(255,255,255,.08);
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:10px;
-}
-.leftStatus{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  font-weight:800;
-}
-.dot{
-  width:10px;height:10px;border-radius:50%;
-  background:var(--yellow);
-  box-shadow:0 0 12px rgba(255,196,0,.45);
-}
-.rightStatus{opacity:.8;font-weight:800}
+    .list{
+      display:flex;
+      flex-direction:column;
+      gap: 12px;
+      padding-bottom: 12px;
+    }
 
-/* Lista */
-.list{
-  margin:14px auto 28px;
-  width:min(980px,calc(100% - 22px));
-  display:flex;
-  flex-direction:column;
-  gap:14px;
-}
+    .row{
+      background: rgba(0,0,0,.55);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 12px 12px;
+      display:grid;
+      grid-template-columns: 52px 1fr auto;
+      gap: 10px;
+      align-items:center;
+      backdrop-filter: blur(6px);
+    }
 
-.row{
-  display:grid;
-  grid-template-columns:70px 56px 1fr 20px 120px;
-  align-items:center;
-  gap:12px;
-  padding:14px;
-  border-radius:18px;
-  background:var(--glass);
-  border:1px solid var(--border);
-  box-shadow:0 16px 32px rgba(0,0,0,.40);
-  backdrop-filter:blur(6px);
-}
+    .pos{
+      width:52px; height:52px;
+      border-radius: 14px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight: 900;
+      font-size: 20px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.06);
+    }
 
-.row.top1{
-  border:1px solid rgba(229,9,20,.45);
-  box-shadow:0 0 26px rgba(229,9,20,.22);
-}
+    .meta{
+      min-width: 0;
+    }
+    .song{
+      font-size: 16px;
+      font-weight: 900;
+      line-height: 1.15;
+      margin:0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .artist{
+      margin:4px 0 0;
+      color: var(--muted);
+      font-weight: 700;
+      font-size: 13px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
 
-.num{
-  font-family:"Benjamin Gothic Heavy",Impact,Arial Black;
-  font-size:42px;
-  text-align:center;
-  opacity:.95;
-}
-.row.top1 .num{color:var(--red); font-size:50px;}
+    .actions{
+      display:flex;
+      align-items:center;
+      gap: 10px;
+    }
 
-.play{
-  width:50px;height:50px;
-  border-radius:50%;
-  border:2px solid rgba(255,255,255,.9);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  cursor:pointer;
-  user-select:none;
-}
-.play svg{
-  fill:#fff;
-  width:20px;
-  margin-left:2px;
-}
-.play.pause svg{ margin-left:0; }
+    .btn{
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      color: #fff;
+      padding: 10px 12px;
+      border-radius: 14px;
+      font-weight: 900;
+      cursor:pointer;
+      user-select:none;
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+    .btn:hover{ background: rgba(255,255,255,.10); }
 
-.song{
-  font-weight:900;
-  font-size:18px;
-  margin:0;
-}
-.artist{
-  margin:4px 0 0;
-  font-size:14px;
-  opacity:.82;
-}
+    .btnPlay{
+      min-width: 96px;
+      justify-content:center;
+    }
 
-/* Trend (dejamos estable por ahora) */
-.trend{
-  width:14px;height:14px;
-  border-radius:3px;
-}
-.trend.stable{ background:var(--yellow); }
+    .btnVote{
+      background: rgba(229,9,20,.18);
+      border-color: rgba(229,9,20,.35);
+    }
+    .btnVote:hover{
+      background: rgba(229,9,20,.26);
+    }
 
-.vote{
-  width:120px;
-  height:46px;
-  border:0;
-  border-radius:14px;
-  background:var(--red);
-  color:#fff;
-  font-weight:900;
-  cursor:pointer;
-}
-.vote:disabled{ opacity:.4; cursor:not-allowed; }
+    .votes{
+      font-weight: 900;
+      color: var(--cyan);
+      min-width: 52px;
+      text-align:right;
+    }
 
-/* Resaltado del tema activo */
-.row.active{
-  outline:2px solid rgba(25,211,255,.35);
-  box-shadow:0 0 26px rgba(25,211,255,.12), 0 16px 32px rgba(0,0,0,.40);
-}
+    .toast{
+      position: fixed;
+      left: 50%;
+      bottom: 16px;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,.75);
+      border: 1px solid rgba(255,255,255,.14);
+      padding: 10px 12px;
+      border-radius: 14px;
+      font-weight: 800;
+      display:none;
+      z-index: 9999;
+      max-width: 92vw;
+    }
 
-.footer{
-  text-align:center;
-  padding:6px 0 18px;
-  font-weight:800;
-  opacity:.85;
-}
+    .footer{
+      margin: 16px 0 0;
+      text-align:center;
+      font-weight: 900;
+      color: rgba(255,255,255,.85);
+      letter-spacing: 1px;
+    }
 
-/* Responsive */
-@media(max-width:520px){
-  .header{padding-left:86px}
-  .logo{width:70px}
-  .row{grid-template-columns:58px 52px 1fr 18px 105px}
-  .vote{width:105px}
-  .num{font-size:38px}
-  .row.top1 .num{font-size:46px}
-}
-</style>
+    /* Debug box (si querés ocultarlo, ponelo en display:none) */
+    #debug{
+      position: fixed;
+      left: 10px;
+      right: 10px;
+      bottom: 10px;
+      max-height: 34vh;
+      overflow:auto;
+      background: rgba(0,0,0,.82);
+      border:1px solid rgba(255,255,255,.18);
+      border-radius: 14px;
+      padding: 10px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 12px;
+      display:none; /* poné block si querés ver errores en el celu */
+      z-index: 99999;
+      white-space: pre-wrap;
+    }
+  </style>
 </head>
 
 <body>
-
-<div class="header">
-  <img src="logotipo.png" class="logo" alt="ON Radio">
-  <h1 class="hTop">
-    <span class="rank">RANKING</span>
-    <span class="on">ON!</span>
-  </h1>
-  <div class="hSub">VOTÁ TU TEMA FAVORITO</div>
-  <div class="arrowDown"></div>
-</div>
-
-<div class="status" id="status">
-  <div class="leftStatus"><span class="dot" id="dot"></span><span id="statusLeft">Conectando...</span></div>
-  <div class="rightStatus" id="statusRight">Esperando datos</div>
-</div>
-
-<div class="list" id="list"></div>
-
-<div class="footer">www.laonradio.com.ar</div>
-
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
-import { getDatabase, ref, onValue, runTransaction } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
-
-/** ✅ Tu config (completa) */
-const firebaseConfig = {
-  apiKey: "AIzaSyC8XXef5k8hLmNL8ufIJsc7Sx5KTLRFdH8",
-  authDomain: "on-radio-ranking.firebaseapp.com",
-  databaseURL: "https://on-radio-ranking-default-rtdb.firebaseio.com",
-  projectId: "on-radio-ranking",
-  storageBucket: "on-radio-ranking.firebasestorage.app",
-  messagingSenderId: "311635352358",
-  appId: "1:311635352358:web:257ff4821987f07d31ffe7"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
-const temasRef = ref(db,"temas");
-
-const list = document.getElementById("list");
-const statusBox = document.getElementById("status");
-const statusLeft = document.getElementById("statusLeft");
-const statusRight = document.getElementById("statusRight");
-const dot = document.getElementById("dot");
-
-/** Audio único para toda la página */
-const audio = new Audio();
-audio.preload = "none";
-
-let currentId = null; // id del tema actualmente cargado/reproduciendo
-
-function setStatus(color, left, right){
-  statusLeft.textContent = left;
-  statusRight.textContent = right;
-  dot.style.background = color;
-  dot.style.boxShadow = 0 0 12px ${color}55;
-}
-
-function today(){
-  return new Date().toISOString().slice(0,10);
-}
-function votedToday(){
-  return localStorage.getItem("on_vote")==today();
-}
-function lockVote(){
-  localStorage.setItem("on_vote",today());
-}
-
-/**
- * Resuelve el audio:
- * - si audio es URL http(s) => usa eso
- * - si audio es "hacecalor.mp3" => usa "./hacecalor.mp3"
- * - si no hay audio => intenta "./<id>.mp3"
- */
-function resolveAudio(t){
-  const a = (t.audio || "").trim();
-  if (!a) return ./${t.id}.mp3;
-  if (/^https?:\/\//i.test(a)) return a;
-  if (a.startsWith("/")) return a;
-  return ./${encodeURI(a)}; // por si hay espacios, etc.
-}
-
-/** Iconos */
-const ICON_PLAY = <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>;
-const ICON_PAUSE = <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>;
-
-function clearActiveRows(){
-  document.querySelectorAll(".row.active").forEach(r=>r.classList.remove("active"));
-  document.querySelectorAll(".play").forEach(p=>{
-    p.classList.remove("pause");
-    p.innerHTML = ICON_PLAY;
-  });
-}
-
-function markPlaying(rowEl, playEl){
-  clearActiveRows();
-  rowEl.classList.add("active");
-  playEl.classList.add("pause");
-  playEl.innerHTML = ICON_PAUSE;
-}
-
-function markPaused(){
-  document.querySelectorAll(".row.active").forEach(r=>r.classList.remove("active"));
-  document.querySelectorAll(".play.pause").forEach(p=>{
-    p.classList.remove("pause");
-    p.innerHTML = ICON_PLAY;
-  });
-}
-
-/** Si termina el audio, vuelve el botón a play */
-audio.addEventListener("ended", () => {
-  currentId = null;
-  markPaused();
-});
-
-audio.addEventListener("pause", () => {
-  // si pausa porque el usuario tocó pausa, actualizamos UI
-  // si es pausa por cambio de src, igual se arregla cuando hacemos play
-  if (audio.currentTime > 0 && !audio.ended) {
-    // dejalo como pausa solo si el tema actual sigue siendo el mismo
-    // (si se cambió, markPlaying lo pisa)
-  }
-});
-
-setStatus("#ffc400","Conectando...","Esperando datos");
-
-onValue(temasRef,(snap)=>{
-  const data=snap.val();
-  if(!data){
-    setStatus("#ffc400","Conectado","Sin datos en /temas");
-    list.innerHTML = "";
-    return;
-  }
-
-  const temas = Object.entries(data).map(([id,t])=>({
-    id,
-    nombre: t.nombre || "",
-    artista: t.artista || "",
-    audio: t.audio || "",   // acá ahora poné: hacecalor.mp3 / chorro.mp3 / tradicional.mp3 etc
-    votos: Number(t.votos || 0)
-  }));
-
-  temas.sort((a,b)=>b.votos-a.votos);
-
-  list.innerHTML="";
-
-  setStatus("#2bdc63","Conectado",Cargados: ${temas.length} temas);
-
-  temas.forEach((t,i)=>{
-    const row=document.createElement("div");
-    row.className="row"+(i===0?" top1":"");
-
-    const isDisabled = votedToday();
-
-    row.innerHTML=`
-      <div class="num">${i+1}</div>
-
-      <div class="play" title="Play / Pausa">
-        ${ICON_PLAY}
+  <div class="wrap">
+    <div class="header">
+      <img class="logo" src="logotipo.png" alt="ON Radio" />
+      <div class="titleBox">
+        <h1 class="title">RANKING <span class="on">ON!</span></h1>
+        <div class="subtitle">VOTÁ TU TEMA FAVORITO</div>
       </div>
+      <div class="arrow" aria-hidden="true"></div>
+    </div>
 
-      <div>
-        <p class="song">${t.nombre}</p>
-        <p class="artist">${t.artista}</p>
+    <div class="statusBar">
+      <div class="statusLeft">
+        <div id="dot" class="dot"></div>
+        <div id="statusLeft">Conectando…</div>
       </div>
+      <div id="statusRight" class="statusRight">Esperando datos</div>
+    </div>
 
-      <div class="trend stable" title="Estable"></div>
+    <div id="list" class="list"></div>
 
-      <button class="vote" ${isDisabled?"disabled":""}>VOTAR</button>
-    `;
+    <div class="footer">www.laonradio.com.ar</div>
+  </div>
 
-    const playBtn = row.querySelector(".play");
-    const voteBtn = row.querySelector(".vote");
+  <div id="toast" class="toast"></div>
+  <pre id="debug"></pre>
 
-    playBtn.onclick = async () => {
-      const src = resolveAudio(t);
+  <script type="module">
+    // ======= DEBUG VISUAL (opcional) =======
+    const debugBox = document.getElementById("debug");
+    const dbg = (...args) => {
+      const msg = args.map(a => typeof a === "string" ? a : JSON.stringify(a, null, 2)).join(" ");
+      debugBox.textContent += msg + "\\n";
+      // debugBox.style.display = "block"; // descomentá para verlo siempre
+    };
 
-      // Si tocas el mismo tema:
-      if (currentId === t.id) {
-        if (!audio.paused) {
-          audio.pause();
-          currentId = null;
-          markPaused();
-          return;
-        } else {
-          try {
-            await audio.play();
-            markPlaying(row, playBtn);
-          } catch (e) {
-            alert("El navegador bloqueó el audio. Tocá de nuevo Play.");
-          }
+    window.addEventListener("error", (e) => {
+      dbg("ERROR JS:", e.message || e.error || e);
+      debugBox.style.display = "block";
+    });
+    window.addEventListener("unhandledrejection", (e) => {
+      dbg("PROMISE REJECTED:", e.reason?.message || e.reason || e);
+      debugBox.style.display = "block";
+    });
+
+    // ======= Firebase v9 (module) =======
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+    import { getDatabase, ref, onValue, runTransaction } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
+
+    // ⚠️ PEGÁ ACÁ TU firebaseConfig COMPLETO (SIN "..." )
+    const firebaseConfig = { 
+apiKey: "AIzaSyC8XXef5k8hLmNL8ufIJsc7Sx5KTlRFdH8",
+    authDomain: "on-radio-ranking.firebaseapp.com",
+    databaseURL: "https://on-radio-ranking-default-rtdb.firebaseio.com",
+    projectId: "on-radio-ranking",
+    storageBucket: "on-radio-ranking.firebasestorage.app",
+    messagingSenderId: "311635352358",
+    appId: "1:311635352358:web:257ff4821987f07d31ffe7"
+  };
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    // ======= UI refs =======
+    const listEl = document.getElementById("list");
+    const statusLeftEl = document.getElementById("statusLeft");
+    const statusRightEl = document.getElementById("statusRight");
+    const dotEl = document.getElementById("dot");
+    const toastEl = document.getElementById("toast");
+
+    // ======= helpers =======
+    const setStatus = (color, left, right) => {
+      dotEl.style.background = color;
+      statusLeftEl.textContent = left;
+      statusRightEl.textContent = right;
+    };
+
+    const toast = (msg) => {
+      toastEl.textContent = msg;
+      toastEl.style.display = "block";
+      setTimeout(() => toastEl.style.display = "none", 2200);
+    };
+
+    // Solo 1 voto por tema por día (por dispositivo)
+    const todayKey = () => {
+      const d = new Date();
+      const y = d.getFullYear();
+      const m = String(d.getMonth()+1).padStart(2,"0");
+      const day = String(d.getDate()).padStart(2,"0");
+      return onrank_${y}${m}${day};
+    };
+
+    const canVote = (id) => {
+      const key = todayKey();
+      const raw = localStorage.getItem(key);
+      const obj = raw ? JSON.parse(raw) : {};
+      return !obj[id];
+    };
+
+    const markVoted = (id) => {
+      const key = todayKey();
+      const raw = localStorage.getItem(key);
+      const obj = raw ? JSON.parse(raw) : {};
+      obj[id] = true;
+      localStorage.setItem(key, JSON.stringify(obj));
+    };
+
+    // Un solo audio reproduciendo
+    const player = new Audio();
+    player.preload = "none";
+    let nowPlayingId = null;
+
+    const playFile = async (id, filename) => {
+      try{
+        if(!filename){
+          toast("Este tema no tiene audio asignado 😅");
           return;
         }
-      }
 
-      // Si tocas un tema distinto:
-      currentId = t.id;
-      audio.pause();
-      audio.currentTime = 0;
-      audio.src = src;
+        // Ruta a mp3 en el repo (en la raíz del /ON-Radio/)
+        const url = ./${filename};
 
-      try{
-        await audio.play();
-        markPlaying(row, playBtn);
-      }catch(e){
-        currentId = null;
-        markPaused();
-        alert("No pude reproducir el audio. Probá tocando Play otra vez.");
+        if(nowPlayingId === id && !player.paused){
+          player.pause();
+          return;
+        }
+
+        nowPlayingId = id;
+        player.src = url;
+        await player.play();
+      }catch(err){
+        dbg("Audio error:", err?.message || err);
+        toast("No pude reproducir este audio.");
       }
     };
 
-    voteBtn.onclick = async () => {
-      if (votedToday()){
-        alert("Ya votaste hoy. Volvé mañana.");
+    // ======= Render =======
+    const render = (items) => {
+      listEl.innerHTML = "";
+
+      items.forEach((t, idx) => {
+        const row = document.createElement("div");
+        row.className = "row";
+
+        const pos = document.createElement("div");
+        pos.className = "pos";
+        pos.textContent = String(idx + 1);
+
+        const meta = document.createElement("div");
+        meta.className = "meta";
+
+        const song = document.createElement("p");
+        song.className = "song";
+        song.textContent = t.nombre || "(sin nombre)";
+
+        const artist = document.createElement("p");
+        artist.className = "artist";
+        artist.textContent = t.artista || "";
+
+        meta.appendChild(song);
+        meta.appendChild(artist);
+
+        const actions = document.createElement("div");
+        actions.className = "actions";
+
+        const btnPlay = document.createElement("button");
+        btnPlay.className = "btn btnPlay";
+        btnPlay.textContent = (nowPlayingId === t.id && !player.paused) ? "⏸ Pausa" : "▶ Play";
+        btnPlay.addEventListener("click", () => {
+          playFile(t.id, t.audio);
+          // refresco rápido del texto
+          setTimeout(() => render(items), 150);
+        });
+
+        const btnVote = document.createElement("button");
+        btnVote.className = "btn btnVote";
+        btnVote.textContent = canVote(t.id) ? "VOTAR" : "VOTADO ✅";
+        btnVote.disabled = !canVote(t.id);
+        btnVote.addEventListener("click", async () => {
+          if(!canVote(t.id)){
+            toast("Ya votaste este tema hoy 😉");
+            return;
+          }
+
+          try{
+            const votesRef = ref(db, temas/${t.id}/votos);
+            await runTransaction(votesRef, (current) => (Number(current) || 0) + 1);
+            markVoted(t.id);
+            toast("¡Gracias por votar! Volvé mañana 🙌");
+          }catch(err){
+            dbg("Vote error:", err?.message || err);
+            toast("No pude registrar el voto.");
+          }
+        });
+
+        const votes = document.createElement("div");
+        votes.className = "votes";
+        votes.textContent = String(t.votos ?? 0);
+
+        actions.appendChild(btnPlay);
+        actions.appendChild(btnVote);
+        actions.appendChild(votes);
+
+        row.appendChild(pos);
+        row.appendChild(meta);
+        row.appendChild(actions);
+
+        listEl.appendChild(row);
+      });
+    };
+
+    // ======= Firebase listen =======
+    setStatus("var(--yellow)", "Conectando…", "Esperando datos");
+
+    const temasRef = ref(db, "temas");
+    onValue(temasRef, (snap) => {
+      const data = snap.val();
+
+      if(!data){
+        setStatus("var(--yellow)", "Conectado", "Sin datos en /temas");
+        listEl.innerHTML = "";
+        toast("Firebase está ok, pero /temas está vacío.");
         return;
       }
-      try{
-        await runTransaction(ref(db,temas/${t.id}/votos), v => (v || 0) + 1);
-        lockVote();
-        alert("Gracias por votar. Volvé mañana.");
-      }catch(e){
-        alert("Error al votar. Probá de nuevo.");
-      }
-    };
 
-    list.appendChild(row);
-  });
+      const items = Object.entries(data).map(([id, obj]) => ({
+        id,
+        nombre: obj?.nombre || "",
+        artista: obj?.artista || "",
+        audio: obj?.audio || "",     // <-- acá tiene que venir "chorro.mp3", "hacecalor.mp3", etc.
+        votos: Number(obj?.votos || 0),
+      }));
 
-  // Oculta la barra de estado si querés, dejala 2 segundos y chau
-  setTimeout(()=>{ statusBox.style.display="none"; }, 1500);
-});
-</script>
+      // Orden automático por votos DESC
+      items.sort((a,b) => b.votos - a.votos);
 
+      setStatus("var(--green)", "Conectado", Cargados: ${items.length} temas);
+      render(items);
+    }, (err) => {
+      dbg("Firebase onValue error:", err?.message || err);
+      setStatus("var(--red)", "Error", "No puedo leer Firebase");
+      toast("Error leyendo Firebase.");
+    });
+
+    // Cuando termina un audio, refrescar botones
+    player.addEventListener("ended", () => {
+      nowPlayingId = null;
+    });
+    player.addEventListener("pause", () => {
+      // re-render leve
+      // (no lo hago agresivo para no parpadear)
+    });
+  </script>
 </body>
 </html>
-
-
