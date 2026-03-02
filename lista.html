@@ -1,305 +1,563 @@
 <!doctype html>
 <html lang="es">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Ranking ON</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ranking ON</title>
 
-<style>
-:root{
-  --red:#e50914;
-  --cyan:#19d3ff;
-  --yellow:#ffc400;
-  --green:#2bdc63;
-  --glass:rgba(0,0,0,.55);
-  --border:rgba(255,255,255,.08);
-}
+  <style>
+    :root{
+      --red:#e50914;
+      --cyan:#19d3ff;
+      --yellow:#ffc400;
+      --green:#2bdc63;
+      --glass:rgba(0,0,0,.55);
+      --glass2:rgba(0,0,0,.35);
+      --border:rgba(255,255,255,.10);
+      --shadow: 0 10px 30px rgba(0,0,0,.45);
+      --radius: 22px;
+    }
 
-*{box-sizing:border-box}
+    *{ box-sizing:border-box; }
 
-body{
-  margin:0;
-  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
-  color:#fff;
-  background:
-    linear-gradient(rgba(0,0,0,.65),rgba(0,0,0,.75)),
-    url("fondoranking2.jpg") center/cover fixed;
-}
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      color:#fff;
+      min-height:100vh;
+      background:
+        linear-gradient(rgba(0,0,0,.65), rgba(0,0,0,.75)),
+        url("fondoranking2.jpg") center/cover fixed;
+    }
 
-/* Lateral fijo */
-.side{
-  position:fixed;
-  left:12px;
-  top:50%;
-  transform:translateY(-50%);
-  writing-mode:vertical-rl;
-  transform-origin:center;
-  font-weight:900;
-  letter-spacing:8px;
-  font-size:46px;
-  opacity:.18;
-  pointer-events:none;
-}
+    /* Lateral */
+    .side{
+      position:fixed;
+      left:12px;
+      top:50%;
+      transform:translateY(-50%);
+      writing-mode:vertical-rl;
+      letter-spacing:8px;
+      font-weight:900;
+      opacity:.22;
+      font-size:44px;
+      user-select:none;
+      pointer-events:none;
+    }
 
-/* Header */
-.header{
-  padding:20px 14px 10px 70px;
-  position:relative;
-  text-align:center;
-}
+    .wrap{
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 18px 14px 44px;
+    }
 
-.logo{
-  position:absolute;
-  left:14px;
-  top:14px;
-  width:85px;
-}
+    /* Header */
+    .header{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:14px;
+      background: var(--glass);
+      border:1px solid var(--border);
+      border-radius: 28px;
+      padding: 18px 18px;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow:hidden;
+    }
 
-.title{
-  font-weight:900;
-  font-size:clamp(26px,4vw,44px);
-  letter-spacing:3px;
-  color:var(--cyan);
-  text-shadow:0 0 14px rgba(25,211,255,.4);
-  margin:0;
-}
+    .logo{
+      width:76px;
+      height:auto;
+      flex:0 0 auto;
+      filter: drop-shadow(0 6px 10px rgba(0,0,0,.6));
+    }
 
-.arrowDown{
-  margin:14px auto 0;
-  width:0;height:0;
-  border-left:14px solid transparent;
-  border-right:14px solid transparent;
-  border-top:22px solid var(--red);
-  animation:arrowMove 1.6s ease-in-out infinite,
-            arrowBlink 1.6s ease-in-out infinite;
-}
+    .titleBox{
+      text-align:center;
+      line-height:1.05;
+      padding: 0 8px;
+    }
+    .h1{
+      margin:0;
+      font-size:44px;
+      font-weight: 900;
+      letter-spacing: 2px;
+    }
+    .h1 span{ color: var(--red); }
+    .h2{
+      margin:6px 0 0;
+      font-size:22px;
+      font-weight: 800;
+      letter-spacing: 6px;
+      color: var(--cyan);
+    }
 
-@keyframes arrowMove{
-  0%{transform:translateY(0)}
-  50%{transform:translateY(10px)}
-  100%{transform:translateY(0)}
-}
-@keyframes arrowBlink{
-  0%{opacity:1}
-  50%{opacity:.6}
-  100%{opacity:1}
-}
+    /* Flecha scroll */
+    .arrow{
+      position:absolute;
+      right:18px;
+      top:50%;
+      transform: translateY(-50%);
+      width:0;height:0;
+      border-left:12px solid transparent;
+      border-right:12px solid transparent;
+      border-top:18px solid var(--red);
+      filter: drop-shadow(0 6px 8px rgba(0,0,0,.6));
+      cursor:pointer;
+      opacity:.95;
+      transition: transform .15s ease;
+    }
+    .arrow:active{ transform: translateY(-50%) scale(.95); }
 
-/* Lista */
-.list{
-  padding:10px 14px 40px 70px;
-  display:flex;
-  flex-direction:column;
-  gap:16px;
-}
+    /* Estado */
+    .status{
+      margin-top: 14px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      background: var(--glass2);
+      border:1px solid var(--border);
+      border-radius: 22px;
+      padding: 12px 14px;
+      box-shadow: var(--shadow);
+      font-weight:700;
+    }
+    .statusLeft{
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+    .dot{
+      width:10px;height:10px;border-radius:50%;
+      background: var(--yellow);
+      box-shadow: 0 0 12px rgba(255,196,0,.7);
+      flex: 0 0 auto;
+    }
+    .small{ opacity:.9; font-weight:700; }
 
-.row{
-  display:grid;
-  grid-template-columns:55px 50px 1fr 20px 110px;
-  align-items:center;
-  gap:10px;
-  padding:14px;
-  border-radius:18px;
-  background:var(--glass);
-  border:1px solid var(--border);
-  box-shadow:0 16px 32px rgba(0,0,0,.4);
-  backdrop-filter:blur(6px);
-}
+    /* Lista */
+    .list{
+      margin-top: 18px;
+      display:flex;
+      flex-direction:column;
+      gap:14px;
+    }
 
-.row.top1{
-  border:1px solid rgba(229,9,20,.4);
-  box-shadow:0 0 20px rgba(229,9,20,.2);
-}
+    .card{
+      display:grid;
+      grid-template-columns: 86px 74px 1fr 140px;
+      align-items:center;
+      gap:12px;
+      background: rgba(0,0,0,.58);
+      border:1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 14px;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow:hidden;
+    }
 
-.num{
-  font-family:"Benjamin Gothic Heavy",Impact,Arial Black;
-  font-size:36px;
-  text-align:center;
-}
-.row.top1 .num{
-  font-size:44px;
-  color:var(--red);
-}
+    .rank{
+      font-size:44px;
+      font-weight: 900;
+      opacity:.95;
+      text-align:center;
+      color: rgba(255,255,255,.92);
+    }
 
-/* Play */
-.play{
-  width:46px;height:46px;
-  border-radius:50%;
-  border:2px solid #fff;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  cursor:pointer;
-}
-.play svg{
-  fill:#fff;
-  width:18px;
-}
+    .playBtn{
+      width:62px;height:62px;
+      border-radius:50%;
+      border:2px solid rgba(255,255,255,.22);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      cursor:pointer;
+      user-select:none;
+      transition: transform .12s ease, border-color .12s ease;
+      background: rgba(0,0,0,.25);
+    }
+    .playBtn:hover{ border-color: rgba(255,255,255,.35); }
+    .playBtn:active{ transform: scale(.96); }
+    .playIcon{
+      width:0;height:0;
+      border-top:9px solid transparent;
+      border-bottom:9px solid transparent;
+      border-left:14px solid rgba(255,255,255,.85);
+      margin-left:3px;
+    }
+    .pauseIcon{
+      display:none;
+      width:16px;height:18px;
+      position:relative;
+    }
+    .pauseIcon:before,.pauseIcon:after{
+      content:"";
+      position:absolute;top:0;bottom:0;
+      width:5px;border-radius:2px;
+      background: rgba(255,255,255,.85);
+    }
+    .pauseIcon:before{ left:0; }
+    .pauseIcon:after{ right:0; }
 
-/* Info */
-.song{
-  font-weight:900;
-  font-size:18px;
-  margin:0;
-}
-.artist{
-  margin:4px 0 0;
-  font-size:14px;
-  opacity:.8;
-}
+    .meta{
+      min-width:0;
+    }
+    .song{
+      font-size:26px;
+      font-weight: 900;
+      margin:0 0 4px;
+      line-height:1.05;
+      word-break: break-word;
+    }
+    .artist{
+      margin:0;
+      opacity:.9;
+      font-weight:700;
+      line-height:1.25;
+    }
 
-/* Trend */
-.trend{
-  width:14px;height:14px;
-  border-radius:3px;
-}
-.trend.up{
-  width:0;height:0;
-  border-left:8px solid transparent;
-  border-right:8px solid transparent;
-  border-bottom:14px solid var(--green);
-}
-.trend.down{
-  width:0;height:0;
-  border-left:8px solid transparent;
-  border-right:8px solid transparent;
-  border-top:14px solid var(--red);
-}
-.trend.stable{
-  background:var(--yellow);
-}
+    .right{
+      display:flex;
+      align-items:center;
+      justify-content:flex-end;
+      gap:12px;
+    }
+    .votesBadge{
+      width:14px;height:14px;border-radius:4px;
+      background: rgba(255,196,0,.65);
+      box-shadow: 0 0 10px rgba(255,196,0,.25);
+    }
+    .voteBtn{
+      width:120px;
+      height:54px;
+      border-radius: 18px;
+      border:none;
+      background: var(--red);
+      color:#fff;
+      font-weight: 900;
+      font-size:18px;
+      letter-spacing: 1px;
+      cursor:pointer;
+      box-shadow: 0 10px 18px rgba(229,9,20,.25);
+      transition: transform .12s ease, filter .12s ease;
+    }
+    .voteBtn:active{ transform: scale(.98); }
+    .voteBtn[disabled]{ opacity:.55; cursor:not-allowed; }
 
-/* Votar */
-.vote{
-  width:110px;
-  height:44px;
-  border:0;
-  border-radius:14px;
-  background:var(--red);
-  color:#fff;
-  font-weight:900;
-  cursor:pointer;
-}
-.vote:disabled{
-  opacity:.4;
-  cursor:not-allowed;
-}
+    .footer{
+      text-align:center;
+      margin-top: 18px;
+      opacity:.85;
+      font-weight:800;
+      letter-spacing:1px;
+    }
 
-/* Footer */
-.footer{
-  text-align:center;
-  padding:10px 0 20px;
-  font-weight:700;
-  opacity:.8;
-}
+    /* Mobile */
+    @media (max-width: 720px){
+      .h1{ font-size:38px; }
+      .h2{ font-size:18px; letter-spacing:5px; }
+      .card{
+        grid-template-columns: 62px 62px 1fr 120px;
+      }
+      .rank{ font-size:38px; }
+      .song{ font-size:22px; }
+      .voteBtn{ width:110px; height:50px; }
+    }
 
-/* Responsive */
-@media(max-width:520px){
-  .header,.list{padding-left:60px}
-  .side{font-size:38px}
-  .logo{width:70px}
-  .row{
-    grid-template-columns:45px 45px 1fr 18px 95px;
-  }
-  .vote{width:95px}
-}
-</style>
+    @media (max-width: 520px){
+      .header{ padding: 16px 14px; }
+      .logo{ width:64px; }
+      .arrow{ right:14px; }
+
+      .card{
+        grid-template-columns: 54px 62px 1fr;
+        grid-template-rows: auto auto;
+      }
+      .right{
+        grid-column: 1 / -1;
+        justify-content:flex-end;
+      }
+    }
+
+    /* Debug box */
+    .debugBox{
+      position: fixed;
+      left: 10px; right: 10px; bottom: 10px;
+      background: rgba(0,0,0,.85);
+      border: 1px solid rgba(255,255,255,.18);
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 12px;
+      white-space: pre-wrap;
+      z-index: 99999;
+      max-height: 38vh;
+      overflow: auto;
+      display:none;
+    }
+  </style>
 </head>
+
 <body>
+  <div class="side">RANKING ON</div>
 
-<div class="side">RANKING ON</div>
-
-<div class="header">
-  <img src="logotipo.png" class="logo">
-  <h1 class="title">VOTÁ TU TEMA PREFERIDO</h1>
-  <div class="arrowDown"></div>
-</div>
-
-<div class="list" id="list"></div>
-
-<div class="footer">www.laonradio.com.ar</div>
-
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
-import { getDatabase, ref, onValue, runTransaction } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyC8XX...",
-  authDomain: "on-radio-ranking.firebaseapp.com",
-  databaseURL: "https://on-radio-ranking-default-rtdb.firebaseio.com",
-  projectId: "on-radio-ranking",
-  storageBucket: "on-radio-ranking.appspot.com",
-  messagingSenderId: "311635352358",
-  appId: "1:311635352358:web:257ff4821987f07d31ffe7"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
-const temasRef = ref(db,"temas");
-const list = document.getElementById("list");
-const audio = new Audio();
-
-function today(){
-  return new Date().toISOString().slice(0,10);
-}
-function votedToday(){
-  return localStorage.getItem("on_vote")==today();
-}
-function lockVote(){
-  localStorage.setItem("on_vote",today());
-}
-
-onValue(temasRef,(snap)=>{
-  const data=snap.val();
-  if(!data) return;
-
-  const temas=Object.entries(data).map(([id,t])=>({
-    id,
-    nombre:t.nombre,
-    artista:t.artista,
-    audio:t.audio,
-    votos:Number(t.votos||0)
-  }));
-
-  temas.sort((a,b)=>b.votos-a.votos);
-  list.innerHTML="";
-
-  temas.forEach((t,i)=>{
-    const row=document.createElement("div");
-    row.className="row"+(i===0?" top1":"");
-
-    row.innerHTML=`
-      <div class="num">${i+1}</div>
-      <div class="play">
-        <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+  <div class="wrap">
+    <div class="header">
+      <img src="logotipo.png" class="logo" alt="ON Radio" />
+      <div class="titleBox">
+        <div class="h1">RANKING <span>ON!</span></div>
+        <div class="h2">VOTÁ TU TEMA FAVORITO</div>
       </div>
-      <div>
-        <p class="song">${t.nombre}</p>
-        <p class="artist">${t.artista}</p>
-      </div>
-      <div class="trend stable"></div>
-      <button class="vote" ${votedToday()?"disabled":""}>VOTAR</button>
-    `;
+      <div class="arrow" id="arrow"></div>
+    </div>
 
-    row.querySelector(".play").onclick=()=>{
-      audio.src=t.audio;
-      audio.play();
+    <div class="status">
+      <div class="statusLeft">
+        <div class="dot" id="dot"></div>
+        <div id="statusLeft">Conectando...</div>
+      </div>
+      <div id="statusRight" class="small">Esperando datos</div>
+    </div>
+
+    <div class="list" id="list"></div>
+
+    <div class="footer">www.laonradio.com.ar</div>
+  </div>
+
+  <div class="debugBox" id="debugBox"></div>
+
+  <script type="module">
+    // ========= Debug helpers =========
+    const debugBox = document.getElementById("debugBox");
+    function showDebug(msg){
+      debugBox.style.display = "block";
+      debugBox.textContent = msg;
+    }
+    window.addEventListener("error", (e) => {
+      showDebug("ERROR JS:\\n" + (e.message || e.error || e));
+    });
+    window.addEventListener("unhandledrejection", (e) => {
+      showDebug("PROMISE REJECTED:\\n" + (e.reason?.message || e.reason || e));
+    });
+
+    // ========= Firebase imports =========
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+    import { getDatabase, ref, onValue, runTransaction } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
+
+    // ========= PEGÁ ACÁ TU firebaseConfig COMPLETO (SIN "...") =========
+    const firebaseConfig = {
+      apiKey: "AIzaSyC8XXef5k8hLmNL8ufIJsc7Sx5KT1RFdH8",
+      authDomain: "on-radio-ranking.firebaseapp.com",
+      databaseURL: "https://on-radio-ranking-default-rtdb.firebaseio.com",
+      projectId: "on-radio-ranking",
+      storageBucket: "on-radio-ranking.firebasestorage.app",
+      messagingSenderId: "311635352358",
+      appId: "1:311635352358:web:257ff4821987f07d31ffe7"
     };
 
-    row.querySelector(".vote").onclick=async()=>{
-      if(votedToday()){
-        alert("Ya votaste hoy. Volvé mañana.");
+    // ========= Init =========
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const temasRef = ref(db, "temas");
+
+    // ========= UI refs =========
+    const listEl = document.getElementById("list");
+    const statusLeftEl = document.getElementById("statusLeft");
+    const statusRightEl = document.getElementById("statusRight");
+    const dotEl = document.getElementById("dot");
+    const arrowEl = document.getElementById("arrow");
+
+    arrowEl.addEventListener("click", () => {
+      listEl.scrollIntoView({ behavior:"smooth", block:"start" });
+    });
+
+    function setStatus(color, left, right){
+      statusLeftEl.textContent = left;
+      statusRightEl.textContent = right;
+      if(color === "yellow"){
+        dotEl.style.background = "var(--yellow)";
+        dotEl.style.boxShadow = "0 0 12px rgba(255,196,0,.7)";
+      }else if(color === "green"){
+        dotEl.style.background = "var(--green)";
+        dotEl.style.boxShadow = "0 0 12px rgba(43,220,99,.55)";
+      }else{
+        dotEl.style.background = "var(--red)";
+        dotEl.style.boxShadow = "0 0 12px rgba(229,9,20,.55)";
+      }
+    }
+
+    // ========= Audio (solo 1 a la vez) =========
+    const audio = new Audio();
+    let currentKey = null;
+
+    function stopAudio(){
+      audio.pause();
+      audio.currentTime = 0;
+      currentKey = null;
+      // reset icons
+      document.querySelectorAll(".playBtn").forEach(btn => {
+        btn.dataset.state = "play";
+        btn.querySelector(".playIcon").style.display = "block";
+        btn.querySelector(".pauseIcon").style.display = "none";
+      });
+    }
+
+    function toggleAudio(key, file){
+      const url = "./" + file; // mp3 en el repo (misma carpeta)
+      if(currentKey === key){
+        // pausa / resume
+        if(audio.paused){
+          audio.play();
+          setPlayState(key, true);
+        }else{
+          audio.pause();
+          setPlayState(key, false);
+        }
         return;
       }
-      await runTransaction(ref(db,"temas/"+t.id+"/votos"),v=>(v||0)+1);
-      lockVote();
-      alert("Gracias por votar. Volvé mañana.");
-    };
 
-    list.appendChild(row);
-  });
-});
-</script>
+      // cambiar tema
+      stopAudio();
+      currentKey = key;
+      audio.src = url;
+      audio.play().then(() => {
+        setPlayState(key, true);
+      }).catch(err => {
+        showDebug("No pude reproducir audio.\\nArchivo: " + url + "\\n\\n" + (err?.message || err));
+      });
+    }
 
+    function setPlayState(key, playing){
+      document.querySelectorAll(".playBtn").forEach(btn => {
+        const isThis = btn.dataset.key === key;
+        const playIcon = btn.querySelector(".playIcon");
+        const pauseIcon = btn.querySelector(".pauseIcon");
+        if(isThis && playing){
+          btn.dataset.state = "pause";
+          playIcon.style.display = "none";
+          pauseIcon.style.display = "block";
+        }else{
+          btn.dataset.state = "play";
+          playIcon.style.display = "block";
+          pauseIcon.style.display = "none";
+        }
+      });
+    }
+
+    audio.addEventListener("ended", () => {
+      stopAudio();
+    });
+
+    // ========= Render =========
+    function cardHTML(rank, key, item){
+      const nombre = item?.nombre || key;
+      const artista = item?.artista || "";
+      const votos = Number(item?.votos || 0);
+      const audioFile = item?.audio || "";
+
+      return `
+        <div class="card">
+          <div class="rank">${rank}</div>
+
+          <div class="playBtn" data-key="${key}" data-audio="${audioFile}">
+            <div class="playIcon"></div>
+            <div class="pauseIcon"></div>
+          </div>
+
+          <div class="meta">
+            <p class="song">${escapeHTML(nombre)}</p>
+            <p class="artist">${escapeHTML(artista)}</p>
+          </div>
+
+          <div class="right">
+            <div class="votesBadge" title="Votos: ${votos}"></div>
+            <button class="voteBtn" data-key="${key}">VOTAR</button>
+          </div>
+        </div>
+      `;
+    }
+
+    function escapeHTML(str){
+      return String(str)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
+    function wireEvents(){
+      // play
+      document.querySelectorAll(".playBtn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const key = btn.dataset.key;
+          const file = btn.dataset.audio;
+
+          if(!file){
+            showDebug("Este tema no tiene 'audio' en Firebase.\\nKey: " + key);
+            return;
+          }
+          toggleAudio(key, file);
+        });
+      });
+
+      // vote
+      document.querySelectorAll(".voteBtn").forEach(btn => {
+        btn.addEventListener("click", async () => {
+          const key = btn.dataset.key;
+          btn.disabled = true;
+
+          try{
+            const votesRef = ref(db, "temas/" + key + "/votos");
+            await runTransaction(votesRef, (current) => {
+              const n = Number(current || 0);
+              return n + 1;
+            });
+            setStatus("green", "¡Voto registrado!", "Gracias 🙌");
+            setTimeout(() => setStatus("green", "Conectado", "Actualizado"), 1200);
+          }catch(err){
+            setStatus("red", "Error al votar", "Ver debug");
+            showDebug("Error votando:\\n" + (err?.message || err));
+          }finally{
+            btn.disabled = false;
+          }
+        });
+      });
+    }
+
+    // ========= Live data =========
+    setStatus("yellow", "Conectando...", "Esperando datos");
+
+    onValue(temasRef, (snap) => {
+      const datos = snap.val();
+
+      if(!datos){
+        setStatus("yellow", "Conectado", "Sin datos en /temas");
+        listEl.innerHTML = "";
+        return;
+      }
+
+      const temas = Object.entries(datos).map(([key, val]) => ({
+        key,
+        ...val,
+        votos: Number(val?.votos || 0)
+      }));
+
+      temas.sort((a,b) => b.votos - a.votos);
+
+      setStatus("green", "Conectado", "Cargados: " + temas.length);
+
+      listEl.innerHTML = temas.map((t, i) => cardHTML(i+1, t.key, t)).join("");
+      wireEvents();
+
+    }, (err) => {
+      setStatus("red", "No conecta", "Ver debug");
+      showDebug("Firebase onValue error:\\n" + (err?.message || err));
+    });
+
+  </script>
 </body>
 </html>
