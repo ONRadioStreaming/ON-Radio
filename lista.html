@@ -1,296 +1,329 @@
 <!doctype html>
 <html lang="es">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Ranking ON</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ranking ON</title>
 
-<style>
-:root{
-  --red:#e50914;
-  --cyan:#19d3ff;
-  --yellow:#ffc400;
-  --green:#2bdc63;
+  <style>
+    :root{
+      --red:#e50914;
+      --cyan:#19d3ff;
+      --yellow:#ffc400;
+      --green:#2bdc63;
 
-  --glass:rgba(0,0,0,.55);
-  --border:rgba(255,255,255,.10);
-  --shadow:0 14px 30px rgba(0,0,0,.55);
-}
+      --glass:rgba(0,0,0,.55);
+      --border:rgba(255,255,255,.10);
+      --shadow:0 14px 30px rgba(0,0,0,.55);
+      --softShadow:0 8px 20px rgba(0,0,0,.45);
+    }
 
-*{box-sizing:border-box}
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial;
+      color:#fff;
+      background:#000 url("fondoranking2.jpg") center/cover fixed no-repeat;
+    }
 
-body{
-  margin:0;
-  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
-  color:#fff;
-  background:
-    linear-gradient(rgba(0,0,0,.65),rgba(0,0,0,.75)),
-    url("fondoranking2.jpg") center/cover fixed;
-}
+    .wrap{
+      width:min(980px, calc(100% - 24px));
+      margin:18px auto 26px;
+    }
 
-.wrap{
-  max-width:980px;
-  margin:0 auto;
-  padding:14px 12px 26px;
-}
+    /* ======= Header ======= */
+    .topbar{
+      position:relative;
+      background:rgba(0,0,0,.65);
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:22px;
+      padding:16px 18px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(7px);
+      overflow:hidden;
+    }
+    .topbar:before{
+      content:"";
+      position:absolute;
+      inset:-40px;
+      background: radial-gradient(closest-side, rgba(229,9,20,.30), transparent 55%),
+                  radial-gradient(closest-side, rgba(25,211,255,.18), transparent 55%);
+      transform:translateX(-18%);
+      pointer-events:none;
+    }
 
-/* Header PRO */
-.topbar{
-  position:relative;
-  border-radius:24px;
-  padding:14px 14px;
-  background:rgba(0,0,0,.65);
-  border:1px solid var(--border);
-  box-shadow:var(--shadow);
-  overflow:hidden;
-}
-.topbar::after{
-  content:"";
-  position:absolute; inset:-40px;
-  background:
-    radial-gradient(circle at 20% 0%, rgba(229,9,20,.18), transparent 45%),
-    radial-gradient(circle at 85% 35%, rgba(25,211,255,.16), transparent 45%);
-  pointer-events:none;
-}
+    .head{
+      position:relative;
+      display:grid;
+      grid-template-columns: 92px 1fr 56px;
+      align-items:center;
+      gap:10px;
+    }
 
-.topbarInner{
-  position:relative;
-  display:grid;
-  grid-template-columns:86px 1fr 64px;
-  align-items:center;
-  gap:10px;
-}
+    .logo{
+      width:92px;
+      height:auto;
+      filter: drop-shadow(0 10px 16px rgba(0,0,0,.6));
+      justify-self:start;
+    }
 
-.logo{
-  width:70px;
-  height:auto;
-  display:block;
-  filter:drop-shadow(0 8px 12px rgba(0,0,0,.55));
-  justify-self:start;
-}
+    .titleBox{
+      text-align:center;
+      line-height:1.05;
+    }
+    .title{
+      margin:0;
+      font-size:44px;
+      letter-spacing:2px;
+      font-weight:900;
+      text-transform:uppercase;
+    }
+    .title .on{ color:#ff3750; }
+    .subtitle{
+      margin:8px 0 0;
+      font-size:18px;
+      letter-spacing:5px;
+      color:var(--cyan);
+      font-weight:800;
+      text-transform:uppercase;
+      text-shadow:0 2px 10px rgba(0,0,0,.45);
+    }
 
-.headText{
-  text-align:center;
-}
-.headTitle{
-  margin:0;
-  font-weight:900;
-  letter-spacing:2px;
-  font-size:clamp(28px,4.8vw,44px);
-  text-shadow:0 10px 18px rgba(0,0,0,.6);
-  line-height:1.05;
-}
-.headTitle .on{ color:#ff4450; }
-.headSub{
-  margin:6px 0 0;
-  font-weight:900;
-  letter-spacing:3px;
-  text-transform:uppercase;
-  color:var(--cyan);
-  text-shadow:0 0 14px rgba(25,211,255,.25);
-  animation:pulse 2.4s ease-in-out infinite;
-  font-size:clamp(14px,2.8vw,18px);
-}
-@keyframes pulse{ 0%,100%{opacity:.95} 50%{opacity:.70} }
+    .arrowDown{
+      justify-self:end;
+      width:0;height:0;
+      border-left:14px solid transparent;
+      border-right:14px solid transparent;
+      border-top:22px solid var(--red);
+      filter:drop-shadow(0 10px 16px rgba(0,0,0,.6));
+      animation: arrowMove 1.2s ease-in-out infinite, arrowBlink 1.2s ease-in-out infinite;
+    }
+    @keyframes arrowMove{
+      0%,100%{ transform: translateY(0); }
+      50%{ transform: translateY(10px); }
+    }
+    @keyframes arrowBlink{
+      0%,100%{ opacity:1; }
+      50%{ opacity:.65; }
+    }
 
-.arrowDown{
-  justify-self:end;
-  width:0;height:0;
-  border-left:14px solid transparent;
-  border-right:14px solid transparent;
-  border-top:22px solid var(--red);
-  filter:drop-shadow(0 10px 16px rgba(0,0,0,.6));
-  animation:arrowMove 1.2s ease-in-out infinite, arrowBlink 1.2s ease-in-out infinite;
-}
-@keyframes arrowMove{ 0%,100%{transform:translateY(0)} 50%{transform:translateY(10px)} }
-@keyframes arrowBlink{ 0%,100%{opacity:1} 50%{opacity:.65} }
+    .footerLink{
+      position:relative;
+      margin-top:14px;
+      text-align:center;
+      opacity:.85;
+      font-weight:800;
+      letter-spacing:1px;
+      text-shadow:0 2px 12px rgba(0,0,0,.45);
+    }
 
-/* Lista */
-.list{
-  margin-top:14px;
-  display:flex;
-  flex-direction:column;
-  gap:14px;
-}
+    /* ======= List ======= */
+    .list{
+      margin-top:14px;
+      display:flex;
+      flex-direction:column;
+      gap:14px;
+    }
 
-.row{
-  display:grid;
-  grid-template-columns:66px 76px 1fr 26px 150px;
-  align-items:center;
-  gap:12px;
-  padding:14px;
-  border-radius:20px;
-  background:var(--glass);
-  border:1px solid var(--border);
-  box-shadow:0 16px 30px rgba(0,0,0,.45);
-  backdrop-filter:blur(6px);
-}
+    .row{
+      display:grid;
+      grid-template-columns: 72px 82px 1fr 26px 170px;
+      align-items:center;
+      gap:12px;
+      padding:14px;
+      border-radius:22px;
+      background:var(--glass);
+      border:1px solid var(--border);
+      box-shadow: var(--softShadow);
+      backdrop-filter: blur(6px);
+      overflow:hidden;
+    }
 
-.row.top1{
-  border:1px solid rgba(229,9,20,.40);
-  box-shadow:0 0 22px rgba(229,9,20,.20);
-}
+    .row.top1{
+      border:1px solid rgba(229,9,20,.35);
+      box-shadow: 0 0 24px rgba(229,9,20,.12), var(--softShadow);
+    }
 
-.num{
-  font-family:"Benjamin Gothic Heavy",Impact,Arial Black;
-  font-weight:900;
-  text-align:center;
-  font-size:38px;
-  opacity:.95;
-}
-.row.top1 .num{
-  font-size:48px;
-  color:var(--red);
-}
+    .num{
+      font-size:44px;
+      font-weight:900;
+      text-align:center;
+      opacity:.95;
+    }
+    .top1 .num{ color: var(--red); font-size:50px; }
+    .notTop1 .num{ color:#fff; font-size:42px; opacity:.92; }
 
-/* Play/Pause real */
-.play{
-  width:72px;height:72px;
-  border-radius:999px;
-  border:2px solid rgba(255,255,255,.24);
-  background:rgba(0,0,0,.22);
-  display:grid;
-  place-items:center;
-  cursor:pointer;
-  user-select:none;
-}
-.play:active{ transform:scale(.98); }
+    .play{
+      width:74px;
+      height:74px;
+      border-radius:50%;
+      background:rgba(255,255,255,.06);
+      border:2px solid rgba(255,255,255,.12);
+      display:grid;
+      place-items:center;
+      cursor:pointer;
+      user-select:none;
+      transition:transform .08s ease, background .2s ease, border-color .2s ease;
+    }
+    .play:active{ transform: scale(.98); }
+    .play svg{ width:22px; height:22px; fill:#fff; opacity:.85; }
+    .playing .play{
+      background:rgba(25,211,255,.10);
+      border-color: rgba(25,211,255,.35);
+    }
 
-.playIcon{
-  width:0;height:0;
-  border-left:16px solid #fff;
-  border-top:10px solid transparent;
-  border-bottom:10px solid transparent;
-  margin-left:4px;
-}
-.pauseIcon{
-  width:18px;height:18px;
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:6px;
-}
-.pauseIcon span{
-  background:#fff;
-  border-radius:2px;
-  display:block;
-}
+    .meta{
+      min-width:0;
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+    }
+    .song{
+      font-size:26px;
+      font-weight:900;
+      line-height:1.05;
+      word-break: break-word;
+    }
+    .artist{
+      font-size:15px;
+      opacity:.9;
+      line-height:1.15;
+      word-break: break-word;
+    }
 
-/* Texto */
-.song{
-  font-weight:900;
-  font-size:24px;
-  margin:0;
-  line-height:1.05;
-}
-.artist{
-  margin:6px 0 0;
-  font-size:16px;
-  opacity:.80;
-  line-height:1.15;
-}
+    .trend{
+      width:14px;
+      height:14px;
+      justify-self:center;
+      border-radius:3px;
+      background:var(--yellow);
+      box-shadow:0 0 0 2px rgba(0,0,0,.22) inset;
+    }
+    .trend.up{ background:var(--green); clip-path: polygon(50% 0%, 100% 75%, 0% 75%); border-radius:0; }
+    .trend.down{ background:var(--red); clip-path: polygon(0% 25%, 100% 25%, 50% 100%); border-radius:0; }
+    .trend.same{ background:var(--yellow); }
 
-/* Trend */
-.trend{
-  width:18px;height:18px;
-  display:grid;
-  place-items:center;
-  filter:drop-shadow(0 8px 12px rgba(0,0,0,.55));
-  font-weight:900;
-}
-.trend.up{ color:var(--green); }
-.trend.down{ color:var(--red); }
-.trend.stable{ color:var(--yellow); }
+    .vote{
+      justify-self:end;
+      width:170px;
+      height:56px;
+      border:none;
+      border-radius:18px;
+      background: linear-gradient(180deg, rgba(229,9,20,.95), rgba(155,0,10,.95));
+      color:#fff;
+      font-weight:900;
+      letter-spacing:1px;
+      font-size:18px;
+      cursor:pointer;
+      box-shadow:0 10px 22px rgba(0,0,0,.35);
+      transition:transform .08s ease, filter .2s ease, opacity .2s ease;
+    }
+    .vote:active{ transform: scale(.985); }
+    .vote[disabled]{
+      opacity:.45;
+      cursor:not-allowed;
+      filter:grayscale(.25);
+    }
 
-/* Votar */
-.vote{
-  width:150px;
-  height:54px;
-  border:0;
-  border-radius:999px;
-  background:linear-gradient(180deg, #e50914, #b40810);
-  color:#fff;
-  font-weight:900;
-  letter-spacing:1px;
-  cursor:pointer;
-  box-shadow:0 14px 26px rgba(229,9,20,.25);
-}
-.vote:disabled{
-  opacity:.45;
-  cursor:not-allowed;
-}
+    /* ======= Toast ======= */
+    .toast{
+      position:fixed;
+      left:12px;
+      right:12px;
+      bottom:14px;
+      max-width:720px;
+      margin:0 auto;
+      padding:12px 14px;
+      background:rgba(0,0,0,.78);
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:14px;
+      box-shadow: 0 14px 28px rgba(0,0,0,.5);
+      backdrop-filter: blur(8px);
+      font-weight:800;
+      letter-spacing:.2px;
+      display:none;
+      z-index:9999;
+    }
+    .toast.show{ display:block; }
 
-/* Footer */
-.footer{
-  text-align:center;
-  padding:14px 0 8px;
-  font-weight:800;
-  opacity:.8;
-  letter-spacing:1px;
-}
+    /* ======= Mobile REAL fix ======= */
+    @media (max-width: 520px){
+      .wrap{ width:calc(100% - 18px); margin:12px auto 18px; }
 
-/* Toast simple (no el cartel feo) */
-.toast{
-  position:fixed;
-  left:12px; right:12px; bottom:12px;
-  max-width:980px;
-  margin:0 auto;
-  display:none;
-  align-items:center;
-  gap:10px;
-  padding:10px 12px;
-  border-radius:14px;
-  background:rgba(0,0,0,.75);
-  border:1px solid rgba(255,255,255,.10);
-  box-shadow:var(--shadow);
-  font-weight:700;
-}
-.dot{ width:10px;height:10px;border-radius:999px;background:var(--yellow); }
-.dot.ok{ background:var(--green); }
-.dot.bad{ background:var(--red); }
+      .head{ grid-template-columns: 64px 1fr 40px; }
+      .logo{ width:64px; }
+      .title{ font-size:34px; }
+      .subtitle{ font-size:14px; letter-spacing:4px; }
 
-@media(max-width:720px){
-  .topbarInner{ grid-template-columns:74px 1fr 56px; }
-  .logo{ width:62px; }
+      .row{
+        grid-template-columns: 50px 54px 1fr 14px;
+        grid-template-rows: auto auto;
+        gap:10px;
+        padding:12px;
+      }
 
-  .row{ grid-template-columns:56px 66px 1fr 22px 126px; padding:12px; }
-  .play{ width:64px; height:64px; }
-  .song{ font-size:20px; }
-  .artist{ font-size:14px; }
-  .vote{ width:126px; height:50px; font-size:16px; }
-  .num{ font-size:34px; }
-  .row.top1 .num{ font-size:44px; }
-}
-</style>
+      .num{ font-size:36px; }
+      .top1 .num{ font-size:42px; }
+      .notTop1 .num{ font-size:34px; }
+
+      .play{ width:54px; height:54px; }
+      .play svg{ width:18px; height:18px; }
+
+      .song{ font-size:20px; line-height:1.1; }
+      .artist{ font-size:13px; line-height:1.15; }
+
+      .trend{ width:14px; height:14px; }
+
+      .vote{
+        grid-column: 2 / span 3;
+        justify-self:stretch;
+        width:100%;
+        height:46px;
+        border-radius:16px;
+        font-size:16px;
+      }
+    }
+  </style>
 </head>
 
 <body>
-<div class="wrap">
-
-  <div class="topbar">
-    <div class="topbarInner">
-      <img src="logotipo.png" class="logo" alt="ON Radio">
-      <div class="headText">
-        <h1 class="headTitle">RANKING <span class="on">ON!</span></h1>
-        <div class="headSub">VOTÁ TU TEMA FAVORITO</div>
+  <div class="wrap">
+    <div class="topbar">
+      <div class="head">
+        <img class="logo" src="logotipo.png" alt="ON Radio">
+        <div class="titleBox">
+          <h1 class="title">RANKING <span class="on">ON!</span></h1>
+          <div class="subtitle">VOTÁ TU TEMA FAVORITO</div>
+        </div>
+        <div class="arrowDown" aria-hidden="true"></div>
       </div>
-      <div class="arrowDown" aria-hidden="true"></div>
+
+      <div class="footerLink">www.laonradio.com.ar</div>
     </div>
+
+    <div class="list" id="list"></div>
   </div>
 
-  <div class="list" id="list"></div>
-  <div class="footer">www.laonradio.com.ar</div>
-</div>
+  <div class="toast" id="toast"></div>
 
-<div class="toast" id="toast">
-  <span class="dot" id="toastDot"></span>
-  <span id="toastText">Cargando…</span>
-</div>
+  <script type="module">
+    // ===== Debug (si algo se rompe, te lo muestra abajo) =====
+    const toastEl = document.getElementById("toast");
+    function toast(msg){
+      toastEl.textContent = msg;
+      toastEl.classList.add("show");
+      clearTimeout(toastEl._t);
+      toastEl._t = setTimeout(()=>toastEl.classList.remove("show"), 2600);
+    }
+    window.addEventListener("error", (e)=> toast("ERROR JS: " + (e.message || e.error || e)));
+    window.addEventListener("unhandledrejection", (e)=> toast("PROMESA RECHAZADA: " + (e.reason?.message || e.reason || e)));
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
-import { getDatabase, ref, onValue, runTransaction } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
+    // ===== Firebase =====
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+    import { getDatabase, ref, onValue, runTransaction } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
 
-const firebaseConfig = {
+   const firebaseConfig = {
     apiKey: "AIzaSyC8XXef5k8hLmNL8ufIJsc7Sx5KTlRFdH8",
     authDomain: "on-radio-ranking.firebaseapp.com",
     databaseURL: "https://on-radio-ranking-default-rtdb.firebaseio.com",
@@ -300,191 +333,181 @@ const firebaseConfig = {
     appId: "1:311635352358:web:257ff4821987f07d31ffe7"
   };
 
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
-const temasRef = ref(db, "temas");
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
 
-const list = document.getElementById("list");
-const toastEl = document.getElementById("toast");
-const toastText = document.getElementById("toastText");
-const toastDot = document.getElementById("toastDot");
+    // ===== UI + Audio =====
+    const listEl = document.getElementById("list");
+    const audio = new Audio();
+    audio.preload = "metadata";
+    let currentKey = null;
 
-function toast(msg, type="info", ms=1200){
-  toastText.textContent = msg;
-  toastDot.className = "dot" + (type==="ok" ? " ok" : type==="bad" ? " bad" : "");
-  toastEl.style.display = "flex";
-  clearTimeout(toastEl._t);
-  toastEl._t = setTimeout(()=> toastEl.style.display="none", ms);
-}
+    function playIcon(isPlaying){
+      return isPlaying
+        ? <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>
+        : <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>;
+    }
 
-/* ✅ 1 voto por día TOTAL (no por tema) */
-function today(){ return new Date().toISOString().slice(0,10); }
-function votedToday(){ return localStorage.getItem("on_vote")==today(); }
-function lockVote(){ localStorage.setItem("on_vote", today()); }
+    function safeFileUrl(file){
+      if(!file) return "";
+      if(/^https?:\/\//i.test(file)) return file;
+      // Archivos en el repo, misma carpeta
+      return "./" + encodeURI(file);
+    }
 
-/* ✅ Tendencia: compara contra el orden anterior guardado */
-const LS_KEY = "onradio_prev_order_v1";
-function getPrev(){ try{ return JSON.parse(localStorage.getItem(LS_KEY)||"[]"); }catch{ return []; } }
-function setPrev(arr){ try{ localStorage.setItem(LS_KEY, JSON.stringify(arr)); }catch{} }
+    // ===== Trend (comparación contra orden anterior) =====
+    const ORDER_KEY = "onradio_rank_prev_order";
+    function loadPrevOrder(){
+      try { return JSON.parse(localStorage.getItem(ORDER_KEY) || "[]"); }
+      catch { return []; }
+    }
+    function savePrevOrder(keys){
+      try { localStorage.setItem(ORDER_KEY, JSON.stringify(keys)); } catch {}
+    }
+    function trendClass(prevKeys, currentKeys, key){
+      const prevPos = prevKeys.indexOf(key);
+      const curPos  = currentKeys.indexOf(key);
+      if(prevPos === -1 || curPos === -1) return "same"; // primera vez
+      if(curPos < prevPos) return "up";
+      if(curPos > prevPos) return "down";
+      return "same";
+    }
 
-function trendSymbol(prevIds, id, newIndex){
-  const prevIndex = prevIds.indexOf(id);
-  if(prevIndex === -1) return {cls:"stable", sym:"■"}; // primera vez
-  if(prevIndex > newIndex) return {cls:"up", sym:"▲"};
-  if(prevIndex < newIndex) return {cls:"down", sym:"▼"};
-  return {cls:"stable", sym:"■"};
-}
+    // ===== Voto 1 por día por dispositivo =====
+    function todayKey(){
+      const d = new Date();
+      const y = d.getFullYear();
+      const m = String(d.getMonth()+1).padStart(2,"0");
+      const da = String(d.getDate()).padStart(2,"0");
+      return ${y}-${m}-${da};
+    }
+    function voteLockKey(songKey){
+      return onradio_voted_${songKey}_${todayKey()};
+    }
+    function alreadyVotedToday(songKey){
+      try { return localStorage.getItem(voteLockKey(songKey)) === "1"; }
+      catch { return false; }
+    }
+    function markVoted(songKey){
+      try { localStorage.setItem(voteLockKey(songKey), "1"); } catch {}
+    }
 
-/* ✅ Audio global con play/pause real */
-const audio = new Audio();
-let currentId = null;
-let currentBtn = null;
+    function render(items){
+      // items: [{key, nombre, artista, audio, votos}]
+      const prevKeys = loadPrevOrder();
+      const currentKeys = items.map(x=>x.key);
 
-function setBtnPlay(btn){
-  btn.innerHTML = '<div class="playIcon"></div>';
-  btn.dataset.state = "play";
-}
-function setBtnPause(btn){
-  btn.innerHTML = '<div class="pauseIcon"><span></span><span></span></div>';
-  btn.dataset.state = "pause";
-}
+      // Render
+      listEl.innerHTML = "";
+      items.forEach((it, idx) => {
+        const pos = idx + 1;
+        const top1 = pos === 1;
 
-audio.addEventListener("ended", ()=>{
-  if(currentBtn) setBtnPlay(currentBtn);
-  currentId = null;
-  currentBtn = null;
-});
+        const trend = trendClass(prevKeys, currentKeys, it.key);
+        const tClass = trend ${trend};
 
-function audioUrl(filename){
-  // robusto para /ON-Radio/ + espacios
-  return new URL(filename, window.location.href).href;
-}
+        const disabledVote = alreadyVotedToday(it.key);
 
-toast("Conectando…", "info", 900);
+        const row = document.createElement("div");
+        row.className = row ${top1 ? "top1" : "notTop1"} ${currentKey === it.key ? "playing" : ""};
+        row.dataset.key = it.key;
 
-onValue(temasRef, (snap)=>{
-  const data = snap.val();
-  if(!data){
-    list.innerHTML = "";
-    toast("No hay datos en /temas", "bad", 1800);
-    return;
-  }
+        row.innerHTML = `
+          <div class="num">${pos}</div>
 
-  const temas = Object.entries(data).map(([id,t])=>({
-    id,
-    nombre: t?.nombre || id,
-    artista: t?.artista || "",
-    audio: t?.audio || "",
-    votos: Number(t?.votos || 0)
-  }));
+          <div class="play" role="button" aria-label="Reproducir">
+            ${playIcon(currentKey === it.key && !audio.paused)}
+          </div>
 
-  temas.sort((a,b)=> b.votos - a.votos);
+          <div class="meta">
+            <div class="song">${it.nombre || it.key}</div>
+            <div class="artist">${it.artista || ""}</div>
+          </div>
 
-  const prevOrder = getPrev();
-  const newOrder = temas.map(t=>t.id);
-  setPrev(newOrder);
+          <div class="${tClass}" title="${trend === "up" ? "Sube" : trend === "down" ? "Baja" : "Se mantiene"}"></div>
 
-  list.innerHTML = "";
+          <button class="vote" ${disabledVote ? "disabled" : ""}>VOTAR</button>
+        `;
 
-  temas.forEach((t,i)=>{
-    const row = document.createElement("div");
-    row.className = "row" + (i===0 ? " top1" : "");
+        // Play
+        row.querySelector(".play").addEventListener("click", () => {
+          const url = safeFileUrl(it.audio);
+          if(!url){
+            toast("Este tema no tiene audio configurado.");
+            return;
+          }
 
-    const tr = trendSymbol(prevOrder, t.id, i);
-
-    row.innerHTML = `
-      <div class="num">${i+1}</div>
-
-      <div class="play" data-state="play" title="Reproducir / Pausar">
-        <div class="playIcon"></div>
-      </div>
-
-      <div>
-        <p class="song">${escapeHtml(t.nombre)}</p>
-        <p class="artist">${escapeHtml(t.artista)}</p>
-      </div>
-
-      <div class="trend ${tr.cls}" title="Movimiento">${tr.sym}</div>
-
-      <button class="vote" ${votedToday() ? "disabled" : ""}>VOTAR</button>
-    `;
-
-    const playBtn = row.querySelector(".play");
-    const voteBtn = row.querySelector(".vote");
-
-    playBtn.addEventListener("click", ()=>{
-      if(!t.audio){
-        toast("Este tema no tiene audio", "bad", 1600);
-        return;
-      }
-
-      // Si toco el MISMO: toggle pause/play
-      if(currentId === t.id){
-        if(audio.paused){
-          audio.play().catch(()=> toast("No se pudo reproducir", "bad", 1600));
-          setBtnPause(playBtn);
-        }else{
-          audio.pause();
-          setBtnPlay(playBtn);
-        }
-        return;
-      }
-
-      // Si toco OTRO: detener anterior y reproducir este
-      if(currentBtn) setBtnPlay(currentBtn);
-      currentId = t.id;
-      currentBtn = playBtn;
-
-      audio.src = audioUrl(t.audio);
-      audio.currentTime = 0;
-      audio.play().then(()=> setBtnPause(playBtn))
-        .catch(()=> {
-          toast("No se pudo reproducir", "bad", 1600);
-          setBtnPlay(playBtn);
-          currentId = null;
-          currentBtn = null;
+          if(currentKey === it.key){
+            if(audio.paused) audio.play().catch(()=>toast("No se pudo reproducir."));
+            else audio.pause();
+          } else {
+            currentKey = it.key;
+            audio.src = url;
+            audio.currentTime = 0;
+            audio.play().catch(()=>toast("No se pudo reproducir."));
+          }
+          // Re-render para reflejar iconos/estado
+          render(items);
         });
+
+        // Votar
+        const voteBtn = row.querySelector(".vote");
+        voteBtn.addEventListener("click", async () => {
+          if(alreadyVotedToday(it.key)){
+            toast("Ya votaste hoy. Volvé mañana 😄");
+            return;
+          }
+
+          voteBtn.disabled = true;
+
+          try{
+            const votosRef = ref(db, temas/${it.key}/votos);
+            await runTransaction(votosRef, (current) => (Number(current) || 0) + 1);
+            markVoted(it.key);
+            toast("¡Gracias por votar! Volvé mañana 🔥");
+          }catch(err){
+            voteBtn.disabled = false;
+            toast("No se pudo registrar el voto (revisá permisos/red).");
+            console.error(err);
+          }
+        });
+
+        listEl.appendChild(row);
+      });
+
+      // Guardamos orden actual para próxima comparación
+      savePrevOrder(currentKeys);
+    }
+
+    // ===== Realtime listener =====
+    const temasRef = ref(db, "temas");
+    onValue(temasRef, (snap) => {
+      const data = snap.val() || {};
+      const items = Object.entries(data).map(([key, val]) => ({
+        key,
+        nombre: val?.nombre || key,
+        artista: val?.artista || "",
+        audio: val?.audio || "",
+        votos: Number(val?.votos) || 0
+      }));
+
+      // Orden: votos DESC, luego nombre
+      items.sort((a,b) => (b.votos - a.votos) || String(a.nombre).localeCompare(String(b.nombre), "es"));
+
+      // Top 10
+      render(items.slice(0, 10));
+    }, (err) => {
+      console.error(err);
+      toast("No conecta con Firebase (revisá firebaseConfig o URL).");
     });
 
-    voteBtn.addEventListener("click", async ()=>{
-      if(votedToday()){
-        toast("Ya votaste hoy. Volvé mañana.", "bad", 1600);
-        return;
-      }
-
-      voteBtn.disabled = true;
-      try{
-        await runTransaction(ref(db, "temas/"+t.id+"/votos"), v => (Number(v||0)+1));
-        lockVote();
-        toast("Gracias por votar 🙌 Volvé mañana.", "ok", 1700);
-
-        // Deshabilito TODOS los botones (1 voto total)
-        document.querySelectorAll(".vote").forEach(b=> b.disabled = true);
-      }catch(e){
-        console.error(e);
-        voteBtn.disabled = false;
-        toast("No se pudo votar (reglas/permisos)", "bad", 1900);
-      }
+    // Cuando termina audio, limpiamos estado
+    audio.addEventListener("ended", () => {
+      currentKey = null;
+      // Fuerza rerender suave (sin romper)
+      const rows = Array.from(listEl.querySelectorAll(".row"));
+      rows.forEach(r => r.classList.remove("playing"));
     });
-
-    list.appendChild(row);
-  });
-
-  toast("Actualizado", "ok", 850);
-
-}, (err)=>{
-  console.error(err);
-  toast("Error al leer Firebase", "bad", 2200);
-});
-
-function escapeHtml(str){
-  return String(str)
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;")
-    .replaceAll("'","&#039;");
-}
-</script>
+  </script>
 </body>
 </html>
