@@ -1,3 +1,16 @@
+window.addEventListener("error", (e) => {
+  const box = document.createElement("pre");
+  box.style.cssText = "position:fixed;left:10px;right:10px;bottom:10px;max-height:45vh;overflow:auto;background:#000;color:#0f0;padding:10px;z-index:999999;border:2px solid #0f0;font-size:12px;white-space:pre-wrap";
+  box.textContent = "ERROR JS:\n" + (e.message || e.error || e);
+  document.body.appendChild(box);
+});
+
+window.addEventListener("unhandledrejection", (e) => {
+  const box = document.createElement("pre");
+  box.style.cssText = "position:fixed;left:10px;right:10px;bottom:10px;max-height:45vh;overflow:auto;background:#000;color:#ff0;padding:10px;z-index:999999;border:2px solid #ff0;font-size:12px;white-space:pre-wrap";
+  box.textContent = "PROMISE REJECTED:\n" + (e.reason?.message || e.reason || e);
+  document.body.appendChild(box);
+});
 <!doctype html>
 <html lang="es">
 <head>
@@ -469,3 +482,4 @@ onValue(temasRef,(snap)=>{
 
 </body>
 </html>
+
