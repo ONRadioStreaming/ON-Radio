@@ -1,8 +1,8 @@
 <!doctype html>
 <html lang="es">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
   <title>Ranking ON</title>
 
   <style>
@@ -11,116 +11,111 @@
       --cyan:#19d3ff;
       --yellow:#ffc400;
       --green:#2bdc63;
-
-      --glass:rgba(0,0,0,.55);
-      --border:rgba(255,255,255,.10);
-      --shadow:0 14px 30px rgba(0,0,0,.55);
-      --softShadow:0 8px 20px rgba(0,0,0,.45);
+      --bg:#070707;
+      --glass: rgba(0,0,0,.55);
+      --border: rgba(255,255,255,.10);
+      --shadow: 0 14px 30px rgba(0,0,0,.55);
+      --cardShadow: 0 16px 28px rgba(0,0,0,.45);
     }
 
     *{ box-sizing:border-box; }
     html,body{ height:100%; }
     body{
       margin:0;
-      font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
       color:#fff;
-      background:#000 url("fondoranking2.jpg") center/cover fixed no-repeat;
+      background: var(--bg) url("fondoranking2.jpg") center/cover fixed no-repeat;
     }
 
     .wrap{
-      width:min(980px, calc(100% - 24px));
-      margin:18px auto 26px;
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 16px 14px 40px;
     }
 
-    /* ======= Header ======= */
-    .topbar{
-      position:relative;
-      background:rgba(0,0,0,.65);
-      border:1px solid rgba(255,255,255,.08);
-      border-radius:22px;
-      padding:16px 18px;
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(7px);
-      overflow:hidden;
-    }
-    .topbar:before{
-      content:"";
-      position:absolute;
-      inset:-40px;
-      background: radial-gradient(closest-side, rgba(229,9,20,.30), transparent 55%),
-                  radial-gradient(closest-side, rgba(25,211,255,.18), transparent 55%);
-      transform:translateX(-18%);
-      pointer-events:none;
-    }
-
-    .head{
-      position:relative;
-      display:grid;
-      grid-template-columns: 92px 1fr 56px;
+    /* Header */
+    .header{
+      position: relative;
+      display:flex;
       align-items:center;
-      gap:10px;
+      justify-content:space-between;
+      gap:14px;
+      padding: 16px 16px;
+      border-radius: 22px;
+      background: rgba(0,0,0,.65);
+      border: 1px solid rgba(255,255,255,.08);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(8px);
     }
 
-    .logo{
-      width:92px;
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      min-width: 64px;
+    }
+
+    .brand img{
+      width:60px;
       height:auto;
-      filter: drop-shadow(0 10px 16px rgba(0,0,0,.6));
-      justify-self:start;
+      display:block;
+      filter: drop-shadow(0 10px 14px rgba(0,0,0,.55));
     }
 
     .titleBox{
+      flex:1;
       text-align:center;
       line-height:1.05;
+      user-select:none;
     }
-    .title{
-      margin:0;
-      font-size:44px;
-      letter-spacing:2px;
+    .titleBox .t1{
       font-weight:900;
-      text-transform:uppercase;
+      letter-spacing:.12em;
+      font-size: 34px;
     }
-    .title .on{ color:#ff3750; }
-    .subtitle{
-      margin:8px 0 0;
-      font-size:18px;
-      letter-spacing:5px;
-      color:var(--cyan);
+    .titleBox .t1 span{ color:#ff6a6a; }
+    .titleBox .t2{
+      margin-top: 8px;
       font-weight:800;
-      text-transform:uppercase;
-      text-shadow:0 2px 10px rgba(0,0,0,.45);
+      letter-spacing:.20em;
+      color: var(--cyan);
+      font-size: 16px;
+      text-transform: uppercase;
+      animation: subtleBlink 1.8s ease-in-out infinite;
+    }
+    .titleBox .t3{
+      margin-top: 10px;
+      font-weight:700;
+      opacity:.9;
+      letter-spacing:.06em;
+    }
+
+    @keyframes subtleBlink{
+      0%,100%{ opacity:.95; transform: translateY(0); }
+      50%{ opacity:.60; transform: translateY(1px); }
     }
 
     .arrowDown{
-      justify-self:end;
       width:0;height:0;
       border-left:14px solid transparent;
       border-right:14px solid transparent;
       border-top:22px solid var(--red);
-      filter:drop-shadow(0 10px 16px rgba(0,0,0,.6));
+      filter: drop-shadow(0 10px 16px rgba(0,0,0,.6));
       animation: arrowMove 1.2s ease-in-out infinite, arrowBlink 1.2s ease-in-out infinite;
+      margin-right: 6px;
     }
     @keyframes arrowMove{
       0%,100%{ transform: translateY(0); }
-      50%{ transform: translateY(10px); }
+      50%{ transform: translateY(6px); }
     }
     @keyframes arrowBlink{
       0%,100%{ opacity:1; }
-      50%{ opacity:.65; }
+      50%{ opacity:.55; }
     }
 
-    .footerLink{
-      position:relative;
-      margin-top:14px;
-      text-align:center;
-      opacity:.85;
-      font-weight:800;
-      letter-spacing:1px;
-      text-shadow:0 2px 12px rgba(0,0,0,.45);
-    }
-
-    /* ======= List ======= */
+    /* List */
     .list{
-      margin-top:14px;
+      margin-top: 14px;
       display:flex;
       flex-direction:column;
       gap:14px;
@@ -128,160 +123,209 @@
 
     .row{
       display:grid;
-      grid-template-columns: 72px 82px 1fr 26px 170px;
+      grid-template-columns: 72px 78px 1fr 28px 160px;
       align-items:center;
       gap:12px;
-      padding:14px;
-      border-radius:22px;
-      background:var(--glass);
-      border:1px solid var(--border);
-      box-shadow: var(--softShadow);
+      padding: 14px 14px;
+      border-radius: 22px;
+      background: var(--glass);
+      border: 1px solid var(--border);
+      box-shadow: var(--cardShadow);
       backdrop-filter: blur(6px);
-      overflow:hidden;
+      min-height: 92px;
     }
 
     .row.top1{
-      border:1px solid rgba(229,9,20,.35);
-      box-shadow: 0 0 24px rgba(229,9,20,.12), var(--softShadow);
+      border: 1px solid rgba(229,9,20,.45);
+      box-shadow: 0 0 0 1px rgba(229,9,20,.25), var(--cardShadow);
     }
 
     .num{
-      font-size:44px;
-      font-weight:900;
+      font-weight: 900;
+      font-size: 46px;
       text-align:center;
       opacity:.95;
+      letter-spacing:.02em;
     }
-    .top1 .num{ color: var(--red); font-size:50px; }
-    .notTop1 .num{ color:#fff; font-size:42px; opacity:.92; }
+    .row.top1 .num{ color: #ff6a6a; font-size: 52px; }
+    .row:not(.top1) .num{ color:#fff; }
 
-    .play{
-      width:74px;
-      height:74px;
-      border-radius:50%;
-      background:rgba(255,255,255,.06);
-      border:2px solid rgba(255,255,255,.12);
+    .playBtn{
+      width:72px;height:72px;
+      border-radius: 999px;
       display:grid;
       place-items:center;
+      border: 2px solid rgba(255,255,255,.20);
+      background: rgba(0,0,0,.35);
       cursor:pointer;
+      transition: transform .08s ease;
       user-select:none;
-      transition:transform .08s ease, background .2s ease, border-color .2s ease;
     }
-    .play:active{ transform: scale(.98); }
-    .play svg{ width:22px; height:22px; fill:#fff; opacity:.85; }
-    .playing .play{
-      background:rgba(25,211,255,.10);
-      border-color: rgba(25,211,255,.35);
+    .playBtn:active{ transform: scale(.98); }
+
+    .playIcon{
+      width:0;height:0;
+      border-top: 10px solid transparent;
+      border-bottom: 10px solid transparent;
+      border-left: 16px solid rgba(255,255,255,.75);
+      margin-left: 4px;
+    }
+    .pauseIcon{
+      width:16px;height:18px;
+      display:flex;
+      gap:4px;
+    }
+    .pauseIcon span{
+      width:6px;height:18px;
+      background: rgba(255,255,255,.75);
+      border-radius:2px;
     }
 
     .meta{
-      min-width:0;
+      min-width: 0;
       display:flex;
       flex-direction:column;
       gap:6px;
     }
     .song{
-      font-size:26px;
       font-weight:900;
-      line-height:1.05;
+      font-size: 22px;
+      line-height: 1.1;
       word-break: break-word;
     }
     .artist{
-      font-size:15px;
+      font-weight:650;
       opacity:.9;
-      line-height:1.15;
+      font-size: 15px;
+      line-height:1.2;
       word-break: break-word;
     }
 
     .trend{
-      width:14px;
-      height:14px;
-      justify-self:center;
+      width:14px;height:14px;
       border-radius:3px;
-      background:var(--yellow);
-      box-shadow:0 0 0 2px rgba(0,0,0,.22) inset;
+      background: var(--yellow);
+      margin: 0 auto;
+      box-shadow: 0 0 0 2px rgba(0,0,0,.25);
     }
-    .trend.up{ background:var(--green); clip-path: polygon(50% 0%, 100% 75%, 0% 75%); border-radius:0; }
-    .trend.down{ background:var(--red); clip-path: polygon(0% 25%, 100% 25%, 50% 100%); border-radius:0; }
-    .trend.same{ background:var(--yellow); }
+    .trend.up{
+      width:0;height:0;border-radius:0;
+      border-left:8px solid transparent;
+      border-right:8px solid transparent;
+      border-bottom:14px solid var(--green);
+      background:transparent;
+      box-shadow:none;
+      filter: drop-shadow(0 4px 10px rgba(0,0,0,.55));
+    }
+    .trend.down{
+      width:0;height:0;border-radius:0;
+      border-left:8px solid transparent;
+      border-right:8px solid transparent;
+      border-top:14px solid var(--red);
+      background:transparent;
+      box-shadow:none;
+      filter: drop-shadow(0 4px 10px rgba(0,0,0,.55));
+    }
 
     .vote{
-      justify-self:end;
-      width:170px;
-      height:56px;
-      border:none;
-      border-radius:18px;
-      background: linear-gradient(180deg, rgba(229,9,20,.95), rgba(155,0,10,.95));
+      width: 150px;
+      height: 54px;
+      border-radius: 999px;
+      border: 0;
+      background: var(--red);
       color:#fff;
-      font-weight:900;
-      letter-spacing:1px;
-      font-size:18px;
+      font-weight: 900;
+      letter-spacing:.08em;
+      font-size: 16px;
       cursor:pointer;
-      box-shadow:0 10px 22px rgba(0,0,0,.35);
-      transition:transform .08s ease, filter .2s ease, opacity .2s ease;
+      box-shadow: 0 10px 18px rgba(0,0,0,.45);
+      transition: transform .08s ease, filter .15s ease;
     }
-    .vote:active{ transform: scale(.985); }
+    .vote:active{ transform: scale(.98); }
     .vote[disabled]{
-      opacity:.45;
-      cursor:not-allowed;
-      filter:grayscale(.25);
+      opacity:.55;
+      cursor:not-allowed; /* esto muestra el símbolo de prohibido */
+      filter: grayscale(.3);
     }
 
-    /* ======= Toast ======= */
     .toast{
-      position:fixed;
-      left:12px;
-      right:12px;
-      bottom:14px;
-      max-width:720px;
-      margin:0 auto;
-      padding:12px 14px;
-      background:rgba(0,0,0,.78);
-      border:1px solid rgba(255,255,255,.10);
-      border-radius:14px;
-      box-shadow: 0 14px 28px rgba(0,0,0,.5);
+      position: fixed;
+      left: 50%;
+      bottom: 18px;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,.75);
+      border: 1px solid rgba(255,255,255,.12);
       backdrop-filter: blur(8px);
-      font-weight:800;
-      letter-spacing:.2px;
-      display:none;
-      z-index:9999;
+      padding: 10px 14px;
+      border-radius: 14px;
+      font-weight: 700;
+      font-size: 14px;
+      opacity:0;
+      pointer-events:none;
+      transition: opacity .2s ease, transform .2s ease;
+      box-shadow: 0 16px 26px rgba(0,0,0,.45);
+      z-index: 9999;
+      max-width: 92vw;
+      text-align:center;
     }
-    .toast.show{ display:block; }
+    .toast.show{
+      opacity:1;
+      transform: translateX(-50%) translateY(-4px);
+    }
 
-    /* ======= Mobile REAL fix ======= */
+    /* Mobile fix (la clave de tu problema visual) */
     @media (max-width: 520px){
-      .wrap{ width:calc(100% - 18px); margin:12px auto 18px; }
-
-      .head{ grid-template-columns: 64px 1fr 40px; }
-      .logo{ width:64px; }
-      .title{ font-size:34px; }
-      .subtitle{ font-size:14px; letter-spacing:4px; }
+      .wrap{ padding: 12px 10px 34px; }
+      .header{ padding: 14px 12px; border-radius: 18px; }
+      .brand img{ width:54px; }
+      .titleBox .t1{ font-size: 28px; letter-spacing:.10em; }
+      .titleBox .t2{ font-size: 14px; letter-spacing:.18em; }
+      .titleBox .t3{ display:none; } /* chau www en mobile */
 
       .row{
-        grid-template-columns: 50px 54px 1fr 14px;
+        grid-template-columns: 50px 56px 1fr;
         grid-template-rows: auto auto;
         gap:10px;
-        padding:12px;
+        padding: 12px 12px;
+        border-radius: 18px;
+        min-height: 0;
       }
 
-      .num{ font-size:36px; }
-      .top1 .num{ font-size:42px; }
-      .notTop1 .num{ font-size:34px; }
+      .num{
+        grid-column: 1;
+        grid-row: 1 / span 2;
+        font-size: 38px;
+      }
+      .row.top1 .num{ font-size: 44px; }
 
-      .play{ width:54px; height:54px; }
-      .play svg{ width:18px; height:18px; }
+      .playBtn{
+        grid-column: 2;
+        grid-row: 1 / span 2;
+        width:52px;height:52px;
+      }
 
-      .song{ font-size:20px; line-height:1.1; }
-      .artist{ font-size:13px; line-height:1.15; }
+      .meta{
+        grid-column: 3;
+        grid-row: 1;
+        gap:4px;
+      }
+      .song{ font-size: 19px; }
+      .artist{ font-size: 13px; }
 
-      .trend{ width:14px; height:14px; }
+      .trend{
+        grid-column: 3;
+        grid-row: 2;
+        justify-self: start;
+        margin: 0;
+      }
 
       .vote{
-        grid-column: 2 / span 3;
-        justify-self:stretch;
-        width:100%;
-        height:46px;
-        border-radius:16px;
-        font-size:16px;
+        grid-column: 3;
+        grid-row: 2;
+        justify-self: end;
+        width: 112px;
+        height: 44px;
+        font-size: 15px;
       }
     }
   </style>
@@ -289,224 +333,246 @@
 
 <body>
   <div class="wrap">
-    <div class="topbar">
-      <div class="head">
-        <img class="logo" src="logotipo.png" alt="ON Radio">
-        <div class="titleBox">
-          <h1 class="title">RANKING <span class="on">ON!</span></h1>
-          <div class="subtitle">VOTÁ TU TEMA FAVORITO</div>
-        </div>
-        <div class="arrowDown" aria-hidden="true"></div>
+    <div class="header">
+      <div class="brand">
+        <img src="logotipo.png" alt="ON Radio">
       </div>
 
-      <div class="footerLink">www.laonradio.com.ar</div>
+      <div class="titleBox">
+        <div class="t1">RANKING <span>ON!</span></div>
+        <div class="t2">VOTÁ TU TEMA FAVORITO</div>
+        <div class="t3">www.laonradio.com.ar</div>
+      </div>
+
+      <div class="arrowDown" aria-hidden="true"></div>
     </div>
 
-    <div class="list" id="list"></div>
+    <div id="list" class="list"></div>
   </div>
 
-  <div class="toast" id="toast"></div>
+  <div id="toast" class="toast"></div>
+
+  <audio id="player" preload="none"></audio>
 
   <script type="module">
-    // ===== Debug (si algo se rompe, te lo muestra abajo) =====
-    const toastEl = document.getElementById("toast");
-    function toast(msg){
-      toastEl.textContent = msg;
-      toastEl.classList.add("show");
-      clearTimeout(toastEl._t);
-      toastEl._t = setTimeout(()=>toastEl.classList.remove("show"), 2600);
-    }
-    window.addEventListener("error", (e)=> toast("ERROR JS: " + (e.message || e.error || e)));
-    window.addEventListener("unhandledrejection", (e)=> toast("PROMESA RECHAZADA: " + (e.reason?.message || e.reason || e)));
-
-    // ===== Firebase =====
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
     import { getDatabase, ref, onValue, runTransaction } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
 
-   const firebaseConfig = {
-    apiKey: "AIzaSyC8XXef5k8hLmNL8ufIJsc7Sx5KTlRFdH8",
-    authDomain: "on-radio-ranking.firebaseapp.com",
-    databaseURL: "https://on-radio-ranking-default-rtdb.firebaseio.com",
-    projectId: "on-radio-ranking",
-    storageBucket: "on-radio-ranking.firebasestorage.app",
-    messagingSenderId: "311635352358",
-    appId: "1:311635352358:web:257ff4821987f07d31ffe7"
-  };
+    // ✅ TU firebaseConfig (tal cual lo mostraste)
+    const firebaseConfig = {
+      apiKey: "AIzaSyC8XXef5k8hLmNL8ufI3sc7Sx5KT1RFdH8",
+      authDomain: "on-radio-ranking.firebaseapp.com",
+      databaseURL: "https://on-radio-ranking-default-rtdb.firebaseio.com",
+      projectId: "on-radio-ranking",
+      storageBucket: "on-radio-ranking.firebasestorage.app",
+      messagingSenderId: "311635352358",
+      appId: "1:311635352358:web:257ff4821987f07d31ffe7"
+    };
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    // ===== UI + Audio =====
     const listEl = document.getElementById("list");
-    const audio = new Audio();
-    audio.preload = "metadata";
-    let currentKey = null;
+    const toastEl = document.getElementById("toast");
+    const player = document.getElementById("player");
 
-    function playIcon(isPlaying){
-      return isPlaying
-        ? <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>
-        : <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>;
+    let currentKeyPlaying = null;
+
+    function toast(msg){
+      toastEl.textContent = msg;
+      toastEl.classList.add("show");
+      clearTimeout(toastEl._t);
+      toastEl._t = setTimeout(()=>toastEl.classList.remove("show"), 1700);
     }
 
-    function safeFileUrl(file){
-      if(!file) return "";
-      if(/^https?:\/\//i.test(file)) return file;
-      // Archivos en el repo, misma carpeta
-      return "./" + encodeURI(file);
+    function audioUrl(filename){
+      // MP3 en el mismo directorio que lista.html
+      return "./" + filename;
     }
 
-    // ===== Trend (comparación contra orden anterior) =====
-    const ORDER_KEY = "onradio_rank_prev_order";
+    function getVoteLockKey(songKey){
+      return "onrank_vote_" + songKey;
+    }
+
+    function canVote(songKey){
+      const k = getVoteLockKey(songKey);
+      const last = Number(localStorage.getItem(k) || "0");
+      const now = Date.now();
+      // 24 horas
+      return (now - last) > (24 * 60 * 60 * 1000);
+    }
+
+    function lockVote(songKey){
+      localStorage.setItem(getVoteLockKey(songKey), String(Date.now()));
+    }
+
     function loadPrevOrder(){
-      try { return JSON.parse(localStorage.getItem(ORDER_KEY) || "[]"); }
-      catch { return []; }
+      try { return JSON.parse(localStorage.getItem("onrank_prevOrder") || "{}"); }
+      catch { return {}; }
     }
-    function savePrevOrder(keys){
-      try { localStorage.setItem(ORDER_KEY, JSON.stringify(keys)); } catch {}
-    }
-    function trendClass(prevKeys, currentKeys, key){
-      const prevPos = prevKeys.indexOf(key);
-      const curPos  = currentKeys.indexOf(key);
-      if(prevPos === -1 || curPos === -1) return "same"; // primera vez
-      if(curPos < prevPos) return "up";
-      if(curPos > prevPos) return "down";
-      return "same";
+    function savePrevOrder(map){
+      localStorage.setItem("onrank_prevOrder", JSON.stringify(map));
     }
 
-    // ===== Voto 1 por día por dispositivo =====
-    function todayKey(){
-      const d = new Date();
-      const y = d.getFullYear();
-      const m = String(d.getMonth()+1).padStart(2,"0");
-      const da = String(d.getDate()).padStart(2,"0");
-      return ${y}-${m}-${da};
-    }
-    function voteLockKey(songKey){
-      return onradio_voted_${songKey}_${todayKey()};
-    }
-    function alreadyVotedToday(songKey){
-      try { return localStorage.getItem(voteLockKey(songKey)) === "1"; }
-      catch { return false; }
-    }
-    function markVoted(songKey){
-      try { localStorage.setItem(voteLockKey(songKey), "1"); } catch {}
+    function trendClass(prevPos, newPos){
+      if (!prevPos) return "stable";
+      if (newPos < prevPos) return "up";
+      if (newPos > prevPos) return "down";
+      return "stable";
     }
 
     function render(items){
-      // items: [{key, nombre, artista, audio, votos}]
-      const prevKeys = loadPrevOrder();
-      const currentKeys = items.map(x=>x.key);
+      const prev = loadPrevOrder();
+      const newMap = {};
 
-      // Render
       listEl.innerHTML = "";
-      items.forEach((it, idx) => {
+
+      items.forEach((it, idx)=>{
         const pos = idx + 1;
-        const top1 = pos === 1;
-
-        const trend = trendClass(prevKeys, currentKeys, it.key);
-        const tClass = trend ${trend};
-
-        const disabledVote = alreadyVotedToday(it.key);
+        newMap[it.key] = pos;
 
         const row = document.createElement("div");
-        row.className = row ${top1 ? "top1" : "notTop1"} ${currentKey === it.key ? "playing" : ""};
-        row.dataset.key = it.key;
+        row.className = "row" + (pos === 1 ? " top1" : "");
 
-        row.innerHTML = `
-          <div class="num">${pos}</div>
+        const num = document.createElement("div");
+        num.className = "num";
+        num.textContent = pos;
 
-          <div class="play" role="button" aria-label="Reproducir">
-            ${playIcon(currentKey === it.key && !audio.paused)}
-          </div>
+        const playBtn = document.createElement("div");
+        playBtn.className = "playBtn";
+        playBtn.title = "Reproducir / Pausar";
 
-          <div class="meta">
-            <div class="song">${it.nombre || it.key}</div>
-            <div class="artist">${it.artista || ""}</div>
-          </div>
+        const iconWrap = document.createElement("div");
+        iconWrap.className = "playIcon";
+        playBtn.appendChild(iconWrap);
 
-          <div class="${tClass}" title="${trend === "up" ? "Sube" : trend === "down" ? "Baja" : "Se mantiene"}"></div>
+        const meta = document.createElement("div");
+        meta.className = "meta";
 
-          <button class="vote" ${disabledVote ? "disabled" : ""}>VOTAR</button>
-        `;
+        const song = document.createElement("div");
+        song.className = "song";
+        song.textContent = it.nombre || it.key;
 
-        // Play
-        row.querySelector(".play").addEventListener("click", () => {
-          const url = safeFileUrl(it.audio);
-          if(!url){
-            toast("Este tema no tiene audio configurado.");
+        const artist = document.createElement("div");
+        artist.className = "artist";
+        artist.textContent = it.artista || "";
+
+        meta.appendChild(song);
+        meta.appendChild(artist);
+
+        const tr = document.createElement("div");
+        const cls = trendClass(prev[it.key], pos);
+        tr.className = "trend" + (cls === "stable" ? "" : " " + cls);
+
+        const vote = document.createElement("button");
+        vote.className = "vote";
+        vote.textContent = "VOTAR";
+
+        // Si querés “una vez por día”, bloqueamos visualmente
+        if (!canVote(it.key)) vote.disabled = true;
+
+        playBtn.addEventListener("click", ()=>{
+          const src = audioUrl(it.audio || "");
+          if (!it.audio){
+            toast("Este tema no tiene audio cargado");
             return;
           }
 
-          if(currentKey === it.key){
-            if(audio.paused) audio.play().catch(()=>toast("No se pudo reproducir."));
-            else audio.pause();
-          } else {
-            currentKey = it.key;
-            audio.src = url;
-            audio.currentTime = 0;
-            audio.play().catch(()=>toast("No se pudo reproducir."));
+          // Si clickeo el mismo que está sonando → toggle
+          if (currentKeyPlaying === it.key){
+            if (player.paused){
+              player.play().catch(()=>toast("No pude reproducir (autoplay bloqueado)"));
+              iconWrap.className = "pauseIcon";
+              iconWrap.innerHTML = "<span></span><span></span>";
+            } else {
+              player.pause();
+              iconWrap.className = "playIcon";
+              iconWrap.innerHTML = "";
+            }
+            return;
           }
-          // Re-render para reflejar iconos/estado
-          render(items);
+
+          // Nuevo tema: reseteo player e íconos
+          currentKeyPlaying = it.key;
+          player.pause();
+          player.currentTime = 0;
+          player.src = src;
+          player.play().catch(()=>toast("No pude reproducir (tocá play otra vez)"));
+
+          // Pongo icono pause en este, play en el resto (re-render simple)
+          document.querySelectorAll(".playBtn > div").forEach(d=>{
+            d.className = "playIcon";
+            d.innerHTML = "";
+          });
+          iconWrap.className = "pauseIcon";
+          iconWrap.innerHTML = "<span></span><span></span>";
         });
 
-        // Votar
-        const voteBtn = row.querySelector(".vote");
-        voteBtn.addEventListener("click", async () => {
-          if(alreadyVotedToday(it.key)){
-            toast("Ya votaste hoy. Volvé mañana 😄");
+        vote.addEventListener("click", async ()=>{
+          if (!canVote(it.key)){
+            toast("Ya votaste este tema. Volvé mañana 🙌");
             return;
           }
-
-          voteBtn.disabled = true;
 
           try{
-            const votosRef = ref(db, temas/${it.key}/votos);
-            await runTransaction(votosRef, (current) => (Number(current) || 0) + 1);
-            markVoted(it.key);
-            toast("¡Gracias por votar! Volvé mañana 🔥");
+            const votosRef = ref(db, "temas/" + it.key + "/votos");
+            await runTransaction(votosRef, (cur)=> (Number(cur)||0) + 1);
+            lockVote(it.key);
+            vote.disabled = true;
+            toast("✅ Voto registrado. ¡Gracias!");
           }catch(err){
-            voteBtn.disabled = false;
-            toast("No se pudo registrar el voto (revisá permisos/red).");
             console.error(err);
+            toast("❌ No pude registrar el voto");
           }
         });
+
+        row.appendChild(num);
+        row.appendChild(playBtn);
+        row.appendChild(meta);
+        row.appendChild(tr);
+        row.appendChild(vote);
 
         listEl.appendChild(row);
       });
 
-      // Guardamos orden actual para próxima comparación
-      savePrevOrder(currentKeys);
+      savePrevOrder(newMap);
     }
 
-    // ===== Realtime listener =====
+    // 🔥 Firebase listener
     const temasRef = ref(db, "temas");
-    onValue(temasRef, (snap) => {
-      const data = snap.val() || {};
-      const items = Object.entries(data).map(([key, val]) => ({
-        key,
-        nombre: val?.nombre || key,
-        artista: val?.artista || "",
-        audio: val?.audio || "",
-        votos: Number(val?.votos) || 0
-      }));
 
-      // Orden: votos DESC, luego nombre
-      items.sort((a,b) => (b.votos - a.votos) || String(a.nombre).localeCompare(String(b.nombre), "es"));
+    onValue(temasRef, (snap)=>{
+      const val = snap.val() || {};
+      const items = Object.entries(val).map(([key, data])=>{
+        return { key, ...(data||{}) };
+      });
 
-      // Top 10
-      render(items.slice(0, 10));
-    }, (err) => {
+      // Orden: votos desc (si no hay votos, 0)
+      items.sort((a,b)=> (Number(b.votos)||0) - (Number(a.votos)||0));
+
+      render(items);
+    }, (err)=>{
       console.error(err);
-      toast("No conecta con Firebase (revisá firebaseConfig o URL).");
+      toast("❌ Error conectando con Firebase");
     });
 
-    // Cuando termina audio, limpiamos estado
-    audio.addEventListener("ended", () => {
-      currentKey = null;
-      // Fuerza rerender suave (sin romper)
-      const rows = Array.from(listEl.querySelectorAll(".row"));
-      rows.forEach(r => r.classList.remove("playing"));
+    // Si termina el audio, vuelve icono play
+    player.addEventListener("ended", ()=>{
+      currentKeyPlaying = null;
+      document.querySelectorAll(".playBtn > div").forEach(d=>{
+        d.className = "playIcon";
+        d.innerHTML = "";
+      });
+    });
+
+    // Debug visible si algo explota (para que no quedes a ciegas)
+    window.addEventListener("error", (e)=>{
+      console.error("ERROR JS:", e.message || e);
+      toast("⚠️ Error JS (mirá consola)");
+    });
+    window.addEventListener("unhandledrejection", (e)=>{
+      console.error("PROMISE REJECTED:", e.reason || e);
+      toast("⚠️ Error (promesa rechazada)");
     });
   </script>
 </body>
