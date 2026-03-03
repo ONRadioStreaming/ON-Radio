@@ -341,14 +341,15 @@
       <div class="titleBox">
         <div class="t1">RANKING <span>ON!</span></div>
         <div class="t2">VOTÁ TU TEMA FAVORITO</div>
-        <div class="t3">www.laonradio.com.ar</div>
       </div>
 
       <div class="arrowDown" aria-hidden="true"></div>
     </div>
 
     <div id="list" class="list"></div>
-  </div>
+    <div id="footer">
+    www.laonradio.com.ar
+</div>    
 
   <div id="toast" class="toast"></div>
 
@@ -390,21 +391,16 @@
       return "./" + filename;
     }
 
-    function getVoteLockKey(songKey){
-      return "onrank_vote_" + songKey;
-    }
 
-    function canVote(songKey){
-      const k = getVoteLockKey(songKey);
-      const last = Number(localStorage.getItem(k) || "0");
-      const now = Date.now();
-      // 24 horas
-      return (now - last) > (24 * 60 * 60 * 1000);
-    }
+    function canVote(){
+  const today = new Date().toISOString().slice(0,10);
+  return !localStorage.getItem("onrank_voted_" + today);
+}
 
-    function lockVote(songKey){
-      localStorage.setItem(getVoteLockKey(songKey), String(Date.now()));
-    }
+    function lockVote(){
+  const today = new Date().toISOString().slice(0,10);
+  localStorage.setItem("onrank_voted_" + today, "1");
+}
 
     function loadPrevOrder(){
       try { return JSON.parse(localStorage.getItem("onrank_prevOrder") || "{}"); }
