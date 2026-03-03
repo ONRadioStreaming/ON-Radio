@@ -398,13 +398,22 @@
     }
 
 
-    function canVote(){
-  const today = new Date().toISOString().slice(0,10);
+    function arDateKey(){
+  return new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'America/Argentina/Buenos_Aires',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit'
+  }).format(new Date());
+}
+
+function canVote(){
+  const today = arDateKey();
   return !localStorage.getItem("onrank_voted_" + today);
 }
 
-    function lockVote(){
-  const today = new Date().toISOString().slice(0,10);
+function lockVote(){
+  const today = arDateKey();
   localStorage.setItem("onrank_voted_" + today, "1");
 }
 
