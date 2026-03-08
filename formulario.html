@@ -1,570 +1,316 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Sumate a La ON Radio</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <style>
-    *{
-      box-sizing:border-box;
-    }
+<title>Sumate a La ON Radio</title>
 
-    body{
-      margin:0;
-      font-family:Arial, Helvetica, sans-serif;
-      background:#0f0f10;
-      color:#f2f2f2;
-      line-height:1.45;
-    }
+<style>
 
-    .hero{
-      position:relative;
-      min-height:320px;
-      background-image:url("estudio.jpg");
-      background-size:cover;
-      background-position:center;
-      background-repeat:no-repeat;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      text-align:center;
-      overflow:hidden;
-    }
+body{
+background:#000;
+color:#fff;
+font-family:Arial,Helvetica,sans-serif;
+margin:0;
+padding:0;
+}
 
-    .hero::after{
-      content:"";
-      position:absolute;
-      inset:0;
-      background:rgba(0,0,0,0.62);
-    }
+.wrap{
+max-width:850px;
+margin:auto;
+padding:30px 20px;
+}
 
-    .logo{
-      position:absolute;
-      top:12px;
-      left:50%;
-      transform:translateX(-50%);
-      z-index:3;
-    }
+h1{
+text-align:center;
+margin-bottom:10px;
+}
 
-    .logo img{
-      width:135px;
-      height:auto;
-      display:block;
-    }
+.sub{
+text-align:center;
+color:#ccc;
+margin-bottom:30px;
+}
 
-    .hero-content{
-      position:relative;
-      z-index:2;
-      max-width:820px;
-      padding:130px 20px 10px;
-    }
+form{
+background:#0e0e0e;
+padding:25px;
+border-radius:12px;
+box-shadow:0 0 20px rgba(0,0,0,0.5);
+}
 
-    .hero-content h1{
-      margin:0 0 8px;
-      font-size:clamp(1.2rem, 4vw, 2.4rem);
-      font-weight:800;
-      text-transform:uppercase;
-      letter-spacing:0.3px;
-      text-shadow:0 3px 10px rgba(0,0,0,0.7);
-    }
+.field{
+margin-bottom:18px;
+}
 
-    .hero-content p{
-      margin:0 auto 16px;
-      font-size:clamp(1rem, 2.4vw, 1.3rem);
-      color:#f4f4f4;
-      text-shadow:0 2px 8px rgba(0,0,0,0.7);
-    }
+label{
+display:block;
+margin-bottom:6px;
+font-weight:bold;
+}
 
-    .wrap{
-      width:min(960px, 92%);
-      margin:-6px auto 40px;
-      position:relative;
-      z-index:5;
-    }
+input,textarea{
+width:100%;
+padding:10px;
+border-radius:8px;
+border:1px solid #333;
+background:#111;
+color:#fff;
+font-size:14px;
+}
 
-    .card{
-      background:#17171a;
-      border:1px solid rgba(255,255,255,0.08);
-      border-radius:22px;
-      box-shadow:0 16px 40px rgba(0,0,0,0.35);
-      overflow:hidden;
-    }
+textarea{
+min-height:110px;
+resize:vertical;
+}
 
-    .content{
-      padding:28px 18px 34px;
-    }
+.grid{
+display:grid;
+grid-template-columns:1fr;
+gap:15px;
+}
 
-    .section-title{
-      margin:0 0 20px;
-      font-size:clamp(1.6rem, 3.8vw, 2.5rem);
-      text-align:center;
-      color:#ffffff;
-      font-weight:800;
-      line-height:1.15;
-    }
+.required{
+color:#ff3b3b;
+}
 
-    .info-box{
-      background:#1e1e24;
-      border:1px solid rgba(255,255,255,0.06);
-      border-radius:18px;
-      padding:22px 18px;
-      margin-bottom:22px;
-    }
+/* CHECKBOX PERSONALIZADO */
 
-    .info-box h3{
-      margin:0 0 12px;
-      font-size:1.3rem;
-      color:#ffffff;
-    }
+input[type="checkbox"]{
+appearance:none;
+-webkit-appearance:none;
+width:18px;
+height:18px;
+background:#fff;
+border:2px solid #444;
+border-radius:4px;
+cursor:pointer;
+position:relative;
+margin-right:10px;
+}
 
-    .info-box ul{
-      margin:10px 0 0 0;
-      padding-left:22px;
-    }
+input[type="checkbox"]:checked::after{
+content:"✔";
+position:absolute;
+font-size:14px;
+color:#000;
+left:2px;
+top:-2px;
+font-weight:bold;
+}
 
-    .info-box li{
-      margin-bottom:8px;
-      color:#ededed;
-    }
+/* RADIOS */
 
-    .frase{
-      margin-top:16px;
-      font-size:1.02rem;
-      color:#ffffff;
-    }
+input[type="radio"]{
+accent-color:#ff3b3b;
+margin-right:8px;
+}
 
-    .aviso{
-      background:#f0ddb0;
-      color:#272018;
-      border-radius:16px;
-      padding:18px;
-      margin-bottom:24px;
-      font-size:1rem;
-      border-left:5px solid #d7a020;
-    }
+/* AREA OPCIONES */
 
-    .nota-campos{
-      margin:0 0 18px;
-      color:#d8d8d8;
-      font-size:0.96rem;
-    }
+.check-group{
+display:flex;
+flex-direction:column;
+gap:8px;
+}
 
-    form{
-      display:block;
-    }
+.check-group label{
+display:flex;
+align-items:center;
+font-weight:normal;
+cursor:pointer;
+}
 
-    .field{
-      margin-bottom:16px;
-    }
+.radio-group label{
+display:flex;
+align-items:center;
+margin-bottom:6px;
+cursor:pointer;
+}
 
-    .field label{
-      display:block;
-      margin-bottom:8px;
-      font-weight:700;
-      color:#ffffff;
-      font-size:1rem;
-    }
+/* BOTONES */
 
-    .field input,
-    .field textarea,
-    .field select{
-      width:100%;
-      border:1px solid #414141;
-      background:#26262d;
-      color:#f4f4f4;
-      border-radius:14px;
-      padding:14px 14px;
-      font-size:1rem;
-      outline:none;
-    }
+button{
+width:100%;
+padding:14px;
+border:none;
+border-radius:10px;
+font-size:16px;
+font-weight:bold;
+cursor:pointer;
+}
 
-    .field input::placeholder,
-    .field textarea::placeholder{
-      color:#b8b8b8;
-    }
+.enviar{
+background:#e50914;
+color:white;
+margin-top:10px;
+}
 
-    .field input:focus,
-    .field textarea:focus,
-    .field select:focus{
-      border-color:#d83131;
-      box-shadow:0 0 0 3px rgba(216,49,49,0.18);
-    }
+.whatsapp{
+background:#25D366;
+color:white;
+margin-top:10px;
+}
 
-    .field textarea{
-      min-height:120px;
-      resize:vertical;
-    }
+.aviso{
+background:#111;
+padding:15px;
+border-radius:8px;
+margin-bottom:20px;
+font-size:14px;
+color:#ccc;
+}
 
-    .grid{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:14px;
-    }
+.demo{
+background:#111;
+padding:18px;
+border-radius:10px;
+margin-top:20px;
+}
 
-    .checkbox-group{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:12px 22px;
-      margin-top:8px;
-    }
+.small{
+font-size:13px;
+color:#aaa;
+margin-top:6px;
+}
 
-    .checkbox-group label{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      margin:0;
-      font-size:1rem;
-      color:#ececec;
-      font-weight:400;
-      line-height:1.3;
-    }
+footer{
+text-align:center;
+margin-top:25px;
+font-size:13px;
+color:#aaa;
+}
 
-    .checkbox-group input[type="checkbox"]{
-      width:18px;
-      height:18px;
-      margin:0;
-      accent-color:#ffffff;
-      flex:0 0 18px;
-    }
+</style>
 
-    .radio-group{
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-      margin-top:8px;
-    }
-
-    .radio-group label{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      font-weight:400;
-      color:#ececec;
-      margin:0;
-    }
-
-    .radio-group input[type="radio"]{
-      width:18px;
-      height:18px;
-      margin:0;
-      accent-color:#ffffff;
-      flex:0 0 18px;
-    }
-
-    .demo-box{
-      background:#1e1e24;
-      border:1px solid rgba(255,255,255,0.07);
-      border-radius:18px;
-      padding:22px 18px;
-      margin:20px 0;
-    }
-
-    .demo-box h3{
-      margin:0 0 12px;
-      font-size:1.3rem;
-      color:#ffffff;
-    }
-
-    .demo-box p{
-      margin:0 0 10px;
-      color:#ececec;
-      font-size:1rem;
-    }
-
-    .demo-mini{
-      font-size:0.9rem !important;
-      color:#cfcfcf !important;
-      margin-bottom:16px !important;
-    }
-
-    .aceptacion{
-      margin-top:18px;
-      padding:18px;
-      background:#1e1e24;
-      border-radius:18px;
-      border:1px solid rgba(255,255,255,0.06);
-    }
-
-    .aceptacion label{
-      display:flex;
-      gap:12px;
-      align-items:flex-start;
-      color:#f1f1f1;
-      font-size:0.97rem;
-      font-weight:400;
-    }
-
-    .aceptacion input{
-      margin-top:3px;
-      width:20px;
-      height:20px;
-      accent-color:#ffffff;
-      flex:0 0 20px;
-    }
-
-    .btn{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      width:100%;
-      min-height:56px;
-      border:none;
-      border-radius:14px;
-      font-size:1rem;
-      font-weight:800;
-      cursor:pointer;
-      text-decoration:none;
-      transition:transform 0.15s ease, opacity 0.15s ease;
-      padding:12px 16px;
-    }
-
-    .btn:hover{
-      transform:translateY(-1px);
-      opacity:0.96;
-    }
-
-    .btn-enviar{
-      background:#d72626;
-      color:#ffffff;
-      margin-top:22px;
-    }
-
-    .btn-wa{
-      background:#09a71a;
-      color:#ffffff;
-    }
-
-    .footer-note{
-      text-align:center;
-      color:#cfcfcf;
-      margin-top:22px;
-      font-size:0.95rem;
-    }
-
-    .required{
-      color:#ff6b6b;
-    }
-
-    @media (max-width: 720px){
-      .hero{
-        min-height:280px;
-      }
-
-      .logo{
-        top:10px;
-      }
-
-      .logo img{
-        width:105px;
-      }
-
-      .hero-content{
-        padding:88px 16px 8px;
-      }
-
-      .hero-content h1{
-        font-size:clamp(1.05rem, 3.4vw, 1.7rem);
-        margin:0 0 6px;
-      }
-
-      .hero-content p{
-        font-size:0.95rem;
-        margin:0 auto 8px;
-      }
-
-      .wrap{
-        width:94%;
-        margin:-6px auto 40px;
-      }
-
-      .content{
-        padding:24px 14px 30px;
-      }
-
-      .section-title{
-        margin-top:0;
-        margin-bottom:18px;
-        font-size:1.35rem;
-      }
-
-      .grid{
-        grid-template-columns:1fr;
-      }
-
-      .checkbox-group{
-        grid-template-columns:1fr;
-        gap:12px;
-      }
-
-      .checkbox-group label{
-        justify-content:flex-start;
-      }
-    }
-  </style>
 </head>
+
 <body>
 
-  <section class="hero">
-    <div class="logo">
-      <img src="logotipo.png" alt="La ON Radio">
-    </div>
+<div class="wrap">
 
-    <div class="hero-content">
-      <h1>¿Tenés alguna idea para la radio?</h1>
-      <h1>¿Te gustaría sumarte a este desafío?</h1>
-      <p>En La ON Radio podés empezar a crear tu propio espacio</p>
-    </div>
-  </section>
+<h1>¿Tenés una idea para la radio?</h1>
+<p class="sub">¿Te gustaría formar parte de La ON Radio?</p>
 
-  <main class="wrap">
-    <section class="card">
-      <div class="content">
-        <h2 class="section-title">Formá parte de La ON!</h2>
+<form id="formulario"
+action="https://formsubmit.co/info.laonradio@gmail.com"
+method="POST">
 
-        <div class="info-box">
-          <h3>¿Por qué formar parte de La ON?</h3>
-          <ul>
-            <li>Ganá experiencia real en radio y streaming</li>
-            <li>Desarrollá tu voz, tu estilo y tus ideas</li>
-            <li>Aprendé sobre conducción, locución y producción</li>
-            <li>Formá parte de un proyecto en crecimiento</li>
-            <li>Creá tu propio espacio si la radio es lo tuyo</li>
-          </ul>
+<input type="hidden" name="_subject" value="Nueva solicitud para sumarse a La ON Radio">
+<input type="hidden" name="_captcha" value="false">
+<input type="hidden" name="_template" value="table">
 
-          <h3>¿A quién buscamos?</h3>
-          <ul>
-            <li>Personas con compromiso y responsabilidad</li>
-            <li>Gente con ganas de aprender</li>
-            <li>Voces con personalidad propia</li>
-            <li>Personas con ideas para crear contenido</li>
-            <li>Amantes de la radio, con o sin experiencia</li>
-            <li>Estudiantes de comunicación, periodismo, locución, producción o medios</li>
-            <li>O simplemente personas a las que les guste la radio y quieran participar</li>
-          </ul>
+<div class="aviso">
+<strong>Importante:</strong> Esta convocatoria no corresponde a una oferta laboral.
+Es una propuesta de participación y aprendizaje en un proyecto radial independiente.
+</div>
 
-          <p class="frase"><strong>No hace falta que vengas con todo resuelto.</strong><br>A veces solo hace falta empezar.</p>
-        </div>
+<div class="grid">
 
-        <div class="aviso">
-          <strong>Importante:</strong> Esta convocatoria no corresponde a una oferta laboral. Es una propuesta de participación y aprendizaje en un proyecto radial independiente.
-        </div>
+<div class="field">
+<label>Nombre y apellido <span class="required">*</span></label>
+<input type="text" name="Nombre" required>
+</div>
 
-        <p class="nota-campos">Los campos marcados con <strong>(<span class="required">*</span>)</strong> son obligatorios.</p>
+<div class="field">
+<label>Localidad <span class="required">*</span></label>
+<input type="text" name="Localidad" required>
+</div>
 
-        <form id="formulario" action="https://formsubmit.co/info.laonradio@gmail.com" method="POST">
-          <input type="hidden" name="_subject" value="Nueva solicitud para sumarse a La ON Radio">
-          <input type="hidden" name="_captcha" value="false">
-          <input type="hidden" name="_template" value="table">
+<div class="field">
+<label>Teléfono / WhatsApp <span class="required">*</span></label>
+<input type="text" name="Telefono" required>
+</div>
 
-          <div class="grid">
-            <div class="field">
-              <label for="nombre">Nombre y apellido <span class="required">*</span></label>
-              <input type="text" id="nombre" name="Nombre y apellido" required>
-            </div>
+<div class="field">
+<label>Email <span class="required">*</span></label>
+<input type="email" name="Email" required>
+</div>
 
-            <div class="field">
-              <label for="edad">Edad <span class="required">*</span></label>
-              <input type="number" id="edad" name="Edad" required>
-            </div>
-          </div>
+</div>
 
-          <div class="grid">
-            <div class="field">
-              <label for="localidad">Localidad <span class="required">*</span></label>
-              <input type="text" id="localidad" name="Localidad" required>
-            </div>
+<div class="field">
+<label>¿En qué área te gustaría participar? <span class="required">*</span></label>
 
-            <div class="field">
-              <label for="telefono">Teléfono / WhatsApp <span class="required">*</span></label>
-              <input type="text" id="telefono" name="Telefono / WhatsApp" required>
-            </div>
-          </div>
+<div class="check-group">
 
-          <div class="field">
-            <label for="email">Email <span class="required">*</span></label>
-            <input type="email" id="email" name="Email" required>
-          </div>
+<label><input type="checkbox" name="Area" value="Conduccion"> Conducción</label>
 
-          <div class="field">
-            <label>¿En qué área te gustaría participar? <span class="required">*</span></label>
-            <div class="checkbox-group">
-              <label><input type="checkbox" name="Area de interes" value="Conducción">Conducción</label>
-              <label><input type="checkbox" name="Area de interes" value="Locución">Locución</label>
-              <label><input type="checkbox" name="Area de interes" value="Móvil en la calle">Móvil en la calle</label>
-              <label><input type="checkbox" name="Area de interes" value="Operación técnica">Operación técnica</label>
-              <label><input type="checkbox" name="Area de interes" value="Producción">Producción</label>
-              <label><input type="checkbox" name="Area de interes" value="Columnista">Columnista</label>
-              <label><input type="checkbox" name="Area de interes" value="Redes sociales">Redes sociales</label>
-              <label><input type="checkbox" name="Area de interes" value="Comercial / ventas">Comercial / ventas</label>
-              <label><input type="checkbox" name="Area de interes" value="Otro">Otro</label>
-            </div>
-          </div>
+<label><input type="checkbox" name="Area" value="Locucion"> Locución</label>
 
-          <div class="field">
-            <label>¿Tenés experiencia en radio o medios? <span class="required">*</span></label>
-            <div class="radio-group">
-              <label><input type="radio" name="Experiencia en radio o medios" value="Sí" required>Sí</label>
-              <label><input type="radio" name="Experiencia en radio o medios" value="No" required>No</label>
-              <label><input type="radio" name="Experiencia en radio o medios" value="Algo de experiencia" required>Algo de experiencia</label>
-            </div>
-          </div>
+<label><input type="checkbox" name="Area" value="Movil en la calle"> Móvil en la calle</label>
 
-          <div class="field">
-            <label for="programa">¿En qué tipo de programa te gustaría participar?</label>
-            <textarea id="programa" name="En que tipo de programa te gustaria participar"></textarea>
-          </div>
+<label><input type="checkbox" name="Area" value="Operacion tecnica"> Operación técnica</label>
 
-          <div class="field">
-            <label for="motivo">¿Por qué te gustaría formar parte de La ON Radio? <span class="required">*</span></label>
-            <textarea id="motivo" name="Por que te gustaria formar parte de La ON Radio" required></textarea>
-          </div>
+<label><input type="checkbox" name="Area" value="Produccion"> Producción</label>
 
-          <div class="demo-box">
-            <h3>Demo de presentación</h3>
-            <p>Envíanos un audio o video corto de presentación contándonos qué te gustaría hacer en la radio.</p>
-            <p class="demo-mini">Duración sugerida: 30 segundos</p>
-            <button type="button" class="btn btn-wa" onclick="enviarWhatsapp()">Enviar demo por WhatsApp</button>
-          </div>
+<label><input type="checkbox" name="Area" value="Columnista"> Columnista</label>
 
-          <div class="aceptacion">
-            <label>
-              <input type="checkbox" id="acepto" required>
-              <span>Declaro haber leído y comprendido que esta convocatoria no corresponde a un empleo rentado, sino a una propuesta de participación y aprendizaje en un proyecto radial independiente.</span>
-            </label>
-          </div>
+<label><input type="checkbox" name="Area" value="Redes sociales"> Redes sociales</label>
 
-          <button type="submit" class="btn btn-enviar">Enviar solicitud</button>
+<label><input type="checkbox" name="Area" value="Comercial"> Comercial / ventas</label>
 
-          <p class="footer-note">Gracias por tu interés en formar parte de La ON Radio.</p>
-        </form>
-      </div>
-    </section>
-  </main>
+<label><input type="checkbox" name="Area" value="Otro"> Otro</label>
 
-  <script>
-    function enviarWhatsapp(){
-      const nombre = document.getElementById("nombre").value.trim();
-      const email = document.getElementById("email").value.trim();
-      const localidad = document.getElementById("localidad").value.trim();
+</div>
+</div>
 
-      if(nombre === "" || email === "" || localidad === ""){
-        alert("Antes de enviar el demo por WhatsApp, completá nombre, mail y localidad.");
-        return;
-      }
+<div class="field">
+<label>¿Tenés experiencia en radio o medios? <span class="required">*</span></label>
 
-      const mensaje = `Hola, acabo de completar el formulario para sumarme al staff de La ON Radio.
+<div class="radio-group">
 
-Nombre y apellido: ${nombre}
-Mail: ${email}
-Localidad: ${localidad}
+<label><input type="radio" name="Experiencia" value="Si" required> Sí</label>
 
-Adjunto mi demo de presentación.`;
+<label><input type="radio" name="Experiencia" value="No"> No</label>
 
-      const url = "https://wa.me/5492475402890?text=" + encodeURIComponent(mensaje);
-      window.open(url, "_blank");
-    }
-  </script>
+<label><input type="radio" name="Experiencia" value="Algo"> Algo de experiencia</label>
+
+</div>
+</div>
+
+<div class="field">
+<label>¿En qué tipo de programa te gustaría participar?</label>
+<textarea name="Tipo de programa"></textarea>
+</div>
+
+<div class="field">
+<label>¿Por qué te gustaría formar parte de La ON Radio?</label>
+<textarea name="Motivacion"></textarea>
+</div>
+
+<div class="demo">
+
+<strong>Demo de presentación</strong>
+
+<p>
+Envianos un audio o video corto de presentación contándonos qué te gustaría hacer en la radio.
+</p>
+
+<p class="small">Duración sugerida: hasta 30 segundos.</p>
+
+<button type="button"
+class="whatsapp"
+onclick="window.open('https://wa.me/5491161358000','_blank')">
+
+Enviar demo por WhatsApp
+
+</button>
+
+</div>
+
+<button type="submit" class="enviar">
+Enviar solicitud
+</button>
+
+<footer>
+Gracias por tu interés en formar parte de La ON Radio
+</footer>
+
+</form>
+
+</div>
 
 </body>
 </html>
