@@ -13,6 +13,7 @@ body {
     background-size: cover;
     color: #fff;
     text-align: center;
+    scroll-behavior: smooth;
 }
 
 h1 {
@@ -54,13 +55,12 @@ p.slogan {
 /* BOTONES */
 
 .radio-vivo { background: linear-gradient(to left, #ff0000, #800000); }
-
-/* NUEVO BOTÓN RANKING */
 .ranking { background: linear-gradient(to left, #ff0000, #800000); }
-
+.formulario { background: linear-gradient(to left, #ff6600, #662200); }
 .web { background: linear-gradient(to left, #1E90FF, #000033); }
 .app { background: linear-gradient(to left, #8A2BE2, #200033); }
 .whatsapp { background: linear-gradient(to left, #25D366, #004d00); }
+.redes { background: linear-gradient(to left, #ff1493, #4b0030); }
 .instagram { background: linear-gradient(to left, #E1306C, #33001a); }
 .facebook { background: linear-gradient(to left, #3b5998, #000033); }
 .tiktok { background: linear-gradient(to left, #69C9D0, #003333); }
@@ -68,6 +68,19 @@ p.slogan {
 .youtube { background: linear-gradient(to left, #FF0000, #800000); }
 .twitch { background: linear-gradient(to left, #6441A5, #200050); }
 .publicidad { background: linear-gradient(to left, #25D366, #004d00); }
+
+/* SECCIÓN REDES */
+
+.seccion-redes {
+    margin-top: 35px;
+    padding-top: 10px;
+}
+
+.seccion-redes h2 {
+    font-size: 1.4em;
+    margin-bottom: 15px;
+    text-shadow: 0 3px 10px rgba(0,0,0,0.7);
+}
 
 /* FOOTER */
 
@@ -92,7 +105,7 @@ footer {
 
 <body>
 
-<img src="logotipo.png" width="180">
+<img src="logotipo.png" width="180" alt="ON Radio">
 
 <h1>ON Radio</h1>
 <p class="slogan">Dale ON a la música que más te gusta!</p>
@@ -105,10 +118,16 @@ footer {
 
 <audio id="streaming" src="https://streaming.radiosenlinea.com.ar/9020/stream"></audio>
 
-<!-- RANKING (SEGUNDO BOTÓN) -->
+<!-- RANKING -->
 <a href="lista.html" class="boton ranking">
     <img src="trofeo.png" alt="Ranking ON">
     Votá en el nuevo ranking
+</a>
+
+<!-- FORMULARIO -->
+<a href="formulario.html" class="boton formulario">
+    <img src="trofeo.png" alt="Formulario La ON">
+    ¿Querés hacer radio? Sumate a La ON
 </a>
 
 <!-- WEB -->
@@ -129,40 +148,10 @@ footer {
     WhatsAppeanos!
 </a>
 
-<!-- INSTAGRAM -->
-<a href="https://www.instagram.com/la_on_radio" target="_blank" class="boton instagram">
-    <img src="instagram.png" alt="Instagram">
-    Seguinos en Instagram
-</a>
-
-<!-- FACEBOOK -->
-<a href="https://www.facebook.com/onradioo" target="_blank" class="boton facebook">
-    <img src="facebook.png" alt="Facebook">
-    Seguinos en Facebook
-</a>
-
-<!-- TIKTOK -->
-<a href="https://www.tiktok.com/@laonradio" target="_blank" class="boton tiktok">
-    <img src="tiktok.png" alt="TikTok">
-    Seguinos en TikTok
-</a>
-
-<!-- X -->
-<a href="https://www.twitter.com/laonradioo" target="_blank" class="boton x">
-    <img src="x.png" alt="X">
-    Seguinos en X
-</a>
-
-<!-- YOUTUBE -->
-<a href="https://www.youtube.com/@laonradio" target="_blank" class="boton youtube">
-    <img src="youtube.png" alt="YouTube">
-    Seguinos en YouTube
-</a>
-
-<!-- TWITCH -->
-<a href="https://www.twitch.tv/laonradio" target="_blank" class="boton twitch">
-    <img src="twi.png" alt="Twitch">
-    Seguinos en Twitch
+<!-- BOTÓN AGRUPADOR DE REDES -->
+<a href="#redes-sociales" class="boton redes">
+    <img src="instagram.png" alt="Redes Sociales">
+    Seguinos en nuestras redes
 </a>
 
 <!-- PUBLICIDAD -->
@@ -170,6 +159,47 @@ footer {
     <img src="WhatsApp.png" alt="Publicidad">
     ¿Querés hacer publicidad? Click aquí
 </a>
+
+<!-- SECCIÓN REDES -->
+<div id="redes-sociales" class="seccion-redes">
+    <h2>Nuestras redes sociales</h2>
+
+    <!-- INSTAGRAM -->
+    <a href="https://www.instagram.com/la_on_radio" target="_blank" class="boton instagram">
+        <img src="instagram.png" alt="Instagram">
+        Seguinos en Instagram
+    </a>
+
+    <!-- FACEBOOK -->
+    <a href="https://www.facebook.com/onradioo" target="_blank" class="boton facebook">
+        <img src="facebook.png" alt="Facebook">
+        Seguinos en Facebook
+    </a>
+
+    <!-- TIKTOK -->
+    <a href="https://www.tiktok.com/@laonradio" target="_blank" class="boton tiktok">
+        <img src="tiktok.png" alt="TikTok">
+        Seguinos en TikTok
+    </a>
+
+    <!-- X -->
+    <a href="https://www.twitter.com/laonradioo" target="_blank" class="boton x">
+        <img src="x.png" alt="X">
+        Seguinos en X
+    </a>
+
+    <!-- YOUTUBE -->
+    <a href="https://www.youtube.com/@laonradio" target="_blank" class="boton youtube">
+        <img src="youtube.png" alt="YouTube">
+        Seguinos en YouTube
+    </a>
+
+    <!-- TWITCH -->
+    <a href="https://www.twitch.tv/laonradio" target="_blank" class="boton twitch">
+        <img src="twi.png" alt="Twitch">
+        Seguinos en Twitch
+    </a>
+</div>
 
 <footer>
     <div>ON Radio</div>
