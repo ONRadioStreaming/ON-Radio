@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Sumate a ON Radio</title>
+
+<style>
+
+body{
+margin:0;
+font-family:Arial, Helvetica, sans-serif;
+background:#f3f3f3;
+color:#333;
+}
+
+/* HERO */
+
+.hero{
+background:url("estudio.jpg") center/cover no-repeat;
+height:420px;
+position:relative;
+display:flex;
+align-items:center;
+justify-content:center;
+text-align:center;
+color:white;
+}
+
+.hero::after{
+content:"";
+position:absolute;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.55);
+}
+
+.hero-content{
+position:relative;
+z-index:2;
+padding:20px;
+}
+
+.hero h1{
+font-size:28px;
+margin-bottom:10px;
+}
+
+.hero p{
+font-size:18px;
+}
+
+/* LOGO */
+
+.logo{
+position:absolute;
+top:20px;
+left:20px;
+z-index:3;
+}
+
+.logo img{
+height:55px;
+}
+
+/* CONTENEDOR */
+
+.container{
+max-width:650px;
+margin:auto;
+background:white;
+padding:30px;
+margin-top:-60px;
+border-radius:8px;
+box-shadow:0 10px 25px rgba(0,0,0,0.15);
+}
+
+h2{
+text-align:center;
+margin-bottom:20px;
+}
+
+h3{
+margin-top:25px;
+}
+
+/* INPUTS */
+
+input, textarea, select{
+width:100%;
+padding:12px;
+margin:8px 0;
+border-radius:5px;
+border:1px solid #ccc;
+font-size:14px;
+}
+
+textarea{
+height:120px;
+resize:none;
+}
+
+/* CHECKBOX */
+
+.checkbox-group label{
+display:block;
+margin:6px 0;
+}
+
+/* BOTONES */
+
+.btn{
+display:block;
+width:100%;
+padding:14px;
+border:none;
+border-radius:6px;
+font-size:16px;
+cursor:pointer;
+margin-top:12px;
+}
+
+.btn-enviar{
+background:#222;
+color:white;
+}
+
+.btn-whatsapp{
+background:#25D366;
+color:white;
+font-weight:bold;
+}
+
+/* BLOQUES INFO */
+
+.info{
+background:#f8f8f8;
+padding:20px;
+border-radius:6px;
+margin-bottom:20px;
+}
+
+.info ul{
+padding-left:20px;
+}
+
+/* AVISO */
+
+.aviso{
+background:#ffe7b3;
+padding:15px;
+border-radius:6px;
+margin-top:20px;
+font-size:14px;
+}
+
+/* FOOTER */
+
+.footer{
+text-align:center;
+margin-top:20px;
+font-size:13px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="hero">
+
+<div class="logo">
+<img src="logotipo.png">
+</div>
+
+<div class="hero-content">
+<h1>¿TENÉS ALGUNA IDEA PARA LA RADIO?</h1>
+<h1>¿TE GUSTARÍA SUMARTE A ESTE DESAFÍO?</h1>
+<p>En La ON Radio podés empezar a crear tu propio espacio</p>
+</div>
+
+</div>
+
+<div class="container">
+
+<h2>Sumate a nuestro staff</h2>
+
+<div class="info">
+
+<h3>¿Por qué sumarte a La ON Radio?</h3>
+
+<ul>
+<li>Ganá experiencia real en radio y streaming</li>
+<li>Desarrollá tu voz, tu estilo y tus ideas</li>
+<li>Aprendé sobre conducción, locución y producción</li>
+<li>Formá parte de un proyecto en crecimiento</li>
+<li>Creá tu propio espacio si la radio es lo tuyo</li>
+</ul>
+
+<h3>¿A quién buscamos?</h3>
+
+<ul>
+<li>Personas con compromiso y responsabilidad</li>
+<li>Gente con ganas de aprender</li>
+<li>Voces con personalidad propia</li>
+<li>Personas con ideas para crear contenido</li>
+<li>Amantes de la radio, con o sin experiencia</li>
+</ul>
+
+<p><strong>No hace falta que vengas con todo resuelto.</strong><br>
+A veces solo hace falta empezar.</p>
+
+</div>
+
+<div class="aviso">
+
+<strong>Importante:</strong><br>
+
+Esta convocatoria no corresponde a una oferta laboral.<br>
+Es una propuesta de participación y aprendizaje en un proyecto radial independiente.
+
+</div>
+
+<form id="formulario">
+
+<input type="text" id="nombre" placeholder="Nombre y apellido *" required>
+
+<input type="number" placeholder="Edad *" required>
+
+<input type="text" id="localidad" placeholder="Localidad *" required>
+
+<input type="text" placeholder="Teléfono / WhatsApp *" required>
+
+<input type="email" id="email" placeholder="Email *" required>
+
+<h3>¿En qué área te gustaría participar?</h3>
+
+<div class="checkbox-group">
+
+<label><input type="checkbox"> Conducción</label>
+<label><input type="checkbox"> Locución</label>
+<label><input type="checkbox"> Movil en la calle</label>
+<label><input type="checkbox"> Operación técnica</label>
+<label><input type="checkbox"> Producción</label>
+<label><input type="checkbox"> Columnista</label>
+<label><input type="checkbox"> Redes sociales</label>
+<label><input type="checkbox"> Comercial / ventas</label>
+
+</div>
+
+<h3>¿Tenés experiencia en radio o medios?</h3>
+
+<select>
+<option>Sí</option>
+<option>No</option>
+<option>Algo de experiencia</option>
+</select>
+
+<h3>¿Qué tipo de programa te gustaría hacer?</h3>
+
+<textarea></textarea>
+
+<h3>¿Por qué te gustaría formar parte de La ON Radio?</h3>
+
+<textarea></textarea>
+
+<button class="btn btn-enviar">
+Enviar solicitud
+</button>
+
+<button type="button" class="btn btn-whatsapp" onclick="enviarWhatsapp()">
+Enviar demo por WhatsApp
+</button>
+
+<div class="footer">
+Gracias por tu interés en formar parte de La ON Radio
+</div>
+
+</form>
+
+</div>
+
+<script>
+
+function enviarWhatsapp(){
+
+let nombre=document.getElementById("nombre").value;
+let email=document.getElementById("email").value;
+let ciudad=document.getElementById("localidad").value;
+
+let mensaje=`Hola, acabo de completar el formulario para sumarme al staff de La ON Radio.
+
+Nombre: ${nombre}
+Mail: ${email}
+Ciudad: ${ciudad}
+
+Adjunto mi demo de presentación.`
+
+let url="https://wa.me/5492475402890?text="+encodeURIComponent(mensaje);
+
+window.open(url,"_blank");
+
+}
+
+</script>
+
+</body>
+</html>
