@@ -1,24 +1,488 @@
-{
-  "name": "ON Radio",
-  "short_name": "ON Radio",
-  "start_url": "./",
-  "display": "standalone",
-  "background_color": "#000000",
-  "theme_color": "#c40000",
-  "orientation": "portrait",
-  "scope": "./",
-  "icons": [
-    {
-      "src": "icono-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "icono-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
-    }
-  ]
+<!DOCTYPE html>
+<html lang="es">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>ON Radio</title>
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#c40000">
+<link rel="apple-touch-icon" href="icono-192.png">
+
+<style>
+
+body{
+margin:0;
+font-family:Arial,Helvetica,sans-serif;
+background:url("fondo.jpg") no-repeat center center fixed;
+background-size:cover;
+color:white;
+text-align:center;
 }
+
+h1{margin-top:10px}
+
+.slogan{margin-bottom:25px}
+
+.boton{
+display:flex;
+align-items:center;
+justify-content:center;
+margin:10px auto;
+padding:14px;
+width:270px;
+color:white;
+text-decoration:none;
+border-radius:10px;
+font-weight:bold;
+box-shadow:0 4px 12px rgba(0,0,0,0.4);
+}
+
+.boton img{
+width:25px;
+margin-right:10px;
+}
+
+.radio-vivo{background:#7c0000;}
+.ver{background:#7c0000;}
+.ranking{background:#7c0000;}
+.formulario{background:#b35a00;}
+.web{background:#002e82;}
+.app{background:#5c00a8;}
+.whatsapp{background:#006b2d;}
+.redes{background:#7b0040;}
+
+footer{
+margin-top:30px;
+background:#000000b3;
+padding:10px;
+font-size:13px;
+}
+
+/* POPUP PUBLICIDAD */
+
+#popup{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.65);
+display:flex;
+align-items:center;
+justify-content:center;
+z-index:9999;
+padding:20px;
+}
+
+.popup-contenido{
+
+width:88vw;
+height:88vh;
+max-width:420px;
+
+background:black;
+
+border-radius:20px;
+
+display:flex;
+flex-direction:column;
+
+overflow:hidden;
+
+box-shadow:0 20px 60px rgba(0,0,0,0.8);
+
+position:relative;
+
+}
+
+.popup-cerrar{
+
+position:absolute;
+top:10px;
+right:16px;
+
+font-size:38px;
+font-weight:bold;
+
+color:white;
+
+cursor:pointer;
+
+}
+
+.flyer{
+width:100%;
+height:74%;
+object-fit:cover;
+}
+
+.contador{
+
+height:26%;
+
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+
+background:black;
+
+}
+
+#countdown{
+font-size:30px;
+font-weight:bold;
+color:#ff6b6b;
+}
+
+/* MODAL */
+
+.modal{
+
+position:fixed;
+top:0;
+left:0;
+
+width:100%;
+height:100%;
+
+background:rgba(0,0,0,0.7);
+
+display:none;
+
+align-items:center;
+justify-content:center;
+
+z-index:9998;
+
+}
+
+.modal-box{
+
+width:90%;
+max-width:360px;
+
+background:#111;
+
+border-radius:20px;
+
+padding:20px;
+
+text-align:center;
+
+}
+
+.btn-modal{
+
+border:none;
+border-radius:10px;
+
+padding:12px 18px;
+
+font-size:16px;
+font-weight:bold;
+
+margin:10px;
+
+cursor:pointer;
+
+}
+
+.btn-instalar{
+background:#c40000;
+color:white;
+}
+
+.btn-cancelar{
+background:#444;
+color:white;
+}
+
+.btn-ok{
+background:#c40000;
+color:white;
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- POPUP PROMO -->
+
+<div id="popup">
+
+<div class="popup-contenido">
+
+<div class="popup-cerrar" onclick="cerrarPopup()">✕</div>
+
+<img src="promo.png" class="flyer">
+
+<div class="contador">
+
+<div>Faltan</div>
+
+<div id="countdown"></div>
+
+<div>para el estreno de</div>
+
+<strong>NADA QUE PERDER</strong>
+
+<div>Lunes a viernes | 20 a 22 hs</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- MODAL INSTALAR -->
+
+<div id="modalInstalar" class="modal">
+
+<div class="modal-box">
+
+<p>
+
+Instalá ON Radio en tu dispositivo.<br>
+Y dale ON al contenido que más te gusta.
+
+</p>
+
+<button class="btn-modal btn-instalar" onclick="instalarApp()">INSTALAR</button>
+
+<button class="btn-modal btn-cancelar" onclick="cerrarModalInstalar()">CANCELAR</button>
+
+</div>
+
+</div>
+
+
+<!-- MODAL HORARIO -->
+
+<div id="modalHorario" class="modal">
+
+<div class="modal-box">
+
+<h2>📺 Streaming en vivo</h2>
+
+<p>
+
+El programa se transmite en vivo<br>
+
+de lunes a viernes<br>
+
+de 20:00 a 22:00 hs.<br><br>
+
+Volvé en ese horario.<br>
+
+¡Te esperamos!
+
+</p>
+
+<button class="btn-modal btn-ok" onclick="cerrarModalHorario()">OK</button>
+
+</div>
+
+</div>
+
+
+<img src="logotipo.png" width="170">
+
+<h1>ON Radio</h1>
+
+<p class="slogan">Dale ON a la música que más te gusta!</p>
+
+
+<a href="#" onclick="document.getElementById('streaming').play(); return false;" class="boton radio-vivo">
+
+<img src="parlante.png">
+Escuchanos en vivo ahora
+
+</a>
+
+<audio id="streaming" src="https://streaming.radiosenlinea.com.ar/9020/stream"></audio>
+
+
+<a href="#" onclick="verEnVivo()" class="boton ver">
+
+<img src="tve.png">
+Miranos en vivo
+
+</a>
+
+
+<a href="lista.html" class="boton ranking">
+
+<img src="trofeo.png">
+Votá en el nuevo ranking
+
+</a>
+
+
+<a href="formulario.html" class="boton formulario">
+
+<img src="formulario.png">
+¿Querés hacer radio? Sumate a La ON
+
+</a>
+
+
+<a href="https://www.laonradio.com.ar" target="_blank" class="boton web">
+
+<img src="web.png">
+Ingresá a nuestra web
+
+</a>
+
+
+<a href="https://radiio.com.ar/app/a5ae1c1a12ac221f" target="_blank" class="boton app">
+
+<img src="descargar.png">
+Descargá la app
+
+</a>
+
+
+<a href="https://wa.me/5491161358000" target="_blank" class="boton whatsapp">
+
+<img src="WhatsApp.png">
+WhatsAppeanos!
+
+</a>
+
+
+<a href="#redes" class="boton redes">
+
+<img src="redes.png">
+Seguinos en nuestras redes
+
+</a>
+
+
+<footer>
+
+<div>ON Radio</div>
+
+<div>Desde Rojas, Buenos Aires, Argentina</div>
+
+</footer>
+
+
+<script>
+
+let deferredPrompt=null
+
+function appInstalada(){
+return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true
+}
+
+function cerrarPopup(){
+
+document.getElementById("popup").style.display="none"
+
+if(!appInstalada()){
+
+setTimeout(function(){
+
+document.getElementById("modalInstalar").style.display="flex"
+
+},300)
+
+}
+
+}
+
+function cerrarModalInstalar(){
+
+document.getElementById("modalInstalar").style.display="none"
+
+}
+
+function cerrarModalHorario(){
+
+document.getElementById("modalHorario").style.display="none"
+
+}
+
+async function instalarApp(){
+
+if(deferredPrompt){
+
+deferredPrompt.prompt()
+
+deferredPrompt=null
+
+document.getElementById("modalInstalar").style.display="none"
+
+}
+
+}
+
+window.addEventListener('beforeinstallprompt',(e)=>{
+
+e.preventDefault()
+
+deferredPrompt=e
+
+})
+
+const estreno=new Date("March 23, 2026 20:00:00").getTime()
+
+setInterval(function(){
+
+const ahora=new Date().getTime()
+
+const distancia=estreno-ahora
+
+if(distancia<0){
+
+document.getElementById("countdown").innerHTML="YA ESTAMOS EN VIVO"
+
+return
+
+}
+
+const dias=Math.floor(distancia/(1000*60*60*24))
+const horas=Math.floor((distancia%(1000*60*60*24))/(1000*60*60))
+const minutos=Math.floor((distancia%(1000*60*60))/(1000*60))
+const segundos=Math.floor((distancia%(1000*60))/1000)
+
+document.getElementById("countdown").innerHTML=
+
+dias+"d "+horas+"h "+minutos+"m "+segundos+"s"
+
+},1000)
+
+function verEnVivo(){
+
+const ahora=new Date()
+
+const dia=ahora.getDay()
+
+const hora=ahora.getHours()
+
+const esSemana=dia>=1 && dia<=5
+
+const enHorario=hora>=20 && hora<22
+
+if(esSemana && enHorario){
+
+window.open("https://www.youtube.com/@laonradio/live","_blank")
+
+}else{
+
+document.getElementById("modalHorario").style.display="flex"
+
+}
+
+}
+
+</script>
+
+</body>
+</html>
