@@ -3,324 +3,414 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>ON Radio</title>
 
-<style>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#7c0000">
+<link rel="apple-touch-icon" href="icono-192.png">
 
+<style>
 body{
-margin:0;
-font-family:Arial,Helvetica,sans-serif;
-background:url("fondo.jpg") no-repeat center center fixed;
-background-size:cover;
-color:white;
-text-align:center;
+    margin:0;
+    font-family:Arial, Helvetica, sans-serif;
+    background:url("fondo.jpg") no-repeat center center fixed;
+    background-size:cover;
+    color:white;
+    text-align:center;
 }
 
 h1{
-margin-top:10px;
+    margin-top:10px;
+    font-size:2em;
 }
 
 .slogan{
-margin-bottom:25px;
+    font-size:1.2em;
+    margin-bottom:25px;
 }
 
 .boton{
-display:flex;
-align-items:center;
-justify-content:center;
-margin:10px auto;
-padding:14px;
-width:270px;
-color:white;
-text-decoration:none;
-border-radius:10px;
-font-weight:bold;
-box-shadow:0 4px 12px rgba(0,0,0,0.4);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin:10px auto;
+    padding:14px 20px;
+    width:270px;
+    max-width:90%;
+    color:white;
+    text-decoration:none;
+    font-weight:bold;
+    border-radius:10px;
+    box-shadow:0 5px 12px rgba(0,0,0,0.4);
+    transition:transform 0.2s;
+}
+
+.boton:hover{
+    transform:scale(1.03);
 }
 
 .boton img{
-width:25px;
-margin-right:10px;
+    width:25px;
+    height:25px;
+    margin-right:10px;
 }
 
-.radio-vivo{background:#7c0000;}
-.ver{background:#7c0000;}
-.ranking{background:#7c0000;}
-.formulario{background:#b35a00;}
-.web{background:#002e82;}
-.app{background:#5c00a8;}
-.whatsapp{background:#006b2d;}
-.redes{background:#7b0040;}
+.radio-vivo{background:linear-gradient(to left, #7c0000, #500000);}
+.ver{background:linear-gradient(to left, #7c0000, #500000);}
+.ranking{background:linear-gradient(to left, #7c0000, #500000);}
+.formulario{background:linear-gradient(to left, #b35a00, #6d3600);}
+.web{background:linear-gradient(to left, #002e82, #00184a);}
+.app{background:linear-gradient(to left, #5c00a8, #2e0054);}
+.whatsapp{background:linear-gradient(to left, #006b2d, #00451d);}
+.redes{background:linear-gradient(to left, #7b0040, #4d0028);}
+
+.red-social{
+    background:rgba(0,0,0,0.45);
+}
 
 footer{
-margin-top:30px;
-background:#000000b3;
-padding:10px;
-font-size:13px;
+    margin-top:30px;
+    background:#000000b3;
+    padding:10px;
+    font-size:13px;
 }
 
-/* POPUP */
-
+/* POPUP PUBLICIDAD */
 #popup{
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:rgba(0,0,0,0.9);
-display:flex;
-align-items:center;
-justify-content:center;
-z-index:9999;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.65);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    z-index:9999;
+    padding:20px;
+    box-sizing:border-box;
 }
 
 .popup-contenido{
-
-width:92vw;
-height:92vh;
-max-width:420px;
-
-background:black;
-border-radius:18px;
-
-display:flex;
-flex-direction:column;
-
-overflow:hidden;
-
+    width:88vw;
+    height:88vh;
+    max-width:420px;
+    background:#000;
+    border-radius:20px;
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
+    box-shadow:0 20px 60px rgba(0,0,0,0.8);
+    position:relative;
+    animation:aparecer 0.25s ease;
 }
 
 .popup-cerrar{
-
-position:absolute;
-top:15px;
-right:20px;
-
-font-size:32px;
-font-weight:bold;
-color:white;
-
-cursor:pointer;
-z-index:10;
-
+    position:absolute;
+    top:10px;
+    right:16px;
+    font-size:38px;
+    font-weight:bold;
+    color:white;
+    cursor:pointer;
+    z-index:20;
+    line-height:1;
 }
 
 .flyer{
-
-width:100%;
-height:75%;
-object-fit:cover;
-
+    width:100%;
+    height:74%;
+    object-fit:cover;
+    display:block;
 }
 
 .contador{
+    height:26%;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    background:black;
+    padding:8px 12px 14px 12px;
+    box-sizing:border-box;
+}
 
-height:25%;
-display:flex;
-flex-direction:column;
-justify-content:center;
-
-background:black;
-
+.contador div,
+.contador p,
+.contador strong{
+    margin:3px 0;
 }
 
 #countdown{
-
-font-size:32px;
-font-weight:bold;
-color:#ff4b4b;
-
+    font-size:30px;
+    font-weight:bold;
+    color:#ff6b6b;
 }
 
+/* MODAL INSTALAR */
+#modalInstalar{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.65);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    z-index:9998;
+    padding:20px;
+    box-sizing:border-box;
+}
+
+.modal-box{
+    width:90%;
+    max-width:380px;
+    background:#111;
+    border-radius:18px;
+    padding:22px 18px;
+    box-shadow:0 20px 60px rgba(0,0,0,0.8);
+    animation:aparecer 0.25s ease;
+}
+
+.modal-box h2{
+    margin-top:0;
+    font-size:24px;
+}
+
+.modal-box p{
+    margin:10px 0 18px 0;
+    line-height:1.4;
+}
+
+.botones-modal{
+    display:flex;
+    gap:10px;
+    justify-content:center;
+}
+
+.btn-modal{
+    border:none;
+    border-radius:10px;
+    padding:12px 18px;
+    font-size:16px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.btn-instalar{
+    background:#25D366;
+    color:white;
+}
+
+.btn-cancelar{
+    background:#333;
+    color:white;
+}
+
+#ayudaInstalacion{
+    display:none;
+    margin-top:12px;
+    font-size:14px;
+    color:#ddd;
+    line-height:1.4;
+}
+
+@keyframes aparecer{
+    from{
+        transform:scale(0.96);
+        opacity:0;
+    }
+    to{
+        transform:scale(1);
+        opacity:1;
+    }
+}
 </style>
 </head>
 
 <body>
 
-<!-- POPUP -->
-
+<!-- POPUP PUBLICIDAD -->
 <div id="popup">
+    <div class="popup-contenido">
+        <div class="popup-cerrar" onclick="cerrarPopup()">✕</div>
 
-<div class="popup-contenido">
+        <img src="promo.png" alt="Nada que perder" class="flyer">
 
-<div class="popup-cerrar" onclick="cerrarPopup()">✕</div>
-
-<img src="promo.png" class="flyer">
-
-<div class="contador">
-
-<div>Faltan</div>
-
-<div id="countdown"></div>
-
-<div>para el estreno de</div>
-
-<strong>NADA QUE PERDER</strong>
-
-<div>Lunes a viernes | 20 a 22 hs</div>
-
+        <div class="contador">
+            <div>Faltan</div>
+            <div id="countdown">Cargando...</div>
+            <div>para el estreno de</div>
+            <strong>NADA QUE PERDER</strong>
+            <div>Lunes a viernes | 20 a 22 hs</div>
+        </div>
+    </div>
 </div>
 
+<!-- MODAL INSTALAR -->
+<div id="modalInstalar">
+    <div class="modal-box">
+        <h2>Instalar ON Radio</h2>
+        <p>¿Querés instalar un acceso directo de ON Radio en tu teléfono?</p>
+
+        <div class="botones-modal">
+            <button class="btn-modal btn-instalar" onclick="instalarApp()">Instalar</button>
+            <button class="btn-modal btn-cancelar" onclick="cerrarModalInstalar()">Cancelar</button>
+        </div>
+
+        <div id="ayudaInstalacion">
+            Si no aparece la instalación automática, tocá el menú del navegador y buscá
+            <strong>“Agregar a pantalla de inicio”</strong> o <strong>“Instalar app”</strong>.
+        </div>
+    </div>
 </div>
 
-</div>
-
-<script>
-
-function cerrarPopup(){
-
-document.getElementById("popup").style.display="none";
-
-}
-
-const estreno=new Date("March 23, 2026 20:00:00").getTime();
-
-setInterval(function(){
-
-const ahora=new Date().getTime();
-
-const distancia=estreno-ahora;
-
-const dias=Math.floor(distancia/(1000*60*60*24));
-const horas=Math.floor((distancia%(1000*60*60*24))/(1000*60*60));
-const minutos=Math.floor((distancia%(1000*60*60))/(1000*60));
-const segundos=Math.floor((distancia%(1000*60))/1000);
-
-document.getElementById("countdown").innerHTML=
-dias+"d "+horas+"h "+minutos+"m "+segundos+"s";
-
-},1000);
-
-</script>
-
-
-<img src="logotipo.png" width="170">
+<img src="logotipo.png" width="170" alt="ON Radio">
 
 <h1>ON Radio</h1>
-
 <p class="slogan">Dale ON a la música que más te gusta!</p>
 
-
 <a href="#" onclick="document.getElementById('streaming').play(); return false;" class="boton radio-vivo">
-
-<img src="parlante.png">
-Escuchanos en vivo ahora
-
+    <img src="parlante.png" alt="Escuchanos">
+    Escuchanos en vivo ahora
 </a>
 
 <audio id="streaming" src="https://streaming.radiosenlinea.com.ar/9020/stream"></audio>
 
-
 <a href="https://www.youtube.com/@laonradio/live" target="_blank" class="boton ver">
-
-<img src="tve.png">
-Miranos en vivo
-
+    <img src="tve.png" alt="Miranos">
+    Miranos en vivo
 </a>
-
 
 <a href="lista.html" class="boton ranking">
-
-<img src="trofeo.png">
-Votá en el nuevo ranking
-
+    <img src="trofeo.png" alt="Ranking">
+    Votá en el nuevo ranking
 </a>
-
 
 <a href="formulario.html" class="boton formulario">
-
-<img src="formulario.png">
-¿Querés hacer radio? Sumate a La ON
-
+    <img src="formulario.png" alt="Formulario">
+    ¿Querés hacer radio? Sumate a La ON
 </a>
-
 
 <a href="https://www.laonradio.com.ar" target="_blank" class="boton web">
-
-<img src="web.png">
-Ingresá a nuestra web
-
+    <img src="web.png" alt="Web">
+    Ingresá a nuestra web
 </a>
-
 
 <a href="https://radiio.com.ar/app/a5ae1c1a12ac221f" target="_blank" class="boton app">
-
-<img src="descargar.png">
-Descargá la app
-
+    <img src="descargar.png" alt="App">
+    Descargá la app
 </a>
-
 
 <a href="https://wa.me/5491161358000" target="_blank" class="boton whatsapp">
-
-<img src="WhatsApp.png">
-WhatsAppeanos!
-
+    <img src="WhatsApp.png" alt="WhatsApp">
+    WhatsAppeanos!
 </a>
-
 
 <a href="#redes" class="boton redes">
-
-<img src="redes.png">
-Seguinos en nuestras redes
-
+    <img src="redes.png" alt="Redes">
+    Seguinos en nuestras redes
 </a>
-
 
 <div id="redes">
+    <a href="https://www.instagram.com/la_on_radio" target="_blank" class="boton red-social">
+        <img src="instagram.png" alt="Instagram">
+        Instagram
+    </a>
 
-<a href="https://www.instagram.com/la_on_radio" target="_blank" class="boton">
+    <a href="https://www.facebook.com/onradioo" target="_blank" class="boton red-social">
+        <img src="facebook.png" alt="Facebook">
+        Facebook
+    </a>
 
-<img src="instagram.png">
-Instagram
+    <a href="https://www.tiktok.com/@laonradio" target="_blank" class="boton red-social">
+        <img src="tiktok.png" alt="TikTok">
+        TikTok
+    </a>
 
-</a>
+    <a href="https://www.twitter.com/laonradioo" target="_blank" class="boton red-social">
+        <img src="x.png" alt="X">
+        X
+    </a>
 
-<a href="https://www.facebook.com/onradioo" target="_blank" class="boton">
+    <a href="https://www.youtube.com/@laonradio" target="_blank" class="boton red-social">
+        <img src="YouTube.png" alt="YouTube">
+        YouTube
+    </a>
 
-<img src="facebook.png">
-Facebook
-
-</a>
-
-<a href="https://www.tiktok.com/@laonradio" target="_blank" class="boton">
-
-<img src="tiktok.png">
-TikTok
-
-</a>
-
-<a href="https://www.twitter.com/laonradioo" target="_blank" class="boton">
-
-<img src="x.png">
-X
-
-</a>
-
-<a href="https://www.youtube.com/@laonradio" target="_blank" class="boton">
-
-<img src="YouTube.png">
-YouTube
-
-</a>
-
-<a href="https://www.twitch.tv/laonradio" target="_blank" class="boton">
-
-<img src="twi.png">
-Twitch
-
-</a>
-
+    <a href="https://www.twitch.tv/laonradio" target="_blank" class="boton red-social">
+        <img src="twi.png" alt="Twitch">
+        Twitch
+    </a>
 </div>
 
 <footer>
-
-<div>ON Radio</div>
-
-<div>Desde Rojas, Buenos Aires, Argentina</div>
-
+    <div>ON Radio</div>
+    <div>Desde Rojas, Buenos Aires, Argentina</div>
 </footer>
+
+<script>
+let deferredPrompt = null;
+
+// contador
+const estreno = new Date("March 23, 2026 20:00:00").getTime();
+
+setInterval(function(){
+    const ahora = new Date().getTime();
+    const distancia = estreno - ahora;
+
+    if (distancia < 0) {
+        document.getElementById("countdown").innerHTML = "YA ESTAMOS EN VIVO";
+        return;
+    }
+
+    const dias = Math.floor(distancia / (1000*60*60*24));
+    const horas = Math.floor((distancia % (1000*60*60*24)) / (1000*60*60));
+    const minutos = Math.floor((distancia % (1000*60*60)) / (1000*60));
+    const segundos = Math.floor((distancia % (1000*60)) / 1000);
+
+    document.getElementById("countdown").innerHTML =
+        dias + "d " + horas + "h " + minutos + "m " + segundos + "s";
+}, 1000);
+
+// cerrar popup publicidad
+function cerrarPopup(){
+    document.getElementById("popup").style.display = "none";
+    setTimeout(function(){
+        mostrarModalInstalar();
+    }, 250);
+}
+
+// mostrar modal instalar
+function mostrarModalInstalar(){
+    document.getElementById("modalInstalar").style.display = "flex";
+}
+
+// cerrar modal instalar
+function cerrarModalInstalar(){
+    document.getElementById("modalInstalar").style.display = "none";
+}
+
+// instalar app
+async function instalarApp(){
+    if (deferredPrompt) {
+        deferredPrompt.prompt();
+        const choiceResult = await deferredPrompt.userChoice;
+        deferredPrompt = null;
+        document.getElementById("modalInstalar").style.display = "none";
+    } else {
+        document.getElementById("ayudaInstalacion").style.display = "block";
+    }
+}
+
+// capturar evento de instalación
+window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+});
+
+// registrar service worker
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function() {
+        navigator.serviceWorker.register('service-worker.js');
+    });
+}
+</script>
 
 </body>
 </html>
