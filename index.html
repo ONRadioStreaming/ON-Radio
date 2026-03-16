@@ -5,6 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ON Radio</title>
 
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#8b0000">
+<link rel="apple-touch-icon" href="icono-192.png">
+
 <style>
 body {
     margin: 0;
@@ -53,9 +57,8 @@ p.slogan {
 }
 
 /* BOTONES */
-
 .radio-vivo { background: linear-gradient(to left, #ff0000, #800000); }
-.miranos { background: linear-gradient(to left, #ff0000, #800000); }
+.miranos-vivo { background: linear-gradient(to left, #ff0000, #800000); }
 .ranking { background: linear-gradient(to left, #ff0000, #800000); }
 .formulario { background: linear-gradient(to left, #ff6600, #662200); }
 .web { background: linear-gradient(to left, #1E90FF, #000033); }
@@ -70,7 +73,66 @@ p.slogan {
 .twitch { background: linear-gradient(to left, #6441A5, #200050); }
 .publicidad { background: linear-gradient(to left, #25D366, #004d00); }
 
-/* SECCIÓN REDES */
+/* POPUP */
+#popupPromo {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.92);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.popupContenido {
+    width: 95%;
+    max-width: 650px;
+    max-height: 95vh;
+    overflow-y: auto;
+    background: #000;
+    border-radius: 14px;
+    padding: 12px;
+    position: relative;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.7);
+}
+
+.cerrarPopup {
+    position: absolute;
+    top: 8px;
+    right: 12px;
+    font-size: 28px;
+    color: #fff;
+    cursor: pointer;
+    z-index: 2;
+    font-weight: bold;
+}
+
+.flyerPromo {
+    width: 100%;
+    border-radius: 10px;
+    display: block;
+}
+
+.contador {
+    margin-top: 12px;
+    padding: 10px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 10px;
+}
+
+.contador h2,
+.contador h3,
+.contador p {
+    margin: 6px 0;
+}
+
+#countdown {
+    font-size: 28px;
+    font-weight: bold;
+    color: #ff3b3b;
+}
 
 .seccion-redes {
     margin-top: 35px;
@@ -83,8 +145,6 @@ p.slogan {
     text-shadow: 0 3px 10px rgba(0,0,0,0.7);
 }
 
-/* FOOTER */
-
 footer {
     margin-top: 40px;
     padding: 10px;
@@ -96,15 +156,32 @@ footer {
 <!-- Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-L5CGFW94XR"></script>
 <script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-L5CGFW94XR');
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-L5CGFW94XR');
 </script>
 
 </head>
 
 <body>
+
+<!-- POPUP PUBLICITARIO -->
+<div id="popupPromo">
+    <div class="popupContenido">
+        <span class="cerrarPopup" onclick="cerrarPopup()">✖</span>
+
+        <img src="programa-promo.png" alt="Nada que perder" class="flyerPromo">
+
+        <div class="contador">
+            <h2>Faltan</h2>
+            <div id="countdown">Cargando...</div>
+            <p>para el estreno de</p>
+            <h3>NADA QUE PERDER</h3>
+            <p>Lunes a viernes | 20 a 22 hs</p>
+        </div>
+    </div>
+</div>
 
 <img src="logotipo.png" width="180" alt="ON Radio">
 
@@ -113,94 +190,132 @@ footer {
 
 <!-- RADIO EN VIVO -->
 <a href="#" onclick="document.getElementById('streaming').play(); return false;" class="boton radio-vivo">
-<img src="parlante.png" alt="Escuchanos Ahora">
-Escuchanos en vivo ahora
+    <img src="parlante.png" alt="Escuchanos ahora">
+    Escuchanos en vivo ahora
 </a>
 
 <audio id="streaming" src="https://streaming.radiosenlinea.com.ar/9020/stream"></audio>
 
 <!-- MIRANOS EN VIVO -->
-<a href="https://www.youtube.com/@laonradio/live" target="_blank" class="boton miranos">
-<img src="tve.png" alt="Miranos en vivo">
-🔴 Miranos en vivo
+<a href="https://www.youtube.com/@laonradio/live" target="_blank" class="boton miranos-vivo">
+    <img src="tve.png" alt="Miranos en vivo">
+    Miranos en vivo
 </a>
 
 <!-- RANKING -->
 <a href="lista.html" class="boton ranking">
-<img src="trofeo.png" alt="Ranking ON">
-Votá en el nuevo ranking
+    <img src="trofeo.png" alt="Ranking ON">
+    Votá en el nuevo ranking
 </a>
 
 <!-- FORMULARIO -->
 <a href="formulario.html" class="boton formulario">
-<img src="formulario.png" alt="Formulario La ON">
-¿Querés hacer radio? Sumate a La ON
+    <img src="formulario.png" alt="Formulario La ON">
+    ¿Querés hacer radio? Sumate a La ON
 </a>
 
 <!-- WEB -->
 <a href="https://www.laonradio.com.ar" target="_blank" class="boton web">
-<img src="web.png" alt="Nuestra Web">
-Ingresá a nuestra web
+    <img src="web.png" alt="Nuestra web">
+    Ingresá a nuestra web
 </a>
 
 <!-- APP -->
 <a href="https://radiio.com.ar/app/a5ae1c1a12ac221f" target="_blank" class="boton app">
-<img src="descargar.png" alt="Descargá la app">
-Descargá la app
+    <img src="descargar.png" alt="Descargá la app">
+    Descargá la app
 </a>
 
 <!-- WHATSAPP -->
 <a href="https://wa.me/5491161358000" target="_blank" class="boton whatsapp">
-<img src="WhatsApp.png" alt="WhatsApp">
-WhatsAppeanos!
+    <img src="WhatsApp.png" alt="WhatsApp">
+    WhatsAppeanos!
 </a>
 
-<!-- BOTÓN REDES -->
+<!-- BOTÓN AGRUPADOR DE REDES -->
 <a href="#redes-sociales" class="boton redes">
-<img src="redes.png" alt="Redes Sociales">
-Seguinos en nuestras redes
+    <img src="redes.png" alt="Redes sociales">
+    Seguinos en nuestras redes
 </a>
 
 <!-- PUBLICIDAD -->
 <a href="https://wa.me/5492475402890" target="_blank" class="boton publicidad">
-<img src="WhatsApp.png" alt="Publicidad">
-¿Querés hacer publicidad? Click aquí
+    <img src="WhatsApp.png" alt="Publicidad">
+    ¿Querés hacer publicidad? Click aquí
 </a>
 
-<!-- REDES -->
+<!-- SECCIÓN REDES -->
 <div id="redes-sociales" class="seccion-redes">
-<h2>Nuestras redes sociales</h2>
+    <h2>Nuestras redes sociales</h2>
 
-<a href="https://www.instagram.com/la_on_radio" target="_blank" class="boton instagram">
-<img src="instagram.png">Seguinos en Instagram
-</a>
+    <a href="https://www.instagram.com/la_on_radio" target="_blank" class="boton instagram">
+        <img src="instagram.png" alt="Instagram">
+        Seguinos en Instagram
+    </a>
 
-<a href="https://www.facebook.com/onradioo" target="_blank" class="boton facebook">
-<img src="facebook.png">Seguinos en Facebook
-</a>
+    <a href="https://www.facebook.com/onradioo" target="_blank" class="boton facebook">
+        <img src="facebook.png" alt="Facebook">
+        Seguinos en Facebook
+    </a>
 
-<a href="https://www.tiktok.com/@laonradio" target="_blank" class="boton tiktok">
-<img src="tiktok.png">Seguinos en TikTok
-</a>
+    <a href="https://www.tiktok.com/@laonradio" target="_blank" class="boton tiktok">
+        <img src="tiktok.png" alt="TikTok">
+        Seguinos en TikTok
+    </a>
 
-<a href="https://www.twitter.com/laonradioo" target="_blank" class="boton x">
-<img src="x.png">Seguinos en X
-</a>
+    <a href="https://www.twitter.com/laonradioo" target="_blank" class="boton x">
+        <img src="x.png" alt="X">
+        Seguinos en X
+    </a>
 
-<a href="https://www.youtube.com/@laonradio" target="_blank" class="boton youtube">
-<img src="youtube.png">Seguinos en YouTube
-</a>
+    <a href="https://www.youtube.com/@laonradio" target="_blank" class="boton youtube">
+        <img src="YouTube.png" alt="YouTube">
+        Seguinos en YouTube
+    </a>
 
-<a href="https://www.twitch.tv/laonradio" target="_blank" class="boton twitch">
-<img src="twi.png">Seguinos en Twitch
-</a>
-
+    <a href="https://www.twitch.tv/laonradio" target="_blank" class="boton twitch">
+        <img src="twi.png" alt="Twitch">
+        Seguinos en Twitch
+    </a>
 </div>
 
 <footer>
-<div>ON Radio</div>
-<div>Desde la ciudad de Rojas, Buenos Aires, Argentina, para todo el mundo.</div>
+    <div>ON Radio</div>
+    <div>Desde la ciudad de Rojas, Buenos Aires, Argentina, para todo el mundo.</div>
 </footer>
+
+<script>
+function cerrarPopup() {
+    document.getElementById("popupPromo").style.display = "none";
+}
+
+const fechaEstreno = new Date("Mar 23, 2026 20:00:00").getTime();
+
+setInterval(function() {
+    const ahora = new Date().getTime();
+    const diferencia = fechaEstreno - ahora;
+
+    if (diferencia < 0) {
+        document.getElementById("countdown").innerHTML = "YA ESTAMOS EN VIVO";
+        return;
+    }
+
+    const dias = Math.floor(diferencia / (1000 * 60 * 60 * 24));
+    const horas = Math.floor((diferencia % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutos = Math.floor((diferencia % (1000 * 60 * 60)) / (1000 * 60));
+    const segundos = Math.floor((diferencia % (1000 * 60)) / 1000);
+
+    document.getElementById("countdown").innerHTML =
+        dias + "d " + horas + "h " + minutos + "m " + segundos + "s";
+}, 1000);
+
+// Registrar service worker
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function() {
+        navigator.serviceWorker.register('service-worker.js');
+    });
+}
+</script>
 
 </body>
 </html>
