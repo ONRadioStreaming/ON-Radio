@@ -3,319 +3,324 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>ON Radio</title>
 
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#8b0000">
-<link rel="apple-touch-icon" href="icono-192.png">
-
 <style>
-body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: url('fondo.jpg') no-repeat center center fixed;
-    background-size: cover;
-    color: #fff;
-    text-align: center;
-    scroll-behavior: smooth;
+
+body{
+margin:0;
+font-family:Arial,Helvetica,sans-serif;
+background:url("fondo.jpg") no-repeat center center fixed;
+background-size:cover;
+color:white;
+text-align:center;
 }
 
-h1 {
-    font-size: 2em;
-    margin-top: 20px;
+h1{
+margin-top:10px;
 }
 
-p.slogan {
-    font-size: 1.2em;
-    margin-bottom: 30px;
+.slogan{
+margin-bottom:25px;
 }
 
-.boton {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 10px auto;
-    padding: 12px 25px;
-    width: 260px;
-    max-width: 90%;
-    color: white;
-    text-decoration: none;
-    font-weight: bold;
-    border-radius: 10px;
-    box-shadow: 0 5px 12px rgba(0,0,0,0.4);
-    transition: transform 0.2s;
+.boton{
+display:flex;
+align-items:center;
+justify-content:center;
+margin:10px auto;
+padding:14px;
+width:270px;
+color:white;
+text-decoration:none;
+border-radius:10px;
+font-weight:bold;
+box-shadow:0 4px 12px rgba(0,0,0,0.4);
 }
 
-.boton img {
-    width: 25px;
-    height: 25px;
-    margin-right: 10px;
+.boton img{
+width:25px;
+margin-right:10px;
 }
 
-.boton:hover {
-    transform: scale(1.05);
-}
+.radio-vivo{background:#7c0000;}
+.ver{background:#7c0000;}
+.ranking{background:#7c0000;}
+.formulario{background:#b35a00;}
+.web{background:#002e82;}
+.app{background:#5c00a8;}
+.whatsapp{background:#006b2d;}
+.redes{background:#7b0040;}
 
-/* BOTONES */
-.radio-vivo { background: linear-gradient(to left, #ff0000, #800000); }
-.miranos-vivo { background: linear-gradient(to left, #ff0000, #800000); }
-.ranking { background: linear-gradient(to left, #ff0000, #800000); }
-.formulario { background: linear-gradient(to left, #ff6600, #662200); }
-.web { background: linear-gradient(to left, #1E90FF, #000033); }
-.app { background: linear-gradient(to left, #8A2BE2, #200033); }
-.whatsapp { background: linear-gradient(to left, #25D366, #004d00); }
-.redes { background: linear-gradient(to left, #ff1493, #4b0030); }
-.instagram { background: linear-gradient(to left, #E1306C, #33001a); }
-.facebook { background: linear-gradient(to left, #3b5998, #000033); }
-.tiktok { background: linear-gradient(to left, #69C9D0, #003333); }
-.x { background: linear-gradient(to left, #555555, #999999); }
-.youtube { background: linear-gradient(to left, #FF0000, #800000); }
-.twitch { background: linear-gradient(to left, #6441A5, #200050); }
-.publicidad { background: linear-gradient(to left, #25D366, #004d00); }
+footer{
+margin-top:30px;
+background:#000000b3;
+padding:10px;
+font-size:13px;
+}
 
 /* POPUP */
-#popupPromo {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.92);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 9999;
-    padding: 10px;
-    box-sizing: border-box;
+
+#popup{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.9);
+display:flex;
+align-items:center;
+justify-content:center;
+z-index:9999;
 }
 
-.popupContenido {
-    width: 95%;
-    max-width: 650px;
-    max-height: 95vh;
-    overflow-y: auto;
-    background: #000;
-    border-radius: 14px;
-    padding: 12px;
-    position: relative;
-    box-shadow: 0 8px 30px rgba(0,0,0,0.7);
+.popup-contenido{
+
+width:92vw;
+height:92vh;
+max-width:420px;
+
+background:black;
+border-radius:18px;
+
+display:flex;
+flex-direction:column;
+
+overflow:hidden;
+
 }
 
-.cerrarPopup {
-    position: absolute;
-    top: 8px;
-    right: 12px;
-    font-size: 28px;
-    color: #fff;
-    cursor: pointer;
-    z-index: 2;
-    font-weight: bold;
+.popup-cerrar{
+
+position:absolute;
+top:15px;
+right:20px;
+
+font-size:32px;
+font-weight:bold;
+color:white;
+
+cursor:pointer;
+z-index:10;
+
 }
 
-.flyerPromo {
-    width: 100%;
-    border-radius: 10px;
-    display: block;
+.flyer{
+
+width:100%;
+height:75%;
+object-fit:cover;
+
 }
 
-.contador {
-    margin-top: 12px;
-    padding: 10px;
-    background: rgba(255,255,255,0.06);
-    border-radius: 10px;
+.contador{
+
+height:25%;
+display:flex;
+flex-direction:column;
+justify-content:center;
+
+background:black;
+
 }
 
-.contador h2,
-.contador h3,
-.contador p {
-    margin: 6px 0;
+#countdown{
+
+font-size:32px;
+font-weight:bold;
+color:#ff4b4b;
+
 }
 
-#countdown {
-    font-size: 28px;
-    font-weight: bold;
-    color: #ff3b3b;
-}
-
-.seccion-redes {
-    margin-top: 35px;
-    padding-top: 10px;
-}
-
-.seccion-redes h2 {
-    font-size: 1.4em;
-    margin-bottom: 15px;
-    text-shadow: 0 3px 10px rgba(0,0,0,0.7);
-}
-
-footer {
-    margin-top: 40px;
-    padding: 10px;
-    background-color: rgba(0,0,0,0.75);
-    font-size: 0.8em;
-}
 </style>
-
-<!-- Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-L5CGFW94XR"></script>
-<script>
-window.dataLayer = window.dataLayer || [];
-function gtag(){dataLayer.push(arguments);}
-gtag('js', new Date());
-gtag('config', 'G-L5CGFW94XR');
-</script>
-
 </head>
 
 <body>
 
-<!-- POPUP PUBLICITARIO -->
-<div id="popupPromo">
-    <div class="popupContenido">
-        <span class="cerrarPopup" onclick="cerrarPopup()">✖</span>
+<!-- POPUP -->
 
-        <img src="programa-promo.png" alt="Nada que perder" class="flyerPromo">
+<div id="popup">
 
-        <div class="contador">
-            <h2>Faltan</h2>
-            <div id="countdown">Cargando...</div>
-            <p>para el estreno de</p>
-            <h3>NADA QUE PERDER</h3>
-            <p>Lunes a viernes | 20 a 22 hs</p>
-        </div>
-    </div>
+<div class="popup-contenido">
+
+<div class="popup-cerrar" onclick="cerrarPopup()">✕</div>
+
+<img src="programa-promo.png" class="flyer">
+
+<div class="contador">
+
+<div>Faltan</div>
+
+<div id="countdown"></div>
+
+<div>para el estreno de</div>
+
+<strong>NADA QUE PERDER</strong>
+
+<div>Lunes a viernes | 20 a 22 hs</div>
+
 </div>
 
-<img src="logotipo.png" width="180" alt="ON Radio">
+</div>
+
+</div>
+
+<script>
+
+function cerrarPopup(){
+
+document.getElementById("popup").style.display="none";
+
+}
+
+const estreno=new Date("March 23, 2026 20:00:00").getTime();
+
+setInterval(function(){
+
+const ahora=new Date().getTime();
+
+const distancia=estreno-ahora;
+
+const dias=Math.floor(distancia/(1000*60*60*24));
+const horas=Math.floor((distancia%(1000*60*60*24))/(1000*60*60));
+const minutos=Math.floor((distancia%(1000*60*60))/(1000*60));
+const segundos=Math.floor((distancia%(1000*60))/1000);
+
+document.getElementById("countdown").innerHTML=
+dias+"d "+horas+"h "+minutos+"m "+segundos+"s";
+
+},1000);
+
+</script>
+
+
+<img src="logotipo.png" width="170">
 
 <h1>ON Radio</h1>
+
 <p class="slogan">Dale ON a la música que más te gusta!</p>
 
-<!-- RADIO EN VIVO -->
+
 <a href="#" onclick="document.getElementById('streaming').play(); return false;" class="boton radio-vivo">
-    <img src="parlante.png" alt="Escuchanos ahora">
-    Escuchanos en vivo ahora
+
+<img src="parlante.png">
+Escuchanos en vivo ahora
+
 </a>
 
 <audio id="streaming" src="https://streaming.radiosenlinea.com.ar/9020/stream"></audio>
 
-<!-- MIRANOS EN VIVO -->
-<a href="https://www.youtube.com/@laonradio/live" target="_blank" class="boton miranos-vivo">
-    <img src="tve.png" alt="Miranos en vivo">
-    Miranos en vivo
+
+<a href="https://www.youtube.com/@laonradio/live" target="_blank" class="boton ver">
+
+<img src="tve.png">
+Miranos en vivo
+
 </a>
 
-<!-- RANKING -->
+
 <a href="lista.html" class="boton ranking">
-    <img src="trofeo.png" alt="Ranking ON">
-    Votá en el nuevo ranking
+
+<img src="trofeo.png">
+Votá en el nuevo ranking
+
 </a>
 
-<!-- FORMULARIO -->
+
 <a href="formulario.html" class="boton formulario">
-    <img src="formulario.png" alt="Formulario La ON">
-    ¿Querés hacer radio? Sumate a La ON
+
+<img src="formulario.png">
+¿Querés hacer radio? Sumate a La ON
+
 </a>
 
-<!-- WEB -->
+
 <a href="https://www.laonradio.com.ar" target="_blank" class="boton web">
-    <img src="web.png" alt="Nuestra web">
-    Ingresá a nuestra web
+
+<img src="web.png">
+Ingresá a nuestra web
+
 </a>
 
-<!-- APP -->
+
 <a href="https://radiio.com.ar/app/a5ae1c1a12ac221f" target="_blank" class="boton app">
-    <img src="descargar.png" alt="Descargá la app">
-    Descargá la app
+
+<img src="descargar.png">
+Descargá la app
+
 </a>
 
-<!-- WHATSAPP -->
+
 <a href="https://wa.me/5491161358000" target="_blank" class="boton whatsapp">
-    <img src="WhatsApp.png" alt="WhatsApp">
-    WhatsAppeanos!
+
+<img src="WhatsApp.png">
+WhatsAppeanos!
+
 </a>
 
-<!-- BOTÓN AGRUPADOR DE REDES -->
-<a href="#redes-sociales" class="boton redes">
-    <img src="redes.png" alt="Redes sociales">
-    Seguinos en nuestras redes
+
+<a href="#redes" class="boton redes">
+
+<img src="redes.png">
+Seguinos en nuestras redes
+
 </a>
 
-<!-- PUBLICIDAD -->
-<a href="https://wa.me/5492475402890" target="_blank" class="boton publicidad">
-    <img src="WhatsApp.png" alt="Publicidad">
-    ¿Querés hacer publicidad? Click aquí
+
+<div id="redes">
+
+<a href="https://www.instagram.com/la_on_radio" target="_blank" class="boton">
+
+<img src="instagram.png">
+Instagram
+
 </a>
 
-<!-- SECCIÓN REDES -->
-<div id="redes-sociales" class="seccion-redes">
-    <h2>Nuestras redes sociales</h2>
+<a href="https://www.facebook.com/onradioo" target="_blank" class="boton">
 
-    <a href="https://www.instagram.com/la_on_radio" target="_blank" class="boton instagram">
-        <img src="instagram.png" alt="Instagram">
-        Seguinos en Instagram
-    </a>
+<img src="facebook.png">
+Facebook
 
-    <a href="https://www.facebook.com/onradioo" target="_blank" class="boton facebook">
-        <img src="facebook.png" alt="Facebook">
-        Seguinos en Facebook
-    </a>
+</a>
 
-    <a href="https://www.tiktok.com/@laonradio" target="_blank" class="boton tiktok">
-        <img src="tiktok.png" alt="TikTok">
-        Seguinos en TikTok
-    </a>
+<a href="https://www.tiktok.com/@laonradio" target="_blank" class="boton">
 
-    <a href="https://www.twitter.com/laonradioo" target="_blank" class="boton x">
-        <img src="x.png" alt="X">
-        Seguinos en X
-    </a>
+<img src="tiktok.png">
+TikTok
 
-    <a href="https://www.youtube.com/@laonradio" target="_blank" class="boton youtube">
-        <img src="YouTube.png" alt="YouTube">
-        Seguinos en YouTube
-    </a>
+</a>
 
-    <a href="https://www.twitch.tv/laonradio" target="_blank" class="boton twitch">
-        <img src="twi.png" alt="Twitch">
-        Seguinos en Twitch
-    </a>
+<a href="https://www.twitter.com/laonradioo" target="_blank" class="boton">
+
+<img src="x.png">
+X
+
+</a>
+
+<a href="https://www.youtube.com/@laonradio" target="_blank" class="boton">
+
+<img src="YouTube.png">
+YouTube
+
+</a>
+
+<a href="https://www.twitch.tv/laonradio" target="_blank" class="boton">
+
+<img src="twi.png">
+Twitch
+
+</a>
+
 </div>
 
 <footer>
-    <div>ON Radio</div>
-    <div>Desde la ciudad de Rojas, Buenos Aires, Argentina, para todo el mundo.</div>
+
+<div>ON Radio</div>
+
+<div>Desde Rojas, Buenos Aires, Argentina</div>
+
 </footer>
-
-<script>
-function cerrarPopup() {
-    document.getElementById("popupPromo").style.display = "none";
-}
-
-const fechaEstreno = new Date("Mar 23, 2026 20:00:00").getTime();
-
-setInterval(function() {
-    const ahora = new Date().getTime();
-    const diferencia = fechaEstreno - ahora;
-
-    if (diferencia < 0) {
-        document.getElementById("countdown").innerHTML = "YA ESTAMOS EN VIVO";
-        return;
-    }
-
-    const dias = Math.floor(diferencia / (1000 * 60 * 60 * 24));
-    const horas = Math.floor((diferencia % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    const minutos = Math.floor((diferencia % (1000 * 60 * 60)) / (1000 * 60));
-    const segundos = Math.floor((diferencia % (1000 * 60)) / 1000);
-
-    document.getElementById("countdown").innerHTML =
-        dias + "d " + horas + "h " + minutos + "m " + segundos + "s";
-}, 1000);
-
-// Registrar service worker
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', function() {
-        navigator.serviceWorker.register('service-worker.js');
-    });
-}
-</script>
 
 </body>
 </html>
