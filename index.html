@@ -22,71 +22,27 @@ color:white;
 text-align:center;
 }
 
-/* SPLASH */
-
-#splash{
-
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-
-background:black;
-
-display:flex;
-align-items:center;
-justify-content:center;
-
-z-index:10000;
-
-}
-
-#splash img{
-
-width:220px;
-
-animation:logoanim 1.5s ease;
-
-}
-
-@keyframes logoanim{
-
-0%{transform:scale(0.5);opacity:0}
-50%{transform:scale(1.1)}
-100%{transform:scale(1);opacity:1}
-
-}
-
 /* BOTONES */
 
 .boton{
-
 display:flex;
 align-items:center;
 justify-content:center;
-
 margin:10px auto;
 padding:14px;
-
 width:270px;
-
+max-width:90%;
 color:white;
 text-decoration:none;
-
 border-radius:10px;
-
 font-weight:bold;
-
 box-shadow:0 4px 12px rgba(0,0,0,0.4);
-
 }
 
 .boton img{
-
 width:25px;
+height:25px;
 margin-right:10px;
-
 }
 
 .radio-vivo{background:#7c0000;}
@@ -105,173 +61,128 @@ margin-right:10px;
 .youtube{background:#cc0000;}
 .twitch{background:#6441a5;}
 
-/* POPUP */
-
-#popup{
-
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-
-background:rgba(0,0,0,0.7);
-
-display:flex;
-align-items:center;
-justify-content:center;
-
-z-index:9999;
-
-}
-
-.popup-contenido{
-
-width:90%;
-max-width:420px;
-
-background:black;
-
-border-radius:20px;
-
-overflow:hidden;
-
-box-shadow:0 15px 40px rgba(0,0,0,0.8);
-
-position:relative;
-
-}
-
-.popup-cerrar{
-
-position:absolute;
-top:10px;
-right:16px;
-
-font-size:38px;
-font-weight:bold;
-
-color:white;
-
-cursor:pointer;
-
-}
-
-.flyer{
-
-width:100%;
-
-}
-
-.contador-popup{
-
-padding:15px;
-
-text-align:center;
-
-}
-
-#countdown{
-
-font-size:26px;
-font-weight:bold;
-color:#ff6b6b;
-
-}
-
-/* MODAL */
-
-.modal{
-
-position:fixed;
-top:0;
-left:0;
-
-width:100%;
-height:100%;
-
-background:rgba(0,0,0,0.75);
-
-display:none;
-
-align-items:center;
-justify-content:center;
-
-z-index:9998;
-
-}
-
-.modal-box{
-
-width:90%;
-max-width:350px;
-
-background:#111;
-
-border-radius:18px;
-
-padding:22px;
-
-text-align:center;
-
-}
-
-.btn-modal{
-
-border:none;
-border-radius:10px;
-
-padding:12px 18px;
-
-font-size:16px;
-font-weight:bold;
-
-margin:10px;
-
-cursor:pointer;
-
-}
-
-.btn-instalar{
-
-background:#c40000;
-color:white;
-
-}
-
-.btn-cancelar{
-
-background:#444;
-color:white;
-
-}
-
-.btn-ok{
-
-background:#c40000;
-color:white;
-
-}
-
-.live-dot{
-
-display:inline-block;
-width:12px;
-height:12px;
-background:#ff0000;
-border-radius:50%;
-margin-right:8px;
-box-shadow:0 0 8px rgba(255,0,0,0.8);
-
-}
+h1{margin-top:10px;}
+.slogan{margin-bottom:25px;}
 
 footer{
-
 margin-top:30px;
 background:#000000b3;
 padding:10px;
 font-size:13px;
+}
 
+/* SPLASH */
+#splash{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:black;
+display:flex;
+align-items:center;
+justify-content:center;
+z-index:10000;
+}
+
+#splash img{
+width:220px;
+animation:logoanim 1.5s ease;
+}
+
+@keyframes logoanim{
+0%{transform:scale(0.5);opacity:0}
+50%{transform:scale(1.1)}
+100%{transform:scale(1);opacity:1}
+}
+
+/* POPUP */
+#popup{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.7);
+display:flex;
+align-items:center;
+justify-content:center;
+z-index:9999;
+}
+
+.popup-contenido{
+width:90%;
+max-width:420px;
+background:black;
+border-radius:20px;
+overflow:hidden;
+position:relative;
+}
+
+.popup-cerrar{
+position:absolute;
+top:10px;
+right:16px;
+font-size:36px;
+cursor:pointer;
+}
+
+.flyer{
+width:100%;
+}
+
+.contador-popup{
+padding:15px;
+}
+
+#countdown{
+font-size:26px;
+font-weight:bold;
+color:#ff6b6b;
+}
+
+/* MODAL */
+.modal{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.7);
+display:none;
+align-items:center;
+justify-content:center;
+z-index:9998;
+}
+
+.modal-box{
+width:90%;
+max-width:350px;
+background:#111;
+border-radius:18px;
+padding:22px;
+}
+
+.btn-modal{
+border:none;
+border-radius:10px;
+padding:12px 18px;
+margin:10px;
+font-weight:bold;
+cursor:pointer;
+}
+
+.btn-instalar{background:#c40000;color:white;}
+.btn-cancelar{background:#444;color:white;}
+.btn-ok{background:#c40000;color:white;}
+
+.live-dot{
+width:10px;
+height:10px;
+background:red;
+border-radius:50%;
+display:inline-block;
+margin-right:6px;
 }
 
 </style>
@@ -280,371 +191,217 @@ font-size:13px;
 <body>
 
 <!-- SPLASH -->
-
 <div id="splash">
-
 <img src="logotipo.png">
-
 </div>
 
-<!-- POPUP PROMO -->
-
+<!-- POPUP -->
 <div id="popup">
-
 <div class="popup-contenido">
-
 <div class="popup-cerrar" onclick="cerrarPopup()">✕</div>
 
 <img src="promo.png" class="flyer">
 
 <div class="contador-popup">
-
 <div>Faltan</div>
-
 <div id="countdown"></div>
-
 <div>para el estreno de</div>
-
 <strong>NADA QUE PERDER</strong>
-
 <div>Lunes a viernes | 20 a 22 hs</div>
-
 </div>
 
 </div>
-
 </div>
 
 <!-- MODAL INSTALAR -->
-
 <div id="modalInstalar" class="modal">
-
 <div class="modal-box">
-
 <p>
-
 Instalá ON Radio en tu dispositivo.<br>
-Y dale ON al contenido que más te gusta.
-
+Y dale ON al contenido que más te gusta!
 </p>
 
-<button class="btn-modal btn-instalar" onclick="instalarApp()">
-
-INSTALAR
-
-</button>
-
-<button class="btn-modal btn-cancelar" onclick="cerrarModalInstalar()">
-
-CANCELAR
-
-</button>
-
+<button class="btn-modal btn-instalar" onclick="instalarApp()">INSTALAR</button>
+<button class="btn-modal btn-cancelar" onclick="cerrarModalInstalar()">CANCELAR</button>
 </div>
-
 </div>
 
 <!-- MODAL HORARIO -->
-
 <div id="modalHorario" class="modal">
-
 <div class="modal-box">
-
 <h2>📺 Streaming en vivo</h2>
-
 <p>
-
 El programa se transmite en vivo<br>
-
-de lunes a viernes<br>
-
-20:00 a 22:00 hs.<br><br>
-
-Volvé en ese horario.<br>
-
-¡Te esperamos!
-
+Lunes a viernes<br>
+20:00 a 22:00 hs<br><br>
+Volvé en ese horario
 </p>
-
-<button class="btn-modal btn-ok" onclick="cerrarModalHorario()">
-
-OK
-
-</button>
-
+<button class="btn-modal btn-ok" onclick="cerrarModalHorario()">OK</button>
 </div>
-
 </div>
 
 <img src="logotipo.png" width="170">
 
 <h1>ON Radio</h1>
+<p class="slogan">Dale ON a la música que más te gusta!</p>
 
-<p>Dale ON a la música que más te gusta!</p>
-
+<!-- 1 -->
 <a href="#" onclick="document.getElementById('streaming').play(); return false;" class="boton radio-vivo">
-
 <img src="parlante.png">
-
 Escuchanos en vivo ahora
-
 </a>
 
-<audio id="streaming" src="https://streaming.radiosenlinea.com.ar/9020/stream"></audio>
-
+<!-- 2 -->
 <a href="#" onclick="verEnVivo()" class="boton ver">
-
 <img src="tve.png">
-
 <span id="textoBotonEnVivo">Miranos en vivo</span>
-
 </a>
 
-<a href="lista.html" class="boton ranking">
-
-<img src="trofeo.png">
-
-Votá en el nuevo ranking
-
-</a>
-
-<a href="formulario.html" class="boton formulario">
-
-<img src="formulario.png">
-
-¿Querés hacer radio? Sumate a La ON
-
-</a>
-
-<a href="https://www.laonradio.com.ar" target="_blank" class="boton web">
-
-<img src="web.png">
-
-Ingresá a nuestra web
-
-</a>
-
-<a href="https://radiio.com.ar/app/a5ae1c1a12ac221f" target="_blank" class="boton app">
-
-<img src="descargar.png">
-
-Descargá la app
-
-</a>
-
+<!-- 3 -->
 <a href="https://wa.me/5491161358000" target="_blank" class="boton whatsapp">
-
 <img src="WhatsApp.png">
-
 WhatsAppeanos!
-
 </a>
 
-<!-- PUBLICIDAD -->
-<a href="https://wa.me/5492475402890" target="_blank" class="boton publicidad">
-    <img src="WhatsApp.png" alt="Publicidad">
-    ¿Querés hacer publicidad? Click aquí
+<!-- 4 -->
+<a href="https://radiio.com.ar/app/a5ae1c1a12ac221f" target="_blank" class="boton app">
+<img src="descargar.png">
+Descargá la app oficial
 </a>
 
+<!-- 5 -->
+<a href="https://www.laonradio.com.ar" target="_blank" class="boton web">
+<img src="web.png">
+Ingresá a nuestra web
+</a>
+
+<!-- 6 -->
+<a href="formulario.html" class="boton formulario">
+<img src="formulario.png">
+¿Querés hacer radio? Completá el formulario aquí
+</a>
+
+<!-- 7 -->
+<a href="https://wa.me/5492475402890" target="_blank" class="boton whatsapp">
+<img src="WhatsApp.png">
+¿Querés hacer publicidad? Click aquí
+</a>
+
+<!-- 8 -->
 <a href="#redes-sociales" class="boton redes">
-
 <img src="redes.png">
-
 Seguinos en nuestras redes
-
 </a>
 
+<!-- REDES -->
 <div id="redes-sociales">
 
 <a href="https://www.instagram.com/la_on_radio" target="_blank" class="boton instagram">
-<img src="instagram.png">
-Instagram
+<img src="instagram.png">Instagram
 </a>
 
 <a href="https://www.facebook.com/onradioo" target="_blank" class="boton facebook">
-<img src="facebook.png">
-Facebook
+<img src="facebook.png">Facebook
 </a>
 
 <a href="https://www.tiktok.com/@laonradio" target="_blank" class="boton tiktok">
-<img src="tiktok.png">
-TikTok
+<img src="tiktok.png">TikTok
 </a>
 
 <a href="https://twitter.com/laonradioo" target="_blank" class="boton xred">
-<img src="x.png">
-X
+<img src="x.png">X
 </a>
 
 <a href="https://www.youtube.com/@laonradio" target="_blank" class="boton youtube">
-<img src="YouTube.png">
-YouTube
+<img src="YouTube.png">YouTube
 </a>
 
 <a href="https://www.twitch.tv/laonradio" target="_blank" class="boton twitch">
-<img src="twi.png">
-Twitch
+<img src="twi.png">Twitch
 </a>
 
 </div>
 
 <footer>
-
 ON Radio<br>
-Desde Rojas, Buenos Aires, Argentina
-
+Desde Rojas, Buenos Aires
 </footer>
 
 <script>
 
 let deferredPrompt=null
 
-function appInstalada(){
-
-return window.matchMedia('(display-mode: standalone)').matches
-|| localStorage.getItem("onradio_instalada") === "si"
-
-}
-
 function cerrarPopup(){
-
 document.getElementById("popup").style.display="none"
 
-if(!appInstalada()){
-
-setTimeout(function(){
-
-document.getElementById("modalInstalar").style.display="flex"
-
-},300)
-
+if(!window.matchMedia('(display-mode: standalone)').matches){
+setTimeout(()=>{document.getElementById("modalInstalar").style.display="flex"},300)
 }
-
 }
 
 function cerrarModalInstalar(){
-
 document.getElementById("modalInstalar").style.display="none"
-
 }
 
 function cerrarModalHorario(){
-
 document.getElementById("modalHorario").style.display="none"
-
-}
-
-async function instalarApp(){
-
-if(deferredPrompt){
-
-deferredPrompt.prompt()
-
-deferredPrompt=null
-
-localStorage.setItem("onradio_instalada","si")
-
-document.getElementById("modalInstalar").style.display="none"
-
-}
-
 }
 
 window.addEventListener('beforeinstallprompt',(e)=>{
-
 e.preventDefault()
-
 deferredPrompt=e
-
 })
 
-window.addEventListener('appinstalled',()=>{
-
-localStorage.setItem("onradio_instalada","si")
-
-})
+function instalarApp(){
+if(deferredPrompt){
+deferredPrompt.prompt()
+deferredPrompt=null
+}
+}
 
 const estreno=new Date("March 23, 2026 20:00:00").getTime()
 
-setInterval(function(){
+setInterval(()=>{
+let ahora=new Date().getTime()
+let d=estreno-ahora
 
-const ahora=new Date().getTime()
+if(d<0){document.getElementById("countdown").innerHTML="YA EN VIVO";return}
 
-const distancia=estreno-ahora
+let dias=Math.floor(d/(1000*60*60*24))
+let h=Math.floor((d%(1000*60*60*24))/(1000*60*60))
+let m=Math.floor((d%(1000*60*60))/(1000*60))
+let s=Math.floor((d%(1000*60))/1000)
 
-if(distancia<0){
-
-document.getElementById("countdown").innerHTML="YA ESTAMOS EN VIVO"
-
-return
-
-}
-
-const dias=Math.floor(distancia/(1000*60*60*24))
-const horas=Math.floor((distancia%(1000*60*60*24))/(1000*60*60))
-const minutos=Math.floor((distancia%(1000*60*60))/(1000*60))
-const segundos=Math.floor((distancia%(1000*60))/1000)
-
-document.getElementById("countdown").innerHTML=
-dias+"d "+horas+"h "+minutos+"m "+segundos+"s"
+document.getElementById("countdown").innerHTML=dias+"d "+h+"h "+m+"m "+s+"s"
 
 },1000)
 
-function estaEnVivoAhora(){
-
-const ahora=new Date()
-
-const dia=ahora.getDay()
-
-const hora=ahora.getHours()
-
-const esSemana=dia>=1 && dia<=5
-
-const enHorario=hora>=20 && hora<22
-
-return esSemana && enHorario
-
+function estaEnVivo(){
+let now=new Date()
+return now.getDay()>=1 && now.getDay()<=5 && now.getHours()>=20 && now.getHours()<22
 }
 
-function actualizarBotonEnVivo(){
-
-const texto=document.getElementById("textoBotonEnVivo")
-
-if(estaEnVivoAhora()){
-
-texto.innerHTML='<span class="live-dot"></span>EN VIVO AHORA'
-
+function actualizar(){
+let t=document.getElementById("textoBotonEnVivo")
+if(estaEnVivo()){
+t.innerHTML='<span class="live-dot"></span>EN VIVO AHORA'
 }else{
-
-texto.textContent='Miranos en vivo'
-
+t.textContent="Miranos en vivo"
 }
-
 }
 
 function verEnVivo(){
-
-if(estaEnVivoAhora()){
-
-window.open("https://www.youtube.com/@laonradio/live","_blank")
-
+if(estaEnVivo()){
+window.open("https://www.youtube.com/@laonradio/live")
 }else{
-
 document.getElementById("modalHorario").style.display="flex"
-
+}
 }
 
-}
+actualizar()
+setInterval(actualizar,60000)
 
-actualizarBotonEnVivo()
-
-setInterval(actualizarBotonEnVivo,60000)
-
-setTimeout(function(){
-
-document.getElementById("splash").style.display="none"
-
-},1500)
+setTimeout(()=>{document.getElementById("splash").style.display="none"},1500)
 
 </script>
 
