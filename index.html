@@ -23,7 +23,6 @@ text-align:center;
 }
 
 /* BOTONES */
-
 .boton{
 display:flex;
 align-items:center;
@@ -116,35 +115,30 @@ max-width:420px;
 max-height:90vh;
 background:black;
 border-radius:20px;
-overflow-y:auto;
-overflow-x:hidden;
+overflow:hidden;
 position:relative;
 }
 
 .popup-cerrar{
-position:sticky;
-top:0;
-right:10px;
+position:absolute;
+top:6px;
+right:14px;
 font-size:36px;
 cursor:pointer;
+z-index:2;
+color:white;
+text-shadow:0 0 8px rgba(0,0,0,0.7);
+}
+
+.popup-link{
 display:block;
-text-align:right;
-padding:10px;
-background:linear-gradient(to bottom, rgba(0,0,0,0.9), transparent);
+text-decoration:none;
+color:white;
 }
 
 .flyer{
 width:100%;
-}
-
-.contador-popup{
-padding:15px;
-}
-
-#countdown{
-font-size:26px;
-font-weight:bold;
-color:#ff6b6b;
+display:block;
 }
 
 /* MODAL */
@@ -189,6 +183,7 @@ background:red;
 border-radius:50%;
 display:inline-block;
 margin-right:6px;
+box-shadow:0 0 10px red;
 }
 
 </style>
@@ -198,25 +193,18 @@ margin-right:6px;
 
 <!-- SPLASH -->
 <div id="splash">
-<img src="logotipo.png">
+<img src="logotipo.png" alt="ON Radio">
 </div>
 
 <!-- POPUP -->
 <div id="popup">
-<div class="popup-contenido">
-<div class="popup-cerrar" onclick="cerrarPopup()">✕</div>
+  <div class="popup-contenido">
+    <div class="popup-cerrar" onclick="cerrarPopup()">✕</div>
 
-<img src="promo.png" class="flyer">
-
-<div class="contador-popup">
-<div>Faltan</div>
-<div id="countdown"></div>
-<div>para el estreno de</div>
-<strong>NADA QUE PERDER</strong>
-<div>Lunes a viernes | 20 a 22 hs</div>
-</div>
-
-</div>
+    <a id="popupLink" class="popup-link" href="#" target="_blank">
+      <img id="popupFlyer" src="promo-publicidad.png" class="flyer" alt="Promoción">
+    </a>
+  </div>
 </div>
 
 <!-- MODAL INSTALAR -->
@@ -239,93 +227,98 @@ Y dale ON al contenido que más te gusta!
 <p>
 El programa se transmite en vivo<br>
 Lunes a viernes<br>
-20:00 a 22:00 hs<br><br>
+20:30 a 22:30 hs<br><br>
 Volvé en ese horario
 </p>
 <button class="btn-modal btn-ok" onclick="cerrarModalHorario()">OK</button>
 </div>
 </div>
 
-<img src="logotipo.png" width="170">
+<img src="logotipo.png" width="170" alt="ON Radio">
 
 <h1>ON Radio</h1>
 <p class="slogan">Dale ON a la música que más te gusta!</p>
+
 <!-- RADIO EN VIVO -->
 <a href="#" onclick="document.getElementById('streaming').play(); return false;" class="boton radio-vivo">
-    <img src="parlante.png" alt="Escuchanos Ahora">
+    <img src="parlante.png" alt="Escuchanos ahora">
     Escuchanos en vivo ahora
 </a>
 
 <audio id="streaming" src="https://streaming.radiosenlinea.com.ar/9020/stream"></audio>
 
-
-<!-- 2 -->
+<!-- MIRANOS EN VIVO -->
 <a href="#" onclick="verEnVivo()" class="boton ver">
-<img src="tve.png">
+<img src="tve.png" alt="Miranos en vivo">
 <span id="textoBotonEnVivo">Miranos en vivo</span>
 </a>
 
-<!-- 3 -->
+<!-- RANKING -->
+<a href="lista.html" class="boton ranking">
+<img src="trofeo.png" alt="Ranking">
+Ranking ON Radio
+</a>
+
+<!-- WHATSAPP OYENTES -->
 <a href="https://wa.me/5491161358000" target="_blank" class="boton whatsapp">
-<img src="WhatsApp.png">
+<img src="WhatsApp.png" alt="WhatsApp">
 WhatsAppeanos!
 </a>
 
-<!-- 4 -->
+<!-- APP -->
 <a href="https://radiio.com.ar/app/a5ae1c1a12ac221f" target="_blank" class="boton app">
-<img src="descargar.png">
+<img src="descargar.png" alt="Descargar app">
 Descargá la app oficial
 </a>
 
-<!-- 5 -->
+<!-- WEB -->
 <a href="https://www.laonradio.com.ar" target="_blank" class="boton web">
-<img src="web.png">
+<img src="web.png" alt="Web">
 Ingresá a nuestra web
 </a>
 
-<!-- 6 -->
+<!-- FORMULARIO -->
 <a href="formulario.html" class="boton formulario">
-<img src="formulario.png">
+<img src="formulario.png" alt="Formulario">
 ¿Querés hacer radio? Completá el formulario aquí
 </a>
 
-<!-- 7 -->
+<!-- PUBLICIDAD -->
 <a href="https://wa.me/5492475402890" target="_blank" class="boton whatsapp">
-<img src="WhatsApp.png">
+<img src="WhatsApp.png" alt="Publicidad">
 ¿Querés hacer publicidad? Click aquí
 </a>
 
-<!-- 8 -->
+<!-- REDES -->
 <a href="#redes-sociales" class="boton redes">
-<img src="redes.png">
+<img src="redes.png" alt="Redes">
 Seguinos en nuestras redes
 </a>
 
-<!-- REDES -->
 <div id="redes-sociales">
 
 <a href="https://www.instagram.com/la_on_radio" target="_blank" class="boton instagram">
-<img src="instagram.png">Instagram
+<img src="instagram.png" alt="Instagram">Instagram
 </a>
 
 <a href="https://www.facebook.com/onradioo" target="_blank" class="boton facebook">
-<img src="facebook.png">Facebook
+<img src="facebook.png" alt="Facebook">Facebook
 </a>
 
 <a href="https://www.tiktok.com/@laonradio" target="_blank" class="boton tiktok">
-<img src="tiktok.png">TikTok
+<img src="tiktok.png" alt="TikTok">TikTok
 </a>
 
 <a href="https://twitter.com/laonradioo" target="_blank" class="boton xred">
-<img src="x.png">X
+<img src="x.png" alt="X">X
 </a>
 
 <a href="https://www.youtube.com/@laonradio" target="_blank" class="boton youtube">
-<img src="youtube.png">YouTube
+<img src="youtube.png" alt="YouTube">YouTube
 </a>
 
 <a href="https://www.twitch.tv/laonradio" target="_blank" class="boton twitch">
-<img src="twi.png">Twitch
+<img src="twi.png" alt="Twitch">Twitch
 </a>
 
 </div>
@@ -337,81 +330,100 @@ Desde Rojas, Buenos Aires
 
 <script>
 
-let deferredPrompt=null
+let deferredPrompt = null;
 
 function cerrarPopup(){
-document.getElementById("popup").style.display="none"
+  document.getElementById("popup").style.display = "none";
 
-if(!window.matchMedia('(display-mode: standalone)').matches){
-setTimeout(()=>{document.getElementById("modalInstalar").style.display="flex"},300)
-}
+  if(!window.matchMedia('(display-mode: standalone)').matches){
+    setTimeout(()=>{
+      document.getElementById("modalInstalar").style.display = "flex";
+    },300);
+  }
 }
 
 function cerrarModalInstalar(){
-document.getElementById("modalInstalar").style.display="none"
+  document.getElementById("modalInstalar").style.display = "none";
 }
 
 function cerrarModalHorario(){
-document.getElementById("modalHorario").style.display="none"
+  document.getElementById("modalHorario").style.display = "none";
 }
 
 window.addEventListener('beforeinstallprompt',(e)=>{
-e.preventDefault()
-deferredPrompt=e
-})
+  e.preventDefault();
+  deferredPrompt = e;
+});
 
 function instalarApp(){
-if(deferredPrompt){
-deferredPrompt.prompt()
-deferredPrompt=null
+  if(deferredPrompt){
+    deferredPrompt.prompt();
+    deferredPrompt = null;
+  }
 }
-}
-
-const estreno=new Date("March 23, 2026 20:00:00").getTime()
-
-setInterval(()=>{
-let ahora=new Date().getTime()
-let d=estreno-ahora
-
-if(d<0){document.getElementById("countdown").innerHTML="YA EN VIVO";return}
-
-let dias=Math.floor(d/(1000*60*60*24))
-let h=Math.floor((d%(1000*60*60*24))/(1000*60*60))
-let m=Math.floor((d%(1000*60*60))/(1000*60))
-let s=Math.floor((d%(1000*60))/1000)
-
-document.getElementById("countdown").innerHTML=dias+"d "+h+"h "+m+"m "+s+"s"
-
-},1000)
 
 function estaEnVivo(){
-let now=new Date()
-return now.getDay()>=1 && now.getDay()<=5 && now.getHours()>=20 && now.getHours()<22
+  const now = new Date();
+  const dia = now.getDay(); // 0 domingo, 1 lunes ... 6 sábado
+  const minutosActuales = now.getHours() * 60 + now.getMinutes();
+  const inicio = 20 * 60 + 30; // 20:30
+  const fin = 22 * 60 + 30;    // 22:30
+
+  return dia >= 1 && dia <= 5 && minutosActuales >= inicio && minutosActuales < fin;
 }
 
-function actualizar(){
-let t=document.getElementById("textoBotonEnVivo")
-if(estaEnVivo()){
-t.innerHTML='<span class="live-dot"></span>EN VIVO AHORA'
-}else{
-t.textContent="Miranos en vivo"
-}
+function actualizarBotonEnVivo(){
+  const t = document.getElementById("textoBotonEnVivo");
+
+  if(estaEnVivo()){
+    t.innerHTML = '<span class="live-dot"></span>EN VIVO AHORA';
+  }else{
+    t.textContent = "Miranos en vivo";
+  }
 }
 
 function verEnVivo(){
-if(estaEnVivo()){
-window.open("https://www.youtube.com/@laonradio/live")
-}else{
-document.getElementById("modalHorario").style.display="flex"
-}
+  if(estaEnVivo()){
+    window.open("https://www.youtube.com/@laonradio/live", "_blank");
+  }else{
+    document.getElementById("modalHorario").style.display = "flex";
+  }
 }
 
-actualizar()
-setInterval(actualizar,60000)
+function configurarPopup(){
+  const popupLink = document.getElementById("popupLink");
+  const popupFlyer = document.getElementById("popupFlyer");
 
-setTimeout(()=>{document.getElementById("splash").style.display="none"},1500)
+  if(estaEnVivo()){
+    popupFlyer.src = "promo-vivo.png";
+    popupFlyer.alt = "Ahora en vivo";
+    popupLink.href = "#";
+    popupLink.target = "_self";
+    popupLink.onclick = function(e){
+      e.preventDefault();
+    };
+  }else{
+    popupFlyer.src = "promo-publicidad.png";
+    popupFlyer.alt = "Publicidad destacada";
+    popupLink.href = "https://wa.me/5492475402890";
+    popupLink.target = "_blank";
+    popupLink.onclick = null;
+  }
+}
+
+actualizarBotonEnVivo();
+configurarPopup();
+
+setInterval(()=>{
+  actualizarBotonEnVivo();
+  configurarPopup();
+},60000);
+
+setTimeout(()=>{
+  document.getElementById("splash").style.display = "none";
+},1500);
 
 </script>
 
 </body>
-</html>
+</html
