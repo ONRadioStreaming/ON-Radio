@@ -183,18 +183,6 @@ body::after{
   overflow:hidden;
 }
 
-.hero-image-wrap::before{
-  content:"";
-  position:absolute;
-  inset:-30px;
-  background-image:inherit;
-  background-position:center center;
-  background-size:cover;
-  filter:blur(25px);
-  transform:scale(1.2);
-  opacity:.55;
-}
-
 .hero-image-wrap::after{
   content:"";
   position:absolute;
@@ -206,9 +194,16 @@ body::after{
 }
 
 .hero-image-wrap{
-  background-position:center;
-  background-repeat:no-repeat;
-  background-size:contain;
+position:relative;
+height:315px;
+overflow:hidden;
+display:flex;
+align-items:center;
+justify-content:center;
+background-position:center center;
+background-repeat:no-repeat;
+background-size:cover;
+background-color:#111;
 }
 
 .hero-image-wrap::after{
@@ -1028,7 +1023,7 @@ function aplicarImagenBloque(bloque){
 
   precarga.onload = function(){
 
-    hero.style.backgroundImage="url('" + imgUrl + "')";
+    hero.style.background = "url('" + imgUrl + "') center center / cover no-repeat";
     hero.style.backgroundPosition="center center";
     hero.style.backgroundRepeat="no-repeat";
     hero.style.backgroundSize="contain";
