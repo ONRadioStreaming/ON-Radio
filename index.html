@@ -1030,8 +1030,6 @@ function aplicarImagenBloque(bloque){
   precarga.src = imgUrl;
 }
 
-<script>
-
 function actualizarBloque() {
 
  const ahora=minutosDelDia();
@@ -1074,6 +1072,114 @@ function actualizarBloque() {
 actualizarBloque();
 setInterval(actualizarBloque,30000);
 
+function abrirSenales(){
+  document.getElementById("modalSenales").style.display = "flex";
+}
+
+function cerrarSenales(){
+  document.getElementById("modalSenales").style.display = "none";
+}
+
+function escucharRadio(){
+  cerrarSenales();
+  const audio = document.getElementById("streaming");
+  audio.play();
+  mostrarBarraPlayer();
+}
+
+function mostrarBarraPlayer(){
+  document.getElementById("playerBar").classList.add("show");
+  document.body.classList.add("player-active");
+}
+
+function ocultarBarraPlayer(){
+  document.getElementById("playerBar").classList.remove("show");
+  document.body.classList.remove("player-active");
+}
+
+function detenerRadio(){
+  const audio = document.getElementById("streaming");
+  audio.pause();
+  audio.currentTime = 0;
+  ocultarBarraPlayer();
+}
+
+function verEnVivo(){
+  cerrarSenales();
+  window.open("https://www.youtube.com/@laonradio/live", "_blank");
+}
+
+function irAProgramacion(){
+  document.getElementById("programacion").scrollIntoView({behavior:"smooth"});
+}
+
+function abrirMenu(){
+  document.getElementById("drawer").classList.add("open");
+  document.getElementById("drawerOverlay").classList.add("open");
+}
+
+function cerrarMenu(){
+  document.getElementById("drawer").classList.remove("open");
+  document.getElementById("drawerOverlay").classList.remove("open");
+}
+
+function cerrarModalInstalar(){
+  document.getElementById("modalInstalar").style.display = "none";
+}
+
+window.addEventListener("beforeinstallprompt",(e)=>{
+  e.preventDefault();
+  deferredPrompt = e;
+});
+
+function instalarApp(){
+  if(deferredPrompt){
+    deferredPrompt.prompt();
+    deferredPrompt = null;
+  }
+}
+
+function iniciarSplash(){
+  const splash = document.getElementById("splash");
+  const splashMostrado = sessionStorage.getItem("splashMostrado");
+
+  if(splashMostrado === "si"){
+    splash.classList.add("oculto");
+  }else{
+    sessionStorage.setItem("splashMostrado", "si");
+    setTimeout(()=>{
+      splash.classList.add("oculto");
+    },1500);
+  }
+}
+
+function sugerirInstalacion(){
+  if(!window.matchMedia("(display-mode: standalone)").matches){
+    const yaSugerido = sessionStorage.getItem("instalarSugerido");
+    if(yaSugerido !== "si"){
+      sessionStorage.setItem("instalarSugerido", "si");
+      setTimeout(()=>{
+        document.getElementById("modalInstalar").style.display="flex";
+      },2800);
+    }
+  }
+}
+
+const audioStreaming = document.getElementById("streaming");
+
+audioStreaming.addEventListener("ended", ()=>{
+  ocultarBarraPlayer();
+});
+
+audioStreaming.addEventListener("error", ()=>{
+  ocultarBarraPlayer();
+});
+
+actualizarBloque();
+iniciarSplash();
+sugerirInstalacion();
+
+setInterval(actualizarBloque, 60000);
 </script>
 
 </body>
