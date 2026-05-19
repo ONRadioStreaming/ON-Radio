@@ -19,6 +19,7 @@
   --blanco:#ffffff;
   --verde:#078236;
   --sombra:0 8px 20px rgba(0,0,0,.30);
+  --bg-img:url("fondo.jpg");
 }
 
 *{box-sizing:border-box;}
@@ -38,7 +39,9 @@ body::before{
   content:"";
   position:fixed;
   inset:0;
-  background:url("fondo.jpg") no-repeat center center fixed;
+  background-image:var(--bg-img);
+  background-repeat:no-repeat;
+  background-position:center center;
   background-size:cover;
   filter:blur(13px);
   transform:scale(1.12);
@@ -111,7 +114,7 @@ body::after{
   align-items:center;
   justify-content:center;
   font-size:18px;
-  padding-left:2px;
+  padding:0;
 }
 
 .calendar-header{
@@ -123,7 +126,7 @@ body::after{
 .main{
   max-width:760px;
   margin:0 auto;
-  padding:16px 24px 28px;
+  padding:16px 28px 28px;
 }
 
 /* REDES SUPERIORES */
@@ -163,7 +166,7 @@ body::after{
 
 /* HERO */
 .hero-card{
-  width:94%;
+  width:100%;
   margin:0 auto 24px;
   background:#bf1d18;
   overflow:hidden;
@@ -172,7 +175,7 @@ body::after{
 
 .hero-image-wrap{
   position:relative;
-  height:330px;
+  height:315px;
   background:center center/cover no-repeat;
   overflow:hidden;
   display:flex;
@@ -184,16 +187,8 @@ body::after{
   content:"";
   position:absolute;
   inset:0;
-  background:linear-gradient(180deg,rgba(0,0,0,.08),rgba(0,0,0,.13));
+  background:linear-gradient(180deg,rgba(0,0,0,.06),rgba(0,0,0,.12));
   z-index:1;
-}
-
-.hero-logo{
-  position:relative;
-  z-index:2;
-  width:150px;
-  max-width:45%;
-  filter:drop-shadow(0 8px 17px rgba(0,0,0,.62));
 }
 
 .music-badge{
@@ -207,11 +202,12 @@ body::after{
   right:0;
   bottom:33px;
   text-align:center;
-  font-size:40px;
+  font-size:36px;
   font-weight:1000;
-  color:rgba(255,255,255,.16);
+  color:rgba(255,255,255,.15);
   letter-spacing:-1px;
   white-space:nowrap;
+  pointer-events:none;
 }
 
 .play-center{
@@ -227,9 +223,12 @@ body::after{
   background:rgba(255,255,255,.84);
   color:var(--rojo);
   font-size:26px;
-  padding-left:4px;
   cursor:pointer;
   box-shadow:0 7px 18px rgba(0,0,0,.34);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:0;
 }
 
 .hero-info{
@@ -237,7 +236,7 @@ body::after{
   grid-template-columns:1fr 1fr;
   gap:12px;
   background:#c4211d;
-  padding:10px 20px 12px;
+  padding:10px 18px 12px;
   font-weight:900;
 }
 
@@ -277,7 +276,7 @@ body::after{
   align-items:center;
   justify-content:center;
   gap:4px;
-  width:94%;
+  width:100%;
   min-height:64px;
   border-radius:22px;
   background:var(--verde);
@@ -660,11 +659,6 @@ body.player-active{
     padding:15px 28px 27px;
   }
 
-  .hero-card,
-  .whatsapp-main{
-    width:100%;
-  }
-
   .hero-image-wrap{
     height:315px;
   }
@@ -812,7 +806,6 @@ body.player-active{
   <section class="hero-card">
     <div id="heroImage" class="hero-image-wrap">
       <div id="musicBadge" class="music-badge">ON AIR</div>
-      <img class="hero-logo" src="logotipo.png" alt="ON Radio">
       <div id="heroBgText" class="hero-bg-text">ON RADIO</div>
       <button class="play-center" onclick="abrirSenales()" aria-label="Reproducir">▶</button>
     </div>
@@ -1013,17 +1006,16 @@ function actualizarBloque(){
   document.getElementById("heroBgText").textContent = bloque.fondo;
   document.getElementById("progressBar").style.width = porcentajeBloque(bloque) + "%";
 
-  hero.style.backgroundImage =
-    "linear-gradient(135deg," + bloque.color1 + "," + bloque.color2 + "), url('" + bloque.imagen + "')";
+  hero.style.backgroundImage = "url('" + bloque.imagen + "')";
   hero.style.backgroundSize = "cover";
   hero.style.backgroundPosition = "center";
 
-  document.body.style.setProperty("--fondo-bloque", "url('" + bloque.imagen + "')");
-  document.body.style.backgroundImage = "url('" + bloque.imagen + "')";
+  document.documentElement.style.setProperty("--bg-img", "url('" + bloque.imagen + "')");
 
   const preload = new Image();
   preload.onerror = function(){
     hero.style.backgroundImage = "linear-gradient(135deg," + bloque.color1 + "," + bloque.color2 + ")";
+    document.documentElement.style.setProperty("--bg-img", "url('fondo.jpg')");
   };
   preload.src = bloque.imagen;
 
