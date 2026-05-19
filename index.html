@@ -180,7 +180,8 @@ body::after{
 .hero-image-wrap{
   position:relative;
   height:315px;
-  background:center center/cover no-repeat;
+  background:center center/contain no-repeat;
+  background-color:#111;
   overflow:hidden;
   display:flex;
   align-items:center;
@@ -1003,9 +1004,15 @@ function aplicarImagenBloque(bloque){
   const precarga = new Image();
 
   precarga.onload = function(){
-    hero.style.background = "url('" + imgUrl + "') center center / cover no-repeat";
-    document.documentElement.style.setProperty("--bg-img", "url('" + imgUrl + "')");
-  };
+
+    hero.style.backgroundImage="url('" + imgUrl + "')";
+    hero.style.backgroundPosition="center center";
+    hero.style.backgroundRepeat="no-repeat";
+    hero.style.backgroundSize="contain";
+    hero.style.backgroundColor="#111";
+
+    document.documentElement.style.setProperty("--bg-img","url('" + imgUrl + "')");
+};
 
   precarga.onerror = function(){
     hero.style.background = "linear-gradient(135deg," + bloque.color1 + "," + bloque.color2 + ")";
