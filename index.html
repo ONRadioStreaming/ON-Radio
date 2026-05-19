@@ -180,12 +180,35 @@ body::after{
 .hero-image-wrap{
   position:relative;
   height:315px;
-  background:center center/contain no-repeat;
-  background-color:#111;
   overflow:hidden;
-  display:flex;
-  align-items:center;
-  justify-content:center;
+}
+
+.hero-image-wrap::before{
+  content:"";
+  position:absolute;
+  inset:-30px;
+  background-image:inherit;
+  background-position:center center;
+  background-size:cover;
+  filter:blur(25px);
+  transform:scale(1.2);
+  opacity:.55;
+}
+
+.hero-image-wrap::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(
+      rgba(0,0,0,.10),
+      rgba(0,0,0,.18)
+  );
+}
+
+.hero-image-wrap{
+  background-position:center;
+  background-repeat:no-repeat;
+  background-size:contain;
 }
 
 .hero-image-wrap::after{
