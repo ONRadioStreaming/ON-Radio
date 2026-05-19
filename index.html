@@ -47,9 +47,9 @@ body::before{
   background-repeat:no-repeat;
   background-position:center center;
   background-size:cover;
-  filter:blur(14px);
-  transform:scale(1.14);
-  opacity:.62;
+  filter:blur(18px);
+  transform:scale(1.18);
+  opacity:.82;
   z-index:-2;
 }
 
@@ -57,7 +57,7 @@ body::after{
   content:"";
   position:fixed;
   inset:0;
-  background:linear-gradient(180deg,rgba(120,0,0,.48),rgba(0,0,0,.86));
+  background:linear-gradient(180deg,rgba(120,0,0,.30),rgba(0,0,0,.70));
   z-index:-1;
 }
 
@@ -109,15 +109,15 @@ body::after{
 }
 
 .play-header{
-  width:34px;
-  height:34px;
+  width:30px;
+  height:30px;
   border-radius:50%;
   background:#fff;
   color:var(--rojo);
   display:flex;
   align-items:center;
   justify-content:center;
-  font-size:18px;
+  font-size:15px;
   padding:0;
 }
 
@@ -191,7 +191,7 @@ body::after{
   content:"";
   position:absolute;
   inset:0;
-  background:linear-gradient(180deg,rgba(0,0,0,.04),rgba(0,0,0,.11));
+  background:linear-gradient(180deg,rgba(0,0,0,.02),rgba(0,0,0,.07));
   z-index:1;
 }
 
@@ -200,18 +200,7 @@ body::after{
 }
 
 .hero-bg-text{
-  position:absolute;
-  z-index:2;
-  left:0;
-  right:0;
-  bottom:33px;
-  text-align:center;
-  font-size:36px;
-  font-weight:1000;
-  color:rgba(255,255,255,.15);
-  letter-spacing:-1px;
-  white-space:nowrap;
-  pointer-events:none;
+display:none;
 }
 
 .play-center{
@@ -220,13 +209,13 @@ body::after{
   left:50%;
   top:50%;
   transform:translate(-50%,-50%);
-  width:56px;
-  height:56px;
+  width:50px;
+  height:50px;
   border-radius:50%;
   border:none;
-  background:rgba(255,255,255,.84);
+  background:rgba(255,255,255,.62);
   color:var(--rojo);
-  font-size:26px;
+  font-size:23px;
   cursor:pointer;
   box-shadow:0 7px 18px rgba(0,0,0,.34);
   display:flex;
@@ -921,7 +910,7 @@ body.player-active{
 
 <script>
 let deferredPrompt = null;
-const VERSION_CACHE = "v=20260519-final";
+const VERSION_CACHE = "v=20260519-final3";
 
 const bloques = [
   {
@@ -1014,63 +1003,34 @@ function aplicarImagenBloque(bloque){
   const precarga = new Image();
 
   precarga.onload = function(){
-    hero.style.backgroundImage = "url('" + imgUrl + "')";
-    hero.style.backgroundSize = "cover";
-    hero.style.backgroundPosition = "center";
+    hero.style.background = "url('" + imgUrl + "') center center / cover no-repeat";
     document.documentElement.style.setProperty("--bg-img", "url('" + imgUrl + "')");
   };
 
   precarga.onerror = function(){
-    hero.style.backgroundImage = "linear-gradient(135deg," + bloque.color1 + "," + bloque.color2 + ")";
-    hero.style.backgroundSize = "cover";
-    hero.style.backgroundPosition = "center";
+    hero.style.background = "linear-gradient(135deg," + bloque.color1 + "," + bloque.color2 + ")";
     document.documentElement.style.setProperty("--bg-img", "url('fondo.jpg')");
+    console.log("No se pudo cargar la imagen:", bloque.imagen);
   };
 
   precarga.src = imgUrl;
 }
 
-function actualizarBloque() {
+function actualizarBloque(){
+  const bloque = obtenerBloqueActual();
 
- const ahora=minutosDelDia();
+  document.getElementById("bloqueActual").textContent = bloque.nombre;
+  document.getElementById("diasActuales").textContent = bloque.dias;
+  document.getElementById("horarioActual").textContent = bloque.horario;
+  document.getElementById("heroBgText").textContent = bloque.fondo;
+  document.getElementById("progressBar").style.width = porcentajeBloque(bloque) + "%";
 
- let bloque=bloques.find(b =>
-   ahora>=b.inicio && ahora<b.fin
- );
+  aplicarImagenBloque(bloque);
 
- if(!bloque){
-   bloque=bloques[0];
- }
-
- document.getElementById("bloqueActual").innerText=bloque.nombre;
- document.getElementById("diasActuales").innerText=bloque.dias;
- document.getElementById("horarioActual").innerText=bloque.horario;
-
- document.getElementById("heroBgText").innerText=bloque.fondo;
-
- const hero=document.getElementById("heroImage");
-
- hero.style.background=
- `linear-gradient(135deg,${bloque.color1},${bloque.color2})`;
-
- hero.style.backgroundImage=
- `url("${bloque.imagen}")`;
-
- hero.style.backgroundSize="cover";
- hero.style.backgroundPosition="center";
-
- document
- .querySelectorAll(".schedule-card")
- .forEach(card=>card.classList.remove("active"));
-
- document
- .getElementById(bloque.id)
- .classList.add("active");
-
+  document.querySelectorAll(".schedule-card").forEach(card => card.classList.remove("active"));
+  const activeCard = document.getElementById(bloque.id);
+  if(activeCard) activeCard.classList.add("active");
 }
-
-actualizarBloque();
-setInterval(actualizarBloque,30000);
 
 function abrirSenales(){
   document.getElementById("modalSenales").style.display = "flex";
