@@ -180,29 +180,12 @@ body::after{
 .hero-image-wrap{
   position:relative;
   height:315px;
+  background:center center/cover no-repeat;
+  background-color:#111;
   overflow:hidden;
-}
-
-.hero-image-wrap::after{
-  content:"";
-  position:absolute;
-  inset:0;
-  background:linear-gradient(
-      rgba(0,0,0,.10),
-      rgba(0,0,0,.18)
-  );
-}
-
-.hero-image-wrap{
-position:relative;
-height:315px;
-overflow:hidden;
-display:flex;
-align-items:center;
-justify-content:center;
-background-position:center center;
-background-repeat:no-repeat;
-background-size:cover;
+  display:flex;
+  align-items:center;
+  justify-content:center;
 }
 
 .hero-image-wrap::after{
@@ -218,7 +201,7 @@ background-size:cover;
 }
 
 .hero-bg-text{
-display:none;
+  display:none;
 }
 
 .play-center{
@@ -928,7 +911,7 @@ body.player-active{
 
 <script>
 let deferredPrompt = null;
-const VERSION_CACHE = "v=20260519-final3";
+const VERSION_CACHE = "v=20260519-final4";
 
 const bloques = [
   {
@@ -1021,15 +1004,9 @@ function aplicarImagenBloque(bloque){
   const precarga = new Image();
 
   precarga.onload = function(){
-
     hero.style.background = "url('" + imgUrl + "') center center / cover no-repeat";
-    hero.style.backgroundPosition="center center";
-    hero.style.backgroundRepeat="no-repeat";
-    hero.style.backgroundSize="contain";
-    hero.style.backgroundColor="#111";
-
-    document.documentElement.style.setProperty("--bg-img","url('" + imgUrl + "')");
-};
+    document.documentElement.style.setProperty("--bg-img", "url('" + imgUrl + "')");
+  };
 
   precarga.onerror = function(){
     hero.style.background = "linear-gradient(135deg," + bloque.color1 + "," + bloque.color2 + ")";
