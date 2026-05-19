@@ -22,9 +22,13 @@
   --bg-img:url("fondo.jpg");
 }
 
-*{box-sizing:border-box;}
+*{
+  box-sizing:border-box;
+}
 
-html{scroll-behavior:smooth;}
+html{
+  scroll-behavior:smooth;
+}
 
 body{
   margin:0;
@@ -43,9 +47,9 @@ body::before{
   background-repeat:no-repeat;
   background-position:center center;
   background-size:cover;
-  filter:blur(13px);
-  transform:scale(1.12);
-  opacity:.58;
+  filter:blur(14px);
+  transform:scale(1.14);
+  opacity:.62;
   z-index:-2;
 }
 
@@ -53,7 +57,7 @@ body::after{
   content:"";
   position:fixed;
   inset:0;
-  background:linear-gradient(180deg,rgba(130,0,0,.50),rgba(0,0,0,.84));
+  background:linear-gradient(180deg,rgba(120,0,0,.48),rgba(0,0,0,.86));
   z-index:-1;
 }
 
@@ -187,7 +191,7 @@ body::after{
   content:"";
   position:absolute;
   inset:0;
-  background:linear-gradient(180deg,rgba(0,0,0,.06),rgba(0,0,0,.12));
+  background:linear-gradient(180deg,rgba(0,0,0,.04),rgba(0,0,0,.11));
   z-index:1;
 }
 
@@ -641,7 +645,9 @@ body.player-active{
   z-index:10000;
 }
 
-#splash.oculto{display:none;}
+#splash.oculto{
+  display:none;
+}
 
 #splash img{
   width:220px;
@@ -915,6 +921,7 @@ body.player-active{
 
 <script>
 let deferredPrompt = null;
+const VERSION_CACHE = "v=20260519-final";
 
 const bloques = [
   {
@@ -996,9 +1003,35 @@ function porcentajeBloque(bloque){
   return Math.max(4, Math.min(100, (avance / total) * 100));
 }
 
+function urlConCache(url){
+  return url + "?" + VERSION_CACHE;
+}
+
+function aplicarImagenBloque(bloque){
+  const hero = document.getElementById("heroImage");
+  const imgUrl = urlConCache(bloque.imagen);
+
+  const precarga = new Image();
+
+  precarga.onload = function(){
+    hero.style.backgroundImage = "url('" + imgUrl + "')";
+    hero.style.backgroundSize = "cover";
+    hero.style.backgroundPosition = "center";
+    document.documentElement.style.setProperty("--bg-img", "url('" + imgUrl + "')");
+  };
+
+  precarga.onerror = function(){
+    hero.style.backgroundImage = "linear-gradient(135deg," + bloque.color1 + "," + bloque.color2 + ")";
+    hero.style.backgroundSize = "cover";
+    hero.style.backgroundPosition = "center";
+    document.documentElement.style.setProperty("--bg-img", "url('fondo.jpg')");
+  };
+
+  precarga.src = imgUrl;
+}
+
 function actualizarBloque(){
   const bloque = obtenerBloqueActual();
-  const hero = document.getElementById("heroImage");
 
   document.getElementById("bloqueActual").textContent = bloque.nombre;
   document.getElementById("diasActuales").textContent = bloque.dias;
@@ -1006,18 +1039,7 @@ function actualizarBloque(){
   document.getElementById("heroBgText").textContent = bloque.fondo;
   document.getElementById("progressBar").style.width = porcentajeBloque(bloque) + "%";
 
-  hero.style.backgroundImage = "url('" + bloque.imagen + "')";
-  hero.style.backgroundSize = "cover";
-  hero.style.backgroundPosition = "center";
-
-  document.documentElement.style.setProperty("--bg-img", "url('" + bloque.imagen + "')");
-
-  const preload = new Image();
-  preload.onerror = function(){
-    hero.style.backgroundImage = "linear-gradient(135deg," + bloque.color1 + "," + bloque.color2 + ")";
-    document.documentElement.style.setProperty("--bg-img", "url('fondo.jpg')");
-  };
-  preload.src = bloque.imagen;
+  aplicarImagenBloque(bloque);
 
   document.querySelectorAll(".schedule-card").forEach(card => card.classList.remove("active"));
   const activeCard = document.getElementById(bloque.id);
