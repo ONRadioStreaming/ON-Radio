@@ -30,6 +30,34 @@ html{
   scroll-behavior:smooth;
 }
 
+<script>
+
+function compartirApp(){
+
+if(navigator.share){
+
+navigator.share({
+title:'ON Radio',
+text:'Escuchá ON Radio 📻 Música y programación en vivo',
+url:'https://www.laonradio.com.ar'
+});
+
+}else{
+
+window.open(
+'https://wa.me/?text='+
+encodeURIComponent(
+'Escuchá ON Radio 📻 Música y programación en vivo https://www.laonradio.com.ar'
+),
+'_blank'
+);
+
+}
+
+}
+
+</script>
+  
 body{
   margin:0;
   font-family:Arial,Helvetica,sans-serif;
@@ -85,9 +113,10 @@ body::after{
 .icon-btn{
   background:transparent;
   border:none;
-  color:white;
+  color:#fff;
+  font-size:24px;
   cursor:pointer;
-  line-height:1;
+  padding:0;
 }
 
 .menu-btn{
@@ -736,9 +765,16 @@ body.player-active{
   </div>
 
   <div class="header-actions">
-    <button class="icon-btn play-header" onclick="abrirSenales()" aria-label="Reproducir">▶</button>
-    <button class="icon-btn calendar-header" onclick="irAProgramacion()" aria-label="Programación">▣</button>
-  </div>
+
+<button class="play-header" onclick="toggleRadio()">
+▶
+</button>
+
+<button class="icon-btn" onclick="compartirApp()" title="Compartir">
+📤
+</button>
+
+</div>
 </header>
 
 <div id="drawerOverlay" class="drawer-overlay" onclick="cerrarMenu()"></div>
