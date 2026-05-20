@@ -814,18 +814,14 @@ body::after{
 }
 
 .share-header{
-width:28px;
-height:28px;
+width:30px;
+height:30px;
 display:flex;
 align-items:center;
 justify-content:center;
-font-size:22px;
-font-weight:700;
-color:#fff;
 background:transparent;
 border:none;
 padding:0;
-line-height:1;
 }
 
 .main{
@@ -1060,7 +1056,15 @@ body.player-active{
 
   <div class="header-actions">
     <button class="icon-btn play-header" onclick="abrirSenales()" aria-label="Reproducir">▶</button>
-    <button class="icon-btn share-header" onclick="compartirApp()" aria-label="Compartir">⤴</button>
+    <button class="icon-btn share-header" onclick="compartirApp()" aria-label="Compartir">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+<circle cx="18" cy="5" r="3" fill="white"/>
+<circle cx="6" cy="12" r="3" fill="white"/>
+<circle cx="18" cy="19" r="3" fill="white"/>
+<line x1="8.5" y1="11" x2="15.5" y2="6.5" stroke="white" stroke-width="2"/>
+<line x1="8.5" y1="13" x2="15.5" y2="17.5" stroke="white" stroke-width="2"/>
+</svg>
+</button>
   </div>
 </header>
 
