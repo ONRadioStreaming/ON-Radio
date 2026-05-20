@@ -1004,7 +1004,7 @@ function aplicarImagenBloque(bloque){
   const precarga = new Image();
 
   precarga.onload = function(){
-    hero.style.background = "url('" + imgUrl + "') center center / cover no-repeat";
+    hero.style.background = "url('" + imgUrl + "') center top / cover no-repeat";
     document.documentElement.style.setProperty("--bg-img", "url('" + imgUrl + "')");
   };
 
