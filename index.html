@@ -179,21 +179,19 @@ body::after{
 
 .hero-image-wrap{
   position:relative;
-  height:315px;
-  background:center center/contain no-repeat;
-  background-color:#111;
+  height:auto;
   overflow:hidden;
   display:flex;
   align-items:center;
   justify-content:center;
+  background:transparent;
 }
 
-.hero-image-wrap::after{
-  content:"";
-  position:absolute;
-  inset:0;
-  background:linear-gradient(180deg,rgba(0,0,0,.02),rgba(0,0,0,.07));
-  z-index:1;
+.hero-image-wrap img{
+  width:100%;
+  height:auto;
+  object-fit:contain;
+  display:block;
 }
 
 .music-badge{
