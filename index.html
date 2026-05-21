@@ -861,7 +861,7 @@ padding:0;
 .hero-image-wrap{
   position:relative;
   height:315px;
-  background:center center/cover no-repeat;
+  background:center top/cover no-repeat;
   background-color:#111;
   overflow:hidden;
   display:flex;
@@ -1344,7 +1344,7 @@ function aplicarImagenBloque(bloque){
   const precarga = new Image();
 
   precarga.onload = function(){
-    hero.style.background = "url('" + imgUrl + "') center center / cover no-repeat";
+   hero.style.background = "url('" + imgUrl + "') center top / cover no-repeat";
     document.documentElement.style.setProperty("--bg-img", "url('" + imgUrl + "')");
   };
 
