@@ -1486,6 +1486,21 @@ function sugerirInstalacion(){
 
 const audioStreaming = document.getElementById("streaming");
 
+if ("mediaSession" in navigator) {
+  navigator.mediaSession.metadata = new MediaMetadata({
+    title: "Reproduciendo ON Radio",
+    artist: "ON Radio",
+    album: "Dale ON a la música que más te gusta",
+    artwork: [
+      {
+        src: "icono-512.png",
+        sizes: "512x512",
+        type: "image/png"
+      }
+    ]
+  });
+}
+  
 audioStreaming.addEventListener("ended", ()=>{
   ocultarBarraPlayer();
 });
