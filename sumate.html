@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Sumá tu comercio | No Es Lo Que Parece</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #080808; color: #fff; font-family: Arial, sans-serif; }
+    .wrap { max-width: 720px; margin: auto; padding: 18px; }
+    .head { text-align: center; }
+    .logo { width: 180px; max-width: 60%; border-radius: 18px; }
+    .tag { display: inline-block; background: #e30613; padding: 8px 14px; border-radius: 20px; font-weight: 800; margin-top: 16px; }
+    .head h1 { font-size: 46px; line-height: .95; margin: 14px 0; }
+    .pink { color: #ff1684; }
+    .head p { color: #ddd; line-height: 1.45; font-size: 17px; }
+    .card { background: #f6f6f6; color: #111; border-radius: 22px; padding: 22px; margin-top: 22px; }
+    .card h2 { margin: 0 0 8px; }
+    .intro { color: #555; line-height: 1.4; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .field { display: flex; flex-direction: column; gap: 6px; }
+    .full { grid-column: 1/-1; }
+    label { font-size: 14px; font-weight: 800; }
+    input[type="text"], select, textarea { font: inherit; padding: 13px; border: 1px solid #ccc; border-radius: 10px; background: #fff; }
+    textarea { min-height: 110px; resize: vertical; }
+
+    button { width: 100%; margin-top: 18px; border: 0; border-radius: 13px; padding: 17px; background: #25d366; color: #063b1b; font-size: 18px; font-weight: 900; cursor: pointer; }
+    .note { font-size: 12px; color: #666; text-align: center; margin-top: 10px; line-height: 1.4; }
+    .foot { text-align: center; color: #aaa; font-size: 13px; padding: 20px 0; }
+
+    @media(max-width: 600px) {
+      .grid { grid-template-columns: 1fr; }
+      .full { grid-column: auto; }
+      .head h1 { font-size: 38px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <header class="head">
+      <img class="logo" src="logo.png" alt="La ON Radio">
+      <div class="tag">AUSPICIANTES · PREMIO SEMANAL</div>
+      <h1>SUMÁ TU <span class="pink">COMERCIO</span></h1>
+      <p>Sé parte de <strong>No Es Lo Que Parece</strong>, el nuevo programa de entretenimiento de La ON Radio. <strong>Lunes a viernes, 22 a 00 hs.</strong></p>
+    </header>
+
+    <section class="card">
+      <h2>🎁 Queremos conocerte</h2>
+      <p class="intro">Completá estos datos y contanos qué premio querés aportar y qué te gustaría destacar de tu negocio.</p>
+
+      <form id="f">
+        <div class="grid">
+          <div class="field"><label>Nombre del comercio *</label><input id="comercio" type="text" required></div>
+          <div class="field"><label>Nombre y apellido *</label><input id="contacto" type="text" required></div>
+          <div class="field"><label>WhatsApp / teléfono *</label><input id="telefono" type="text" required></div>
+          <div class="field"><label>Dirección</label><input id="direccion" type="text"></div>
+          <div class="field"><label>Rubro *</label><input id="rubro" type="text" required></div>
+          <div class="field"><label>Instagram / Facebook</label><input id="redes" type="text"></div>
+          
+          <div class="field full">
+            <label>🎁 ¿Qué premio querés aportar? *</label>
+            <input id="premio" type="text" required>
+          </div>
+
+          <!-- Selección de Frecuencia / Disponibilidad -->
+          <div class="field full">
+            <label>📅 ¿Con qué frecuencia / semana preferís participar? *</label>
+            <select id="frecuencia" required>
+              <option value="Todas las semanas del mes">Todas las semanas del mes</option>
+              <option value="1.ª semana del mes">1.ª semana del mes</option>
+              <option value="2.ª semana del mes">2.ª semana del mes</option>
+              <option value="3.ª semana del mes">3.ª semana del mes</option>
+              <option value="4.ª semana del mes">4.ª semana del mes</option>
+              <option value="Cualquier semana (a coordinar según disponibilidad)">Cualquier semana (a coordinar)</option>
+            </select>
+          </div>
+
+          <div class="field full">
+            <label>📣 ¿Qué querés remarcar de tu negocio?</label>
+            <textarea id="destacar" placeholder="Ej.: delivery, promociones, productos nuevos, servicio destacado..."></textarea>
+          </div>
+          
+          <div class="field full">
+            <label>Mensaje adicional</label>
+            <textarea id="mensaje"></textarea>
+          </div>
+        </div>
+
+        <button>📲 ENVIAR POR WHATSAPP</button>
+        <div class="note">Se abrirá WhatsApp con el mensaje preparado. Solo tenés que revisar y tocar “Enviar”.</div>
+      </form>
+    </section>
+
+    <footer class="foot"><strong>NO ES LO QUE PARECE</strong> · La ON Radio · Va con vos!</footer>
+  </main>
+
+  <script>
+    const v = id => document.getElementById(id).value.trim();
+
+    document.getElementById('f').addEventListener('submit', e => {
+      e.preventDefault();
+
+      const m = `Hola Guille! 👋\n\nQuiero sumar mi comercio como auspiciante del Premio Semanal de NO ES LO QUE PARECE.\n\n🏪 Comercio: ${v('comercio')}\n👤 Contacto: ${v('contacto')}\n📱 WhatsApp/teléfono: ${v('telefono')}\n📍 Dirección: ${v('direccion')||'No informado'}\n🏷️ Rubro: ${v('rubro')}\n📲 Redes: ${v('redes')||'No informado'}\n\n🎁 Premio que quiero aportar:\n${v('premio')}\n📅 Frecuencia/Semana elegida: ${v('frecuencia')}\n\n📣 Qué quiero remarcar de mi negocio:\n${v('destacar')||'No informado'}\n\n💬 Mensaje adicional:\n${v('mensaje')||'No informado'}\n\nMe interesa recibir información para participar.`;
+
+      window.open('https://wa.me/5492474445664?text=' + encodeURIComponent(m), '_blank');
+    });
+  </script>
+</body>
+</html>
