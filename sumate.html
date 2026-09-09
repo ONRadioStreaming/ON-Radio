@@ -15,21 +15,33 @@
     .pink { color: #ff1684; }
     .head p { color: #ddd; line-height: 1.45; font-size: 17px; }
     .card { background: #f6f6f6; color: #111; border-radius: 22px; padding: 22px; margin-top: 22px; }
-    .card h2 { margin: 0 0 8px; }
-    .intro { color: #555; line-height: 1.4; }
+    .card h2 { margin: 0 0 6px; font-size: 24px; }
+    .intro { color: #555; line-height: 1.4; margin-top: 0; margin-bottom: 20px; }
     .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
     .field { display: flex; flex-direction: column; gap: 6px; }
     .full { grid-column: 1/-1; }
-    label { font-size: 14px; font-weight: 800; }
-    input[type="text"], select, textarea { font: inherit; padding: 13px; border: 1px solid #ccc; border-radius: 10px; background: #fff; }
-    textarea { min-height: 110px; resize: vertical; }
+    label { font-size: 14px; font-weight: 800; color: #222; }
+    input[type="text"], textarea { font: inherit; padding: 13px; border: 1px solid #ccc; border-radius: 10px; background: #fff; }
+    textarea { min-height: 100px; resize: vertical; }
 
-    button { width: 100%; margin-top: 18px; border: 0; border-radius: 13px; padding: 17px; background: #25d366; color: #063b1b; font-size: 18px; font-weight: 900; cursor: pointer; }
+    /* Tarjetas con Checkbox */
+    .freq-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 4px; }
+    .freq-option { display: flex; align-items: center; gap: 10px; background: #fff; padding: 12px; border: 1px solid #ccc; border-radius: 10px; cursor: pointer; transition: 0.2s; }
+    .freq-option:hover { border-color: #e30613; }
+    .freq-option input { margin: 0; width: 18px; height: 18px; cursor: pointer; }
+    .freq-option span { font-size: 13px; font-weight: 600; color: #333; }
+
+    /* Estilo en gris cuando se bloquean por "Todas las semanas" */
+    .freq-option.disabled { background: #e9ecef; border-color: #ddd; cursor: not-allowed; opacity: 0.7; }
+    .freq-option.disabled span { color: #6c757d; }
+
+    button { width: 100%; margin-top: 22px; border: 0; border-radius: 13px; padding: 17px; background: #25d366; color: #063b1b; font-size: 18px; font-weight: 900; cursor: pointer; }
+    button:hover { background: #20bd5a; }
     .note { font-size: 12px; color: #666; text-align: center; margin-top: 10px; line-height: 1.4; }
     .foot { text-align: center; color: #aaa; font-size: 13px; padding: 20px 0; }
 
     @media(max-width: 600px) {
-      .grid { grid-template-columns: 1fr; }
+      .grid, .freq-grid { grid-template-columns: 1fr; }
       .full { grid-column: auto; }
       .head h1 { font-size: 38px; }
     }
@@ -46,48 +58,68 @@
 
     <section class="card">
       <h2>🎁 Queremos conocerte</h2>
-      <p class="intro">Completá estos datos y contanos qué premio querés aportar y qué te gustaría destacar de tu negocio.</p>
+      <p class="intro">Completá tus datos para coordinar la entrega de tu premio y la difusión de tu negocio en la radio.</p>
 
       <form id="f">
         <div class="grid">
-          <div class="field"><label>Nombre del comercio *</label><input id="comercio" type="text" required></div>
-          <div class="field"><label>Nombre y apellido *</label><input id="contacto" type="text" required></div>
-          <div class="field"><label>WhatsApp / teléfono *</label><input id="telefono" type="text" required></div>
-          <div class="field"><label>Dirección</label><input id="direccion" type="text"></div>
-          <div class="field"><label>Rubro *</label><input id="rubro" type="text" required></div>
-          <div class="field"><label>Instagram / Facebook</label><input id="redes" type="text"></div>
+          <div class="field"><label>Nombre del comercio *</label><input id="comercio" type="text" required placeholder="Ej.: Panadería El Sol"></div>
+          <div class="field"><label>Nombre y apellido de contacto *</label><input id="contacto" type="text" required placeholder="Ej.: María González"></div>
+          <div class="field"><label>WhatsApp / Teléfono *</label><input id="telefono" type="text" required placeholder="Ej.: 2474 123456"></div>
+          <div class="field"><label>Dirección</label><input id="direccion" type="text" placeholder="Ej.: Av. San Martín 123"></div>
+          <div class="field full"><label>Rubro *</label><input id="rubro" type="text" required placeholder="Ej.: Gastronomía, Indumentaria..."></div>
+          
+          <div class="field"><label>Instagram</label><input id="instagram" type="text" placeholder="@tucomercio"></div>
+          <div class="field"><label>Facebook</label><input id="facebook" type="text" placeholder="Facebook de tu negocio"></div>
           
           <div class="field full">
             <label>🎁 ¿Qué premio querés aportar? *</label>
-            <input id="premio" type="text" required>
+            <input id="premio" type="text" required placeholder="Ej.: 1 Cena para 2 personas / 1 Orden de compra de $15.000">
           </div>
 
-          <!-- Selección de Frecuencia / Disponibilidad -->
+          <!-- Selección múltiple con Checkboxes -->
           <div class="field full">
-            <label>📅 ¿Con qué frecuencia / semana preferís participar? *</label>
-            <select id="frecuencia" required>
-              <option value="Todas las semanas del mes">Todas las semanas del mes</option>
-              <option value="1.ª semana del mes">1.ª semana del mes</option>
-              <option value="2.ª semana del mes">2.ª semana del mes</option>
-              <option value="3.ª semana del mes">3.ª semana del mes</option>
-              <option value="4.ª semana del mes">4.ª semana del mes</option>
-              <option value="Cualquier semana (a coordinar según disponibilidad)">Cualquier semana (a coordinar)</option>
-            </select>
+            <label>📅 ¿Qué semanas preferís participar? (Podés tildar más de una) *</label>
+            <div class="freq-grid">
+              <label class="freq-option full">
+                <input type="checkbox" id="todas-semanas" name="frecuencia" value="Todas las semanas del mes" checked>
+                <span>Todas las semanas del mes</span>
+              </label>
+              <label class="freq-option sub-option disabled">
+                <input type="checkbox" class="semana-individual" name="frecuencia" value="1.ª semana del mes" checked disabled>
+                <span>1.ª semana del mes</span>
+              </label>
+              <label class="freq-option sub-option disabled">
+                <input type="checkbox" class="semana-individual" name="frecuencia" value="2.ª semana del mes" checked disabled>
+                <span>2.ª semana del mes</span>
+              </label>
+              <label class="freq-option sub-option disabled">
+                <input type="checkbox" class="semana-individual" name="frecuencia" value="3.ª semana del mes" checked disabled>
+                <span>3.ª semana del mes</span>
+              </label>
+              <label class="freq-option sub-option disabled">
+                <input type="checkbox" class="semana-individual" name="frecuencia" value="4.ª semana del mes" checked disabled>
+                <span>4.ª semana del mes</span>
+              </label>
+              <label class="freq-option full">
+                <input type="checkbox" id="a-coordinar" name="frecuencia" value="A coordinar según disponibilidad">
+                <span>A coordinar disponibilidad</span>
+              </label>
+            </div>
           </div>
 
           <div class="field full">
-            <label>📣 ¿Qué querés remarcar de tu negocio?</label>
-            <textarea id="destacar" placeholder="Ej.: delivery, promociones, productos nuevos, servicio destacado..."></textarea>
+            <label>📣 ¿Qué querés remarcar de tu negocio al aire?</label>
+            <textarea id="destacar" placeholder="Ej.: Envíos a domicilio gratis, promociones de jueves a sábados, nuevos productos..."></textarea>
           </div>
           
           <div class="field full">
-            <label>Mensaje adicional</label>
-            <textarea id="mensaje"></textarea>
+            <label>Mensaje adicional o consulta</label>
+            <textarea id="mensaje" placeholder="Escribí acá cualquier duda o detalle adicional que quieras contarnos."></textarea>
           </div>
         </div>
 
-        <button>📲 ENVIAR POR WHATSAPP</button>
-        <div class="note">Se abrirá WhatsApp con el mensaje preparado. Solo tenés que revisar y tocar “Enviar”.</div>
+        <button type="submit">📲 ENVIAR POR WHATSAPP</button>
+        <div class="note">Se abrirá tu aplicación de WhatsApp con el mensaje armado. Al enviar, acordate de adjuntarnos tu logo en imagen.</div>
       </form>
     </section>
 
@@ -97,10 +129,40 @@
   <script>
     const v = id => document.getElementById(id).value.trim();
 
+    const chkTodas = document.getElementById('todas-semanas');
+    const chkIndividuales = document.querySelectorAll('.semana-individual');
+
+    // Lógica para marcar/desmarcar automáticamente
+    chkTodas.addEventListener('change', () => {
+      const active = chkTodas.checked;
+      chkIndividuales.forEach(chk => {
+        chk.checked = active;
+        chk.disabled = active;
+        const parent = chk.parentElement;
+        if (active) {
+          parent.classList.add('disabled');
+        } else {
+          parent.classList.remove('disabled');
+        }
+      });
+    });
+
     document.getElementById('f').addEventListener('submit', e => {
       e.preventDefault();
 
-      const m = `Hola Guille! 👋\n\nQuiero sumar mi comercio como auspiciante del Premio Semanal de NO ES LO QUE PARECE.\n\n🏪 Comercio: ${v('comercio')}\n👤 Contacto: ${v('contacto')}\n📱 WhatsApp/teléfono: ${v('telefono')}\n📍 Dirección: ${v('direccion')||'No informado'}\n🏷️ Rubro: ${v('rubro')}\n📲 Redes: ${v('redes')||'No informado'}\n\n🎁 Premio que quiero aportar:\n${v('premio')}\n📅 Frecuencia/Semana elegida: ${v('frecuencia')}\n\n📣 Qué quiero remarcar de mi negocio:\n${v('destacar')||'No informado'}\n\n💬 Mensaje adicional:\n${v('mensaje')||'No informado'}\n\nMe interesa recibir información para participar.`;
+      let frecuencia = '';
+      if (chkTodas.checked) {
+        frecuencia = 'Todas las semanas del mes';
+      } else {
+        const seleccionados = Array.from(document.querySelectorAll('input[name="frecuencia"]:checked')).map(el => el.value);
+        if (seleccionados.length === 0) {
+          alert('Por favor, seleccioná al menos una opción de frecuencia.');
+          return;
+        }
+        frecuencia = seleccionados.join(', ');
+      }
+
+      const m = `Hola Guille! 👋\n\nQuiero sumar mi comercio como auspiciante del Premio Semanal de NO ES LO QUE PARECE.\n\n🏪 Comercio: ${v('comercio')}\n👤 Contacto: ${v('contacto')}\n📱 WhatsApp/Tel: ${v('telefono')}\n📍 Dirección: ${v('direccion')||'No informado'}\n🏷️ Rubro: ${v('rubro')}\n📸 Instagram: ${v('instagram')||'No informado'}\n📘 Facebook: ${v('facebook')||'No informado'}\n\n🎁 Premio a aportar:\n${v('premio')}\n📅 Frecuencia preferida: ${frecuencia}\n\n📣 Para destacar al aire:\n${v('destacar')||'No informado'}\n\n💬 Mensaje adicional:\n${v('mensaje')||'No informado'}\n\nQuedo a la espera para coordinar.`;
 
       window.open('https://wa.me/5492474445664?text=' + encodeURIComponent(m), '_blank');
     });
