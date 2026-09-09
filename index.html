@@ -199,7 +199,7 @@ body::after{
 }
 
 .hero-bg-text{
-display:none;
+  display:none;
 }
 
 .play-center{
@@ -298,6 +298,113 @@ display:none;
   font-size:12px;
   opacity:.92;
   font-weight:700;
+}
+
+/* CHAT DE OYENTES */
+.chat-card {
+  background: rgba(20, 20, 20, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 22px;
+  padding: 18px;
+  margin-bottom: 27px;
+  box-shadow: var(--sombra);
+  backdrop-filter: blur(10px);
+}
+
+.chat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.chat-header h2 {
+  font-size: 20px;
+  margin: 0;
+  color: #fff !important;
+}
+
+.online-badge {
+  color: #00ff66;
+  font-size: 12px;
+  font-weight: 800;
+  animation: titileo 1.5s infinite;
+}
+
+@keyframes titileo {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.chat-box {
+  height: 220px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-right: 5px;
+  margin-bottom: 14px;
+}
+
+.chat-box::-webkit-scrollbar { width: 4px; }
+.chat-box::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.3); border-radius: 4px; }
+
+.chat-msg {
+  background: rgba(255, 255, 255, 0.08);
+  padding: 8px 12px;
+  border-radius: 12px;
+  font-size: 14px;
+  border-left: 3px solid var(--rojo);
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.chat-msg-user {
+  font-weight: 900;
+  color: #ffcc00;
+  margin-right: 6px;
+}
+
+.chat-msg-time {
+  font-size: 10px;
+  opacity: 0.6;
+  float: right;
+  margin-top: 2px;
+}
+
+.chat-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.chat-form input {
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  outline: none;
+}
+
+.chat-input-group {
+  display: flex;
+  gap: 8px;
+}
+
+.chat-form button {
+  background: var(--rojo);
+  color: #fff;
+  border: none;
+  padding: 0 18px;
+  border-radius: 10px;
+  font-weight: 900;
+  cursor: pointer;
 }
 
 /* PROGRAMACION */
@@ -812,14 +919,14 @@ body::after{
 }
 
 .share-header{
-width:30px;
-height:30px;
-display:flex;
-align-items:center;
-justify-content:center;
-background:transparent;
-border:none;
-padding:0;
+  width:30px;
+  height:30px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:transparent;
+  border:none;
+  padding:0;
 }
 
 .main{
@@ -1169,6 +1276,23 @@ body.player-active{
     </div>
   </a>
 
+  <section class="chat-card">
+    <div class="chat-header">
+      <h2>💬 Chat de Oyentes</h2>
+      <span class="online-badge">● EN VIVO</span>
+    </div>
+    
+    <div id="chatBox" class="chat-box"></div>
+
+    <form id="chatForm" class="chat-form" onsubmit="enviarMensaje(event)">
+      <input type="text" id="chatNombre" placeholder="Tu nombre" required maxlength="20">
+      <div class="chat-input-group">
+        <input type="text" id="chatTexto" placeholder="Deja tu saludo para la radio..." required maxlength="120">
+        <button type="submit">Enviar</button>
+      </div>
+    </form>
+  </section>
+
   <section id="programacion">
     <h2 class="section-title">Nuestra Programación</h2>
 
@@ -1440,7 +1564,6 @@ function instalarApp(){
   }
 }
 
-
 function compartirApp(){
   const shareData = {
     title:"ON Radio",
@@ -1509,9 +1632,65 @@ audioStreaming.addEventListener("error", ()=>{
   ocultarBarraPlayer();
 });
 
+/* LÓGICA CHAT EN VIVO Y MENSAJES AUTOMÁTICOS */
+const mensajesSimulados = [
+  { nombre: "Martín de Rojas", texto: "¡Buenas tardes gente! Escuchándolos desde el taller. Mándenle un tema de Soda!" },
+  { nombre: "Camila", texto: "Hola ON Radio, ¡saludos para toda la audiencia de Pergamino!" },
+  { nombre: "Gonzalo", texto: "¡Muy buena la selección musical de hoy! No la corten nunca." },
+  { nombre: "Lucía", texto: "Un abrazo gigante para la mesa de los chicos del turno tarde." },
+  { nombre: "Roberto", texto: "Firme junto a la ON como todas las mañanas desde la ruta." },
+  { nombre: "Mariana", texto: "¡Saludos desde Salto! Pongan el último tema de Maria Becerra porfa." },
+  { nombre: "Esteban", texto: "Acá prendidísimo a la radio mientras trabajo. ¡Un caño la transmisión!" }
+];
+
+let indiceSimulado = 0;
+
+function agregarMensajeAlChat(nombre, texto) {
+  const chatBox = document.getElementById("chatBox");
+  const ahora = new Date();
+  const hora = ahora.getHours().toString().padStart(2, '0') + ":" + ahora.getMinutes().toString().padStart(2, '0');
+
+  const msgDiv = document.createElement("div");
+  msgDiv.className = "chat-msg";
+  msgDiv.innerHTML = `
+    <span class="chat-msg-time">${hora}</span>
+    <span class="chat-msg-user">${nombre}:</span>
+    <span class="chat-msg-text">${texto}</span>
+  `;
+
+  chatBox.appendChild(msgDiv);
+  chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+function enviarMensaje(event) {
+  event.preventDefault();
+  const inputNombre = document.getElementById("chatNombre");
+  const inputTexto = document.getElementById("chatTexto");
+
+  const nombre = inputNombre.value.trim();
+  const texto = inputTexto.value.trim();
+
+  if (nombre && texto) {
+    agregarMensajeAlChat(nombre, texto);
+    inputTexto.value = "";
+  }
+}
+
+function simularEntradaMensaje() {
+  const msg = mensajesSimulados[indiceSimulado];
+  agregarMensajeAlChat(msg.nombre, msg.texto);
+  indiceSimulado = (indiceSimulado + 1) % mensajesSimulados.length;
+}
+
+function iniciarChat() {
+  simularEntradaMensaje();
+  setInterval(simularEntradaMensaje, 60000);
+}
+
 actualizarBloque();
 iniciarSplash();
 sugerirInstalacion();
+iniciarChat();
 
 setInterval(actualizarBloque, 60000);
 </script>
