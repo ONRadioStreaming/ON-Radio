@@ -1,171 +1,789 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Sumá tu comercio | No Es Lo Que Parece</title>
-  <style>
-    * { box-sizing: border-box; }
-    body { margin: 0; background: #080808; color: #fff; font-family: Arial, sans-serif; }
-    .wrap { max-width: 720px; margin: auto; padding: 18px; }
-    .head { text-align: center; }
-    .logo { width: 180px; max-width: 60%; border-radius: 18px; }
-    .tag { display: inline-block; background: #e30613; padding: 8px 14px; border-radius: 20px; font-weight: 800; margin-top: 16px; }
-    .head h1 { font-size: 46px; line-height: .95; margin: 14px 0; }
-    .pink { color: #ff1684; }
-    .head p { color: #ddd; line-height: 1.45; font-size: 17px; }
-    .card { background: #f6f6f6; color: #111; border-radius: 22px; padding: 22px; margin-top: 22px; }
-    .card h2 { margin: 0 0 6px; font-size: 24px; }
-    .intro { color: #555; line-height: 1.4; margin-top: 0; margin-bottom: 20px; }
-    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-    .field { display: flex; flex-direction: column; gap: 6px; }
-    .full { grid-column: 1/-1; }
-    label { font-size: 14px; font-weight: 800; color: #222; }
-    input[type="text"], textarea { font: inherit; padding: 13px; border: 1px solid #ccc; border-radius: 10px; background: #fff; }
-    textarea { min-height: 100px; resize: vertical; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ON Radio - En Vivo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-red: #cc0000;
+            --dark-red: #800000;
+            --accent-pink: #ff007f;
+            --bg-dark: #0a0a0c;
+            --card-bg: #121318;
+            --text-light: #f0f0f5;
+            --text-muted: #a0a0b0;
+            --whatsapp-green: #054720;
+            --whatsapp-light: #25d366;
+        }
 
-    /* Tarjetas con Checkbox */
-    .freq-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 4px; }
-    .freq-option { display: flex; align-items: center; gap: 10px; background: #fff; padding: 12px; border: 1px solid #ccc; border-radius: 10px; cursor: pointer; transition: 0.2s; }
-    .freq-option:hover { border-color: #e30613; }
-    .freq-option input { margin: 0; width: 18px; height: 18px; cursor: pointer; }
-    .freq-option span { font-size: 13px; font-weight: 600; color: #333; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
 
-    /* Estilo en gris cuando se bloquean por "Todas las semanas" */
-    .freq-option.disabled { background: #e9ecef; border-color: #ddd; cursor: not-allowed; opacity: 0.7; }
-    .freq-option.disabled span { color: #6c757d; }
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
 
-    button { width: 100%; margin-top: 22px; border: 0; border-radius: 13px; padding: 17px; background: #25d366; color: #063b1b; font-size: 18px; font-weight: 900; cursor: pointer; }
-    button:hover { background: #20bd5a; }
-    .note { font-size: 12px; color: #666; text-align: center; margin-top: 10px; line-height: 1.4; }
-    .foot { text-align: center; color: #aaa; font-size: 13px; padding: 20px 0; }
+        .app-container {
+            width: 100%;
+            max-width: 480px;
+            background: #000000;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            box-shadow: 0 0 30px rgba(0,0,0,0.8);
+            padding-bottom: 20px;
+        }
 
-    @media(max-width: 600px) {
-      .grid, .freq-grid { grid-template-columns: 1fr; }
-      .full { grid-column: auto; }
-      .head h1 { font-size: 38px; }
-    }
-  </style>
+        /* Top Header Navigation */
+        .top-bar {
+            background: linear-gradient(180deg, var(--primary-red) 0%, var(--dark-red) 100%);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+        }
+
+        .brand-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .menu-btn, .share-btn, .play-head-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 4px;
+        }
+
+        .brand-title {
+            font-weight: 900;
+            font-size: 1.3rem;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .play-head-btn {
+            width: 32px;
+            height: 32px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+        }
+
+        /* Banner Hero Section */
+        .hero-banner {
+            position: relative;
+            width: 100%;
+            background: #15151c;
+            overflow: hidden;
+            border-bottom: 3px solid var(--primary-red);
+        }
+
+        .banner-img-container {
+            position: relative;
+            width: 100%;
+            height: 180px;
+            background: url('https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?auto=format&fit=crop&w=800&q=80') center/cover;
+        }
+
+        .banner-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(0deg, rgba(16,0,0,0.95) 0%, rgba(0,0,0,0.4) 60%, rgba(0,0,0,0.2) 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 16px;
+        }
+
+        .show-badge {
+            background: var(--accent-pink);
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 800;
+            padding: 3px 8px;
+            border-radius: 4px;
+            align-self: flex-start;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+        }
+
+        .show-time-tag {
+            color: #ffcccc;
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .show-title-main {
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: #ffffff;
+            line-height: 1.1;
+            margin: 2px 0 4px 0;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+        }
+
+        .now-on-air-bar {
+            background: #800000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 16px;
+            font-size: 0.8rem;
+        }
+
+        .air-label {
+            color: #ffaaaa;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .air-program {
+            font-weight: 800;
+            color: #ffffff;
+        }
+
+        .air-schedule {
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        /* Main Content Wrapper */
+        .content-body {
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* WhatsApp Audio CTA Button */
+        .whatsapp-banner-btn {
+            background: linear-gradient(135deg, #054720 0%, #0d6932 100%);
+            border: 1px solid rgba(37, 211, 102, 0.4);
+            border-radius: 16px;
+            padding: 14px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            color: white;
+            text-decoration: none;
+            box-shadow: 0 4px 15px rgba(5, 71, 32, 0.4);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .whatsapp-banner-btn:active {
+            transform: scale(0.98);
+        }
+
+        .wa-icon-circle {
+            width: 44px;
+            height: 44px;
+            background: var(--whatsapp-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #054720;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .wa-text-details h4 {
+            font-size: 1.1rem;
+            font-weight: 800;
+            line-height: 1.2;
+        }
+
+        .wa-text-details p {
+            font-size: 0.75rem;
+            color: #a3e2bb;
+            margin-top: 2px;
+        }
+
+        /* Chat Component Sin Foto de Usuario */
+        .chat-card {
+            background: #0d0f14;
+            border: 1px solid #1f2330;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-header {
+            padding: 14px 16px;
+            background: #141720;
+            border-bottom: 1px solid #1f2330;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-title-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .chat-title-group i {
+            font-size: 1.2rem;
+            color: #ffffff;
+        }
+
+        .chat-title-text {
+            font-weight: 900;
+            font-size: 0.95rem;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            color: #ffffff;
+        }
+
+        .chat-listeners-count {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.85rem;
+            color: #a0a0b0;
+            font-weight: 700;
+        }
+
+        /* Feed de mensajes */
+        .chat-feed {
+            height: 280px;
+            overflow-y: auto;
+            padding: 12px 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            background: #090a0e;
+            scroll-behavior: smooth;
+        }
+
+        .chat-feed::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .chat-feed::-webkit-scrollbar-thumb {
+            background: #222635;
+            border-radius: 4px;
+        }
+
+        .chat-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            animation: fadeIn 0.3s ease-out;
+            font-size: 0.88rem;
+            padding: 2px 0;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .chat-main-text {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            flex: 1;
+        }
+
+        .chat-author {
+            font-weight: 800;
+            font-size: 0.88rem;
+            flex-shrink: 0;
+        }
+
+        .chat-message {
+            color: #d0d0e0;
+            font-size: 0.85rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .chat-time {
+            font-size: 0.72rem;
+            color: #606575;
+            flex-shrink: 0;
+            font-weight: 600;
+        }
+
+        /* Formulario de envío con 2 campos */
+        .chat-footer-inputs {
+            background: #141720;
+            padding: 12px;
+            border-top: 1px solid #1f2330;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .user-details-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .input-box-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #090a0e;
+            border: 1px solid #222735;
+            border-radius: 10px;
+            padding: 6px 10px;
+        }
+
+        .input-box-row i {
+            color: #606575;
+            font-size: 0.75rem;
+        }
+
+        .user-field-input {
+            background: transparent;
+            border: none;
+            color: #ffffff;
+            font-size: 0.8rem;
+            width: 100%;
+            outline: none;
+        }
+
+        .user-field-input::placeholder {
+            color: #505565;
+        }
+
+        .message-input-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .emoji-btn {
+            background: #090a0e;
+            border: 1px solid #222735;
+            color: #a0a0b0;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .message-input-wrapper {
+            flex: 1;
+            background: #090a0e;
+            border: 1px solid #222735;
+            border-radius: 20px;
+            padding: 0 14px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+        }
+
+        .message-input {
+            background: transparent;
+            border: none;
+            color: #ffffff;
+            font-size: 0.85rem;
+            width: 100%;
+            outline: none;
+        }
+
+        .message-input::placeholder {
+            color: #505565;
+        }
+
+        .send-btn {
+            background: #ff007f;
+            border: none;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.95rem;
+            cursor: pointer;
+            flex-shrink: 0;
+            box-shadow: 0 2px 8px rgba(255, 0, 127, 0.4);
+            transition: transform 0.1s;
+        }
+
+        .send-btn:active {
+            transform: scale(0.92);
+        }
+
+        /* Sección de Programación */
+        .schedule-section h3 {
+            font-size: 1.1rem;
+            font-weight: 800;
+            margin-bottom: 12px;
+            color: #ffffff;
+        }
+
+        .schedule-card {
+            background: var(--card-bg);
+            border-radius: 14px;
+            padding: 14px;
+            border-left: 4px solid var(--primary-red);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .show-info h4 {
+            font-size: 0.95rem;
+            font-weight: 800;
+        }
+
+        .show-info p {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .show-time {
+            font-size: 0.8rem;
+            font-weight: 800;
+            color: #ff9999;
+            background: rgba(204,0,0,0.15);
+            padding: 4px 8px;
+            border-radius: 6px;
+        }
+
+        /* Banner Comercial Sumate */
+        .sumate-promo-card {
+            background: linear-gradient(135deg, #181920 0%, #251015 100%);
+            border: 1px solid rgba(255, 0, 127, 0.3);
+            border-radius: 16px;
+            padding: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            text-decoration: none;
+            color: white;
+            margin-top: 6px;
+        }
+
+        .sumate-info h4 {
+            font-size: 1rem;
+            font-weight: 900;
+            color: #ffffff;
+        }
+
+        .sumate-info p {
+            font-size: 0.75rem;
+            color: #cca3b5;
+            margin-top: 2px;
+        }
+
+        .sumate-btn-badge {
+            background: var(--accent-pink);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        .footer-credits {
+            text-align: center;
+            font-size: 0.72rem;
+            color: #505565;
+            margin-top: 10px;
+        }
+    </style>
 </head>
 <body>
-  <main class="wrap">
-    <header class="head">
-      <img class="logo" src="logotipo.png" alt="La ON Radio">
-      <div class="tag">AUSPICIANTES · PREMIO SEMANAL</div>
-      <h1>SUMÁ TU <span class="pink">COMERCIO</span></h1>
-      <p>Sé parte de <strong>No Es Lo Que Parece</strong>, el nuevo programa de entretenimiento de La ON Radio. <strong>Lunes a viernes, 22 a 00 hs.</strong></p>
+
+<div class="app-container">
+    <!-- Top Bar -->
+    <header class="top-bar">
+        <div class="brand-section">
+            <button class="menu-btn"><i class="fa-solid fa-bars"></i></button>
+            <div class="brand-title">ON Radio</div>
+        </div>
+        <div class="header-actions">
+            <button class="play-head-btn" id="topPlayBtn"><i class="fa-solid fa-play"></i></button>
+            <button class="share-btn" onclick="shareApp()"><i class="fa-solid fa-share-nodes"></i></button>
+        </div>
     </header>
 
-    <section class="card">
-      <h2>🎁 Queremos conocerte</h2>
-      <p class="intro">Completá tus datos para coordinar la entrega de tu premio y la difusión de tu negocio en la radio.</p>
-
-      <form id="f">
-        <div class="grid">
-          <div class="field"><label>Nombre del comercio *</label><input id="comercio" type="text" required placeholder="Ej.: Panadería El Sol"></div>
-          <div class="field"><label>Nombre y apellido de contacto *</label><input id="contacto" type="text" required placeholder="Ej.: María González"></div>
-          <div class="field"><label>WhatsApp / Teléfono *</label><input id="telefono" type="text" required placeholder="Ej.: 2474 123456"></div>
-          <div class="field"><label>Dirección</label><input id="direccion" type="text" placeholder="Ej.: Av. San Martín 123"></div>
-          <div class="field full"><label>Rubro *</label><input id="rubro" type="text" required placeholder="Ej.: Gastronomía, Indumentaria..."></div>
-          
-          <div class="field"><label>Instagram</label><input id="instagram" type="text" placeholder="@tucomercio"></div>
-          <div class="field"><label>Facebook</label><input id="facebook" type="text" placeholder="Facebook de tu negocio"></div>
-          
-          <div class="field full">
-            <label>🎁 ¿Qué premio querés aportar? *</label>
-            <input id="premio" type="text" required placeholder="Ej.: 1 Cena para 2 personas / 1 Orden de compra de $15.000">
-          </div>
-
-          <!-- Selección múltiple con Checkboxes -->
-          <div class="field full">
-            <label>📅 ¿Qué semanas preferís participar? (Podés tildar más de una) *</label>
-            <div class="freq-grid">
-              <label class="freq-option full">
-                <input type="checkbox" id="todas-semanas" name="frecuencia" value="Todas las semanas del mes" checked>
-                <span>Todas las semanas del mes</span>
-              </label>
-              <label class="freq-option sub-option disabled">
-                <input type="checkbox" class="semana-individual" name="frecuencia" value="1.ª semana del mes" checked disabled>
-                <span>1.ª semana del mes</span>
-              </label>
-              <label class="freq-option sub-option disabled">
-                <input type="checkbox" class="semana-individual" name="frecuencia" value="2.ª semana del mes" checked disabled>
-                <span>2.ª semana del mes</span>
-              </label>
-              <label class="freq-option sub-option disabled">
-                <input type="checkbox" class="semana-individual" name="frecuencia" value="3.ª semana del mes" checked disabled>
-                <span>3.ª semana del mes</span>
-              </label>
-              <label class="freq-option sub-option disabled">
-                <input type="checkbox" class="semana-individual" name="frecuencia" value="4.ª semana del mes" checked disabled>
-                <span>4.ª semana del mes</span>
-              </label>
-              <label class="freq-option full">
-                <input type="checkbox" id="a-coordinar" name="frecuencia" value="A coordinar según disponibilidad">
-                <span>A coordinar disponibilidad</span>
-              </label>
+    <!-- Hero Banner -->
+    <section class="hero-banner">
+        <div class="banner-img-container">
+            <div class="banner-overlay">
+                <span class="show-badge">LATINOS E INTERNACIONALES</span>
+                <div class="show-time-tag">07:00 A 13:00 HS</div>
+                <h2 class="show-title-main">MAÑANAS ON</h2>
             </div>
-          </div>
-
-          <div class="field full">
-            <label>📣 ¿Qué querés remarcar de tu negocio al aire?</label>
-            <textarea id="destacar" placeholder="Ej.: Envíos a domicilio gratis, promociones de jueves a sábados, nuevos productos..."></textarea>
-          </div>
-          
-          <div class="field full">
-            <label>Mensaje adicional o consulta</label>
-            <textarea id="mensaje" placeholder="Escribí acá cualquier duda o detalle adicional que quieras contarnos."></textarea>
-          </div>
         </div>
-
-        <button type="submit">📲 ENVIAR POR WHATSAPP</button>
-        <div class="note">Se abrirá tu aplicación de WhatsApp con el mensaje armado. Al enviar, acordate de adjuntarnos tu logo en imagen.</div>
-      </form>
+        <div class="now-on-air-bar">
+            <div>
+                <span class="air-label">Ahora en el aire: </span>
+                <span class="air-program">MAÑANAS ON</span>
+            </div>
+            <div class="air-schedule">Todos los días 07:00 a 13:00</div>
+        </div>
     </section>
 
-    <footer class="foot"><strong>NO ES LO QUE PARECE</strong> · La ON Radio · Va con vos!</footer>
-  </main>
+    <!-- Content Body -->
+    <main class="content-body">
+        <!-- WhatsApp Banner Button -->
+        <a href="https://wa.me/5492474445664?text=Hola%20ON%20Radio!%20Les%20mando%20un%20saludo" target="_blank" class="whatsapp-banner-btn">
+            <div class="wa-icon-circle">
+                <i class="fa-brands fa-whatsapp"></i>
+            </div>
+            <div class="wa-text-details">
+                <h4>Mándanos tu audio</h4>
+                <p>Mensajes, saludos, pedidos musicales y participación</p>
+            </div>
+        </a>
 
-  <script>
-    const v = id => document.getElementById(id).value.trim();
+        <!-- Chat de Saludos (Sin fotos) -->
+        <section class="chat-card">
+            <div class="chat-header">
+                <div class="chat-title-group">
+                    <i class="fa-regular fa-comment-dots"></i>
+                    <span class="chat-title-text">CHAT DE SALUDOS</span>
+                </div>
+                <div class="chat-listeners-count">
+                    <i class="fa-solid fa-user-group"></i> 125
+                </div>
+            </div>
 
-    const chkTodas = document.getElementById('todas-semanas');
-    const chkIndividuales = document.querySelectorAll('.semana-individual');
+            <!-- Chat Stream Feed -->
+            <div class="chat-feed" id="chatFeed"></div>
 
-    // Lógica para marcar/desmarcar automáticamente
-    chkTodas.addEventListener('change', () => {
-      const active = chkTodas.checked;
-      chkIndividuales.forEach(chk => {
-        chk.checked = active;
-        chk.disabled = active;
-        const parent = chk.parentElement;
-        if (active) {
-          parent.classList.add('disabled');
+            <!-- Formulario de envío con 2 inputs -->
+            <div class="chat-footer-inputs">
+                <div class="user-details-grid">
+                    <div class="input-box-row">
+                        <i class="fa-regular fa-user"></i>
+                        <input type="text" id="userNameInput" class="user-field-input" placeholder="Tu nombre..." value="">
+                    </div>
+                    <div class="input-box-row">
+                        <i class="fa-solid fa-location-dot"></i>
+                        <input type="text" id="userCityInput" class="user-field-input" placeholder="Tu localidad..." value="">
+                    </div>
+                </div>
+                <div class="message-input-row">
+                    <button class="emoji-btn" id="emojiBtn">😊</button>
+                    <div class="message-input-wrapper">
+                        <input type="text" id="messageInput" class="message-input" placeholder="Escribe tu saludo..." autocomplete="off">
+                    </div>
+                    <button class="send-btn" id="sendBtn"><i class="fa-solid fa-paper-plane"></i></button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Banner Auspiciantes / Sumá tu Comercio -->
+        <a href="sumate.html" class="sumate-promo-card">
+            <div class="sumate-info">
+                <h4>Sumá tu comercio</h4>
+                <p>Auspiciá el Premio Semanal en No Es Lo Que Parece</p>
+            </div>
+            <div class="sumate-btn-badge">Sumate</div>
+        </a>
+
+        <!-- Nuestra Programación -->
+        <section class="schedule-section">
+            <h3>Nuestra Programación</h3>
+            
+            <div class="schedule-card">
+                <div class="show-info">
+                    <h4>Mañanas ON</h4>
+                    <p>La mejor música para empezar la jornada</p>
+                </div>
+                <div class="show-time">07:00 - 13:00</div>
+            </div>
+
+            <div class="schedule-card">
+                <div class="show-info">
+                    <h4>No Es Lo Que Parece</h4>
+                    <p>Conducción: Guille Caballini</p>
+                </div>
+                <div class="show-time">22:00 - 00:00</div>
+            </div>
+        </section>
+
+        <footer class="footer-credits">
+            ON Radio Stream &copy; 2026. Todos los derechos reservados.
+        </footer>
+    </main>
+</div>
+
+<script>
+    const authorColors = ["#3b82f6", "#ec4899", "#10b981", "#eab308", "#a855f7", "#f97316"];
+
+    const sampleMessages = [
+        { author: "Carlos (Lima)", text: "Saludos desde Lima, excelente música! 🎵" },
+        { author: "María (Rojas)", text: "La mejor radio, siempre conmigo ❤️" },
+        { author: "José (Pergamino)", text: "Éxitos para todo el equipo de ON Radio 👏" },
+        { author: "Ana (Salto)", text: "Saludos a Guille y la audiencia 🎶" },
+        { author: "Luis (Chacabuco)", text: "Gran programación, saludos! 👍" },
+        { author: "Martín (Rojas)", text: "Escuchándolos desde el taller!" },
+        { author: "Florencia (Junín)", text: "Esperando el programa de la noche 🚀" },
+        { author: "Gustavo (Pergamino)", text: "Mándenle un tema de Soda Stereo!" }
+    ];
+
+    const chatFeed = document.getElementById('chatFeed');
+    const userNameInput = document.getElementById('userNameInput');
+    const userCityInput = document.getElementById('userCityInput');
+    const messageInput = document.getElementById('messageInput');
+    const sendBtn = document.getElementById('sendBtn');
+
+    // Cargar datos recordados del localStorage
+    if (localStorage.getItem('onradio_username')) {
+        userNameInput.value = localStorage.getItem('onradio_username');
+    }
+    if (localStorage.getItem('onradio_city')) {
+        userCityInput.value = localStorage.getItem('onradio_city');
+    }
+
+    // Guardar cambios en el navegador
+    userNameInput.addEventListener('input', () => {
+        localStorage.setItem('onradio_username', userNameInput.value.trim());
+    });
+    userCityInput.addEventListener('input', () => {
+        localStorage.setItem('onradio_city', userCityInput.value.trim());
+    });
+
+    function getFormattedTime(date) {
+        const h = String(date.getHours()).padStart(2, '0');
+        const m = String(date.getMinutes()).padStart(2, '0');
+        return `${h}:${m}`;
+    }
+
+    function renderMessage(author, text, timeStr, color, isUser = false) {
+        const item = document.createElement('div');
+        item.className = 'chat-item';
+
+        const finalColor = color || authorColors[Math.floor(Math.random() * authorColors.length)];
+
+        item.innerHTML = `
+            <div class="chat-main-text">
+                <span class="chat-author" style="color: ${isUser ? '#ff007f' : finalColor}">${author}:</span>
+                <span class="chat-message">${text}</span>
+            </div>
+            <span class="chat-time">${timeStr}</span>
+        `;
+
+        chatFeed.appendChild(item);
+        chatFeed.scrollTop = chatFeed.scrollHeight;
+    }
+
+    function initDynamicChat() {
+        chatFeed.innerHTML = '';
+        const now = new Date();
+        
+        for (let i = 4; i >= 0; i--) {
+            const msgDate = new Date(now.getTime() - i * 3 * 60000);
+            const msgObj = sampleMessages[Math.floor(Math.random() * sampleMessages.length)];
+            const color = authorColors[i % authorColors.length];
+            renderMessage(msgObj.author, msgObj.text, getFormattedTime(msgDate), color);
+        }
+    }
+
+    function startSimulatedStream() {
+        setInterval(() => {
+            const now = new Date();
+            const msgObj = sampleMessages[Math.floor(Math.random() * sampleMessages.length)];
+            renderMessage(msgObj.author, msgObj.text, getFormattedTime(now));
+
+            if (chatFeed.children.length > 25) {
+                chatFeed.removeChild(chatFeed.firstChild);
+            }
+        }, 10000);
+    }
+
+    function handleSendMessage() {
+        const text = messageInput.value.trim();
+        const name = userNameInput.value.trim() || 'Oyente';
+        const city = userCityInput.value.trim();
+
+        if (!text) return;
+
+        // Combinar Nombre y Ciudad
+        const authorDisplay = city ? `${name} (${city})` : name;
+
+        // Guardar en localStorage
+        localStorage.setItem('onradio_username', name);
+        if (city) localStorage.setItem('onradio_city', city);
+
+        const now = new Date();
+
+        renderMessage(authorDisplay, text, getFormattedTime(now), "#ff007f", true);
+        messageInput.value = '';
+    }
+
+    sendBtn.addEventListener('click', handleSendMessage);
+    messageInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') handleSendMessage();
+    });
+
+    function shareApp() {
+        if (navigator.share) {
+            navigator.share({
+                title: 'ON Radio',
+                text: 'Escuchá ON Radio en vivo!',
+                url: window.location.href
+            }).catch(() => {});
         } else {
-          parent.classList.remove('disabled');
+            alert('Enlace copiado al portapapeles');
         }
-      });
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+        initDynamicChat();
+        startSimulatedStream();
     });
+</script>
 
-    document.getElementById('f').addEventListener('submit', e => {
-      e.preventDefault();
-
-      let frecuencia = '';
-      if (chkTodas.checked) {
-        frecuencia = 'Todas las semanas del mes';
-      } else {
-        const seleccionados = Array.from(document.querySelectorAll('input[name="frecuencia"]:checked')).map(el => el.value);
-        if (seleccionados.length === 0) {
-          alert('Por favor, seleccioná al menos una opción de frecuencia.');
-          return;
-        }
-        frecuencia = seleccionados.join(', ');
-      }
-
-      const m = `Hola Guille! 👋\n\nQuiero sumar mi comercio como auspiciante del Premio Semanal de NO ES LO QUE PARECE.\n\n🏪 Comercio: ${v('comercio')}\n👤 Contacto: ${v('contacto')}\n📱 WhatsApp/Tel: ${v('telefono')}\n📍 Dirección: ${v('direccion')||'No informado'}\n🏷️ Rubro: ${v('rubro')}\n📸 Instagram: ${v('instagram')||'No informado'}\n📘 Facebook: ${v('facebook')||'No informado'}\n\n🎁 Premio a aportar:\n${v('premio')}\n📅 Frecuencia preferida: ${frecuencia}\n\n📣 Para destacar al aire:\n${v('destacar')||'No informado'}\n\n💬 Mensaje adicional:\n${v('mensaje')||'No informado'}\n\nQuedo a la espera para coordinar.`;
-
-      window.open('https://wa.me/5492474445664?text=' + encodeURIComponent(m), '_blank');
-    });
-  </script>
 </body>
 </html>
