@@ -816,7 +816,7 @@ body.player-active{
   }
 }
 
-/* ===== RESTAURACIÓN VISUAL FINAL ON RADIO ===== */
+/* RESTAURACIÓN VISUAL FINAL ON RADIO */
 
 html,
 body,
@@ -1640,7 +1640,7 @@ audioStreaming.addEventListener("error", ()=>{
   ocultarBarraPlayer();
 });
 
-/* LÓGICA DE CHAT AUTOMÁTICO CÍCLICO Y DE COLORES */
+/* LÓGICA DE CHAT CÍCLICO CON MEMORIA E HISTORIAL REALISTA */
 const coloresNombres = [
   "#ffcc00", "#00ffff", "#ff66cc", "#66ff66", 
   "#ff9933", "#3399ff", "#ff5050", "#cc66ff"
@@ -1655,24 +1655,29 @@ const mensajesSimulados = [
   { nombre: "Mariana", localidad: "Salto", texto: "¡Saludos desde Salto! Pongan el último tema de Maria Becerra porfa." },
   { nombre: "Esteban", localidad: "Chacabuco", texto: "Acá prendidísimo a la radio mientras trabajo. ¡Un caño la transmisión!" },
   { nombre: "Valeria", localidad: "Junín", texto: "¡Buenas tardes! Les mando un beso enorme a todos los oyentes." },
-  { nombre: "Nicolás", localidad: "Colon", texto: "Sumado a la buena música. ¡Un abrazo enorme!" }
+  { nombre: "Nicolás", localidad: "Colón", texto: "Sumado a la buena música. ¡Un abrazo enorme!" }
 ];
 
-let indiceSimulado = 0;
+let indiceSimulado = parseInt(localStorage.getItem("chat_indice")) || Math.floor(Math.random() * mensajesSimulados.length);
 
 function obtenerColorNombre(nombre) {
   let hash = 0;
   for (let i = 0; i < nombre.length; i++) {
     hash = nombre.charCodeAt(i) + ((hash << 5) - hash);
   }
-  const index = Math.abs(hash) % coloresNombres.length;
-  return coloresNombres[index];
+  return coloresNombres[Math.abs(hash) % coloresNombres.length];
 }
 
-function agregarMensajeAlChat(nombre, localidad, texto) {
+function agregarMensajeAlChat(nombre, localidad, texto, horaCustom = null) {
   const chatBox = document.getElementById("chatBox");
-  const ahora = new Date();
-  const hora = ahora.getHours().toString().padStart(2, '0') + ":" + ahora.getMinutes().toString().padStart(2, '0');
+  
+  let hora;
+  if (horaCustom) {
+    hora = horaCustom;
+  } else {
+    const ahora = new Date();
+    hora = ahora.getHours().toString().padStart(2, '0') + ":" + ahora.getMinutes().toString().padStart(2, '0');
+  }
 
   const autorDisplay = localidad ? `${nombre} (${localidad})` : nombre;
   const colorUsuario = obtenerColorNombre(nombre);
@@ -1687,6 +1692,28 @@ function agregarMensajeAlChat(nombre, localidad, texto) {
 
   chatBox.appendChild(msgDiv);
   chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+function simularEntradaMensaje() {
+  const msg = mensajesSimulados[indiceSimulado];
+  agregarMensajeAlChat(msg.nombre, msg.localidad, msg.texto);
+  
+  indiceSimulado = (indiceSimulado + 1) % mensajesSimulados.length;
+  localStorage.setItem("chat_indice", indiceSimulado);
+}
+
+function cargarHistorialInicial() {
+  const ahora = new Date();
+  
+  for (let i = 3; i >= 1; i--) {
+    const msg = mensajesSimulados[indiceSimulado];
+    const tiempoPasado = new Date(ahora.getTime() - (i * 7 * 60000));
+    const horaFormat = tiempoPasado.getHours().toString().padStart(2, '0') + ":" + tiempoPasado.getMinutes().toString().padStart(2, '0');
+    
+    agregarMensajeAlChat(msg.nombre, msg.localidad, msg.texto, horaFormat);
+    indiceSimulado = (indiceSimulado + 1) % mensajesSimulados.length;
+  }
+  localStorage.setItem("chat_indice", indiceSimulado);
 }
 
 function enviarMensaje(event) {
@@ -1705,15 +1732,9 @@ function enviarMensaje(event) {
   }
 }
 
-function simularEntradaMensaje() {
-  const msg = mensajesSimulados[indiceSimulado];
-  agregarMensajeAlChat(msg.nombre, msg.localidad, msg.texto);
-  indiceSimulado = (indiceSimulado + 1) % mensajesSimulados.length;
-}
-
 function iniciarChat() {
-  simularEntradaMensaje();
-  setInterval(simularEntradaMensaje, 12000);
+  cargarHistorialInicial();
+  setInterval(simularEntradaMensaje, 14000);
 }
 
 actualizarBloque();
