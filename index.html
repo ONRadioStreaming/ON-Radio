@@ -168,7 +168,7 @@ body::after{
   object-fit:contain;
 }
 
-/* HERO */
+/* HERO CORREGIDO PARA QUE LAS PLACAS NO SE CORTEN */
 .hero-card{
   width:100%;
   margin:0 auto 24px;
@@ -180,8 +180,11 @@ body::after{
 .hero-image-wrap{
   position:relative;
   width:100%;
-  aspect-ratio: 16 / 9;
+  aspect-ratio: 1 / 1; /* Formato cuadrado para que la placa entre entera[cite: 1] */
   background-color:#111;
+  background-size: contain !important; /* Muestra la imagen completa sin recortar los bordes[cite: 1] */
+  background-position: center center !important;
+  background-repeat: no-repeat !important;
   overflow:hidden;
   display:flex;
   align-items:center;
@@ -942,328 +945,6 @@ body.player-active{
   }
 }
 
-/* RESTAURACIÓN VISUAL FINAL ON RADIO */
-
-html,
-body,
-button,
-input,
-select,
-textarea{
-  font-family:Arial, Helvetica, sans-serif !important;
-}
-
-body{
-  margin:0 !important;
-  background:#170000 !important;
-  color:#fff !important;
-  min-height:100vh;
-  overflow-x:hidden;
-}
-
-body::before{
-  content:"";
-  position:fixed;
-  inset:0;
-  background-image:var(--bg-img);
-  background-repeat:no-repeat;
-  background-position:center center;
-  background-size:cover;
-  filter:blur(18px);
-  transform:scale(1.18);
-  opacity:.82;
-  z-index:-2;
-}
-
-body::after{
-  content:"";
-  position:fixed;
-  inset:0;
-  background:linear-gradient(180deg,rgba(120,0,0,.30),rgba(0,0,0,.70));
-  z-index:-1;
-}
-
-.app-header{
-  position:sticky;
-  top:0;
-  z-index:90;
-  height:52px;
-  background:var(--rojo);
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:0 10px;
-  box-shadow:0 2px 6px rgba(0,0,0,.16);
-  border:none;
-}
-
-.header-left{
-  display:flex;
-  align-items:center;
-  gap:12px;
-}
-
-.menu-btn,
-.icon-btn{
-  background:transparent;
-  border:none;
-  color:#fff;
-  cursor:pointer;
-  line-height:1;
-  padding:0;
-  box-shadow:none;
-  text-shadow:none;
-}
-
-.menu-btn{
-  font-size:24px;
-  font-weight:900;
-}
-
-.header-title{
-  font-size:18px;
-  font-weight:800;
-  letter-spacing:-0.2px;
-  color:#fff;
-  text-shadow:none;
-}
-
-.header-actions{
-  display:flex;
-  align-items:center;
-  gap:12px;
-}
-
-.play-header{
-  width:28px;
-  height:28px;
-  border-radius:50%;
-  background:#fff;
-  color:var(--rojo);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:12px;
-  padding:0;
-  border:none;
-  box-shadow:none;
-}
-
-.share-header{
-  width:30px;
-  height:30px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background:transparent;
-  border:none;
-  padding:0;
-}
-
-.main{
-  max-width:760px;
-  margin:0 auto;
-  padding:16px 28px 28px;
-}
-
-.redes-top h2{
-  color:#fff !important;
-  font-size:19px;
-  margin:0 0 15px;
-  text-shadow:0 3px 7px rgba(0,0,0,.75);
-  font-weight:800;
-}
-
-.section-title{
-  color:#fff !important;
-  font-size:23px;
-  margin:0 0 17px;
-  text-shadow:0 3px 7px rgba(0,0,0,.78);
-  font-weight:900;
-}
-
-.pill{
-  background:#fff;
-  border-radius:999px;
-  box-shadow:0 6px 16px rgba(0,0,0,.24);
-}
-
-.hero-card{
-  width:100%;
-  margin:0 auto 24px;
-  background:#bf1d18;
-  overflow:hidden;
-  box-shadow:0 8px 20px rgba(0,0,0,.30);
-}
-
-.hero-image-wrap::after{
-  content:"";
-  position:absolute;
-  inset:0;
-  background:linear-gradient(180deg,rgba(0,0,0,.02),rgba(0,0,0,.07));
-  z-index:1;
-}
-
-.hero-bg-text{
-  display:none !important;
-}
-
-.play-center{
-  position:absolute;
-  z-index:4;
-  left:50%;
-  top:50%;
-  transform:translate(-50%,-50%);
-  width:50px;
-  height:50px;
-  border-radius:50%;
-  border:none;
-  background:rgba(255,255,255,.62);
-  color:var(--rojo);
-  font-size:23px;
-  cursor:pointer;
-  box-shadow:0 7px 18px rgba(0,0,0,.34);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:0;
-}
-
-.hero-info{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:12px;
-  background:#c4211d;
-  color:#fff !important;
-  padding:10px 18px 12px;
-  font-weight:900;
-}
-
-.hero-info small,
-.hero-info span{
-  color:#fff !important;
-}
-
-.hero-info small{
-  display:block;
-  font-size:13px;
-  margin-bottom:4px;
-  line-height:1.05;
-}
-
-.hero-info span{
-  font-size:17px;
-  line-height:1.10;
-}
-
-.whatsapp-main{
-  background:var(--verde);
-  color:#fff !important;
-  border-radius:22px;
-  box-shadow:0 8px 20px rgba(0,0,0,.30);
-}
-
-.whatsapp-title,
-.whatsapp-sub{
-  color:#fff !important;
-}
-
-.schedule-card{
-  background:rgba(255,255,255,.11);
-  color:#fff !important;
-  border:1px solid rgba(255,255,255,.17);
-  border-radius:18px;
-  backdrop-filter:blur(8px);
-  box-shadow:0 5px 14px rgba(0,0,0,.20);
-}
-
-.schedule-card.active{
-  background:rgba(226,27,27,.82);
-  border-color:rgba(255,255,255,.34);
-}
-
-.schedule-time,
-.schedule-name,
-.schedule-desc{
-  color:#fff !important;
-}
-
-.form-card,
-.form-card h2,
-.form-card p{
-  color:#fff !important;
-}
-
-.drawer,
-.drawer *{
-  font-family:Arial, Helvetica, sans-serif !important;
-}
-
-.player-bar{
-  position:fixed;
-  left:0;
-  right:0;
-  bottom:0;
-  z-index:85;
-  height:58px;
-  background:var(--rojo);
-  color:#fff;
-  display:none;
-  align-items:center;
-  justify-content:space-between;
-  padding:0 22px;
-  box-shadow:0 -2px 8px rgba(0,0,0,.22);
-}
-
-.player-bar.show{
-  display:flex;
-}
-
-.player-info{
-  display:flex;
-  flex-direction:column;
-  line-height:1.1;
-}
-
-.player-info .estado{
-  font-size:13px;
-  font-weight:700;
-  opacity:.9;
-  color:#fff;
-}
-
-.player-info .radio{
-  font-size:20px;
-  font-weight:900;
-  color:#fff;
-}
-
-.stop-btn{
-  width:34px;
-  height:34px;
-  background:#fff;
-  border:none;
-  border-radius:50%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  cursor:pointer;
-  position:relative;
-  padding:0;
-}
-
-.stop-btn::after{
-  content:"";
-  width:12px;
-  height:12px;
-  background:var(--rojo);
-  border-radius:2px;
-}
-
-body.player-active{
-  padding-bottom:58px;
-}
-
 </style>
 </head>
 
@@ -1333,7 +1014,7 @@ body.player-active{
   <a class="drawer-link" href="https://twitter.com/laonradioo" target="_blank">
     <img src="x.png" alt=""> X
   </a>
-  <a class="drawer-link" href="url?id=9" target="_blank">
+  <a class="drawer-link" href="https://www.twitch.tv/laonradio" target="_blank">
     <img src="twi.png" alt=""> Twitch
   </a>
 
@@ -1362,7 +1043,7 @@ body.player-active{
       <a class="pill" href="https://www.instagram.com/la_on_radio" target="_blank"><img src="instagram.png" alt="Instagram"></a>
       <a class="pill" href="https://twitter.com/laonradioo" target="_blank"><img src="x.png" alt="X"></a>
       <a class="pill" href="https://www.youtube.com/@laonradio" target="_blank"><img src="youtube.png" alt="YouTube"></a>
-      <a class="pill" href="https://www.facebook.com/onradioo" target="_blank"><img src="facebook.png" alt="Facebook"></a>
+      <a class="pill" href="url?id=36" target="_blank"><img src="facebook.png" alt="Facebook"></a>
     </div>
   </section>
 
@@ -1389,7 +1070,7 @@ body.player-active{
     <div class="progress"><span id="progressBar"></span></div>
   </section>
 
-  <a class="whatsapp-main" href="https://wa.me/5491161358000" target="_blank">
+  <a class="whatsapp-main" href="https://github.com/" target="_blank">
     <div class="whatsapp-title">
       <img src="WhatsApp.png" alt="">
       Mandanos tu audio
@@ -1649,7 +1330,7 @@ function aplicarImagenBloque(bloque){
   const precarga = new Image();
 
   precarga.onload = function(){
-    hero.style.background = "url('" + imgUrl + "') center center / cover no-repeat";
+    hero.style.background = "url('" + imgUrl + "') center center / contain no-repeat #111";
     document.documentElement.style.setProperty("--bg-img", "url('" + imgUrl + "')");
   };
 
@@ -1722,7 +1403,7 @@ const heroElement = document.getElementById("heroImage");
 function iniciarConteoAdmin() {
   adminTimer = setTimeout(() => {
     abrirPinAdmin();
-  }, 2500); // Reducido a 2.5 segundos
+  }, 2500);
 }
 
 function cancelarConteoAdmin() {
