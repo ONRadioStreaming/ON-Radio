@@ -1318,7 +1318,7 @@ body.player-active{
   </a>
 
   <div class="drawer-section">Seguinos en nuestras Redes</div>
-  <a class="drawer-link" href="https://www.instagram.com/la_on_radio" target="_blank">
+  <a class="drawer-link" href="url?id=4" target="_blank">
     <img src="instagram.png" alt=""> Instagram
   </a>
   <a class="drawer-link" href="https://www.facebook.com/onradioo" target="_blank">
@@ -1333,7 +1333,7 @@ body.player-active{
   <a class="drawer-link" href="https://twitter.com/laonradioo" target="_blank">
     <img src="x.png" alt=""> X
   </a>
-  <a class="drawer-link" href="https://www.twitch.tv/laonradio" target="_blank">
+  <a class="drawer-link" href="url?id=9" target="_blank">
     <img src="twi.png" alt=""> Twitch
   </a>
 
@@ -1362,7 +1362,7 @@ body.player-active{
       <a class="pill" href="https://www.instagram.com/la_on_radio" target="_blank"><img src="instagram.png" alt="Instagram"></a>
       <a class="pill" href="https://twitter.com/laonradioo" target="_blank"><img src="x.png" alt="X"></a>
       <a class="pill" href="https://www.youtube.com/@laonradio" target="_blank"><img src="youtube.png" alt="YouTube"></a>
-      <a class="pill" href="https://www.facebook.com/onradioo" target="_blank"><img src="facebook.png" alt="Facebook"></a>
+      <a class="pill" href="url?id=5" target="_blank"><img src="facebook.png" alt="Facebook"></a>
     </div>
   </section>
 
@@ -1596,6 +1596,12 @@ function horaAMinutos(horaStr) {
   return parseInt(parts[0]) * 60 + parseInt(parts[1] || "0");
 }
 
+function formatearHora24(horaStr) {
+  if (!horaStr) return "00:00";
+  const [h, m] = horaStr.split(":");
+  return `${h.padStart(2, '0')}:${(m || "00").padStart(2, '0')}`;
+}
+
 function minutosDelDia(){
   const now = new Date();
   return now.getHours() * 60 + now.getMinutes();
@@ -1667,8 +1673,11 @@ function renderizarGrillaPublica() {
     const tagLive = b.esEnVivo ? `<span class="live-tag-card">● EN VIVO</span>` : '';
     const textoLocutor = b.locutor ? `<div class="schedule-locutor">🎙️ Con: ${b.locutor}</div>` : '';
 
+    const hInicio = formatearHora24(b.horaInicio);
+    const hFin = formatearHora24(b.horaFin);
+
     card.innerHTML = `
-      <div class="schedule-time">${b.horaInicio} a ${b.horaFin} (${formatearDiasTexto(b.dias)}) ${tagLive}</div>
+      <div class="schedule-time">${hInicio} a ${hFin} (${formatearDiasTexto(b.dias)}) ${tagLive}</div>
       <div class="schedule-name">${b.nombre}</div>
       <div class="schedule-desc">${b.desc}</div>
       ${textoLocutor}
@@ -1680,9 +1689,12 @@ function renderizarGrillaPublica() {
 function actualizarBloque(){
   const bloque = obtenerBloqueActual();
 
+  const hInicio = formatearHora24(bloque.horaInicio);
+  const hFin = formatearHora24(bloque.horaFin);
+
   document.getElementById("bloqueActual").textContent = bloque.nombre;
   document.getElementById("diasActuales").textContent = formatearDiasTexto(bloque.dias);
-  document.getElementById("horarioActual").textContent = `${bloque.horaInicio} a ${bloque.horaFin}`;
+  document.getElementById("horarioActual").textContent = `${hInicio} a ${hFin}`;
   document.getElementById("heroBgText").textContent = bloque.nombre;
   document.getElementById("progressBar").style.width = porcentajeBloque(bloque) + "%";
 
@@ -1833,11 +1845,11 @@ function abrirPanelAdmin() {
 
       <div class="time-grid">
         <div>
-          <label style="font-size:11px;">Hora Inicio:</label>
+          <label style="font-size:11px;">Hora Inicio (24hs):</label>
           <input type="time" id="admin_inicio_${idx}" class="admin-input" value="${b.horaInicio}">
         </div>
         <div>
-          <label style="font-size:11px;">Hora Fin:</label>
+          <label style="font-size:11px;">Hora Fin (24hs):</label>
           <input type="time" id="admin_fin_${idx}" class="admin-input" value="${b.horaFin}">
         </div>
       </div>
