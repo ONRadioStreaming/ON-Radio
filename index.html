@@ -179,19 +179,34 @@ body::after{
 
 .hero-image-wrap{
   position:relative;
-  height:auto;
+  width:100%;
+  aspect-ratio: 16 / 9;
+  background-color:#111;
   overflow:hidden;
   display:flex;
   align-items:center;
   justify-content:center;
-  background:transparent;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
-.hero-image-wrap img{
-  width:100%;
-  height:auto;
-  object-fit:contain;
-  display:block;
+.live-badge-hero {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 5;
+  background: #ff0000;
+  color: white;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.5px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+  display: none;
+  align-items: center;
+  gap: 6px;
+  animation: titileo 1.5s infinite;
 }
 
 .music-badge{
@@ -433,6 +448,7 @@ body::after{
   padding:15px 17px;
   backdrop-filter:blur(8px);
   box-shadow:0 5px 14px rgba(0,0,0,.20);
+  position: relative;
 }
 
 .schedule-card.active{
@@ -457,6 +473,24 @@ body::after{
   font-size:14px;
   opacity:.86;
   line-height:1.32;
+}
+
+.schedule-locutor {
+  font-size: 12px;
+  font-weight: bold;
+  color: #ffcc00;
+  margin-top: 4px;
+}
+
+.live-tag-card {
+  display: inline-block;
+  background: #ff0000;
+  color: white;
+  font-size: 10px;
+  font-weight: 900;
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-left: 6px;
 }
 
 /* FORMULARIO */
@@ -734,6 +768,114 @@ body.player-active{
 .btn-instalar{background:#c40000;color:white;}
 .btn-cancelar{background:#444;color:white;}
 
+/* ESTILOS DEL PANEL ADMIN OCULTO CON SELECTOR DE DÍAS Y HORARIOS */
+.admin-input {
+  width: 100%;
+  padding: 8px;
+  margin: 4px 0 10px;
+  border-radius: 8px;
+  border: 1px solid #444;
+  background: #222;
+  color: #fff;
+  font-size: 13px;
+}
+
+.admin-block-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  padding: 12px;
+  margin-bottom: 12px;
+}
+
+.admin-block-card h3 {
+  margin: 0 0 8px;
+  font-size: 15px;
+  color: #ffcc00;
+}
+
+.days-selector {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 4px 0 10px;
+}
+
+.day-btn {
+  background: #333;
+  color: #aaa;
+  border: 1px solid #555;
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-size: 11px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.day-btn.selected {
+  background: var(--rojo);
+  color: white;
+  border-color: #ff5555;
+}
+
+.time-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.admin-checkbox-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 8px 0;
+  background: rgba(255, 0, 0, 0.15);
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 0, 0, 0.3);
+}
+
+.admin-checkbox-wrap input {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+.btn-admin-guardar {
+  background: var(--verde);
+  color: white;
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.btn-admin-agregar {
+  background: #0063c9;
+  color: white;
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+
+.btn-admin-eliminar {
+  background: #a50000;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: none;
+  font-size: 11px;
+  float: right;
+  cursor: pointer;
+}
+
 /* SPLASH */
 #splash{
   position:fixed;
@@ -765,14 +907,6 @@ body.player-active{
     padding:15px 28px 27px;
   }
 
-  .hero-image-wrap{
-    height:315px;
-  }
-
-  .hero-bg-text{
-    font-size:36px;
-  }
-
   .hero-info{
     padding:10px 18px 12px;
   }
@@ -797,14 +931,6 @@ body.player-active{
 
   .pill{
     height:40px;
-  }
-
-  .hero-image-wrap{
-    height:295px;
-  }
-
-  .hero-bg-text{
-    font-size:33px;
   }
 
   .whatsapp-title{
@@ -968,17 +1094,6 @@ body::after{
   background:#bf1d18;
   overflow:hidden;
   box-shadow:0 8px 20px rgba(0,0,0,.30);
-}
-
-.hero-image-wrap{
-  position:relative;
-  height:315px;
-  background:center top/cover no-repeat;
-  background-color:#111;
-  overflow:hidden;
-  display:flex;
-  align-items:center;
-  justify-content:center;
 }
 
 .hero-image-wrap::after{
@@ -1253,6 +1368,9 @@ body.player-active{
 
   <section class="hero-card">
     <div id="heroImage" class="hero-image-wrap">
+      <div id="heroLiveBadge" class="live-badge-hero">
+        🔴 EN VIVO <span id="heroLocutor"></span>
+      </div>
       <div id="musicBadge" class="music-badge">ON AIR</div>
       <div id="heroBgText" class="hero-bg-text">ON RADIO</div>
       <button class="play-center" onclick="abrirSenales()" aria-label="Reproducir">▶</button>
@@ -1304,36 +1422,8 @@ body.player-active{
   <section id="programacion">
     <h2 class="section-title">Nuestra Programación</h2>
 
-    <div class="schedule-grid">
-      <div id="slot-trasnoches" class="schedule-card">
-        <div class="schedule-time">00:00 a 07:00</div>
-        <div class="schedule-name">TRASNOCHES ON</div>
-        <div class="schedule-desc">Los clásicos de los 80s para acompañar la madrugada.</div>
-      </div>
-
-      <div id="slot-mananas" class="schedule-card">
-        <div class="schedule-time">07:00 a 13:00</div>
-        <div class="schedule-name">MAÑANAS ON</div>
-        <div class="schedule-desc">Latinos e internacionales actuales y no tanto. Música comercial, agradable y bien de compañía.</div>
-      </div>
-
-      <div id="slot-hits" class="schedule-card">
-        <div class="schedule-time">13:00 a 16:00</div>
-        <div class="schedule-name">HIT'S ON</div>
-        <div class="schedule-desc">Lo mejor del momento y los éxitos que más suenan.</div>
-      </div>
-
-      <div id="slot-tardes" class="schedule-card">
-        <div class="schedule-time">16:00 a 20:00</div>
-        <div class="schedule-name">TARDES ON</div>
-        <div class="schedule-desc">Música comercial, clásicos y buena energía para acompañar tus tardes.</div>
-      </div>
-
-      <div id="slot-noches" class="schedule-card">
-        <div class="schedule-time">20:00 a 00:00</div>
-        <div class="schedule-name">NOCHES ON</div>
-        <div class="schedule-desc">Rock nacional para cerrar el día con identidad argentina.</div>
-      </div>
+    <div class="schedule-grid" id="scheduleContainer">
+      <!-- Los bloques se renderizan dinámicamente desde JS -->
     </div>
   </section>
 
@@ -1381,72 +1471,130 @@ body.player-active{
   </div>
 </div>
 
+<!-- MODAL 1: SOLICITUD DE PIN -->
+<div id="modalPinAdmin" class="modal">
+  <div class="modal-box dark">
+    <h2 style="margin-top:0;">🔐 Acceso Admin</h2>
+    <p style="font-size:14px; opacity:0.8;">Ingresá el PIN para editar la programación:</p>
+    <input type="password" id="inputPinAdmin" class="admin-input" placeholder="PIN de acceso" style="text-align:center; font-size:20px;">
+    <div style="display:flex; justify-content:center; gap:8px;">
+      <button class="btn-modal btn-instalar" onclick="verificarPinAdmin()">Ingresar</button>
+      <button class="btn-modal btn-cancelar" onclick="cerrarPinAdmin()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL 2: PANEL ADMINISTRADOR COMPLETO CON EN VIVO Y LOCUTOR -->
+<div id="modalPanelAdmin" class="modal">
+  <div class="modal-box dark" style="max-width:440px; max-height:85vh; overflow-y:auto; text-align:left;">
+    <h2 style="margin-top:0; text-align:center;">⚙️ Programación Completa</h2>
+    <p style="font-size:12px; opacity:0.8; text-align:center; margin-bottom:12px;">Configurá días, horarios, conductor/a e imagen.</p>
+    
+    <button class="btn-admin-agregar" onclick="agregarNuevoProgramaAdmin()">+ Agregar Nuevo Programa</button>
+
+    <div id="adminBlocksContainer"></div>
+
+    <button class="btn-admin-guardar" onclick="guardarCambiosGrillaAdmin()">Guardar Cambios y Publicar</button>
+    <button class="btn-modal btn-cancelar" style="width:100%; margin:8px 0 0;" onclick="cerrarPanelAdmin()">Cancelar</button>
+  </div>
+</div>
+
 <script>
 let deferredPrompt = null;
 const VERSION_CACHE = "v=20260519-restaurado-final";
+const PIN_ADMIN_CORRECTO = "1234";
 
-const bloques = [
+// Estructura base predeterminada
+const bloquesPredeterminados = [
   {
-    id:"slot-trasnoches",
-    nombre:"TRASNOCHES ON",
-    dias:"Todos los días",
-    horario:"00:00 a 07:00",
-    inicio:0,
-    fin:7*60,
-    fondo:"TRASNOCHES ON",
-    imagen:"trasnoches-on.png",
-    color1:"#151515",
-    color2:"#5a007c"
+    id: "slot-trasnoches",
+    nombre: "TRASNOCHES ON",
+    dias: [0, 1, 2, 3, 4, 5, 6],
+    horaInicio: "00:00",
+    horaFin: "07:00",
+    desc: "Los clásicos de los 80s para acompañar la madrugada.",
+    imagen: "trasnoches-on.png",
+    esEnVivo: false,
+    locutor: "",
+    color1: "#151515",
+    color2: "#5a007c"
   },
   {
-    id:"slot-mananas",
-    nombre:"MAÑANAS ON",
-    dias:"Todos los días",
-    horario:"07:00 a 13:00",
-    inicio:7*60,
-    fin:13*60,
-    fondo:"MAÑANAS ON",
-    imagen:"mananas-on.png",
-    color1:"#008a84",
-    color2:"#0063c9"
+    id: "slot-mananas",
+    nombre: "MAÑANAS ON",
+    dias: [0, 1, 2, 3, 4, 5, 6],
+    horaInicio: "07:00",
+    horaFin: "13:00",
+    desc: "Latinos e internacionales actuales y no tanto. Música comercial, agradable y bien de compañía.",
+    imagen: "mananas-on.png",
+    esEnVivo: false,
+    locutor: "",
+    color1: "#008a84",
+    color2: "#0063c9"
   },
   {
-    id:"slot-hits",
-    nombre:"HIT'S ON",
-    dias:"Todos los días",
-    horario:"13:00 a 16:00",
-    inicio:13*60,
-    fin:16*60,
-    fondo:"HIT'S ON",
-    imagen:"hits-on.png",
-    color1:"#ff7a00",
-    color2:"#e01818"
+    id: "slot-hits",
+    nombre: "HIT'S ON",
+    dias: [0, 1, 2, 3, 4, 5, 6],
+    horaInicio: "13:00",
+    horaFin: "16:00",
+    desc: "Lo mejor del momento y los éxitos que más suenan.",
+    imagen: "hits-on.png",
+    esEnVivo: false,
+    locutor: "",
+    color1: "#ff7a00",
+    color2: "#e01818"
   },
   {
-    id:"slot-tardes",
-    nombre:"TARDES ON",
-    dias:"Todos los días",
-    horario:"16:00 a 20:00",
-    inicio:16*60,
-    fin:20*60,
-    fondo:"TARDES ON",
-    imagen:"tardes-on.png",
-    color1:"#077a47",
-    color2:"#046bd2"
+    id: "slot-tardes",
+    nombre: "TARDES ON",
+    dias: [0, 1, 2, 3, 4, 5, 6],
+    horaInicio: "16:00",
+    horaFin: "20:00",
+    desc: "Música comercial, clásicos y buena energía para acompañar tus tardes.",
+    imagen: "tardes-on.png",
+    esEnVivo: false,
+    locutor: "",
+    color1: "#077a47",
+    color2: "#046bd2"
   },
   {
-    id:"slot-noches",
-    nombre:"NOCHES ON",
-    dias:"Todos los días",
-    horario:"20:00 a 00:00",
-    inicio:20*60,
-    fin:24*60,
-    fondo:"NOCHES ON",
-    imagen:"noches-on.png",
-    color1:"#252525",
-    color2:"#c40000"
+    id: "slot-noches",
+    nombre: "NOCHES ON",
+    dias: [0, 1, 2, 3, 4, 5, 6],
+    horaInicio: "20:00",
+    horaFin: "00:00",
+    desc: "Rock nacional para cerrar el día con identidad argentina.",
+    imagen: "noches-on.png",
+    esEnVivo: false,
+    locutor: "",
+    color1: "#252525",
+    color2: "#c40000"
   }
 ];
+
+function cargarBloques() {
+  const guardados = localStorage.getItem("admin_grilla_programacion_v3");
+  return guardados ? JSON.parse(guardados) : bloquesPredeterminados;
+}
+
+let bloques = cargarBloques();
+
+const nombresDiasSemana = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
+
+function formatearDiasTexto(arrayDias) {
+  if (!arrayDias || arrayDias.length === 0) return "Sin días";
+  if (arrayDias.length === 7) return "Todos los días";
+  if (arrayDias.length === 5 && !arrayDias.includes(0) && !arrayDias.includes(6)) return "Lunes a Viernes";
+  if (arrayDias.length === 2 && arrayDias.includes(0) && arrayDias.includes(6)) return "Sábados y Domingos";
+  return arrayDias.map(d => nombresDiasSemana[d]).join(", ");
+}
+
+function horaAMinutos(horaStr) {
+  if (!horaStr) return 0;
+  const parts = horaStr.split(":");
+  return parseInt(parts[0]) * 60 + parseInt(parts[1] || "0");
+}
 
 function minutosDelDia(){
   const now = new Date();
@@ -1454,18 +1602,37 @@ function minutosDelDia(){
 }
 
 function obtenerBloqueActual(){
-  const m = minutosDelDia();
-  return bloques.find(b => m >= b.inicio && m < b.fin) || bloques[0];
+  const ahora = new Date();
+  const diaSemana = ahora.getDay();
+  const mActual = minutosDelDia();
+
+  const candidatos = bloques.filter(b => {
+    if (!b.dias.includes(diaSemana)) return false;
+    
+    let inicio = horaAMinutos(b.horaInicio);
+    let fin = horaAMinutos(b.horaFin);
+    if (fin === 0) fin = 24 * 60;
+
+    return mActual >= inicio && mActual < fin;
+  });
+
+  return candidatos.length > 0 ? candidatos[candidatos.length - 1] : bloques[0];
 }
 
 function porcentajeBloque(bloque){
-  const m = minutosDelDia();
-  const total = bloque.fin - bloque.inicio;
-  const avance = m - bloque.inicio;
+  const mActual = minutosDelDia();
+  let inicio = horaAMinutos(bloque.horaInicio);
+  let fin = horaAMinutos(bloque.horaFin);
+  if (fin === 0) fin = 24 * 60;
+
+  const total = fin - inicio;
+  const avance = mActual - inicio;
+  if (total <= 0) return 100;
   return Math.max(4, Math.min(100, (avance / total) * 100));
 }
 
 function urlConCache(url){
+  if (url && url.startsWith("data:image")) return url;
   return url + "?" + VERSION_CACHE;
 }
 
@@ -1476,33 +1643,261 @@ function aplicarImagenBloque(bloque){
   const precarga = new Image();
 
   precarga.onload = function(){
-   hero.style.background = "url('" + imgUrl + "') center top / cover no-repeat";
+    hero.style.background = "url('" + imgUrl + "') center center / cover no-repeat";
     document.documentElement.style.setProperty("--bg-img", "url('" + imgUrl + "')");
   };
 
   precarga.onerror = function(){
-    hero.style.background = "linear-gradient(135deg," + bloque.color1 + "," + bloque.color2 + ")";
+    hero.style.background = "linear-gradient(135deg," + (bloque.color1||"#222") + "," + (bloque.color2||"#888") + ")";
     document.documentElement.style.setProperty("--bg-img", "url('fondo.jpg')");
-    console.log("No se pudo cargar la imagen:", bloque.imagen);
   };
 
   precarga.src = imgUrl;
+}
+
+function renderizarGrillaPublica() {
+  const container = document.getElementById("scheduleContainer");
+  container.innerHTML = "";
+
+  bloques.forEach(b => {
+    const card = document.createElement("div");
+    card.id = b.id;
+    card.className = "schedule-card";
+    
+    const tagLive = b.esEnVivo ? `<span class="live-tag-card">● EN VIVO</span>` : '';
+    const textoLocutor = b.locutor ? `<div class="schedule-locutor">🎙️ Con: ${b.locutor}</div>` : '';
+
+    card.innerHTML = `
+      <div class="schedule-time">${b.horaInicio} a ${b.horaFin} (${formatearDiasTexto(b.dias)}) ${tagLive}</div>
+      <div class="schedule-name">${b.nombre}</div>
+      <div class="schedule-desc">${b.desc}</div>
+      ${textoLocutor}
+    `;
+    container.appendChild(card);
+  });
 }
 
 function actualizarBloque(){
   const bloque = obtenerBloqueActual();
 
   document.getElementById("bloqueActual").textContent = bloque.nombre;
-  document.getElementById("diasActuales").textContent = bloque.dias;
-  document.getElementById("horarioActual").textContent = bloque.horario;
-  document.getElementById("heroBgText").textContent = bloque.fondo;
+  document.getElementById("diasActuales").textContent = formatearDiasTexto(bloque.dias);
+  document.getElementById("horarioActual").textContent = `${bloque.horaInicio} a ${bloque.horaFin}`;
+  document.getElementById("heroBgText").textContent = bloque.nombre;
   document.getElementById("progressBar").style.width = porcentajeBloque(bloque) + "%";
+
+  const heroLiveBadge = document.getElementById("heroLiveBadge");
+  const heroLocutor = document.getElementById("heroLocutor");
+
+  if (bloque.esEnVivo) {
+    heroLiveBadge.style.display = "flex";
+    heroLocutor.textContent = bloque.locutor ? `| Con: ${bloque.locutor}` : "";
+  } else {
+    heroLiveBadge.style.display = "none";
+  }
 
   aplicarImagenBloque(bloque);
 
   document.querySelectorAll(".schedule-card").forEach(card => card.classList.remove("active"));
   const activeCard = document.getElementById(bloque.id);
   if(activeCard) activeCard.classList.add("active");
+}
+
+/* MENÚ ADMIN CON DETECTOR DE 5 SEGUNDOS */
+let adminTimer = null;
+const heroElement = document.getElementById("heroImage");
+
+function iniciarConteoAdmin() {
+  adminTimer = setTimeout(() => {
+    abrirPinAdmin();
+  }, 5000);
+}
+
+function cancelarConteoAdmin() {
+  if (adminTimer) {
+    clearTimeout(adminTimer);
+    adminTimer = null;
+  }
+}
+
+heroElement.addEventListener("touchstart", iniciarConteoAdmin, { passive: true });
+heroElement.addEventListener("touchend", cancelarConteoAdmin);
+heroElement.addEventListener("touchmove", cancelarConteoAdmin);
+
+heroElement.addEventListener("mousedown", iniciarConteoAdmin);
+heroElement.addEventListener("mouseup", cancelarConteoAdmin);
+heroElement.addEventListener("mouseleave", cancelarConteoAdmin);
+
+function abrirPinAdmin() {
+  cancelarConteoAdmin();
+  document.getElementById("inputPinAdmin").value = "";
+  document.getElementById("modalPinAdmin").style.display = "flex";
+}
+
+function cerrarPinAdmin() {
+  document.getElementById("modalPinAdmin").style.display = "none";
+}
+
+function verificarPinAdmin() {
+  const pinInput = document.getElementById("inputPinAdmin").value;
+  if (pinInput === PIN_ADMIN_CORRECTO) {
+    cerrarPinAdmin();
+    abrirPanelAdmin();
+  } else {
+    alert("PIN incorrecto");
+  }
+}
+
+function toggleDiaAdmin(btn, idx, diaNum) {
+  btn.classList.toggle("selected");
+  if (!bloques[idx].dias) bloques[idx].dias = [];
+  
+  if (btn.classList.contains("selected")) {
+    if (!bloques[idx].dias.includes(diaNum)) bloques[idx].dias.push(diaNum);
+  } else {
+    bloques[idx].dias = bloques[idx].dias.filter(d => d !== diaNum);
+  }
+  bloques[idx].dias.sort();
+}
+
+function toggleEnVivoAdmin(chk, idx) {
+  const wrapLocutor = document.getElementById(`wrap_locutor_${idx}`);
+  if (chk.checked) {
+    wrapLocutor.style.display = "block";
+  } else {
+    wrapLocutor.style.display = "none";
+  }
+}
+
+function eliminarProgramaAdmin(idx) {
+  if (confirm(`¿Querés eliminar el programa "${bloques[idx].nombre}"?`)) {
+    bloques.splice(idx, 1);
+    abrirPanelAdmin();
+  }
+}
+
+function agregarNuevoProgramaAdmin() {
+  const nuevoId = "slot-" + Date.now();
+  bloques.push({
+    id: nuevoId,
+    nombre: "NUEVO PROGRAMA",
+    dias: [1, 3, 5],
+    horaInicio: "22:00",
+    horaFin: "00:00",
+    desc: "Descripción del programa",
+    imagen: "logotipo.png",
+    esEnVivo: true,
+    locutor: "Locutor/a",
+    color1: "#a50000",
+    color2: "#260000"
+  });
+  abrirPanelAdmin();
+}
+
+function abrirPanelAdmin() {
+  const container = document.getElementById("adminBlocksContainer");
+  container.innerHTML = "";
+
+  bloques.forEach((b, idx) => {
+    const card = document.createElement("div");
+    card.className = "admin-block-card";
+    
+    let htmlDias = "";
+    nombresDiasSemana.forEach((diaNombre, dIdx) => {
+      const estaSeleccionado = b.dias && b.dias.includes(dIdx) ? "selected" : "";
+      htmlDias += `<button type="button" class="day-btn ${estaSeleccionado}" onclick="toggleDiaAdmin(this, ${idx}, ${dIdx})">${diaNombre}</button>`;
+    });
+
+    const chkLive = b.esEnVivo ? "checked" : "";
+    const showLocutorStyle = b.esEnVivo ? "display:block;" : "display:none;";
+
+    card.innerHTML = `
+      <button type="button" class="btn-admin-eliminar" onclick="eliminarProgramaAdmin(${idx})">Eliminar</button>
+      <h3>Programa #${idx + 1}</h3>
+      
+      <label style="font-size:11px;">Nombre del Programa:</label>
+      <input type="text" id="admin_nombre_${idx}" class="admin-input" value="${b.nombre}">
+      
+      <div class="admin-checkbox-wrap">
+        <input type="checkbox" id="admin_envivo_${idx}" ${chkLive} onchange="toggleEnVivoAdmin(this, ${idx})">
+        <label for="admin_envivo_${idx}" style="font-size:12px; font-weight:bold; cursor:pointer; color:#ffdddd;">🔴 Programa EN VIVO</label>
+      </div>
+
+      <div id="wrap_locutor_${idx}" style="${showLocutorStyle}">
+        <label style="font-size:11px; color:#ffcc00;">Nombre del Locutor/a o Conductor/a:</label>
+        <input type="text" id="admin_locutor_${idx}" class="admin-input" placeholder="Ej: Juan Pérez / María" value="${b.locutor || ''}">
+      </div>
+
+      <label style="font-size:11px;">Días de Emisión:</label>
+      <div class="days-selector">${htmlDias}</div>
+
+      <div class="time-grid">
+        <div>
+          <label style="font-size:11px;">Hora Inicio:</label>
+          <input type="time" id="admin_inicio_${idx}" class="admin-input" value="${b.horaInicio}">
+        </div>
+        <div>
+          <label style="font-size:11px;">Hora Fin:</label>
+          <input type="time" id="admin_fin_${idx}" class="admin-input" value="${b.horaFin}">
+        </div>
+      </div>
+
+      <label style="font-size:11px;">Descripción:</label>
+      <input type="text" id="admin_desc_${idx}" class="admin-input" value="${b.desc}">
+
+      <label style="font-size:11px;">Imagen de Portada (Galería):</label>
+      <input type="file" id="admin_file_${idx}" accept="image/*" class="admin-input">
+    `;
+    container.appendChild(card);
+  });
+
+  document.getElementById("modalPanelAdmin").style.display = "flex";
+}
+
+function cerrarPanelAdmin() {
+  document.getElementById("modalPanelAdmin").style.display = "none";
+}
+
+function guardarCambiosGrillaAdmin() {
+  let promesasArchivos = [];
+
+  bloques.forEach((b, idx) => {
+    const inputNombre = document.getElementById(`admin_nombre_${idx}`).value.trim();
+    const inputInicio = document.getElementById(`admin_inicio_${idx}`).value;
+    const inputFin = document.getElementById(`admin_fin_${idx}`).value;
+    const inputDesc = document.getElementById(`admin_desc_${idx}`).value.trim();
+    const chkLive = document.getElementById(`admin_envivo_${idx}`).checked;
+    const inputLocutor = document.getElementById(`admin_locutor_${idx}`).value.trim();
+    const inputFile = document.getElementById(`admin_file_${idx}`);
+
+    if (inputNombre) b.nombre = inputNombre;
+    if (inputInicio) b.horaInicio = inputInicio;
+    if (inputFin) b.horaFin = inputFin;
+    if (inputDesc) b.desc = inputDesc;
+    
+    b.esEnVivo = chkLive;
+    b.locutor = inputLocutor;
+
+    if (inputFile && inputFile.files && inputFile.files[0]) {
+      const p = new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          b.imagen = e.target.result;
+          resolve();
+        };
+        reader.readAsDataURL(inputFile.files[0]);
+      });
+      promesasArchivos.push(p);
+    }
+  });
+
+  Promise.all(promesasArchivos).then(() => {
+    localStorage.setItem("admin_grilla_programacion_v3", JSON.stringify(bloques));
+    renderizarGrillaPublica();
+    actualizarBloque();
+    cerrarPanelAdmin();
+    alert("¡Programación guardada y sincronizada correctamente!");
+  });
 }
 
 function abrirSenales(){
@@ -1640,7 +2035,7 @@ audioStreaming.addEventListener("error", ()=>{
   ocultarBarraPlayer();
 });
 
-/* LÓGICA DE CHAT CÍCLICO CON MEMORIA E HISTORIAL REALISTA */
+/* CHAT DE OYENTES */
 const coloresNombres = [
   "#ffcc00", "#00ffff", "#ff66cc", "#66ff66", 
   "#ff9933", "#3399ff", "#ff5050", "#cc66ff"
@@ -1737,6 +2132,7 @@ function iniciarChat() {
   setInterval(simularEntradaMensaje, 14000);
 }
 
+renderizarGrillaPublica();
 actualizarBloque();
 iniciarSplash();
 sugerirInstalacion();
