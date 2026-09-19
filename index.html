@@ -1362,7 +1362,7 @@ body.player-active{
       <a class="pill" href="https://www.instagram.com/la_on_radio" target="_blank"><img src="instagram.png" alt="Instagram"></a>
       <a class="pill" href="https://twitter.com/laonradioo" target="_blank"><img src="x.png" alt="X"></a>
       <a class="pill" href="https://www.youtube.com/@laonradio" target="_blank"><img src="youtube.png" alt="YouTube"></a>
-      <a class="pill" href="url?id=5" target="_blank"><img src="facebook.png" alt="Facebook"></a>
+      <a class="pill" href="https://www.facebook.com/onradioo" target="_blank"><img src="facebook.png" alt="Facebook"></a>
     </div>
   </section>
 
@@ -1471,12 +1471,12 @@ body.player-active{
   </div>
 </div>
 
-<!-- MODAL 1: SOLICITUD DE PIN -->
+<!-- MODAL 1: SOLICITUD DE PIN NUMÉRICO -->
 <div id="modalPinAdmin" class="modal">
   <div class="modal-box dark">
     <h2 style="margin-top:0;">🔐 Acceso Admin</h2>
     <p style="font-size:14px; opacity:0.8;">Ingresá el PIN para editar la programación:</p>
-    <input type="password" id="inputPinAdmin" class="admin-input" placeholder="PIN de acceso" style="text-align:center; font-size:20px;">
+    <input type="password" id="inputPinAdmin" class="admin-input" inputmode="numeric" pattern="[0-9]*" maxlength="10" placeholder="PIN numérico" style="text-align:center; font-size:20px;">
     <div style="display:flex; justify-content:center; gap:8px;">
       <button class="btn-modal btn-instalar" onclick="verificarPinAdmin()">Ingresar</button>
       <button class="btn-modal btn-cancelar" onclick="cerrarPinAdmin()">Cancelar</button>
@@ -1502,7 +1502,7 @@ body.player-active{
 <script>
 let deferredPrompt = null;
 const VERSION_CACHE = "v=20260519-restaurado-final";
-const PIN_ADMIN_CORRECTO = "1234";
+const PIN_ADMIN_CORRECTO = "00275";
 
 // Estructura base predeterminada
 const bloquesPredeterminados = [
@@ -1715,14 +1715,14 @@ function actualizarBloque(){
   if(activeCard) activeCard.classList.add("active");
 }
 
-/* MENÚ ADMIN CON DETECTOR DE 5 SEGUNDOS */
+/* MENÚ ADMIN CON DETECTOR RÁPIDO (2.5 SEGUNDOS) */
 let adminTimer = null;
 const heroElement = document.getElementById("heroImage");
 
 function iniciarConteoAdmin() {
   adminTimer = setTimeout(() => {
     abrirPinAdmin();
-  }, 5000);
+  }, 2500); // Reducido a 2.5 segundos
 }
 
 function cancelarConteoAdmin() {
