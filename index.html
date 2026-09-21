@@ -160,7 +160,7 @@
         @keyframes logoanim{0%{transform:scale(0.5);opacity:0} 50%{transform:scale(1.1)} 100%{transform:scale(1);opacity:1} }
 
         /* ========================================================
-           ESTILOS AISLADOS DE PUBLICIDAD EMERGENTE (CARRUSEL + BLUR)
+           ESTILOS PUBLICIDAD EMERGENTE (VERTICAL GIGANTE / MÁXIMA PANTALLA)
            ======================================================== */
         .on-ad-overlay {
             position: fixed;
@@ -168,54 +168,61 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.82);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
+            background-color: rgba(0, 0, 0, 0.90);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             z-index: 99999;
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 15px;
+            padding: 10px;
             box-sizing: border-box;
         }
         .on-ad-dialog {
             position: relative;
-            width: 95%;
-            max-width: 460px;
+            width: 100%;
+            max-width: 440px;
+            height: 94vh; /* Ocupa prácticamente toda la altura de la pantalla verticalmente */
             background: #000;
-            border-radius: 16px;
+            border-radius: 18px;
             overflow: hidden;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            display: flex;
+            flex-direction: column;
         }
         .on-ad-close-x {
             position: absolute;
-            top: 12px;
-            right: 12px;
-            background: rgba(0, 0, 0, 0.7);
+            top: 14px;
+            right: 14px;
+            background: rgba(0, 0, 0, 0.75);
             color: #fff;
-            border: 2px solid rgba(255, 255, 255, 0.4);
-            font-size: 24px;
-            width: 40px;
-            height: 40px;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            font-size: 26px;
+            width: 44px;
+            height: 44px;
             border-radius: 50%;
             cursor: pointer;
-            z-index: 30;
+            z-index: 40;
             display: flex;
             align-items: center;
             justify-content: center;
             transition: background 0.2s, transform 0.2s;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
         }
         .on-ad-close-x:hover {
             background: var(--rojo);
-            transform: scale(1.05);
+            transform: scale(1.08);
         }
         .on-ad-carousel-box {
             position: relative;
             width: 100%;
-            aspect-ratio: 1/1;
+            flex: 1; /* Se estira verticalmente al máximo del contenedor */
             overflow: hidden;
             background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         .on-ad-track-list {
             display: flex;
@@ -227,40 +234,41 @@
             min-width: 100%;
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: contain; /* Muestra el flyer vertical completo sin recortar nada */
+            background: #000;
             display: block;
         }
         .on-ad-arrow {
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
-            background: rgba(0, 0, 0, 0.6);
+            background: rgba(0, 0, 0, 0.65);
             color: white;
             border: none;
-            width: 38px;
-            height: 38px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             cursor: pointer;
-            font-size: 16px;
-            z-index: 20;
+            font-size: 18px;
+            z-index: 30;
             display: flex;
             align-items: center;
             justify-content: center;
             transition: background 0.2s;
         }
         .on-ad-arrow:hover { background: var(--rojo); }
-        .on-ad-arrow.prev { left: 10px; }
-        .on-ad-arrow.next { right: 10px; }
+        .on-ad-arrow.prev { left: 12px; }
+        .on-ad-arrow.next { right: 12px; }
         .on-ad-dots {
             display: flex;
             justify-content: center;
-            gap: 6px;
-            padding: 10px;
+            gap: 8px;
+            padding: 12px;
             background: #111;
         }
         .on-ad-dot {
-            width: 8px;
-            height: 8px;
+            width: 9px;
+            height: 9px;
             border-radius: 50%;
             background: #555;
             cursor: pointer;
@@ -420,7 +428,7 @@
     </div>
 
     <!-- ========================================================
-       HTML DE PUBLICIDAD EMERGENTE (CARRUSEL + BOTÓN X)
+       HTML DE PUBLICIDAD EMERGENTE (VERTICAL MÁXIMA PANTALLA + X)
        ======================================================== -->
     <div id="onAdPopupOverlay" class="on-ad-overlay" style="display:none;">
         <div class="on-ad-dialog">
@@ -493,7 +501,7 @@
         const defaultAdConfig = {
             enabled: true,
             duration: 5,
-            images: ["mananas-on.jpg"]
+            images: ["flyer nelqp.jpeg"]
         };
 
         function getAdConfig() {
@@ -779,8 +787,8 @@
                 slotDiv.style.border = "1px solid #444";
                 slotDiv.innerHTML = `
                     <label style="font-size:11px; color:#ffcc00; font-weight:bold;">Publicidad Nº ${i + 1}:</label>
-                    <input type="text" id="adm_ad_text_${i}" class="admin-input" placeholder="Nombre de archivo (ej: mananas-on.jpg)" value="${valActual.startsWith("data:") ? "[Imagen Cargada]" : valActual}">
-                    <label style="font-size:10px; color:#aaa;">O subir archivo de imagen:</label>
+                    <input type="text" id="adm_ad_text_${i}" class="admin-input" placeholder="Nombre de archivo (ej: flyer nelqp.jpeg)" value="${valActual.startsWith("data:") ? "" : valActual}">
+                    <label style="font-size:10px; color:#aaa;">O subir archivo de imagen nuevo:</label>
                     <input type="file" id="adm_ad_file_${i}" accept="image/*" class="admin-input" style="margin-bottom:0;">
                 `;
                 container.appendChild(slotDiv);
@@ -851,20 +859,24 @@
                 const inputTxt = document.getElementById(`adm_ad_text_${i}`);
                 const inputFile = document.getElementById(`adm_ad_file_${i}`);
                 
-                nuevasImagenesAds[i] = currentAd.images && currentAd.images[i] ? currentAd.images[i] : "mananas-on.jpg";
+                nuevasImagenesAds[i] = (currentAd.images && currentAd.images[i]) ? currentAd.images[i] : "flyer nelqp.jpeg";
                 
-                if (inputTxt && inputTxt.value && !inputTxt.value.includes("[Imagen")) {
+                if (inputTxt && inputTxt.value.trim() !== "") {
                     nuevasImagenesAds[i] = inputTxt.value.trim();
                 }
                 
                 if (inputFile && inputFile.files && inputFile.files[0]) {
+                    const archivo = inputFile.files[0];
                     const p = new Promise((resolve) => {
                         const reader = new FileReader();
                         reader.onload = function(e) { 
                             nuevasImagenesAds[i] = e.target.result; 
                             resolve(); 
                         };
-                        reader.readAsDataURL(inputFile.files[0]);
+                        reader.onerror = function() { 
+                            resolve(); 
+                        };
+                        reader.readAsDataURL(archivo);
                     });
                     promesasPublicidad.push(p);
                 }
@@ -888,13 +900,17 @@
                 b.locutor = inputLocutor;
 
                 if (inputFile && inputFile.files && inputFile.files[0]) {
+                    const archivoProg = inputFile.files[0];
                     const p = new Promise((resolve) => {
                         const reader = new FileReader();
                         reader.onload = function(e) { 
                             b.imagen = e.target.result; 
                             resolve(); 
                         };
-                        reader.readAsDataURL(inputFile.files[0]);
+                        reader.onerror = function() { 
+                            resolve(); 
+                        };
+                        reader.readAsDataURL(archivoProg);
                     });
                     promesasProgramas.push(p);
                 }
