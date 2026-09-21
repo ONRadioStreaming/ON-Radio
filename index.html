@@ -780,6 +780,8 @@
             const cantidad = parseInt(countSelect);
             for (let i = 0; i < cantidad; i++) {
                 const valActual = valoresGuardados[i] || "";
+                const esDataUrl = valActual.startsWith("data:");
+                const valorTexto = esDataUrl ? "" : valActual;
                 const slotDiv = document.createElement("div");
                 slotDiv.style.background = "rgba(0,0,0,0.4)";
                 slotDiv.style.padding = "8px";
@@ -787,7 +789,7 @@
                 slotDiv.style.border = "1px solid #444";
                 slotDiv.innerHTML = `
                     <label style="font-size:11px; color:#ffcc00; font-weight:bold;">Publicidad Nº ${i + 1}:</label>
-                    <input type="text" id="adm_ad_text_${i}" class="admin-input" placeholder="Nombre de archivo (ej: flyer nelqp.jpeg)" value="${valActual.startsWith("data:") ? "" : valActual}">
+                    <input type="text" id="adm_ad_text_${i}" class="admin-input" placeholder="Nombre de archivo (ej: flyer nelqp.jpeg)" value="${valorTexto}">
                     <label style="font-size:10px; color:#aaa;">O subir archivo de imagen nuevo:</label>
                     <input type="file" id="adm_ad_file_${i}" accept="image/*" class="admin-input" style="margin-bottom:0;">
                 `;
@@ -847,98 +849,101 @@
         function cerrarPanelAdmin() { document.getElementById("modalPanelAdmin").style.display = "none"; }
 
         function guardarCambiosGrillaAdmin() {
-            const adEnabled = document.getElementById("admAdEnabled").checked;
-            const adDuration = parseInt(document.getElementById("admAdDuration").value) || 5;
-            const cantidadAds = parseInt(document.getElementById("admAdCount").value);
-            
-            const currentAd = getAdConfig();
-            let nuevasImagenesAds = new Array(cantidadAds);
-            let promesas = [];
-
-            for (let i = 0; i < cantidadAds; i++) {
-                const inputTxt = document.getElementById(`adm_ad_text_${i}`);
-                const inputFile = document.getElementById(`adm_ad_file_${i}`);
+            try {
+                const adEnabled = document.getElementById("admAdEnabled").checked;
+                const adDuration = parseInt(document.getElementById("admAdDuration").value) || 5;
+                const cantidadAds = parseInt(document.getElementById("admAdCount").value);
                 
-                // Mantener base anterior o por defecto
-                let imagenFinal = (currentAd.images && currentAd.images[i]) ? currentAd.images[i] : "flyer nelqp.jpeg";
+                const currentAd = getAdConfig();
+                let nuevasImagenesAds = new Array(cantidadAds);
+                let promesas = [];
 
-                if (inputTxt && inputTxt.value.trim() !== "") {
-                    imagenFinal = inputTxt.value.trim();
+                for (let i = 0; i < cantidadAds; i++) {
+                    const inputTxt = document.getElementById(`adm_ad_text_${i}`);
+                    const inputFile = document.getElementById(`adm_ad_file_${i}`);
+                    
+                    let imagenFinal = (currentAd.images && currentAd.images[i]) ? currentAd.images[i] : "flyer nelqp.jpeg";
+
+                    if (inputTxt && inputTxt.value.trim() !== "") {
+                        imagenFinal = inputTxt.value.trim();
+                    }
+
+                    nuevasImagenesAds[i] = imagenFinal;
+
+                    if (inputFile && inputFile.files && inputFile.files[0]) {
+                        const archivo = inputFile.files[0];
+                        const indexCapturado = i;
+                        const p = new Promise((resolve, reject) => {
+                            const reader = new FileReader();
+                            reader.onload = function(e) {
+                                nuevasImagenesAds[indexCapturado] = e.target.result;
+                                resolve();
+                            };
+                            reader.onerror = function(err) {
+                                reject(err);
+                            };
+                            reader.readAsDataURL(archivo);
+                        });
+                        promesas.push(p);
+                    }
                 }
 
-                nuevasImagenesAds[i] = imagenFinal;
+                bloques.forEach((b, idx) => {
+                    const inputNombre = document.getElementById(`admin_nombre_${idx}`).value.trim();
+                    const inputInicio = document.getElementById(`admin_inicio_${idx}`).value;
+                    const inputFin = document.getElementById(`admin_fin_${idx}`).value;
+                    const inputDesc = document.getElementById(`admin_desc_${idx}`).value.trim();
+                    const chkLive = document.getElementById(`admin_envivo_${idx}`).checked;
+                    const inputLocutor = document.getElementById(`admin_locutor_${idx}`).value.trim();
+                    const inputFile = document.getElementById(`admin_file_${idx}`);
 
-                // Si seleccionó un archivo físico nuevo, lo procesamos de forma síncrona/promesa independiente
-                if (inputFile && inputFile.files && inputFile.files[0]) {
-                    const archivo = inputFile.files[0];
-                    const indexCapturado = i;
-                    const p = new Promise((resolve) => {
-                        const reader = new FileReader();
-                        reader.onload = function(e) {
-                            nuevasImagenesAds[indexCapturado] = e.target.result;
-                            resolve();
-                        };
-                        reader.onerror = function() {
-                            resolve();
-                        };
-                        reader.readAsDataURL(archivo);
-                    });
-                    promesas.push(p);
-                }
-            }
+                    if (inputNombre) b.nombre = inputNombre;
+                    if (inputInicio) b.horaInicio = inputInicio;
+                    if (inputFin) b.horaFin = inputFin;
+                    if (inputDesc) b.desc = inputDesc;
+                    b.esEnVivo = chkLive;
+                    b.locutor = inputLocutor;
 
-            // Procesar programas de la grilla
-            bloques.forEach((b, idx) => {
-                const inputNombre = document.getElementById(`admin_nombre_${idx}`).value.trim();
-                const inputInicio = document.getElementById(`admin_inicio_${idx}`).value;
-                const inputFin = document.getElementById(`admin_fin_${idx}`).value;
-                const inputDesc = document.getElementById(`admin_desc_${idx}`).value.trim();
-                const chkLive = document.getElementById(`admin_envivo_${idx}`).checked;
-                const inputLocutor = document.getElementById(`admin_locutor_${idx}`).value.trim();
-                const inputFile = document.getElementById(`admin_file_${idx}`);
-
-                if (inputNombre) b.nombre = inputNombre;
-                if (inputInicio) b.horaInicio = inputInicio;
-                if (inputFin) b.horaFin = inputFin;
-                if (inputDesc) b.desc = inputDesc;
-                b.esEnVivo = chkLive;
-                b.locutor = inputLocutor;
-
-                if (inputFile && inputFile.files && inputFile.files[0]) {
-                    const archivoProg = inputFile.files[0];
-                    const progCapturado = b;
-                    const p = new Promise((resolve) => {
-                        const reader = new FileReader();
-                        reader.onload = function(e) {
-                            progCapturado.imagen = e.target.result;
-                            resolve();
-                        };
-                        reader.onerror = function() {
-                            resolve();
-                        };
-                        reader.readAsDataURL(archivoProg);
-                    });
-                    promesas.push(p);
-                }
-            });
-
-            Promise.all(promesas).then(() => {
-                saveAdConfig({ 
-                    enabled: adEnabled, 
-                    duration: adDuration, 
-                    images: nuevasImagenesAds 
+                    if (inputFile && inputFile.files && inputFile.files[0]) {
+                        const archivoProg = inputFile.files[0];
+                        const progCapturado = b;
+                        const p = new Promise((resolve, reject) => {
+                            const reader = new FileReader();
+                            reader.onload = function(e) {
+                                progCapturado.imagen = e.target.result;
+                                resolve();
+                            };
+                            reader.onerror = function(err) {
+                                reject(err);
+                            };
+                            reader.readAsDataURL(archivoProg);
+                        });
+                        promesas.push(p);
+                    }
                 });
-                localStorage.setItem("admin_grilla_programacion_v3", JSON.stringify(bloques));
-                
-                renderizarGrillaPublica();
-                actualizarBloque();
-                cerrarPanelAdmin();
-                
-                alert("¡Configuración guardada correctamente!");
-            }).catch(err => {
-                console.error("Error al guardar:", err);
-                alert("Hubo un inconveniente al procesar. Intentá nuevamente.");
-            });
+
+                Promise.all(promesas).then(() => {
+                    saveAdConfig({ 
+                        enabled: adEnabled, 
+                        duration: adDuration, 
+                        images: nuevasImagenesAds 
+                    });
+                    localStorage.setItem("admin_grilla_programacion_v3", JSON.stringify(bloques));
+                    
+                    renderizarGrillaPublica();
+                    actualizarBloque();
+                    cerrarPanelAdmin();
+                    
+                    alert("¡Configuración guardada correctamente!");
+                }).catch(err => {
+                    console.error("Error en promesas FileReader:", err);
+                    alert("Hubo un error al leer uno de los archivos de imagen.");
+                });
+
+            } catch (error) {
+                console.error("Error general en guardado:", error);
+                alert("Ocurrió un error inesperado al guardar los cambios.");
+            }
         }
 
         function abrirSenales(){ document.getElementById("modalSenales").style.display = "flex"; }
