@@ -842,6 +842,7 @@
             const adEnabled = document.getElementById("admAdEnabled").checked;
             const adDuration = parseInt(document.getElementById("admAdDuration").value) || 5;
             const cantidadAds = parseInt(document.getElementById("admAdCount").value);
+            
             let promesasPublicidad = [];
             let nuevasImagenesAds = new Array(cantidadAds);
             const currentAd = getAdConfig();
@@ -849,14 +850,20 @@
             for (let i = 0; i < cantidadAds; i++) {
                 const inputTxt = document.getElementById(`adm_ad_text_${i}`);
                 const inputFile = document.getElementById(`adm_ad_file_${i}`);
+                
                 nuevasImagenesAds[i] = currentAd.images && currentAd.images[i] ? currentAd.images[i] : "mananas-on.jpg";
+                
                 if (inputTxt && inputTxt.value && !inputTxt.value.includes("[Imagen")) {
                     nuevasImagenesAds[i] = inputTxt.value.trim();
                 }
+                
                 if (inputFile && inputFile.files && inputFile.files[0]) {
                     const p = new Promise((resolve) => {
                         const reader = new FileReader();
-                        reader.onload = function(e) { nuevasImagenesAds[i] = e.target.result; resolve(); };
+                        reader.onload = function(e) { 
+                            nuevasImagenesAds[i] = e.target.result; 
+                            resolve(); 
+                        };
                         reader.readAsDataURL(inputFile.files[0]);
                     });
                     promesasPublicidad.push(p);
@@ -883,7 +890,10 @@
                 if (inputFile && inputFile.files && inputFile.files[0]) {
                     const p = new Promise((resolve) => {
                         const reader = new FileReader();
-                        reader.onload = function(e) { b.imagen = e.target.result; resolve(); };
+                        reader.onload = function(e) { 
+                            b.imagen = e.target.result; 
+                            resolve(); 
+                        };
                         reader.readAsDataURL(inputFile.files[0]);
                     });
                     promesasProgramas.push(p);
@@ -891,12 +901,21 @@
             });
 
             Promise.all([...promesasPublicidad, ...promesasProgramas]).then(() => {
-                saveAdConfig({ enabled: adEnabled, duration: adDuration, images: nuevasImagenesAds });
+                saveAdConfig({ 
+                    enabled: adEnabled, 
+                    duration: adDuration, 
+                    images: nuevasImagenesAds 
+                });
                 localStorage.setItem("admin_grilla_programacion_v3", JSON.stringify(bloques));
+                
                 renderizarGrillaPublica();
                 actualizarBloque();
                 cerrarPanelAdmin();
+                
                 alert("¡Configuración y grilla guardadas correctamente!");
+            }).catch(err => {
+                console.error("Error al guardar cambios:", err);
+                alert("Hubo un error al procesar las imágenes. Intentá nuevamente.");
             });
         }
 
