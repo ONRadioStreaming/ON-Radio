@@ -498,7 +498,7 @@
 
     <script>
         let deferredPrompt = null;
-        const VERSION_CACHE = "v=20260921-v2";
+        const VERSION_CACHE = "v=20260921-v3";
         const PIN_ADMIN_CORRECTO = "00275";
 
         const defaultAdConfig = {
@@ -816,41 +816,57 @@
             abrirPanelAdmin();
         }
 
-        function renderizarSlotsPublicitariosAdmin(valoresGuardados = []) {
-            const countSelect = document.getElementById("admAdCount").value;
-            const container = document.getElementById("admAdSlotsContainer");
-            container.innerHTML = "";
-            const cantidad = parseInt(countSelect);
-            for (let i = 0; i < cantidad; i++) {
-                const itemActual = valoresGuardados[i] || {};
-                const valImg = itemActual.imagen || "";
-                const todoElDia = itemActual.todoElDia !== undefined ? itemActual.todoElDia : true;
-                const chkTodoElDia = todoElDia ? "checked" : "";
-                const displayTimeGrid = todoElDia ? "display:none;" : "display:grid;";
-                const hInicio = itemActual.horaInicio || "00:00";
-                const hFin = itemActual.horaFin || "23:59";
+        function renderizarSlotsPublicitariosAdmin() {
+    const countSelect = document.getElementById("admAdCount").value;
+    const container = document.getElementById("admAdSlotsContainer");
+    const cantidad = parseInt(countSelect);
 
-                const slotDiv = document.createElement("div");
-                slotDiv.style.background = "rgba(0,0,0,0.4)";
-                slotDiv.style.padding = "10px";
-                slotDiv.style.borderRadius = "8px";
-                slotDiv.style.border = "1px solid #444";
-                slotDiv.innerHTML = `
-                    <label style="font-size:12px; color:#ffcc00; font-weight:bold;">Publicidad Nº ${i + 1}:</label>
-                    <input type="text" id="adm_ad_text_${i}" class="admin-input" placeholder="Pegá el link directo de la imagen (https://...)" value="${valImg}">
-                    
-                    <div class="admin-checkbox-wrap" style="margin-top:6px;">
-                        <input type="checkbox" id="adm_ad_tododia_${i}" ${chkTodoElDia} onchange="toggleTodoElDiaAd(this, ${i})">
-                        <label for="adm_ad_tododia_${i}" style="font-size:11px; font-weight:bold; cursor:pointer; color:#fff;">Mostrar las 24 hs (Todo el día)</label>
-                    </div>
-                    <div id="adm_ad_timegrid_${i}" class="time-grid" style="${displayTimeGrid} margin-top:6px;">
-                        <div><label style="font-size:10px;">Desde:</label><input type="time" id="adm_ad_inicio_${i}" class="admin-input" value="${hInicio}"></div>
-                        <div><label style="font-size:10px;">Hasta:</label><input type="time" id="adm_ad_fin_${i}" class="admin-input" value="${hFin}"></div>
-                    </div>
-                `;
-                container.appendChild(slotDiv);
-            }
-        }
+    // Guardamos temporalmente lo que el usuario ya escribió en los inputs actuales antes de redibujar
+    let valoresActuales = [];
+    const inputsViejos = container.querySelectorAll("input[id^='adm_ad_text_']");
+    inputsViejos.forEach((inp, idx) => {
+        valoresActuales[idx] = {
+            imagen: inp.value,
+            todoElDia: document.getElementById(`adm_ad_tododia_${idx}`)?.checked ?? true,
+            horaInicio: document.getElementById(`adm_ad_inicio_${idx}`)?.value || "00:00",
+            horaFin: document.getElementById(`adm_ad_fin_${idx}`)?.value || "23:59"
+        };
+    });
+
+    container.innerHTML = "";
+    const currentAd = getAdConfig();
+    const listaOriginal = valoresActuales.length > 0 ? valoresActuales : (currentAd.adsList || []);
+
+    for (let i = 0; i < cantidad; i++) {
+        const itemActual = listaOriginal[i] || {};
+        const valImg = itemActual.imagen || "";
+        const todoElDia = itemActual.todoElDia !== undefined ? itemActual.todoElDia : true;
+        const chkTodoElDia = todoElDia ? "checked" : "";
+        const displayTimeGrid = todoElDia ? "display:none;" : "display:grid;";
+        const hInicio = itemActual.horaInicio || "00:00";
+        const hFin = itemActual.horaFin || "23:59";
+
+        const slotDiv = document.createElement("div");
+        slotDiv.style.background = "rgba(0,0,0,0.4)";
+        slotDiv.style.padding = "10px";
+        slotDiv.style.borderRadius = "8px";
+        slotDiv.style.border = "1px solid #444";
+        slotDiv.innerHTML = `
+            <label style="font-size:12px; color:#ffcc00; font-weight:bold;">Publicidad Nº ${i + 1}:</label>
+            <input type="text" id="adm_ad_text_${i}" class="admin-input" placeholder="Pegá el link directo de la imagen (https://...)" value="${valImg}">
+
+            <div class="admin-checkbox-wrap" style="margin-top:6px;">
+                <input type="checkbox" id="adm_ad_tododia_${i}" ${chkTodoElDia} onchange="toggleTodoElDiaAd(this, ${i})">
+                <label for="adm_ad_tododia_${i}" style="font-size:11px; font-weight:bold; cursor:pointer; color:#fff;">Mostrar las 24 hs (Todo el día)</label>
+            </div>
+            <div id="adm_ad_timegrid_${i}" class="time-grid" style="${displayTimeGrid} margin-top:6px;">
+                <div><label style="font-size:10px;">Desde:</label><input type="time" id="adm_ad_inicio_${i}" class="admin-input" value="${hInicio}"></div>
+                <div><label style="font-size:10px;">Hasta:</label><input type="time" id="adm_ad_fin_${i}" class="admin-input" value="${hFin}"></div>
+            </div>
+        `;
+        container.appendChild(slotDiv);
+    }
+}
 
         function abrirPanelAdmin() {
             const currentAd = getAdConfig();
