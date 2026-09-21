@@ -168,7 +168,7 @@ body::after{
   object-fit:contain;
 }
 
-/* HERO CORREGIDO PARA QUE LAS PLACAS NO SE CORTEN */
+/* HERO */
 .hero-card{
   width:100%;
   margin:0 auto 24px;
@@ -180,11 +180,8 @@ body::after{
 .hero-image-wrap{
   position:relative;
   width:100%;
-  aspect-ratio: 1 / 1; /* Formato cuadrado para que la placa entre entera[cite: 1] */
+  aspect-ratio: 16 / 9;
   background-color:#111;
-  background-size: contain !important; /* Muestra la imagen completa sin recortar los bordes[cite: 1] */
-  background-position: center center !important;
-  background-repeat: no-repeat !important;
   overflow:hidden;
   display:flex;
   align-items:center;
@@ -945,6 +942,440 @@ body.player-active{
   }
 }
 
+/* ESTILOS PARA PUBLICIDAD EMERGENTE (POP-UP / CARRUSEL) */
+.ad-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.85);
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  backdrop-filter: blur(5px);
+}
+
+.ad-modal-container {
+  position: relative;
+  width: 90%;
+  max-width: 380px;
+  background: #111;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+  border: 1px solid rgba(255,255,255,0.15);
+}
+
+.ad-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(0, 0, 0, 0.7);
+  color: #fff;
+  border: none;
+  font-size: 26px;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+  transition: background 0.2s;
+}
+
+.ad-close:hover {
+  background: var(--rojo);
+}
+
+.ad-carousel {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1/1;
+  overflow: hidden;
+  background: #000;
+}
+
+.ad-slides-track {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.3s ease-in-out;
+}
+
+.ad-slide {
+  min-width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.ad-nav-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0,0,0,0.5);
+  color: white;
+  border: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 16px;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ad-nav-btn.prev { left: 8px; }
+.ad-nav-btn.next { right: 8px; }
+
+.ad-dots {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px;
+  background: #111;
+}
+
+.ad-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #555;
+  cursor: pointer;
+}
+
+.ad-dot.active {
+  background: var(--rojo);
+}
+
+/* RESTAURACIÓN VISUAL FINAL ON RADIO */
+
+html,
+body,
+button,
+input,
+select,
+textarea{
+  font-family:Arial, Helvetica, sans-serif !important;
+}
+
+body{
+  margin:0 !important;
+  background:#170000 !important;
+  color:#fff !important;
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  background-image:var(--bg-img);
+  background-repeat:no-repeat;
+  background-position:center center;
+  background-size:cover;
+  filter:blur(18px);
+  transform:scale(1.18);
+  opacity:.82;
+  z-index:-2;
+}
+
+body::after{
+  content:"";
+  position:fixed;
+  inset:0;
+  background:linear-gradient(180deg,rgba(120,0,0,.30),rgba(0,0,0,.70));
+  z-index:-1;
+}
+
+.app-header{
+  position:sticky;
+  top:0;
+  z-index:90;
+  height:52px;
+  background:var(--rojo);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 10px;
+  box-shadow:0 2px 6px rgba(0,0,0,.16);
+  border:none;
+}
+
+.header-left{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.menu-btn,
+.icon-btn{
+  background:transparent;
+  border:none;
+  color:#fff;
+  cursor:pointer;
+  line-height:1;
+  padding:0;
+  box-shadow:none;
+  text-shadow:none;
+}
+
+.menu-btn{
+  font-size:24px;
+  font-weight:900;
+}
+
+.header-title{
+  font-size:18px;
+  font-weight:800;
+  letter-spacing:-0.2px;
+  color:#fff;
+  text-shadow:none;
+}
+
+.header-actions{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.play-header{
+  width:28px;
+  height:28px;
+  border-radius:50%;
+  background:#fff;
+  color:var(--rojo);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:12px;
+  padding:0;
+  border:none;
+  box-shadow:none;
+}
+
+.share-header{
+  width:30px;
+  height:30px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:transparent;
+  border:none;
+  padding:0;
+}
+
+.main{
+  max-width:760px;
+  margin:0 auto;
+  padding:16px 28px 28px;
+}
+
+.redes-top h2{
+  color:#fff !important;
+  font-size:19px;
+  margin:0 0 15px;
+  text-shadow:0 3px 7px rgba(0,0,0,.75);
+  font-weight:800;
+}
+
+.section-title{
+  color:#fff !important;
+  font-size:23px;
+  margin:0 0 17px;
+  text-shadow:0 3px 7px rgba(0,0,0,.78);
+  font-weight:900;
+}
+
+.pill{
+  background:#fff;
+  border-radius:999px;
+  box-shadow:0 6px 16px rgba(0,0,0,.24);
+}
+
+.hero-card{
+  width:100%;
+  margin:0 auto 24px;
+  background:#bf1d18;
+  overflow:hidden;
+  box-shadow:0 8px 20px rgba(0,0,0,.30);
+}
+
+.hero-image-wrap::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(180deg,rgba(0,0,0,.02),rgba(0,0,0,.07));
+  z-index:1;
+}
+
+.hero-bg-text{
+  display:none !important;
+}
+
+.play-center{
+  position:absolute;
+  z-index:4;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%);
+  width:50px;
+  height:50px;
+  border-radius:50%;
+  border:none;
+  background:rgba(255,255,255,.62);
+  color:var(--rojo);
+  font-size:23px;
+  cursor:pointer;
+  box-shadow:0 7px 18px rgba(0,0,0,.34);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:0;
+}
+
+.hero-info{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+  background:#c4211d;
+  color:#fff !important;
+  padding:10px 18px 12px;
+  font-weight:900;
+}
+
+.hero-info small,
+.hero-info span{
+  color:#fff !important;
+}
+
+.hero-info small{
+  display:block;
+  font-size:13px;
+  margin-bottom:4px;
+  line-height:1.05;
+}
+
+.hero-info span{
+  font-size:17px;
+  line-height:1.10;
+}
+
+.whatsapp-main{
+  background:var(--verde);
+  color:#fff !important;
+  border-radius:22px;
+  box-shadow:0 8px 20px rgba(0,0,0,.30);
+}
+
+.whatsapp-title,
+.whatsapp-sub{
+  color:#fff !important;
+}
+
+.schedule-card{
+  background:rgba(255,255,255,.11);
+  color:#fff !important;
+  border:1px solid rgba(255,255,255,.17);
+  border-radius:18px;
+  backdrop-filter:blur(8px);
+  box-shadow:0 5px 14px rgba(0,0,0,.20);
+}
+
+.schedule-card.active{
+  background:rgba(226,27,27,.82);
+  border-color:rgba(255,255,255,.34);
+}
+
+.schedule-time,
+.schedule-name,
+.schedule-desc{
+  color:#fff !important;
+}
+
+.form-card,
+.form-card h2,
+.form-card p{
+  color:#fff !important;
+}
+
+.drawer,
+.drawer *{
+  font-family:Arial, Helvetica, sans-serif !important;
+}
+
+.player-bar{
+  position:fixed;
+  left:0;
+  right:0;
+  bottom:0;
+  z-index:85;
+  height:58px;
+  background:var(--rojo);
+  color:#fff;
+  display:none;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 22px;
+  box-shadow:0 -2px 8px rgba(0,0,0,.22);
+}
+
+.player-bar.show{
+  display:flex;
+}
+
+.player-info{
+  display:flex;
+  flex-direction:column;
+  line-height:1.1;
+}
+
+.player-info .estado{
+  font-size:13px;
+  font-weight:700;
+  opacity:.9;
+  color:#fff;
+}
+
+.player-info .radio{
+  font-size:20px;
+  font-weight:900;
+  color:#fff;
+}
+
+.stop-btn{
+  width:34px;
+  height:34px;
+  background:#fff;
+  border:none;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  position:relative;
+  padding:0;
+}
+
+.stop-btn::after{
+  content:"";
+  width:12px;
+  height:12px;
+  background:var(--rojo);
+  border-radius:2px;
+}
+
+body.player-active{
+  padding-bottom:58px;
+}
+
 </style>
 </head>
 
@@ -999,7 +1430,7 @@ body.player-active{
   </a>
 
   <div class="drawer-section">Seguinos en nuestras Redes</div>
-  <a class="drawer-link" href="url?id=4" target="_blank">
+  <a class="drawer-link" href="https://github.com/copilot" target="_blank">
     <img src="instagram.png" alt=""> Instagram
   </a>
   <a class="drawer-link" href="https://www.facebook.com/onradioo" target="_blank">
@@ -1008,13 +1439,13 @@ body.player-active{
   <a class="drawer-link" href="https://www.tiktok.com/@laonradio" target="_blank">
     <img src="tiktok.png" alt=""> TikTok
   </a>
-  <a class="drawer-link" href="https://www.youtube.com/@laonradio" target="_blank">
+  <a class="drawer-link" href="url?id=7" target="_blank">
     <img src="youtube.png" alt=""> YouTube
   </a>
   <a class="drawer-link" href="https://twitter.com/laonradioo" target="_blank">
     <img src="x.png" alt=""> X
   </a>
-  <a class="drawer-link" href="https://www.twitch.tv/laonradio" target="_blank">
+  <a class="drawer-link" href="url?id=9" target="_blank">
     <img src="twi.png" alt=""> Twitch
   </a>
 
@@ -1043,7 +1474,7 @@ body.player-active{
       <a class="pill" href="https://www.instagram.com/la_on_radio" target="_blank"><img src="instagram.png" alt="Instagram"></a>
       <a class="pill" href="https://twitter.com/laonradioo" target="_blank"><img src="x.png" alt="X"></a>
       <a class="pill" href="https://www.youtube.com/@laonradio" target="_blank"><img src="youtube.png" alt="YouTube"></a>
-      <a class="pill" href="url?id=36" target="_blank"><img src="facebook.png" alt="Facebook"></a>
+      <a class="pill" href="https://www.facebook.com/onradioo" target="_blank"><img src="facebook.png" alt="Facebook"></a>
     </div>
   </section>
 
@@ -1070,7 +1501,7 @@ body.player-active{
     <div class="progress"><span id="progressBar"></span></div>
   </section>
 
-  <a class="whatsapp-main" href="https://github.com/" target="_blank">
+  <a class="whatsapp-main" href="url?id=1" target="_blank">
     <div class="whatsapp-title">
       <img src="WhatsApp.png" alt="">
       Mandanos tu audio
@@ -1152,11 +1583,24 @@ body.player-active{
   </div>
 </div>
 
+<!-- MODAL DE PUBLICIDAD EMERGENTE (POP-UP / CARRUSEL) -->
+<div id="adPopupOverlay" class="ad-overlay" style="display:none;">
+  <div class="ad-modal-container">
+    <button id="adCloseBtn" class="ad-close">&times;</button>
+    <div class="ad-carousel">
+      <div id="adTrack" class="ad-slides-track"></div>
+      <button id="adPrev" class="ad-nav-btn prev" style="display:none;">&#10094;</button>
+      <button id="adNext" class="ad-nav-btn next" style="display:none;">&#10095;</button>
+    </div>
+    <div id="adDots" class="ad-dots" style="display:none;"></div>
+  </div>
+</div>
+
 <!-- MODAL 1: SOLICITUD DE PIN NUMÉRICO -->
 <div id="modalPinAdmin" class="modal">
   <div class="modal-box dark">
     <h2 style="margin-top:0;">🔐 Acceso Admin</h2>
-    <p style="font-size:14px; opacity:0.8;">Ingresá el PIN para editar la programación:</p>
+    <p style="font-size:14px; opacity:0.8;">Ingresá el PIN para editar la programación y publicidad:</p>
     <input type="password" id="inputPinAdmin" class="admin-input" inputmode="numeric" pattern="[0-9]*" maxlength="10" placeholder="PIN numérico" style="text-align:center; font-size:20px;">
     <div style="display:flex; justify-content:center; gap:8px;">
       <button class="btn-modal btn-instalar" onclick="verificarPinAdmin()">Ingresar</button>
@@ -1165,12 +1609,44 @@ body.player-active{
   </div>
 </div>
 
-<!-- MODAL 2: PANEL ADMINISTRADOR COMPLETO CON EN VIVO Y LOCUTOR -->
+<!-- MODAL 2: PANEL ADMINISTRADOR COMPLETO CON PROGRAMACIÓN Y PUBLICIDAD COMERCIAL -->
 <div id="modalPanelAdmin" class="modal">
   <div class="modal-box dark" style="max-width:440px; max-height:85vh; overflow-y:auto; text-align:left;">
-    <h2 style="margin-top:0; text-align:center;">⚙️ Programación Completa</h2>
-    <p style="font-size:12px; opacity:0.8; text-align:center; margin-bottom:12px;">Configurá días, horarios, conductor/a e imagen.</p>
+    <h2 style="margin-top:0; text-align:center;">⚙️ Panel de Administración</h2>
     
+    <!-- Sección Configuración Comercial de Publicidad -->
+    <div class="admin-block-card" style="border-color: #ffcc00;">
+      <h3 style="color:#ffcc00;">📢 Espacio Comercial / Publicidad Emergente</h3>
+      <div class="admin-checkbox-wrap">
+        <input type="checkbox" id="admAdEnabled">
+        <label for="admAdEnabled" style="font-size:12px; font-weight:bold; cursor:pointer; color:#fff;">Activar Publicidad al abrir la App</label>
+      </div>
+
+      <label style="font-size:11px;">Duración por placa (segundos):</label>
+      <input type="number" id="admAdDuration" class="admin-input" min="1" max="60" value="5">
+
+      <label style="font-size:11px; color:#ffcc00; font-weight:bold;">Cantidad de publicidades a mostrar:</label>
+      <select id="admAdCount" class="admin-input" onchange="renderizarSlotsPublicitariosAdmin()">
+        <option value="1">1 Publicidad (Placa Única)</option>
+        <option value="2">2 Publicidades (Carrusel)</option>
+        <option value="3">3 Publicidades (Carrusel)</option>
+        <option value="4">4 Publicidades (Carrusel)</option>
+        <option value="5">5 Publicidades (Carrusel)</option>
+        <option value="6">6 Publicidades (Carrusel)</option>
+        <option value="7">7 Publicidades (Carrusel)</option>
+        <option value="8">8 Publicidades (Carrusel)</option>
+        <option value="9">9 Publicidades (Carrusel)</option>
+        <option value="10">10 Publicidades (Carrusel)</option>
+      </select>
+
+      <div id="admAdSlotsContainer" style="display:flex; flex-direction:column; gap:8px; margin-top:8px;">
+        <!-- Se generan dinámicamente según la cantidad elegida -->
+      </div>
+    </div>
+
+    <hr style="border: 0; border-top: 1px solid #444; margin: 15px 0;">
+
+    <h3 style="text-align:center; margin-bottom: 8px;">Grilla de Programación</h3>
     <button class="btn-admin-agregar" onclick="agregarNuevoProgramaAdmin()">+ Agregar Nuevo Programa</button>
 
     <div id="adminBlocksContainer"></div>
@@ -1185,7 +1661,131 @@ let deferredPrompt = null;
 const VERSION_CACHE = "v=20260519-restaurado-final";
 const PIN_ADMIN_CORRECTO = "00275";
 
-// Estructura base predeterminada
+// Configuración predeterminada de Publicidad comercial
+const defaultAdConfig = {
+  enabled: true,
+  duration: 5, 
+  images: ["mananas-on.png"]
+};
+
+function getAdConfig() {
+  const saved = localStorage.getItem("on_radio_ad_config");
+  return saved ? JSON.parse(saved) : defaultAdConfig;
+}
+
+function saveAdConfig(config) {
+  localStorage.setItem("on_radio_ad_config", JSON.stringify(config));
+}
+
+// Inicializar Publicidad Emergente al cargar la app
+window.addEventListener("DOMContentLoaded", () => {
+  const config = getAdConfig();
+  if (config.enabled && config.images && config.images.length > 0) {
+    iniciarPopupPublicidad(config);
+  }
+});
+
+function iniciarPopupPublicidad(config) {
+  const overlay = document.getElementById("adPopupOverlay");
+  const track = document.getElementById("adTrack");
+  const dotsContainer = document.getElementById("adDots");
+  const btnPrev = document.getElementById("adPrev");
+  const btnNext = document.getElementById("adNext");
+  
+  const imagenesValidas = config.images.map(img => img.trim()).filter(Boolean);
+  if (imagenesValidas.length === 0) return;
+
+  track.innerHTML = imagenesValidas.map(img => `<img src="${img}" class="ad-slide" alt="Publicidad">`).join("");
+  
+  let currentIndex = 0;
+  const totalSlides = imagenesValidas.length;
+  const duracionMs = (config.duration || 5) * 1000;
+  let timerCierreUnico = null;
+  let carruselTimer = null;
+
+  function cerrarPopup() {
+    overlay.style.display = "none";
+    if (timerCierreUnico) clearTimeout(timerCierreUnico);
+    if (carruselTimer) clearInterval(carruselTimer);
+  }
+
+  // Si es una SOLA publicidad -> Se cierra sola al terminar el tiempo
+  if (totalSlides === 1) {
+    btnPrev.style.display = "none";
+    btnNext.style.display = "none";
+    dotsContainer.style.display = "none";
+
+    timerCierreUnico = setTimeout(() => {
+      cerrarPopup();
+    }, duracionMs);
+
+  } else {
+    // Si son MÁS DE UNA -> Funciona como carrusel rotativo
+    btnPrev.style.display = "flex";
+    btnNext.style.display = "flex";
+    dotsContainer.style.display = "flex";
+
+    dotsContainer.innerHTML = "";
+    for (let i = 0; i < totalSlides; i++) {
+      const dot = document.createElement("div");
+      dot.className = `ad-dot ${i === 0 ? "active" : ""}`;
+      dot.onclick = () => {
+        currentIndex = i;
+        updateCarousel();
+        resetAutoPlay();
+      };
+      dotsContainer.appendChild(dot);
+    }
+
+    function updateCarousel() {
+      track.style.transform = `translateX(-${currentIndex * 100}%)`;
+      const dots = dotsContainer.querySelectorAll(".ad-dot");
+      dots.forEach((d, idx) => {
+        d.classList.toggle("active", idx === currentIndex);
+      });
+    }
+
+    btnNext.onclick = () => {
+      currentIndex = (currentIndex + 1) % totalSlides;
+      updateCarousel();
+      resetAutoPlay();
+    };
+
+    btnPrev.onclick = () => {
+      currentIndex = (currentIndex - 1 + totalSlides) % totalSlides;
+      updateCarousel();
+      resetAutoPlay();
+    };
+
+    function nextSlide() {
+      currentIndex = (currentIndex + 1) % totalSlides;
+      updateCarousel();
+    }
+
+    carruselTimer = setInterval(nextSlide, duracionMs);
+
+    function resetAutoPlay() {
+      clearInterval(carruselTimer);
+      carruselTimer = setInterval(nextSlide, duracionMs);
+    }
+  }
+
+  // Botón de cierre (X) manual
+  document.getElementById("adCloseBtn").onclick = () => {
+    cerrarPopup();
+  };
+
+  // Cerrar al hacer clic fuera del contenedor
+  overlay.onclick = (e) => {
+    if (e.target === overlay) {
+      cerrarPopup();
+    }
+  };
+
+  overlay.style.display = "flex";
+}
+
+// Estructura base predeterminada de programas
 const bloquesPredeterminados = [
   {
     id: "slot-trasnoches",
@@ -1330,7 +1930,7 @@ function aplicarImagenBloque(bloque){
   const precarga = new Image();
 
   precarga.onload = function(){
-    hero.style.background = "url('" + imgUrl + "') center center / contain no-repeat #111";
+    hero.style.background = "url('" + imgUrl + "') center center / cover no-repeat";
     document.documentElement.style.setProperty("--bg-img", "url('" + imgUrl + "')");
   };
 
@@ -1487,7 +2087,42 @@ function agregarNuevoProgramaAdmin() {
   abrirPanelAdmin();
 }
 
+// Generar dinámicamente los campos de carga según la cantidad seleccionada
+function renderizarSlotsPublicitariosAdmin(valoresGuardados = []) {
+  const countSelect = document.getElementById("admAdCount").value;
+  const container = document.getElementById("admAdSlotsContainer");
+  container.innerHTML = "";
+
+  const cantidad = parseInt(countSelect);
+
+  for (let i = 0; i < cantidad; i++) {
+    const valActual = valoresGuardados[i] || "";
+    const slotDiv = document.createElement("div");
+    slotDiv.style.background = "rgba(0,0,0,0.4)";
+    slotDiv.style.padding = "8px";
+    slotDiv.style.borderRadius = "8px";
+    slotDiv.style.border = "1px solid #444";
+
+    slotDiv.innerHTML = `
+      <label style="font-size:11px; color:#ffcc00; font-weight:bold;">Publicidad Nº ${i + 1}:</label>
+      <input type="text" id="adm_ad_text_${i}" class="admin-input" placeholder="Nombre de archivo (ej: sponsor1.jpg)" value="${valActual.startsWith("data:") ? "[Imagen Cargada]" : valActual}">
+      <label style="font-size:10px; color:#aaa;">O subir archivo de imagen:</label>
+      <input type="file" id="adm_ad_file_${i}" accept="image/*" class="admin-input" style="margin-bottom:0;">
+    `;
+    container.appendChild(slotDiv);
+  }
+}
+
 function abrirPanelAdmin() {
+  const currentAd = getAdConfig();
+  document.getElementById("admAdEnabled").checked = currentAd.enabled;
+  document.getElementById("admAdDuration").value = currentAd.duration || 5;
+
+  const cantidadActual = currentAd.images && currentAd.images.length > 0 ? currentAd.images.length : 1;
+  document.getElementById("admAdCount").value = Math.min(Math.max(cantidadActual, 1), 10);
+  
+  renderizarSlotsPublicitariosAdmin(currentAd.images || []);
+
   const container = document.getElementById("adminBlocksContainer");
   container.innerHTML = "";
 
@@ -1552,8 +2187,38 @@ function cerrarPanelAdmin() {
 }
 
 function guardarCambiosGrillaAdmin() {
-  let promesasArchivos = [];
+  const adEnabled = document.getElementById("admAdEnabled").checked;
+  const adDuration = parseInt(document.getElementById("admAdDuration").value) || 5;
+  const cantidadAds = parseInt(document.getElementById("admAdCount").value);
 
+  let promesasPublicidad = [];
+  let nuevasImagenesAds = new Array(cantidadAds);
+  const currentAd = getAdConfig();
+
+  for (let i = 0; i < cantidadAds; i++) {
+    const inputTxt = document.getElementById(`adm_ad_text_${i}`);
+    const inputFile = document.getElementById(`adm_ad_file_${i}`);
+    
+    // Mantener valor previo por defecto si existe
+    nuevasImagenesAds[i] = currentAd.images && currentAd.images[i] ? currentAd.images[i] : "mananas-on.png";
+    if (inputTxt && inputTxt.value && !inputTxt.value.includes("[Imagen")) {
+      nuevasImagenesAds[i] = inputTxt.value.trim();
+    }
+
+    if (inputFile && inputFile.files && inputFile.files[0]) {
+      const p = new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          nuevasImagenesAds[i] = e.target.result;
+          resolve();
+        };
+        reader.readAsDataURL(inputFile.files[0]);
+      });
+      promesasPublicidad.push(p);
+    }
+  }
+
+  let promesasProgramas = [];
   bloques.forEach((b, idx) => {
     const inputNombre = document.getElementById(`admin_nombre_${idx}`).value.trim();
     const inputInicio = document.getElementById(`admin_inicio_${idx}`).value;
@@ -1580,16 +2245,17 @@ function guardarCambiosGrillaAdmin() {
         };
         reader.readAsDataURL(inputFile.files[0]);
       });
-      promesasArchivos.push(p);
+      promesasProgramas.push(p);
     }
   });
 
-  Promise.all(promesasArchivos).then(() => {
+  Promise.all([...promesasPublicidad, ...promesasProgramas]).then(() => {
+    saveAdConfig({ enabled: adEnabled, duration: adDuration, images: nuevasImagenesAds });
     localStorage.setItem("admin_grilla_programacion_v3", JSON.stringify(bloques));
     renderizarGrillaPublica();
     actualizarBloque();
     cerrarPanelAdmin();
-    alert("¡Programación guardada y sincronizada correctamente!");
+    alert("¡Configuración comercial y programación guardada correctamente!");
   });
 }
 
