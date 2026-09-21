@@ -160,7 +160,7 @@
         @keyframes logoanim{0%{transform:scale(0.5);opacity:0} 50%{transform:scale(1.1)} 100%{transform:scale(1);opacity:1} }
 
         /* ========================================================
-           ESTILOS PUBLICIDAD EMERGENTE (VERTICAL GIGANTE / MÁXIMA PANTALLA)
+           ESTILOS PUBLICIDAD EMERGENTE (VERTICAL MÁXIMA PANTALLA + X)
            ======================================================== */
         .on-ad-overlay {
             position: fixed;
@@ -182,7 +182,7 @@
             position: relative;
             width: 100%;
             max-width: 440px;
-            height: 94vh; /* Ocupa prácticamente toda la altura de la pantalla verticalmente */
+            height: 94vh;
             background: #000;
             border-radius: 18px;
             overflow: hidden;
@@ -217,7 +217,7 @@
         .on-ad-carousel-box {
             position: relative;
             width: 100%;
-            flex: 1; /* Se estira verticalmente al máximo del contenedor */
+            flex: 1;
             overflow: hidden;
             background: #000;
             display: flex;
@@ -234,7 +234,7 @@
             min-width: 100%;
             width: 100%;
             height: 100%;
-            object-fit: contain; /* Muestra el flyer vertical completo sin recortar nada */
+            object-fit: contain;
             background: #000;
             display: block;
         }
@@ -851,38 +851,43 @@
             const adDuration = parseInt(document.getElementById("admAdDuration").value) || 5;
             const cantidadAds = parseInt(document.getElementById("admAdCount").value);
             
-            let promesasPublicidad = [];
-            let nuevasImagenesAds = new Array(cantidadAds);
             const currentAd = getAdConfig();
+            let nuevasImagenesAds = new Array(cantidadAds);
+            let promesas = [];
 
             for (let i = 0; i < cantidadAds; i++) {
                 const inputTxt = document.getElementById(`adm_ad_text_${i}`);
                 const inputFile = document.getElementById(`adm_ad_file_${i}`);
                 
-                nuevasImagenesAds[i] = (currentAd.images && currentAd.images[i]) ? currentAd.images[i] : "flyer nelqp.jpeg";
-                
+                // Mantener base anterior o por defecto
+                let imagenFinal = (currentAd.images && currentAd.images[i]) ? currentAd.images[i] : "flyer nelqp.jpeg";
+
                 if (inputTxt && inputTxt.value.trim() !== "") {
-                    nuevasImagenesAds[i] = inputTxt.value.trim();
+                    imagenFinal = inputTxt.value.trim();
                 }
-                
+
+                nuevasImagenesAds[i] = imagenFinal;
+
+                // Si seleccionó un archivo físico nuevo, lo procesamos de forma síncrona/promesa independiente
                 if (inputFile && inputFile.files && inputFile.files[0]) {
                     const archivo = inputFile.files[0];
+                    const indexCapturado = i;
                     const p = new Promise((resolve) => {
                         const reader = new FileReader();
-                        reader.onload = function(e) { 
-                            nuevasImagenesAds[i] = e.target.result; 
-                            resolve(); 
+                        reader.onload = function(e) {
+                            nuevasImagenesAds[indexCapturado] = e.target.result;
+                            resolve();
                         };
-                        reader.onerror = function() { 
-                            resolve(); 
+                        reader.onerror = function() {
+                            resolve();
                         };
                         reader.readAsDataURL(archivo);
                     });
-                    promesasPublicidad.push(p);
+                    promesas.push(p);
                 }
             }
 
-            let promesasProgramas = [];
+            // Procesar programas de la grilla
             bloques.forEach((b, idx) => {
                 const inputNombre = document.getElementById(`admin_nombre_${idx}`).value.trim();
                 const inputInicio = document.getElementById(`admin_inicio_${idx}`).value;
@@ -901,22 +906,23 @@
 
                 if (inputFile && inputFile.files && inputFile.files[0]) {
                     const archivoProg = inputFile.files[0];
+                    const progCapturado = b;
                     const p = new Promise((resolve) => {
                         const reader = new FileReader();
-                        reader.onload = function(e) { 
-                            b.imagen = e.target.result; 
-                            resolve(); 
+                        reader.onload = function(e) {
+                            progCapturado.imagen = e.target.result;
+                            resolve();
                         };
-                        reader.onerror = function() { 
-                            resolve(); 
+                        reader.onerror = function() {
+                            resolve();
                         };
                         reader.readAsDataURL(archivoProg);
                     });
-                    promesasProgramas.push(p);
+                    promesas.push(p);
                 }
             });
 
-            Promise.all([...promesasPublicidad, ...promesasProgramas]).then(() => {
+            Promise.all(promesas).then(() => {
                 saveAdConfig({ 
                     enabled: adEnabled, 
                     duration: adDuration, 
@@ -928,10 +934,10 @@
                 actualizarBloque();
                 cerrarPanelAdmin();
                 
-                alert("¡Configuración y grilla guardadas correctamente!");
+                alert("¡Configuración guardada correctamente!");
             }).catch(err => {
-                console.error("Error al guardar cambios:", err);
-                alert("Hubo un error al procesar las imágenes. Intentá nuevamente.");
+                console.error("Error al guardar:", err);
+                alert("Hubo un inconveniente al procesar. Intentá nuevamente.");
             });
         }
 
