@@ -501,12 +501,24 @@
         const defaultAdConfig = {
             enabled: true,
             duration: 5,
-            images: ["flyer1.jpg"]
+            adsList: [
+                { imagen: "flyer1.jpg", todoElDia: true, horaInicio: "00:00", horaFin: "23:59" }
+            ]
         };
 
         function getAdConfig() {
             const saved = localStorage.getItem("on_radio_ad_config");
-            return saved ? JSON.parse(saved) : defaultAdConfig;
+            if (!saved) return defaultAdConfig;
+            const parsed = JSON.parse(saved);
+            // Compatibilidad por si el formato anterior era un array simple de strings
+            if (Array.isArray(parsed.images)) {
+                return {
+                    enabled: parsed.enabled ?? true,
+                    duration: parsed.duration ?? 5,
+                    adsList: parsed.images.map(img => ({ imagen: img, todoElDia: true, horaInicio: "00:00", horaFin: "23:59" }))
+                };
+            }
+            return parsed;
         }
 
         function saveAdConfig(config) {
@@ -515,8 +527,27 @@
 
         window.addEventListener("DOMContentLoaded", () => {
             const config = getAdConfig();
-            if (config.enabled && config.images && config.images.length > 0) {
-                iniciarPopupPublicidad(config);
+            if (config.enabled && config.adsList && config.adsList.length > 0) {
+                // Filtrar publicidades según la hora actual
+                const ahoraMins = minutosDelDia();
+                const adsFiltradas = config.adsList.filter(ad => {
+                    if (ad.todoElDia) return true;
+                    const inicioMins = horaAMinutos(ad.horaInicio || "00:00");
+                    const finMins = horaAMinutos(ad.horaFin || "23:59");
+                    if (inicioMins <= finMins) {
+                        return ahoraMins >= inicioMins && ahoraMins <= finMins;
+                    } else {
+                        // Cruza la medianoche (ej: 22:00 a 04:00)
+                        return ahoraMins >= inicioMins || ahoraMins <= finMins;
+                    }
+                });
+
+                if (adsFiltradas.length > 0) {
+                    iniciarPopupPublicidad({
+                        duration: config.duration,
+                        images: adsFiltradas.map(a => a.imagen)
+                    });
+                }
             }
         });
 
@@ -792,6 +823,11 @@
             wrapLocutor.style.display = chk.checked ? "block" : "none";
         }
 
+        function toggleTodoElDiaAd(chk, i) {
+            const grid = document.getElementById(`adm_ad_timegrid_${i}`);
+            grid.style.display = chk.checked ? "none" : "grid";
+        }
+
         function eliminarProgramaAdmin(idx) {
             if (confirm(`¿Querés eliminar el programa "${bloques[idx].nombre}"?`)) {
                 bloques.splice(idx, 1);
@@ -814,19 +850,35 @@
             container.innerHTML = "";
             const cantidad = parseInt(countSelect);
             for (let i = 0; i < cantidad; i++) {
-                const valActual = valoresGuardados[i] || "";
-                const esDataUrl = valActual.startsWith("data:");
-                const valorTexto = esDataUrl ? "" : valActual;
+                const itemActual = valoresGuardados[i] || {};
+                const valImg = itemActual.imagen || "";
+                const esDataUrl = valImg.startsWith("data:");
+                const valorTexto = esDataUrl ? "" : valImg;
+                const todoElDia = itemActual.todoElDia !== undefined ? itemActual.todoElDia : true;
+                const chkTodoElDia = todoElDia ? "checked" : "";
+                const displayTimeGrid = todoElDia ? "display:none;" : "display:grid;";
+                const hInicio = itemActual.horaInicio || "00:00";
+                const hFin = itemActual.horaFin || "23:59";
+
                 const slotDiv = document.createElement("div");
                 slotDiv.style.background = "rgba(0,0,0,0.4)";
-                slotDiv.style.padding = "8px";
+                slotDiv.style.padding = "10px";
                 slotDiv.style.borderRadius = "8px";
                 slotDiv.style.border = "1px solid #444";
                 slotDiv.innerHTML = `
-                    <label style="font-size:11px; color:#ffcc00; font-weight:bold;">Publicidad Nº ${i + 1}:</label>
+                    <label style="font-size:12px; color:#ffcc00; font-weight:bold;">Publicidad Nº ${i + 1}:</label>
                     <input type="text" id="adm_ad_text_${i}" class="admin-input" placeholder="Nombre de archivo (ej: flyer1.jpg)" value="${valorTexto}">
                     <label style="font-size:10px; color:#aaa;">O subir archivo de imagen nuevo:</label>
-                    <input type="file" id="adm_ad_file_${i}" accept="image/*" class="admin-input" style="margin-bottom:0;">
+                    <input type="file" id="adm_ad_file_${i}" accept="image/*" class="admin-input">
+                    
+                    <div class="admin-checkbox-wrap" style="margin-top:6px;">
+                        <input type="checkbox" id="adm_ad_tododia_${i}" ${chkTodoElDia} onchange="toggleTodoElDiaAd(this, ${i})">
+                        <label for="adm_ad_tododia_${i}" style="font-size:11px; font-weight:bold; cursor:pointer; color:#fff;">Mostrar las 24 hs (Todo el día)</label>
+                    </div>
+                    <div id="adm_ad_timegrid_${i}" class="time-grid" style="${displayTimeGrid} margin-top:6px;">
+                        <div><label style="font-size:10px;">Desde:</label><input type="time" id="adm_ad_inicio_${i}" class="admin-input" value="${hInicio}"></div>
+                        <div><label style="font-size:10px;">Hasta:</label><input type="time" id="adm_ad_fin_${i}" class="admin-input" value="${hFin}"></div>
+                    </div>
                 `;
                 container.appendChild(slotDiv);
             }
@@ -836,9 +888,9 @@
             const currentAd = getAdConfig();
             document.getElementById("admAdEnabled").checked = currentAd.enabled;
             document.getElementById("admAdDuration").value = currentAd.duration || 5;
-            const cantidadActual = currentAd.images && currentAd.images.length > 0 ? currentAd.images.length : 1;
+            const cantidadActual = currentAd.adsList && currentAd.adsList.length > 0 ? currentAd.adsList.length : 1;
             document.getElementById("admAdCount").value = Math.min(Math.max(cantidadActual, 1), 10);
-            renderizarSlotsPublicitariosAdmin(currentAd.images || []);
+            renderizarSlotsPublicitariosAdmin(currentAd.adsList || []);
 
             const container = document.getElementById("adminBlocksContainer");
             container.innerHTML = "";
@@ -890,26 +942,34 @@
                 const cantidadAds = parseInt(document.getElementById("admAdCount").value);
                 
                 const currentAd = getAdConfig();
-                let nuevasImagenesAds = new Array(cantidadAds);
+                let nuevasAdsList = new Array(cantidadAds);
                 let promesas = [];
 
                 for (let i = 0; i < cantidadAds; i++) {
                     const inputTxt = document.getElementById(`adm_ad_text_${i}`);
                     const inputFile = document.getElementById(`adm_ad_file_${i}`);
+                    const chkTodoDia = document.getElementById(`adm_ad_tododia_${i}`).checked;
+                    const inputInicio = document.getElementById(`adm_ad_inicio_${i}`).value || "00:00";
+                    const inputFin = document.getElementById(`adm_ad_fin_${i}`).value || "23:59";
                     
-                    let imagenFinal = (currentAd.images && currentAd.images[i]) ? currentAd.images[i] : "flyer1.jpg";
+                    let imagenAnterior = (currentAd.adsList && currentAd.adsList[i] && currentAd.adsList[i].imagen) ? currentAd.adsList[i].imagen : "flyer1.jpg";
 
                     if (inputTxt && inputTxt.value.trim() !== "") {
-                        imagenFinal = inputTxt.value.trim();
+                        imagenAnterior = inputTxt.value.trim();
                     }
 
-                    nuevasImagenesAds[i] = imagenFinal;
+                    nuevasAdsList[i] = {
+                        imagen: imagenAnterior,
+                        todoElDia: chkTodoDia,
+                        horaInicio: inputInicio,
+                        horaFin: inputFin
+                    };
 
                     if (inputFile && inputFile.files && inputFile.files[0]) {
                         const archivo = inputFile.files[0];
                         const indexCapturado = i;
                         const p = redimensionarImagen(archivo).then(base64Optimizada => {
-                            nuevasImagenesAds[indexCapturado] = base64Optimizada;
+                            nuevasAdsList[indexCapturado].imagen = base64Optimizada;
                         });
                         promesas.push(p);
                     }
@@ -945,7 +1005,7 @@
                     saveAdConfig({ 
                         enabled: adEnabled, 
                         duration: adDuration, 
-                        images: nuevasImagenesAds 
+                        adsList: nuevasAdsList 
                     });
                     localStorage.setItem("admin_grilla_programacion_v3", JSON.stringify(bloques));
                     
@@ -994,7 +1054,7 @@
         const mensajesSimulados = [
             { nombre: "Martín", localidad: "Rojas", texto: "¡Buenas tardes gente! Escuchándolos desde el taller." },
             { nombre: "Camila", localidad: "Pergamino", texto: "Hola ON Radio, ¡saludos para toda la audiencia!" },
-            { nombre: "Gonzalo", localidad: "", texto: "¡Muy buena la selección musical de hoy!" },
+            { nombre: "Gonzalo", localidad: "", texto: "¡Muy buena la selección musical di hoy!" },
             { nombre: "Lucía", localidad: "Arrecifes", texto: "Un abrazo gigante para la mesa." }
         ];
 
