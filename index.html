@@ -510,18 +510,24 @@
         };
 
         function getAdConfig() {
-            const saved = localStorage.getItem("on_radio_ad_config");
-            if (!saved) return defaultAdConfig;
-            const parsed = JSON.parse(saved);
-            if (Array.isArray(parsed.images)) {
-                return {
-                    enabled: parsed.enabled ?? true,
-                    duration: parsed.duration ?? 5,
-                    adsList: parsed.images.map(img => ({ imagen: img, todoElDia: true, horaInicio: "00:00", horaFin: "23:59" }))
-                };
-            }
-            return parsed;
-        }
+    const saved = localStorage.getItem("on_radio_ad_config");
+    if (!saved) {
+        return {
+            enabled: true,
+            duration: 5,
+            adsList: [
+                { imagen: "https://i.ibb.co/gLh17hXV/flyer-nelqp.jpg", todoElDia: true, horaInicio: "00:00", horaFin: "23:59" }
+            ]
+        };
+    }
+    const parsed = JSON.parse(saved);
+    if (!parsed.adsList || !parsed.adsList[0] || !parsed.adsList[0].imagen) {
+        parsed.adsList = [
+            { imagen: "https://i.ibb.co/gLh17hXV/flyer-nelqp.jpg", todoElDia: true, horaInicio: "00:00", horaFin: "23:59" }
+        ];
+    }
+    return parsed;
+}
 
         function saveAdConfig(config) {
             localStorage.setItem("on_radio_ad_config", JSON.stringify(config));
