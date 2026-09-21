@@ -1006,7 +1006,7 @@
 
         function agregarMensajeAlChat(nombre, localidad, texto, horaCustom = null) {
             const chatBox = document.getElementById("chatBox");
-            constahora = new Date();
+            const ahora = new Date();
             const hora = horaCustom || (ahora.getHours().toString().padStart(2, '0') + ":" + ahora.getMinutes().toString().padStart(2, '0'));
             const autorDisplay = localidad ? `${nombre} (${localidad})` : nombre;
             const msgDiv = document.createElement("div");
