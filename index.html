@@ -498,7 +498,7 @@
 
     <script>
         let deferredPrompt = null;
-        const VERSION_CACHE = "v=20260921-v3";
+        const VERSION_CACHE = "v=20260921-carrusel-auto";
         const PIN_ADMIN_CORRECTO = "00275";
 
         const defaultAdConfig = {
@@ -510,24 +510,24 @@
         };
 
         function getAdConfig() {
-    const saved = localStorage.getItem("on_radio_ad_config");
-    if (!saved) {
-        return {
-            enabled: true,
-            duration: 5,
-            adsList: [
-                { imagen: "https://i.ibb.co/gLh17hXV/flyer-nelqp.jpg", todoElDia: true, horaInicio: "00:00", horaFin: "23:59" }
-            ]
-        };
-    }
-    const parsed = JSON.parse(saved);
-    if (!parsed.adsList || !parsed.adsList[0] || !parsed.adsList[0].imagen) {
-        parsed.adsList = [
-            { imagen: "https://i.ibb.co/gLh17hXV/flyer-nelqp.jpg", todoElDia: true, horaInicio: "00:00", horaFin: "23:59" }
-        ];
-    }
-    return parsed;
-}
+            const saved = localStorage.getItem("on_radio_ad_config");
+            if (!saved) {
+                return {
+                    enabled: true,
+                    duration: 5,
+                    adsList: [
+                        { imagen: "https://i.ibb.co/gLh17hXV/flyer-nelqp.jpg", todoElDia: true, horaInicio: "00:00", horaFin: "23:59" }
+                    ]
+                };
+            }
+            const parsed = JSON.parse(saved);
+            if (!parsed.adsList || !parsed.adsList[0] || !parsed.adsList[0].imagen) {
+                parsed.adsList = [
+                    { imagen: "https://i.ibb.co/gLh17hXV/flyer-nelqp.jpg", todoElDia: true, horaInicio: "00:00", horaFin: "23:59" }
+                ];
+            }
+            return parsed;
+        }
 
         function saveAdConfig(config) {
             localStorage.setItem("on_radio_ad_config", JSON.stringify(config));
@@ -573,20 +573,20 @@
             let currentIndex = 0;
             const totalSlides = imagenesValidas.length;
             const duracionMs = (config.duration || 5) * 1000;
-            let timerCierreUnico = null;
             let carruselTimer = null;
+            let timerCierreTotal = null;
 
             function cerrarPopup() {
                 overlay.style.display = "none";
-                if (timerCierreUnico) clearTimeout(timerCierreUnico);
                 if (carruselTimer) clearInterval(carruselTimer);
+                if (timerCierreTotal) clearTimeout(timerCierreTotal);
             }
 
             if (totalSlides === 1) {
                 btnPrev.style.display = "none";
                 btnNext.style.display = "none";
                 dotsContainer.style.display = "none";
-                timerCierreUnico = setTimeout(() => { cerrarPopup(); }, duracionMs);
+                timerCierreTotal = setTimeout(() => { cerrarPopup(); }, duracionMs);
             } else {
                 btnPrev.style.display = "flex";
                 btnNext.style.display = "flex";
@@ -606,10 +606,26 @@
                     dots.forEach((d, idx) => { d.classList.toggle("active", idx === currentIndex); });
                 }
 
-                btnNext.onclick = () => { currentIndex = (currentIndex + 1) % totalSlides; updateCarousel(); resetAutoPlay(); };
-                btnPrev.onclick = () => { currentIndex = (currentIndex - 1 + totalSlides) % totalSlides; updateCarousel(); resetAutoPlay(); };
+                btnNext.onclick = () => { 
+                    currentIndex = (currentIndex + 1) % totalSlides; 
+                    updateCarousel(); 
+                    resetAutoPlay(); 
+                };
+                btnPrev.onclick = () => { 
+                    currentIndex = (currentIndex - 1 + totalSlides) % totalSlides; 
+                    updateCarousel(); 
+                    resetAutoPlay(); 
+                };
 
-                function nextSlide() { currentIndex = (currentIndex + 1) % totalSlides; updateCarousel(); }
+                function nextSlide() {
+                    if (currentIndex < totalSlides - 1) {
+                        currentIndex++;
+                        updateCarousel();
+                    } else {
+                        cerrarPopup();
+                    }
+                }
+
                 carruselTimer = setInterval(nextSlide, duracionMs);
 
                 function resetAutoPlay() {
@@ -817,56 +833,55 @@
         }
 
         function renderizarSlotsPublicitariosAdmin() {
-    const countSelect = document.getElementById("admAdCount").value;
-    const container = document.getElementById("admAdSlotsContainer");
-    const cantidad = parseInt(countSelect);
+            const countSelect = document.getElementById("admAdCount").value;
+            const container = document.getElementById("admAdSlotsContainer");
+            const cantidad = parseInt(countSelect);
 
-    // Guardamos temporalmente lo que el usuario ya escribió en los inputs actuales antes de redibujar
-    let valoresActuales = [];
-    const inputsViejos = container.querySelectorAll("input[id^='adm_ad_text_']");
-    inputsViejos.forEach((inp, idx) => {
-        valoresActuales[idx] = {
-            imagen: inp.value,
-            todoElDia: document.getElementById(`adm_ad_tododia_${idx}`)?.checked ?? true,
-            horaInicio: document.getElementById(`adm_ad_inicio_${idx}`)?.value || "00:00",
-            horaFin: document.getElementById(`adm_ad_fin_${idx}`)?.value || "23:59"
-        };
-    });
+            let valoresActuales = [];
+            const inputsViejos = container.querySelectorAll("input[id^='adm_ad_text_']");
+            inputsViejos.forEach((inp, idx) => {
+                valoresActuales[idx] = {
+                    imagen: inp.value,
+                    todoElDia: document.getElementById(`adm_ad_tododia_${idx}`)?.checked ?? true,
+                    horaInicio: document.getElementById(`adm_ad_inicio_${idx}`)?.value || "00:00",
+                    horaFin: document.getElementById(`adm_ad_fin_${idx}`)?.value || "23:59"
+                };
+            });
 
-    container.innerHTML = "";
-    const currentAd = getAdConfig();
-    const listaOriginal = valoresActuales.length > 0 ? valoresActuales : (currentAd.adsList || []);
+            container.innerHTML = "";
+            const currentAd = getAdConfig();
+            const listaOriginal = valoresActuales.length > 0 ? valoresActuales : (currentAd.adsList || []);
 
-    for (let i = 0; i < cantidad; i++) {
-        const itemActual = listaOriginal[i] || {};
-        const valImg = itemActual.imagen || "";
-        const todoElDia = itemActual.todoElDia !== undefined ? itemActual.todoElDia : true;
-        const chkTodoElDia = todoElDia ? "checked" : "";
-        const displayTimeGrid = todoElDia ? "display:none;" : "display:grid;";
-        const hInicio = itemActual.horaInicio || "00:00";
-        const hFin = itemActual.horaFin || "23:59";
+            for (let i = 0; i < cantidad; i++) {
+                const itemActual = listaOriginal[i] || {};
+                const valImg = itemActual.imagen || "";
+                const todoElDia = itemActual.todoElDia !== undefined ? itemActual.todoElDia : true;
+                const chkTodoElDia = todoElDia ? "checked" : "";
+                const displayTimeGrid = todoElDia ? "display:none;" : "display:grid;";
+                const hInicio = itemActual.horaInicio || "00:00";
+                const hFin = itemActual.horaFin || "23:59";
 
-        const slotDiv = document.createElement("div");
-        slotDiv.style.background = "rgba(0,0,0,0.4)";
-        slotDiv.style.padding = "10px";
-        slotDiv.style.borderRadius = "8px";
-        slotDiv.style.border = "1px solid #444";
-        slotDiv.innerHTML = `
-            <label style="font-size:12px; color:#ffcc00; font-weight:bold;">Publicidad Nº ${i + 1}:</label>
-            <input type="text" id="adm_ad_text_${i}" class="admin-input" placeholder="Pegá el link directo de la imagen (https://...)" value="${valImg}">
+                const slotDiv = document.createElement("div");
+                slotDiv.style.background = "rgba(0,0,0,0.4)";
+                slotDiv.style.padding = "10px";
+                slotDiv.style.borderRadius = "8px";
+                slotDiv.style.border = "1px solid #444";
+                slotDiv.innerHTML = `
+                    <label style="font-size:12px; color:#ffcc00; font-weight:bold;">Publicidad Nº ${i + 1}:</label>
+                    <input type="text" id="adm_ad_text_${i}" class="admin-input" placeholder="Pegá el link directo de la imagen (https://...)" value="${valImg}">
 
-            <div class="admin-checkbox-wrap" style="margin-top:6px;">
-                <input type="checkbox" id="adm_ad_tododia_${i}" ${chkTodoElDia} onchange="toggleTodoElDiaAd(this, ${i})">
-                <label for="adm_ad_tododia_${i}" style="font-size:11px; font-weight:bold; cursor:pointer; color:#fff;">Mostrar las 24 hs (Todo el día)</label>
-            </div>
-            <div id="adm_ad_timegrid_${i}" class="time-grid" style="${displayTimeGrid} margin-top:6px;">
-                <div><label style="font-size:10px;">Desde:</label><input type="time" id="adm_ad_inicio_${i}" class="admin-input" value="${hInicio}"></div>
-                <div><label style="font-size:10px;">Hasta:</label><input type="time" id="adm_ad_fin_${i}" class="admin-input" value="${hFin}"></div>
-            </div>
-        `;
-        container.appendChild(slotDiv);
-    }
-}
+                    <div class="admin-checkbox-wrap" style="margin-top:6px;">
+                        <input type="checkbox" id="adm_ad_tododia_${i}" ${chkTodoElDia} onchange="toggleTodoElDiaAd(this, ${i})">
+                        <label for="adm_ad_tododia_${i}" style="font-size:11px; font-weight:bold; cursor:pointer; color:#fff;">Mostrar las 24 hs (Todo el día)</label>
+                    </div>
+                    <div id="adm_ad_timegrid_${i}" class="time-grid" style="${displayTimeGrid} margin-top:6px;">
+                        <div><label style="font-size:10px;">Desde:</label><input type="time" id="adm_ad_inicio_${i}" class="admin-input" value="${hInicio}"></div>
+                        <div><label style="font-size:10px;">Hasta:</label><input type="time" id="adm_ad_fin_${i}" class="admin-input" value="${hFin}"></div>
+                    </div>
+                `;
+                container.appendChild(slotDiv);
+            }
+        }
 
         function abrirPanelAdmin() {
             const currentAd = getAdConfig();
@@ -874,7 +889,7 @@
             document.getElementById("admAdDuration").value = currentAd.duration || 5;
             const cantidadActual = currentAd.adsList && currentAd.adsList.length > 0 ? currentAd.adsList.length : 1;
             document.getElementById("admAdCount").value = Math.min(Math.max(cantidadActual, 1), 10);
-            renderizarSlotsPublicitariosAdmin(currentAd.adsList || []);
+            renderizarSlotsPublicitariosAdmin();
 
             const container = document.getElementById("adminBlocksContainer");
             container.innerHTML = "";
@@ -925,7 +940,6 @@
                 const adDuration = parseInt(document.getElementById("admAdDuration").value) || 5;
                 const cantidadAds = parseInt(document.getElementById("admAdCount").value);
                 
-                const currentAd = getAdConfig();
                 let nuevasAdsList = new Array(cantidadAds);
                 let promesas = [];
 
@@ -935,8 +949,7 @@
                     const inputInicio = document.getElementById(`adm_ad_inicio_${i}`).value || "00:00";
                     const inputFin = document.getElementById(`adm_ad_fin_${i}`).value || "23:59";
                     
-                    let linkImagen = (currentAd.adsList && currentAd.adsList[i] && currentAd.adsList[i].imagen) ? currentAd.adsList[i].imagen : "";
-
+                    let linkImagen = "";
                     if (inputTxt && inputTxt.value.trim() !== "") {
                         linkImagen = inputTxt.value.trim();
                     }
@@ -1031,7 +1044,7 @@
             { nombre: "Martín", localidad: "Rojas", texto: "¡Buenas tardes gente! Escuchándolos desde el taller." },
             { nombre: "Camila", localidad: "Pergamino", texto: "Hola ON Radio, ¡saludos para toda la audiencia!" },
             { nombre: "Gonzalo", localidad: "", texto: "¡Muy buena la selección musical de hoy!" },
-            { nombre: "Lucía", localidad: "Arrecifes", texto: "Un abrazo gigante para la mesa." }
+            { nombre: "Lucía", localidad: "Arrecifes", texto: "Um abrazo gigante para la mesa." }
         ];
 
         function obtenerColorNombre(nombre) {
