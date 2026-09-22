@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ON Radio</title>
+    <title>EN la radio</title>
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#e01818">
     <link rel="apple-touch-icon" href="icono-192.png">
@@ -13,11 +13,9 @@
             --rojo2: #c31919;
             --negro: #111111;
             --blanco: #ffffff;
-            --verde: #078236;
             --sombra: 0 8px 20px rgba(0,0,0,0.4);
         }
         * { box-sizing: border-box; }
-        html { scroll-behavior: smooth; }
         body {
             margin: 0;
             font-family: Arial, Helvetica, sans-serif;
@@ -84,7 +82,7 @@
 </head>
 <body>
 
-    <h1>ON Radio Reproductor</h1>
+    <h1>EN la radio</h1>
     <p>Transmitiendo en vivo...</p>
 
     <!-- Modal de Actualización Obligatoria -->
@@ -97,12 +95,10 @@
     </div>
 
     <script>
-        // Versión estricta de la aplicación (cambiar solo ante modificaciones de código o estructura)
-        const VERSION_CODIGO_APP = "2026.09.21-v3";
+        // Versión estricta de la aplicación (Modificar únicamente cuando cambies código fuente o estructura pesada)
+        const VERSION_CODIGO_APP = "2026.09.21-v4";
 
-        // Funciones de ayuda simuladas para el entorno publicitario
         function getAdConfig() {
-            // Lee la configuración guardada o devuelve valores por defecto
             const guardado = localStorage.getItem("on_radio_ad_config");
             return guardado ? JSON.parse(guardado) : { enabled: false, adsList: [], duration: 5 };
         }
@@ -121,19 +117,19 @@
             console.log("Iniciando publicidad con opciones:", opciones);
         }
 
-        // Verificador de actualización automática optimizado
+        // Verificador de versión y gestor de anuncios al iniciar
         window.addEventListener("DOMContentLoaded", () => {
             const versionGuardada = localStorage.getItem("on_radio_codigo_version");
 
             if (!versionGuardada) {
                 localStorage.setItem("on_radio_codigo_version", VERSION_CODIGO_APP);
             } else if (versionGuardada !== VERSION_CODIGO_APP) {
-                // Muestra el modal limpio si hay nueva versión de código
+                // Muestra el modal de actualización únicamente si cambió la versión del código
                 document.getElementById("modalActualizacion").style.display = "flex";
                 return;
             }
 
-            // Carga y despliegue del Pop-up Publicitario Dinámico
+            // Lógica de carga de publicidades dinámicas sin disparar alertas de app
             const config = getAdConfig();
             if (config.enabled && config.adsList && config.adsList.length > 0) {
                 const ahoraMins = minutosDelDia();
@@ -158,22 +154,10 @@
             }
         });
 
-        // Función para actualizar limpiando caché
+        // Función para aplicar la actualización forzosa limpiando caché
         function ejecutarActualizacionApp() {
             localStorage.setItem("on_radio_codigo_version", VERSION_CODIGO_APP);
             window.location.reload(true);
-        }
-
-        // Función para guardar configuración de anuncios sin disparar el modal de la app
-        function saveAdConfig(config) {
-            try {
-                localStorage.setItem("on_radio_ad_config", JSON.stringify(config));
-                return true;
-            } catch (e) {
-                console.error("Error al guardar en localStorage:", e);
-                alert("¡Atención! Las imágenes son demasiado pesadas para la memoria interna.");
-                return false;
-            }
         }
     </script>
 </body>
