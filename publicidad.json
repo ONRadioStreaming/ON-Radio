@@ -1,0 +1,12 @@
+{
+  "enabled": true,
+  "duration": 5,
+  "adsList": [
+    {
+      "imagen": "https://i.ibb.co/gLh17hXV/flyer-nelqp.jpg",
+      "todoElDia": true,
+      "horaInicio": "00:00",
+      "horaFin": "23:59"
+    }
+  ]
+}
