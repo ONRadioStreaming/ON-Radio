@@ -427,6 +427,15 @@
         </div>
     </div>
 
+    <!-- MODAL DE ACTUALIZACIÓN FORZADA -->
+    <div id="modalActualizacion" class="modal" style="z-index: 100000;">
+        <div class="modal-box dark" style="border: 2px solid var(--rojo);">
+            <h2 style="color: #ffcc00; margin-top:0;">✨ ¡Nueva Actualización!</h2>
+            <p style="font-size:14px; opacity:0.9; line-height:1.4;">Hay nuevos flyers y publicidades listas en la radio.</p>
+            <button class="btn-modal btn-instalar" style="width:100%; margin:12px 0 0;" onclick="location.reload()">ACTUALIZAR AHORA</button>
+        </div>
+    </div>
+
     <!-- ========================================================
        HTML DE PUBLICIDAD EMERGENTE (VERTICAL MÁXIMA PANTALLA + X)
        ======================================================== -->
@@ -462,9 +471,6 @@
             
             <div class="admin-block-card" style="border-color: #ffcc00;">
                 <h3 style="color:#ffcc00;">📢 Espacio Comercial / Publicidad Emergente</h3>
-                <div style="margin-bottom: 12px; text-align: center;">
-                    <a href="https://guillermo-caball.imgbb.com/" target="_blank" style="display:inline-block; background:#0063c9; color:white; padding:8px 14px; border-radius:8px; text-decoration:none; font-weight:bold; font-size:13px;">🗂️ Ir a mi biblioteca de ImgBB</a>
-                </div>
                 <div class="admin-checkbox-wrap">
                     <input type="checkbox" id="admAdEnabled">
                     <label for="admAdEnabled" style="font-size:12px; font-weight:bold; cursor:pointer; color:#fff;">Activar Publicidad al abrir la App</label>
@@ -531,9 +537,23 @@
 
         function saveAdConfig(config) {
             localStorage.setItem("on_radio_ad_config", JSON.stringify(config));
+            // Actualizamos la versión global para forzar cambios
+            localStorage.setItem("on_radio_app_version", Date.now().toString());
         }
 
+        // Verificador de actualización automática
         window.addEventListener("DOMContentLoaded", () => {
+            const versionRemota = localStorage.getItem("on_radio_app_version") || "1";
+            const versionVista = sessionStorage.getItem("on_radio_version_vista");
+
+            if (!versionVista) {
+                sessionStorage.setItem("on_radio_version_vista", versionRemota);
+            } else if (versionVista !== versionRemota) {
+                // Aparece el modal exigiendo actualizar la vista si hubo cambios nuevos
+                document.getElementById("modalActualizacion").style.display = "flex";
+                return;
+            }
+
             const config = getAdConfig();
             if (config.enabled && config.adsList && config.adsList.length > 0) {
                 const ahoraMins = minutosDelDia();
@@ -838,14 +858,13 @@
             const cantidad = parseInt(countSelect);
 
             let valoresActuales = [];
-            const inputsViejos = container.querySelectorAll("input[id^='adm_ad_text_']");
-            inputsViejos.forEach((inp, idx) => {
-                valoresActuales[idx] = {
-                    imagen: inp.value,
-                    todoElDia: document.getElementById(`adm_ad_tododia_${idx}`)?.checked ?? true,
-                    horaInicio: document.getElementById(`adm_ad_inicio_${idx}`)?.value || "00:00",
-                    horaFin: document.getElementById(`adm_ad_fin_${idx}`)?.value || "23:59"
-                };
+            const slotsViejos = container.querySelectorAll(".admin-ad-slot-item");
+            slotsViejos.forEach((slot, idx) => {
+                const imgHidden = slot.querySelector(`input[id^='adm_ad_imgdata_']`)?.value || "";
+                const chkTodo = slot.querySelector(`input[id^='adm_ad_tododia_']`)?.checked ?? true;
+                const hIni = slot.querySelector(`input[id^='adm_ad_inicio_']`)?.value || "00:00";
+                const hFin = slot.querySelector(`input[id^='adm_ad_fin_']`)?.value || "23:59";
+                valoresActuales[idx] = { imagen: imgHidden, todoElDia: chkTodo, horaInicio: hIni, horaFin: hFin };
             });
 
             container.innerHTML = "";
@@ -862,13 +881,23 @@
                 const hFin = itemActual.horaFin || "23:59";
 
                 const slotDiv = document.createElement("div");
+                slotDiv.className = "admin-ad-slot-item";
                 slotDiv.style.background = "rgba(0,0,0,0.4)";
                 slotDiv.style.padding = "10px";
                 slotDiv.style.borderRadius = "8px";
                 slotDiv.style.border = "1px solid #444";
+                
+                const previewStyle = valImg ? "display:block; max-height:80px; margin-top:6px; border-radius:4px;" : "display:none; max-height:80px; margin-top:6px; border-radius:4px;";
+
                 slotDiv.innerHTML = `
                     <label style="font-size:12px; color:#ffcc00; font-weight:bold;">Publicidad Nº ${i + 1}:</label>
-                    <input type="text" id="adm_ad_text_${i}" class="admin-input" placeholder="Pegá el link directo de la imagen (https://...)" value="${valImg}">
+                    <input type="hidden" id="adm_ad_imgdata_${i}" value="${valImg}">
+                    
+                    <div style="margin-top:4px;">
+                        <label style="font-size:11px; display:block; margin-bottom:2px;">Elegir imagen desde tu galería:</label>
+                        <input type="file" id="adm_ad_file_${i}" accept="image/*" class="admin-input" onchange="cargarImagenSlotAdmin(this, ${i})">
+                        <img id="adm_ad_preview_${i}" src="${valImg}" style="${previewStyle}">
+                    </div>
 
                     <div class="admin-checkbox-wrap" style="margin-top:6px;">
                         <input type="checkbox" id="adm_ad_tododia_${i}" ${chkTodoElDia} onchange="toggleTodoElDiaAd(this, ${i})">
@@ -880,6 +909,20 @@
                     </div>
                 `;
                 container.appendChild(slotDiv);
+            }
+        }
+
+        function cargarImagenSlotAdmin(input, idx) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const base64String = e.target.result;
+                    document.getElementById(`adm_ad_imgdata_${idx}`).value = base64String;
+                    const prev = document.getElementById(`adm_ad_preview_${idx}`);
+                    prev.src = base64String;
+                    prev.style.display = "block";
+                };
+                reader.readAsDataURL(input.files[0]);
             }
         }
 
@@ -944,18 +987,13 @@
                 let promesas = [];
 
                 for (let i = 0; i < cantidadAds; i++) {
-                    const inputTxt = document.getElementById(`adm_ad_text_${i}`);
+                    const inputImgData = document.getElementById(`adm_ad_imgdata_${i}`);
                     const chkTodoDia = document.getElementById(`adm_ad_tododia_${i}`).checked;
                     const inputInicio = document.getElementById(`adm_ad_inicio_${i}`).value || "00:00";
                     const inputFin = document.getElementById(`adm_ad_fin_${i}`).value || "23:59";
                     
-                    let linkImagen = "";
-                    if (inputTxt && inputTxt.value.trim() !== "") {
-                        linkImagen = inputTxt.value.trim();
-                    }
-
                     nuevasAdsList[i] = {
-                        imagen: linkImagen,
+                        imagen: inputImgData ? inputImgData.value : "",
                         todoElDia: chkTodoDia,
                         horaInicio: inputInicio,
                         horaFin: inputFin
@@ -1002,7 +1040,7 @@
                     actualizarBloque();
                     cerrarPanelAdmin();
                     
-                    alert("¡Configuración guardada correctamente!");
+                    alert("¡Configuración guardada y sincronizada correctamente!");
                 }).catch(err => {
                     console.error("Error al guardar:", err);
                     alert("Hubo un error al guardar los cambios.");
@@ -1044,7 +1082,7 @@
             { nombre: "Martín", localidad: "Rojas", texto: "¡Buenas tardes gente! Escuchándolos desde el taller." },
             { nombre: "Camila", localidad: "Pergamino", texto: "Hola ON Radio, ¡saludos para toda la audiencia!" },
             { nombre: "Gonzalo", localidad: "", texto: "¡Muy buena la selección musical de hoy!" },
-            { nombre: "Lucía", localidad: "Arrecifes", texto: "Um abrazo gigante para la mesa." }
+            { nombre: "Lucía", localidad: "Arrecifes", texto: "Un abrazo gigante para la mesa." }
         ];
 
         function obtenerColorNombre(nombre) {
