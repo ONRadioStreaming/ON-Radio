@@ -951,7 +951,7 @@ body.player-active{
   100%{transform:scale(1);opacity:1}
 }
 
-/* ESTILOS PARA PUBLICIDAD EMERGENTE (POP-UP / CARRUSEL ADAPTABLE 9:16) */
+/* ESTILOS PARA PUBLICIDAD EMERGENTE (POP-UP / CARRUSEL ADAPTABLE 9:16 CON FONDO DIFUMINADO) */
 .ad-overlay {
   position: fixed;
   top: 0;
@@ -1019,12 +1019,37 @@ body.player-active{
   transition: transform 0.3s ease-in-out;
 }
 
-.ad-slide {
+/* Contenedor de cada diapositiva */
+.ad-slide-wrapper {
+  position: relative;
   min-width: 100%;
   height: 100%;
-  object-fit: cover;
-  object-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
   background: #000;
+}
+
+/* Fondo difuminado que rellena los espacios vacíos */
+.ad-slide-bg {
+  position: absolute;
+  inset: -20px;
+  background-size: cover;
+  background-position: center;
+  filter: blur(20px) brightness(0.6);
+  transform: scale(1.2);
+  z-index: 1;
+}
+
+/* Imagen principal completa (contain) */
+.ad-slide-img {
+  position: relative;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  z-index: 2;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
 }
 
 .ad-nav-btn {
@@ -1371,7 +1396,13 @@ function iniciarPopupPublicidad(config) {
   const imagenesValidas = config.images.map(img => img.trim()).filter(Boolean);
   if (imagenesValidas.length === 0) return;
 
-  track.innerHTML = imagenesValidas.map(img => `<img src="${img}" class="ad-slide" alt="Publicidad">`).join("");
+  // Renderizamos cada slide con su fondo difuminado y su imagen completa (contain)
+  track.innerHTML = imagenesValidas.map(img => `
+    <div class="ad-slide-wrapper">
+      <div class="ad-slide-bg" style="background-image: url('${img}');"></div>
+      <img src="${img}" class="ad-slide-img" alt="Publicidad">
+    </div>
+  `).join("");
   
   let currentIndex = 0;
   const totalSlides = imagenesValidas.length;
@@ -1975,7 +2006,6 @@ audioStreaming.addEventListener("error", ()=>{ ocultarBarraPlayer(); });
 
 const coloresNombres = ["#ffcc00", "#00ffff", "#ff66cc", "#66ff66", "#ff9933", "#3399ff", "#ff5050", "#cc66ff"];
 
-// Mensajes actualizados para que suenen originales y reales de oyentes de radio
 const mensajesSimulados = [
   { nombre: "Martín Gómez", localidad: "Rojas", texto: "¡Hola muchachos! Escuchándolos desde el taller con unos mates. ¡Mándenle un buen tema rockero!" },
   { nombre: "Carla", localidad: "Pergamino", texto: "¡Buen día a todo el equipo de la ON! Fieles oyentes desde casa haciendo los quehaceres." },
