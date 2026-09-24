@@ -817,114 +817,6 @@ body.player-active{
 .btn-instalar{background:#c40000;color:white;}
 .btn-cancelar{background:#444;color:white;}
 
-/* ESTILOS DEL PANEL ADMIN OCULTO */
-.admin-input {
-  width: 100%;
-  padding: 8px;
-  margin: 4px 0 10px;
-  border-radius: 8px;
-  border: 1px solid #444;
-  background: #222;
-  color: #fff;
-  font-size: 13px;
-}
-
-.admin-block-card {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 12px;
-  padding: 12px;
-  margin-bottom: 12px;
-}
-
-.admin-block-card h3 {
-  margin: 0 0 8px;
-  font-size: 15px;
-  color: #ffcc00;
-}
-
-.days-selector {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin: 4px 0 10px;
-}
-
-.day-btn {
-  background: #333;
-  color: #aaa;
-  border: 1px solid #555;
-  border-radius: 6px;
-  padding: 4px 8px;
-  font-size: 11px;
-  cursor: pointer;
-  font-weight: bold;
-}
-
-.day-btn.selected {
-  background: var(--rojo);
-  color: white;
-  border-color: #ff5555;
-}
-
-.time-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-}
-
-.admin-checkbox-wrap {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin: 8px 0;
-  background: rgba(255, 0, 0, 0.15);
-  padding: 8px 10px;
-  border-radius: 8px;
-  border: 1px solid rgba(255, 0, 0, 0.3);
-}
-
-.admin-checkbox-wrap input {
-  width: 18px;
-  height: 18px;
-  cursor: pointer;
-}
-
-.btn-admin-guardar {
-  background: var(--verde);
-  color: white;
-  width: 100%;
-  padding: 12px;
-  border-radius: 10px;
-  border: none;
-  font-weight: bold;
-  cursor: pointer;
-  margin-top: 10px;
-}
-
-.btn-admin-agregar {
-  background: #0063c9;
-  color: white;
-  width: 100%;
-  padding: 10px;
-  border-radius: 8px;
-  border: none;
-  font-weight: bold;
-  cursor: pointer;
-  margin-bottom: 10px;
-}
-
-.btn-admin-eliminar {
-  background: #a50000;
-  color: white;
-  padding: 4px 8px;
-  border-radius: 6px;
-  border: none;
-  font-size: 11px;
-  float: right;
-  cursor: pointer;
-}
-
 /* SPLASH */
 #splash{
   position:fixed;
@@ -1313,72 +1205,9 @@ body.player-active{
   </div>
 </div>
 
-<!-- MODAL 1: SOLICITUD DE PIN NUMÉRICO -->
-<div id="modalPinAdmin" class="modal">
-  <div class="modal-box dark">
-    <h2 style="margin-top:0;">🔐 Acceso Admin</h2>
-    <p style="font-size:14px; opacity:0.8;">Ingresá el PIN para editar la programación y publicidad:</p>
-    <input type="password" id="inputPinAdmin" class="admin-input" inputmode="numeric" pattern="[0-9]*" maxlength="10" placeholder="PIN numérico" style="text-align:center; font-size:20px;">
-    <div style="display:flex; justify-content:center; gap:8px;">
-      <button class="btn-modal btn-instalar" onclick="verificarPinAdmin()">Ingresar</button>
-      <button class="btn-modal btn-cancelar" onclick="cerrarPinAdmin()">Cancelar</button>
-    </div>
-  </div>
-</div>
-
-<!-- MODAL 2: PANEL ADMINISTRADOR COMPLETO -->
-<div id="modalPanelAdmin" class="modal">
-  <div class="modal-box dark" style="max-width:440px; max-height:85vh; overflow-y:auto; text-align:left;">
-    <h2 style="margin-top:0; text-align:center;">⚙️ Panel de Administración</h2>
-    
-    <!-- CONTROL DE VERSIÓN PROGRESIVA -->
-    <div class="admin-block-card" style="border-color: #008a84;">
-      <h3 style="color:#008a84;">🚀 Versión Global de la App</h3>
-      <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 8px;">
-        <span style="font-size:12px; color:#ccc;">Versión actual en sistema:</span>
-        <span id="txtVersionActual" style="color: #ffcc00; font-size: 14px; font-weight: bold;">v4.0</span>
-      </div>
-      <button type="button" onclick="subirVersionAppAdmin()" style="background: #008a84; color: white; width: 100%; padding: 8px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; margin-top: 10px;">Subir Versión Progresivamente (+)</button>
-    </div>
-
-    <div class="admin-block-card" style="border-color: #ffcc00;">
-      <h3 style="color:#ffcc00;">📢 Espacio Comercial / Publicidad Emergente</h3>
-      <div class="admin-checkbox-wrap">
-        <input type="checkbox" id="admAdEnabled">
-        <label for="admAdEnabled" style="font-size:12px; font-weight:bold; cursor:pointer; color:#fff;">Activar Publicidad al abrir la App</label>
-      </div>
-
-      <label style="font-size:11px;">Duración por placa (segundos):</label>
-      <input type="number" id="admAdDuration" class="admin-input" min="1" max="60" value="5">
-
-      <label style="font-size:11px; color:#ffcc00; font-weight:bold;">Cantidad de publicidades a mostrar:</label>
-      <select id="admAdCount" class="admin-input" onchange="renderizarSlotsPublicitariosAdmin()">
-        <option value="1">1 Publicidad (Placa Única)</option>
-        <option value="2">2 Publicidades (Carrusel)</option>
-        <option value="3">3 Publicidades (Carrusel)</option>
-        <option value="4">4 Publicidades (Carrusel)</option>
-        <option value="5">5 Publicidades (Carrusel)</option>
-      </select>
-
-      <div id="admAdSlotsContainer" style="display:flex; flex-direction:column; gap:8px; margin-top:8px;"></div>
-    </div>
-
-    <hr style="border: 0; border-top: 1px solid #444; margin: 15px 0;">
-
-    <h3 style="text-align:center; margin-bottom: 8px;">Grilla de Programación</h3>
-    <button class="btn-admin-agregar" onclick="agregarNuevoProgramaAdmin()">+ Agregar Nuevo Programa</button>
-
-    <div id="adminBlocksContainer"></div>
-
-    <button class="btn-admin-guardar" onclick="guardarCambiosGrillaAdmin()">Guardar Cambios y Publicar</button>
-    <button class="btn-modal btn-cancelar" style="width:100%; margin:8px 0 0;" onclick="cerrarPanelAdmin()">Cancelar</button>
-  </div>
-</div>
-
 <script>
 let deferredPrompt = null;
-const VERSION_APP_OBLIGATORIA = "v4.0"; 
-const PIN_ADMIN_CORRECTO = "00275";
+const VERSION_APP_LOCAL = "v4.0"; 
 
 const defaultAdConfig = {
   enabled: true,
@@ -1391,12 +1220,8 @@ function getAdConfig() {
   return saved ? JSON.parse(saved) : defaultAdConfig;
 }
 
-function saveAdConfig(config) {
-  localStorage.setItem("on_radio_ad_config", JSON.stringify(config));
-}
-
 window.addEventListener("DOMContentLoaded", () => {
-  verificarVersionAppGlobal();
+  verificarVersionRemota();
 
   const config = getAdConfig();
   if (config.enabled && config.images && config.images.length > 0) {
@@ -1404,77 +1229,35 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-// COMPRESOR AUTOMÁTICO ADAPTADO PARA IMÁGENES VERTICALES Y HORIZONTALES
-function comprimirImagen(file, maxWidth = 800, maxHeight = 1200, quality = 0.75) {
-  return new Promise((resolve) => {
-    const reader = new FileReader();
-    reader.onload = function(event) {
-      const img = new Image();
-      img.onload = function() {
-        let width = img.width;
-        let height = img.height;
+// VERIFICACIÓN AUTOMÁTICA DE VERSIÓN DESDE LA NUBE (version.json)
+async function verificarVersionRemota() {
+  try {
+    let respuesta = await fetch('version.json?t=' + new Date().getTime());
+    if (!respuesta.ok) return;
+    let datos = await respuesta.json();
+    let versionRemota = datos.version;
 
-        // Mantener proporción correcta de la imagen (vertical u horizontal)
-        if (width > height) {
-          if (width > maxWidth) {
-            height = Math.round((height * maxWidth) / width);
-            width = maxWidth;
-          }
-        } else {
-          if (height > maxHeight) {
-            width = Math.round((width * maxHeight) / height);
-            height = maxHeight;
-          }
-        }
+    let versionGuardadaCliente = localStorage.getItem("on_radio_app_version") || VERSION_APP_LOCAL;
 
-        const canvas = document.createElement("canvas");
-        canvas.width = width;
-        canvas.height = height;
-        const ctx = canvas.getContext("2d");
-        ctx.drawImage(img, 0, 0, width, height);
-
-        // Devuelve una imagen optimizada en formato JPEG comprimido
-        resolve(canvas.toDataURL("image/jpeg", quality));
-      };
-      img.src = event.target.result;
-    };
-    reader.readAsDataURL(file);
-  });
-}
-
-function verificarVersionAppGlobal() {
-  const versionGuardada = localStorage.getItem("on_radio_app_version");
-  const versionAdminGlobal = localStorage.getItem("on_radio_admin_version_target") || VERSION_APP_OBLIGATORIA;
-  
-  const txtVer = document.getElementById("txtVersionActual");
-  if(txtVer) txtVer.innerText = versionAdminGlobal;
-
-  if (versionGuardada && versionGuardada !== versionAdminGlobal) {
-    const modalAct = document.getElementById("modalActualizacion");
-    if (modalAct) modalAct.style.display = "flex";
-  } else if (!versionGuardada) {
-    localStorage.setItem("on_radio_app_version", versionAdminGlobal);
+    if (versionRemota && versionRemota !== versionGuardadaCliente) {
+      const modalAct = document.getElementById("modalActualizacion");
+      if (modalAct) modalAct.style.display = "flex";
+    } else if (!localStorage.getItem("on_radio_app_version")) {
+      localStorage.setItem("on_radio_app_version", VERSION_APP_LOCAL);
+    }
+  } catch (error) {
+    console.log("No se pudo verificar la versión remota", error);
   }
 }
 
-function subirVersionAppAdmin() {
-  let versionActualStr = localStorage.getItem("on_radio_admin_version_target") || VERSION_APP_OBLIGATORIA;
-  let partes = versionActualStr.replace("v", "").split(".");
-  let mayor = parseInt(partes[0] || 4);
-  let menor = parseInt(partes[1] || 0) + 1;
-  let nuevaVersion = `v${mayor}.${menor}`;
-
-  localStorage.setItem("on_radio_admin_version_target", nuevaVersion);
-  
-  const txtVer = document.getElementById("txtVersionActual");
-  if(txtVer) txtVer.innerText = nuevaVersion;
-
-  alert(`¡Versión elevada a "${nuevaVersion}" con éxito!\nAl hacer clic en "Guardar Cambios y Publicar", se forzará la actualización en todos los celulares.`);
-}
-
 function forzarRecargaCache() {
-  const versionAdminGlobal = localStorage.getItem("on_radio_admin_version_target") || VERSION_APP_OBLIGATORIA;
-  localStorage.setItem("on_radio_app_version", versionAdminGlobal);
+  fetch('version.json?t=' + new Date().getTime())
+    .then(res => res.json())
+    .then(datos => {
+      localStorage.setItem("on_radio_app_version", datos.version);
+    }).catch(() => {
+      localStorage.setItem("on_radio_app_version", "v4.1");
+    });
   
   if ('caches' in window) {
     caches.keys().then((names) => {
@@ -1484,7 +1267,7 @@ function forzarRecargaCache() {
   window.location.reload(true);
 }
 
-// CONTROL DE POP-UP CORREGIDO: AVANZA Y SE CIERRA AL LLEGAR AL FINAL DE LA ÚLTIMA IMAGEN (SIN BUCLE)
+// CONTROL DE POP-UP CORREGIDO
 function iniciarPopupPublicidad(config) {
   const overlay = document.getElementById("adPopupOverlay");
   const track = document.getElementById("adTrack");
@@ -1567,7 +1350,6 @@ function iniciarPopupPublicidad(config) {
         currentIndex++;
         updateCarousel();
       } else {
-        // Al llegar exactamente al final de la última imagen, cerramos y detenemos
         cerrarPopup();
       }
     }
@@ -1763,242 +1545,6 @@ function actualizarBloque(){
   document.querySelectorAll(".schedule-card").forEach(card => card.classList.remove("active"));
   const activeCard = document.getElementById(bloque.id);
   if(activeCard) activeCard.classList.add("active");
-}
-
-let adminTimer = null;
-const heroElement = document.getElementById("heroImage");
-
-function iniciarConteoAdmin(e) {
-  adminTimer = setTimeout(() => { abrirPinAdmin(); }, 2500);
-}
-
-function cancelarConteoAdmin() {
-  if (adminTimer) { clearTimeout(adminTimer); adminTimer = null; }
-}
-
-heroElement.addEventListener("touchstart", (e) => { iniciarConteoAdmin(e); }, { passive: true });
-heroElement.addEventListener("touchend", cancelarConteoAdmin, { passive: true });
-heroElement.addEventListener("touchmove", cancelarConteoAdmin, { passive: true });
-heroElement.addEventListener("mousedown", iniciarConteoAdmin);
-heroElement.addEventListener("mouseup", cancelarConteoAdmin);
-heroElement.addEventListener("mouseleave", cancelarConteoAdmin);
-
-function abrirPinAdmin() {
-  cancelarConteoAdmin();
-  document.getElementById("inputPinAdmin").value = "";
-  document.getElementById("modalPinAdmin").style.display = "flex";
-}
-
-function cerrarPinAdmin() {
-  document.getElementById("modalPinAdmin").style.display = "none";
-}
-
-function verificarPinAdmin() {
-  const pinInput = document.getElementById("inputPinAdmin").value;
-  if (pinInput === PIN_ADMIN_CORRECTO) {
-    cerrarPinAdmin();
-    abrirPanelAdmin();
-  } else {
-    alert("PIN incorrecto");
-  }
-}
-
-function toggleDiaAdmin(btn, idx, diaNum) {
-  btn.classList.toggle("selected");
-  if (!bloques[idx].dias) bloques[idx].dias = [];
-  if (btn.classList.contains("selected")) {
-    if (!bloques[idx].dias.includes(diaNum)) bloques[idx].dias.push(diaNum);
-  } else {
-    bloques[idx].dias = bloques[idx].dias.filter(d => d !== diaNum);
-  }
-  bloques[idx].dias.sort();
-}
-
-function toggleEnVivoAdmin(chk, idx) {
-  const wrapLocutor = document.getElementById(`wrap_locutor_${idx}`);
-  wrapLocutor.style.display = chk.checked ? "block" : "none";
-}
-
-function eliminarProgramaAdmin(idx) {
-  if (confirm(`¿Querés eliminar el programa "${bloques[idx].nombre}"?`)) {
-    bloques.splice(idx, 1);
-    abrirPanelAdmin();
-  }
-}
-
-function agregarNuevoProgramaAdmin() {
-  const nuevoId = "slot-" + Date.now();
-  bloques.push({
-    id: nuevoId,
-    nombre: "NUEVO PROGRAMA",
-    dias: [1, 3, 5],
-    horaInicio: "22:00",
-    horaFin: "00:00",
-    desc: "Descripción del programa",
-    imagen: "logotipo.png",
-    esEnVivo: true,
-    locutor: "Locutor/a"
-  });
-  abrirPanelAdmin();
-}
-
-function renderizarSlotsPublicitariosAdmin(valoresGuardados = []) {
-  const countSelect = document.getElementById("admAdCount").value;
-  const container = document.getElementById("admAdSlotsContainer");
-  container.innerHTML = "";
-  const cantidad = parseInt(countSelect);
-
-  for (let i = 0; i < cantidad; i++) {
-    const valActual = valoresGuardados[i] || "";
-    const slotDiv = document.createElement("div");
-    slotDiv.style.background = "rgba(0,0,0,0.4)";
-    slotDiv.style.padding = "8px";
-    slotDiv.style.borderRadius = "8px";
-    slotDiv.style.border = "1px solid #444";
-
-    slotDiv.innerHTML = `
-      <label style="font-size:11px; color:#ffcc00; font-weight:bold;">Publicidad Nº ${i + 1}:</label>
-      <input type="text" id="adm_ad_text_${i}" class="admin-input" placeholder="Nombre de archivo (ej: sponsor1.jpg)" value="${valActual.startsWith("data:") ? "[Imagen Redimensionada]" : valActual}">
-      <label style="font-size:10px; color:#aaa;">O subir archivo de imagen:</label>
-      <input type="file" id="adm_ad_file_${i}" accept="image/*" class="admin-input" style="margin-bottom:0;">
-    `;
-    container.appendChild(slotDiv);
-  }
-}
-
-function abrirPanelAdmin() {
-  const currentAd = getAdConfig();
-  document.getElementById("admAdEnabled").checked = currentAd.enabled;
-  document.getElementById("admAdDuration").value = currentAd.duration || 5;
-
-  const cantidadActual = currentAd.images && currentAd.images.length > 0 ? currentAd.images.length : 1;
-  document.getElementById("admAdCount").value = Math.min(Math.max(cantidadActual, 1), 5);
-  
-  renderizarSlotsPublicitariosAdmin(currentAd.images || []);
-
-  const versionAdminGlobal = localStorage.getItem("on_radio_admin_version_target") || VERSION_APP_OBLIGATORIA;
-  const txtVer = document.getElementById("txtVersionActual");
-  if(txtVer) txtVer.innerText = versionAdminGlobal;
-
-  const container = document.getElementById("adminBlocksContainer");
-  container.innerHTML = "";
-
-  bloques.forEach((b, idx) => {
-    const card = document.createElement("div");
-    card.className = "admin-block-card";
-    
-    let htmlDias = "";
-    nombresDiasSemana.forEach((diaNombre, dIdx) => {
-      const estaSeleccionado = b.dias && b.dias.includes(dIdx) ? "selected" : "";
-      htmlDias += `<button type="button" class="day-btn ${estaSeleccionado}" onclick="toggleDiaAdmin(this, ${idx}, ${dIdx})">${diaNombre}</button>`;
-    });
-
-    const chkLive = b.esEnVivo ? "checked" : "";
-    const showLocutorStyle = b.esEnVivo ? "display:block;" : "display:none;";
-
-    card.innerHTML = `
-      <button type="button" class="btn-admin-eliminar" onclick="eliminarProgramaAdmin(${idx})">Eliminar</button>
-      <h3>Programa #${idx + 1}</h3>
-      <label style="font-size:11px;">Nombre del Programa:</label>
-      <input type="text" id="admin_nombre_${idx}" class="admin-input" value="${b.nombre}">
-      
-      <div class="admin-checkbox-wrap">
-        <input type="checkbox" id="admin_envivo_${idx}" ${chkLive} onchange="toggleEnVivoAdmin(this, ${idx})">
-        <label for="admin_envivo_${idx}" style="font-size:12px; font-weight:bold; cursor:pointer; color:#ffdddd;">🔴 Programa EN VIVO</label>
-      </div>
-
-      <div id="wrap_locutor_${idx}" style="${showLocutorStyle}">
-        <label style="font-size:11px; color:#ffcc00;">Nombre del Locutor/a o Conductor/a:</label>
-        <input type="text" id="admin_locutor_${idx}" class="admin-input" placeholder="Ej: Juan Pérez" value="${b.locutor || ''}">
-      </div>
-
-      <label style="font-size:11px;">Días de Emisión:</label>
-      <div class="days-selector">${htmlDias}</div>
-
-      <div class="time-grid">
-        <div>
-          <label style="font-size:11px;">Hora Inicio:</label>
-          <input type="time" id="admin_inicio_${idx}" class="admin-input" value="${b.horaInicio}">
-        </div>
-        <div>
-          <label style="font-size:11px;">Hora Fin:</label>
-          <input type="time" id="admin_fin_${idx}" class="admin-input" value="${b.horaFin}">
-        </div>
-      </div>
-
-      <label style="font-size:11px;">Descripción:</label>
-      <input type="text" id="admin_desc_${idx}" class="admin-input" value="${b.desc}">
-
-      <label style="font-size:11px;">Imagen de Portada:</label>
-      <input type="file" id="admin_file_${idx}" accept="image/*" class="admin-input">
-    `;
-    container.appendChild(card);
-  });
-
-  document.getElementById("modalPanelAdmin").style.display = "flex";
-}
-
-function cerrarPanelAdmin() {
-  document.getElementById("modalPanelAdmin").style.display = "none";
-}
-
-async function guardarCambiosGrillaAdmin() {
-  const adEnabled = document.getElementById("admAdEnabled").checked;
-  const adDuration = parseInt(document.getElementById("admAdDuration").value) || 5;
-  const cantidadAds = parseInt(document.getElementById("admAdCount").value);
-
-  const currentAd = getAdConfig();
-  let nuevasImagenesAds = new Array(cantidadAds);
-
-  for (let i = 0; i < cantidadAds; i++) {
-    const inputTxt = document.getElementById(`adm_ad_text_${i}`);
-    const inputFile = document.getElementById(`adm_ad_file_${i}`);
-    
-    nuevasImagenesAds[i] = currentAd.images && currentAd.images[i] ? currentAd.images[i] : "mananas-on.png";
-    if (inputTxt && inputTxt.value && !inputTxt.value.includes("[Imagen")) {
-      nuevasImagenesAds[i] = inputTxt.value.trim();
-    }
-
-    if (inputFile && inputFile.files && inputFile.files[0]) {
-      // Comprime automáticamente las placas verticales u horizontales de publicidad
-      nuevasImagenesAds[i] = await comprimirImagen(inputFile.files[0], 800, 1200, 0.75);
-    }
-  }
-
-  for (let idx = 0; idx < bloques.length; idx++) {
-    let b = bloques[idx];
-    const inputNombre = document.getElementById(`admin_nombre_${idx}`).value.trim();
-    const inputInicio = document.getElementById(`admin_inicio_${idx}`).value;
-    const inputFin = document.getElementById(`admin_fin_${idx}`).value;
-    const inputDesc = document.getElementById(`admin_desc_${idx}`).value.trim();
-    const chkLive = document.getElementById(`admin_envivo_${idx}`).checked;
-    const inputLocutor = document.getElementById(`admin_locutor_${idx}`).value.trim();
-    const inputFile = document.getElementById(`admin_file_${idx}`);
-
-    if (inputNombre) b.nombre = inputNombre;
-    if (inputInicio) b.horaInicio = inputInicio;
-    if (inputFin) b.horaFin = inputFin;
-    if (inputDesc) b.desc = inputDesc;
-    
-    b.esEnVivo = chkLive;
-    b.locutor = inputLocutor;
-
-    if (inputFile && inputFile.files && inputFile.files[0]) {
-      // Comprime automáticamente la imagen vertical u horizontal de la programación
-      b.imagen = await comprimirImagen(inputFile.files[0], 800, 1200, 0.75);
-    }
-  }
-
-  saveAdConfig({ enabled: adEnabled, duration: adDuration, images: nuevasImagenesAds });
-  localStorage.setItem("admin_grilla_programacion_v3", JSON.stringify(bloques));
-  
-  const versionAdminGlobal = localStorage.getItem("on_radio_admin_version_target") || VERSION_APP_OBLIGATORIA;
-  localStorage.setItem("on_radio_app_version", versionAdminGlobal);
-
-  renderizarGrillaPublica();
-  actualizarBloque();
-  cerrarPanelAdmin();
-  alert("¡Configuración guardada y publicada correctamente!");
 }
 
 function abrirSenales(){ document.getElementById("modalSenales").style.display = "flex"; }
