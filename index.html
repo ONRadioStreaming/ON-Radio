@@ -182,7 +182,7 @@ body::after{
   object-fit:contain;
 }
 
-/* HERO (MODIFICADO A PROPORCIÓN 1:1) */
+/* HERO */
 .hero-card{
   width:100%;
   margin:0 auto 24px;
@@ -817,7 +817,7 @@ body.player-active{
 .btn-instalar{background:#c40000;color:white;}
 .btn-cancelar{background:#444;color:white;}
 
-/* ESTILOS DEL PANEL ADMIN OCULTO CON SELECTOR DE DÍAS Y HORARIOS */
+/* ESTILOS DEL PANEL ADMIN OCULTO */
 .admin-input {
   width: 100%;
   padding: 8px;
@@ -951,7 +951,7 @@ body.player-active{
   100%{transform:scale(1);opacity:1}
 }
 
-/* ESTILOS PARA PUBLICIDAD EMERGENTE (POP-UP / CARRUSEL ADAPTABLE 9:16 CON FONDO DIFUMINADO) */
+/* ESTILOS PARA PUBLICIDAD EMERGENTE */
 .ad-overlay {
   position: fixed;
   top: 0;
@@ -1019,7 +1019,6 @@ body.player-active{
   transition: transform 0.3s ease-in-out;
 }
 
-/* Contenedor de cada diapositiva */
 .ad-slide-wrapper {
   position: relative;
   min-width: 100%;
@@ -1031,7 +1030,6 @@ body.player-active{
   background: #000;
 }
 
-/* Fondo difuminado que rellena los espacios vacíos */
 .ad-slide-bg {
   position: absolute;
   inset: -20px;
@@ -1042,7 +1040,6 @@ body.player-active{
   z-index: 1;
 }
 
-/* Imagen principal completa (contain) */
 .ad-slide-img {
   position: relative;
   max-width: 100%;
@@ -1294,7 +1291,16 @@ body.player-active{
   </div>
 </div>
 
-<!-- MODAL DE PUBLICIDAD EMERGENTE (POP-UP / CARRUSEL) -->
+<!-- MODAL DE ACTUALIZACIÓN FORZADA -->
+<div id="modalActualizacion" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.88); z-index:99999; justify-content:center; align-items:center;">
+  <div style="background: #1e1e1e; padding: 25px; border-radius: 12px; text-align: center; max-width: 320px; width: 90%; border: 2px solid var(--rojo);">
+    <h3 style="color: #fff; margin-bottom: 10px;">¡Nueva Versión Disponible!</h3>
+    <p style="color: #bbb; font-size: 14px; margin-bottom: 20px;">Hay una actualización importante al aire. Actualizá ahora para disfrutar de las mejoras.</p>
+    <button onclick="forzarRecargaCache()" style="background: var(--rojo); color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; width: 100%;">Actualizar Ahora</button>
+  </div>
+</div>
+
+<!-- MODAL DE PUBLICIDAD EMERGENTE -->
 <div id="adPopupOverlay" class="ad-overlay" style="display:none;">
   <div class="ad-modal-container">
     <button id="adCloseBtn" class="ad-close">&times;</button>
@@ -1325,6 +1331,16 @@ body.player-active{
   <div class="modal-box dark" style="max-width:440px; max-height:85vh; overflow-y:auto; text-align:left;">
     <h2 style="margin-top:0; text-align:center;">⚙️ Panel de Administración</h2>
     
+    <!-- CONTROL DE VERSIÓN PROGRESIVA -->
+    <div class="admin-block-card" style="border-color: #008a84;">
+      <h3 style="color:#008a84;">🚀 Versión Global de la App</h3>
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 8px;">
+        <span style="font-size:12px; color:#ccc;">Versión actual en sistema:</span>
+        <span id="txtVersionActual" style="color: #ffcc00; font-size: 14px; font-weight: bold;">v4.0</span>
+      </div>
+      <button type="button" onclick="subirVersionAppAdmin()" style="background: #008a84; color: white; width: 100%; padding: 8px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; margin-top: 10px;">Subir Versión Progresivamente (+)</button>
+    </div>
+
     <div class="admin-block-card" style="border-color: #ffcc00;">
       <h3 style="color:#ffcc00;">📢 Espacio Comercial / Publicidad Emergente</h3>
       <div class="admin-checkbox-wrap">
@@ -1361,7 +1377,7 @@ body.player-active{
 
 <script>
 let deferredPrompt = null;
-const VERSION_CACHE = "v=20260924-fix-completo";
+const VERSION_APP_OBLIGATORIA = "v4.0"; // <--- CAMBIA ESTE VALOR EN EL CÓDIGO SI DESEAS FORZAR ACTUALIZACIÓN MANUAL
 const PIN_ADMIN_CORRECTO = "00275";
 
 const defaultAdConfig = {
@@ -1380,11 +1396,56 @@ function saveAdConfig(config) {
 }
 
 window.addEventListener("DOMContentLoaded", () => {
+  verificarVersionAppGlobal();
+
   const config = getAdConfig();
   if (config.enabled && config.images && config.images.length > 0) {
     iniciarPopupPublicidad(config);
   }
 });
+
+// LÓGICA DE CONTROL DE VERSIÓN GENERAL
+function verificarVersionAppGlobal() {
+  const versionGuardada = localStorage.getItem("on_radio_app_version");
+  const versionAdminGlobal = localStorage.getItem("on_radio_admin_version_target") || VERSION_APP_OBLIGATORIA;
+  
+  const txtVer = document.getElementById("txtVersionActual");
+  if(txtVer) txtVer.innerText = versionAdminGlobal;
+
+  if (versionGuardada && versionGuardada !== versionAdminGlobal) {
+    const modalAct = document.getElementById("modalActualizacion");
+    if (modalAct) modalAct.style.display = "flex";
+  } else if (!versionGuardada) {
+    localStorage.setItem("on_radio_app_version", versionAdminGlobal);
+  }
+}
+
+function subirVersionAppAdmin() {
+  let versionActualStr = localStorage.getItem("on_radio_admin_version_target") || VERSION_APP_OBLIGATORIA;
+  let partes = versionActualStr.replace("v", "").split(".");
+  let mayor = parseInt(partes[0] || 4);
+  let menor = parseInt(partes[1] || 0) + 1;
+  let nuevaVersion = `v${mayor}.${menor}`;
+
+  localStorage.setItem("on_radio_admin_version_target", nuevaVersion);
+  
+  const txtVer = document.getElementById("txtVersionActual");
+  if(txtVer) txtVer.innerText = nuevaVersion;
+
+  alert(`¡Versión elevada a "${nuevaVersion}" con éxito!\nAl hacer clic en "Guardar Cambios y Publicar", se forzará la actualización en todos los celulares.`);
+}
+
+function forzarRecargaCache() {
+  const versionAdminGlobal = localStorage.getItem("on_radio_admin_version_target") || VERSION_APP_OBLIGATORIA;
+  localStorage.setItem("on_radio_app_version", versionAdminGlobal);
+  
+  if ('caches' in window) {
+    caches.keys().then((names) => {
+      names.forEach((name) => { caches.delete(name); });
+    });
+  }
+  window.location.reload(true);
+}
 
 function iniciarPopupPublicidad(config) {
   const overlay = document.getElementById("adPopupOverlay");
@@ -1396,7 +1457,6 @@ function iniciarPopupPublicidad(config) {
   const imagenesValidas = config.images.map(img => img.trim()).filter(Boolean);
   if (imagenesValidas.length === 0) return;
 
-  // Renderizamos cada slide con su fondo difuminado y su imagen completa (contain)
   track.innerHTML = imagenesValidas.map(img => `
     <div class="ad-slide-wrapper">
       <div class="ad-slide-bg" style="background-image: url('${img}');"></div>
@@ -1484,9 +1544,7 @@ const bloquesPredeterminados = [
     desc: "Los clásicos de los 80s para acompañar la madrugada.",
     imagen: "trasnoches-on.png",
     esEnVivo: false,
-    locutor: "",
-    color1: "#151515",
-    color2: "#5a007c"
+    locutor: ""
   },
   {
     id: "slot-mananas",
@@ -1497,9 +1555,7 @@ const bloquesPredeterminados = [
     desc: "Latinos e internacionales actuales y no tanto. Música comercial, agradable y bien de compañía.",
     imagen: "mananas-on.png",
     esEnVivo: false,
-    locutor: "",
-    color1: "#008a84",
-    color2: "#0063c9"
+    locutor: ""
   },
   {
     id: "slot-hits",
@@ -1510,9 +1566,7 @@ const bloquesPredeterminados = [
     desc: "Lo mejor del momento y los éxitos que más suenan.",
     imagen: "hits-on.png",
     esEnVivo: false,
-    locutor: "",
-    color1: "#ff7a00",
-    color2: "#e01818"
+    locutor: ""
   },
   {
     id: "slot-tardes",
@@ -1523,9 +1577,7 @@ const bloquesPredeterminados = [
     desc: "Música comercial, clásicos y buena energía para acompañar tus tardes.",
     imagen: "tardes-on.png",
     esEnVivo: false,
-    locutor: "",
-    color1: "#077a47",
-    color2: "#046bd2"
+    locutor: ""
   },
   {
     id: "slot-noches",
@@ -1536,9 +1588,7 @@ const bloquesPredeterminados = [
     desc: "Rock nacional para cerrar el día con identidad argentina.",
     imagen: "noches-on.png",
     esEnVivo: false,
-    locutor: "",
-    color1: "#252525",
-    color2: "#c40000"
+    locutor: ""
   }
 ];
 
@@ -1604,7 +1654,7 @@ function porcentajeBloque(bloque){
 
 function urlConCache(url){
   if (url && url.startsWith("data:image")) return url;
-  return url + "?" + VERSION_CACHE;
+  return url + "?v=2026";
 }
 
 function aplicarImagenBloque(bloque){
@@ -1667,7 +1717,8 @@ function actualizarBloque(){
 let adminTimer = null;
 const heroElement = document.getElementById("heroImage");
 
-function iniciarConteoAdmin() {
+function iniciarConteoAdmin(e) {
+  // Ignora si es un toque múltiple o si el usuario se desplaza bruscamente
   adminTimer = setTimeout(() => { abrirPinAdmin(); }, 2500);
 }
 
@@ -1675,9 +1726,10 @@ function cancelarConteoAdmin() {
   if (adminTimer) { clearTimeout(adminTimer); adminTimer = null; }
 }
 
-heroElement.addEventListener("touchstart", iniciarConteoAdmin, { passive: true });
-heroElement.addEventListener("touchend", cancelarConteoAdmin);
-heroElement.addEventListener("touchmove", cancelarConteoAdmin);
+// CORRECCIÓN MÓVIL: Eventos táctiles optimizados para evitar bloqueos y falsos positivos
+heroElement.addEventListener("touchstart", (e) => { iniciarConteoAdmin(e); }, { passive: true });
+heroElement.addEventListener("touchend", cancelarConteoAdmin, { passive: true });
+heroElement.addEventListener("touchmove", cancelarConteoAdmin, { passive: true });
 heroElement.addEventListener("mousedown", iniciarConteoAdmin);
 heroElement.addEventListener("mouseup", cancelarConteoAdmin);
 heroElement.addEventListener("mouseleave", cancelarConteoAdmin);
@@ -1736,9 +1788,7 @@ function agregarNuevoProgramaAdmin() {
     desc: "Descripción del programa",
     imagen: "logotipo.png",
     esEnVivo: true,
-    locutor: "Locutor/a",
-    color1: "#a50000",
-    color2: "#260000"
+    locutor: "Locutor/a"
   });
   abrirPanelAdmin();
 }
@@ -1776,6 +1826,10 @@ function abrirPanelAdmin() {
   document.getElementById("admAdCount").value = Math.min(Math.max(cantidadActual, 1), 5);
   
   renderizarSlotsPublicitariosAdmin(currentAd.images || []);
+
+  const versionAdminGlobal = localStorage.getItem("on_radio_admin_version_target") || VERSION_APP_OBLIGATORIA;
+  const txtVer = document.getElementById("txtVersionActual");
+  if(txtVer) txtVer.innerText = versionAdminGlobal;
 
   const container = document.getElementById("adminBlocksContainer");
   container.innerHTML = "";
@@ -1905,6 +1959,11 @@ function guardarCambiosGrillaAdmin() {
   Promise.all(promesas).then(() => {
     saveAdConfig({ enabled: adEnabled, duration: adDuration, images: nuevasImagenesAds });
     localStorage.setItem("admin_grilla_programacion_v3", JSON.stringify(bloques));
+    
+    // Sincroniza la versión actual guardada localmente con la del admin para evitar bucle al propio admin
+    const versionAdminGlobal = localStorage.getItem("on_radio_admin_version_target") || VERSION_APP_OBLIGATORIA;
+    localStorage.setItem("on_radio_app_version", versionAdminGlobal);
+
     renderizarGrillaPublica();
     actualizarBloque();
     cerrarPanelAdmin();
