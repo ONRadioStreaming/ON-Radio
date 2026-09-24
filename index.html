@@ -1377,7 +1377,7 @@ body.player-active{
 
 <script>
 let deferredPrompt = null;
-const VERSION_APP_OBLIGATORIA = "v4.0"; // <--- CAMBIA ESTE VALOR EN EL CÓDIGO SI DESEAS FORZAR ACTUALIZACIÓN MANUAL
+const VERSION_APP_OBLIGATORIA = "v4.0"; 
 const PIN_ADMIN_CORRECTO = "00275";
 
 const defaultAdConfig = {
@@ -1404,7 +1404,44 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-// LÓGICA DE CONTROL DE VERSIÓN GENERAL
+// COMPRESOR AUTOMÁTICO ADAPTADO PARA IMÁGENES VERTICALES Y HORIZONTALES
+function comprimirImagen(file, maxWidth = 800, maxHeight = 1200, quality = 0.75) {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = function(event) {
+      const img = new Image();
+      img.onload = function() {
+        let width = img.width;
+        let height = img.height;
+
+        // Mantener proporción correcta de la imagen (vertical u horizontal)
+        if (width > height) {
+          if (width > maxWidth) {
+            height = Math.round((height * maxWidth) / width);
+            width = maxWidth;
+          }
+        } else {
+          if (height > maxHeight) {
+            width = Math.round((width * maxHeight) / height);
+            height = maxHeight;
+          }
+        }
+
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0, width, height);
+
+        // Devuelve una imagen optimizada en formato JPEG comprimido
+        resolve(canvas.toDataURL("image/jpeg", quality));
+      };
+      img.src = event.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
 function verificarVersionAppGlobal() {
   const versionGuardada = localStorage.getItem("on_radio_app_version");
   const versionAdminGlobal = localStorage.getItem("on_radio_admin_version_target") || VERSION_APP_OBLIGATORIA;
@@ -1447,6 +1484,7 @@ function forzarRecargaCache() {
   window.location.reload(true);
 }
 
+// CONTROL DE POP-UP CORREGIDO: AVANZA Y SE CIERRA AL LLEGAR AL FINAL DE LA ÚLTIMA IMAGEN (SIN BUCLE)
 function iniciarPopupPublicidad(config) {
   const overlay = document.getElementById("adPopupOverlay");
   const track = document.getElementById("adTrack");
@@ -1467,20 +1505,28 @@ function iniciarPopupPublicidad(config) {
   let currentIndex = 0;
   const totalSlides = imagenesValidas.length;
   const duracionMs = (config.duration || 5) * 1000;
-  let timerCierreUnico = null;
-  let carruselTimer = null;
+  let temporizadorCarrusel = null;
 
   function cerrarPopup() {
     overlay.style.display = "none";
-    if (timerCierreUnico) clearTimeout(timerCierreUnico);
-    if (carruselTimer) clearInterval(carruselTimer);
+    if (temporizadorCarrusel) {
+      clearInterval(temporizadorCarrusel);
+      clearTimeout(temporizadorCarrusel);
+      temporizadorCarrusel = null;
+    }
+  }
+
+  function updateCarousel() {
+    track.style.transform = `translateX(-${currentIndex * 100}%)`;
+    const dots = dotsContainer.querySelectorAll(".ad-dot");
+    dots.forEach((d, idx) => { d.classList.toggle("active", idx === currentIndex); });
   }
 
   if (totalSlides === 1) {
     btnPrev.style.display = "none";
     btnNext.style.display = "none";
     dotsContainer.style.display = "none";
-    timerCierreUnico = setTimeout(() => { cerrarPopup(); }, duracionMs);
+    temporizadorCarrusel = setTimeout(() => { cerrarPopup(); }, duracionMs);
   } else {
     btnPrev.style.display = "flex";
     btnNext.style.display = "flex";
@@ -1498,34 +1544,39 @@ function iniciarPopupPublicidad(config) {
       dotsContainer.appendChild(dot);
     }
 
-    function updateCarousel() {
-      track.style.transform = `translateX(-${currentIndex * 100}%)`;
-      const dots = dotsContainer.querySelectorAll(".ad-dot");
-      dots.forEach((d, idx) => { d.classList.toggle("active", idx === currentIndex); });
-    }
-
     btnNext.onclick = () => {
-      currentIndex = (currentIndex + 1) % totalSlides;
-      updateCarousel();
-      resetAutoPlay();
+      if (currentIndex < totalSlides - 1) {
+        currentIndex++;
+        updateCarousel();
+        resetAutoPlay();
+      } else {
+        cerrarPopup();
+      }
     };
 
     btnPrev.onclick = () => {
-      currentIndex = (currentIndex - 1 + totalSlides) % totalSlides;
-      updateCarousel();
-      resetAutoPlay();
+      if (currentIndex > 0) {
+        currentIndex--;
+        updateCarousel();
+        resetAutoPlay();
+      }
     };
 
-    function nextSlide() {
-      currentIndex = (currentIndex + 1) % totalSlides;
-      updateCarousel();
+    function avanzarPaso() {
+      if (currentIndex < totalSlides - 1) {
+        currentIndex++;
+        updateCarousel();
+      } else {
+        // Al llegar exactamente al final de la última imagen, cerramos y detenemos
+        cerrarPopup();
+      }
     }
 
-    carruselTimer = setInterval(nextSlide, duracionMs);
+    temporizadorCarrusel = setInterval(avanzarPaso, duracionMs);
 
     function resetAutoPlay() {
-      clearInterval(carruselTimer);
-      carruselTimer = setInterval(nextSlide, duracionMs);
+      if (temporizadorCarrusel) clearInterval(temporizadorCarrusel);
+      temporizadorCarrusel = setInterval(avanzarPaso, duracionMs);
     }
   }
 
@@ -1718,7 +1769,6 @@ let adminTimer = null;
 const heroElement = document.getElementById("heroImage");
 
 function iniciarConteoAdmin(e) {
-  // Ignora si es un toque múltiple o si el usuario se desplaza bruscamente
   adminTimer = setTimeout(() => { abrirPinAdmin(); }, 2500);
 }
 
@@ -1726,7 +1776,6 @@ function cancelarConteoAdmin() {
   if (adminTimer) { clearTimeout(adminTimer); adminTimer = null; }
 }
 
-// CORRECCIÓN MÓVIL: Eventos táctiles optimizados para evitar bloqueos y falsos positivos
 heroElement.addEventListener("touchstart", (e) => { iniciarConteoAdmin(e); }, { passive: true });
 heroElement.addEventListener("touchend", cancelarConteoAdmin, { passive: true });
 heroElement.addEventListener("touchmove", cancelarConteoAdmin, { passive: true });
@@ -1809,7 +1858,7 @@ function renderizarSlotsPublicitariosAdmin(valoresGuardados = []) {
 
     slotDiv.innerHTML = `
       <label style="font-size:11px; color:#ffcc00; font-weight:bold;">Publicidad Nº ${i + 1}:</label>
-      <input type="text" id="adm_ad_text_${i}" class="admin-input" placeholder="Nombre de archivo (ej: sponsor1.jpg)" value="${valActual.startsWith("data:") ? "[Imagen Cargada]" : valActual}">
+      <input type="text" id="adm_ad_text_${i}" class="admin-input" placeholder="Nombre de archivo (ej: sponsor1.jpg)" value="${valActual.startsWith("data:") ? "[Imagen Redimensionada]" : valActual}">
       <label style="font-size:10px; color:#aaa;">O subir archivo de imagen:</label>
       <input type="file" id="adm_ad_file_${i}" accept="image/*" class="admin-input" style="margin-bottom:0;">
     `;
@@ -1893,14 +1942,13 @@ function cerrarPanelAdmin() {
   document.getElementById("modalPanelAdmin").style.display = "none";
 }
 
-function guardarCambiosGrillaAdmin() {
+async function guardarCambiosGrillaAdmin() {
   const adEnabled = document.getElementById("admAdEnabled").checked;
   const adDuration = parseInt(document.getElementById("admAdDuration").value) || 5;
   const cantidadAds = parseInt(document.getElementById("admAdCount").value);
 
   const currentAd = getAdConfig();
   let nuevasImagenesAds = new Array(cantidadAds);
-  let promesas = [];
 
   for (let i = 0; i < cantidadAds; i++) {
     const inputTxt = document.getElementById(`adm_ad_text_${i}`);
@@ -1912,20 +1960,13 @@ function guardarCambiosGrillaAdmin() {
     }
 
     if (inputFile && inputFile.files && inputFile.files[0]) {
-      const indexSlot = i;
-      const p = new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          nuevasImagenesAds[indexSlot] = e.target.result;
-          resolve();
-        };
-        reader.readAsDataURL(inputFile.files[0]);
-      });
-      promesas.push(p);
+      // Comprime automáticamente las placas verticales u horizontales de publicidad
+      nuevasImagenesAds[i] = await comprimirImagen(inputFile.files[0], 800, 1200, 0.75);
     }
   }
 
-  bloques.forEach((b, idx) => {
+  for (let idx = 0; idx < bloques.length; idx++) {
+    let b = bloques[idx];
     const inputNombre = document.getElementById(`admin_nombre_${idx}`).value.trim();
     const inputInicio = document.getElementById(`admin_inicio_${idx}`).value;
     const inputFin = document.getElementById(`admin_fin_${idx}`).value;
@@ -1943,32 +1984,21 @@ function guardarCambiosGrillaAdmin() {
     b.locutor = inputLocutor;
 
     if (inputFile && inputFile.files && inputFile.files[0]) {
-      const programaObj = b;
-      const pProg = new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          programaObj.imagen = e.target.result;
-          resolve();
-        };
-        reader.readAsDataURL(inputFile.files[0]);
-      });
-      promesas.push(pProg);
+      // Comprime automáticamente la imagen vertical u horizontal de la programación
+      b.imagen = await comprimirImagen(inputFile.files[0], 800, 1200, 0.75);
     }
-  });
+  }
 
-  Promise.all(promesas).then(() => {
-    saveAdConfig({ enabled: adEnabled, duration: adDuration, images: nuevasImagenesAds });
-    localStorage.setItem("admin_grilla_programacion_v3", JSON.stringify(bloques));
-    
-    // Sincroniza la versión actual guardada localmente con la del admin para evitar bucle al propio admin
-    const versionAdminGlobal = localStorage.getItem("on_radio_admin_version_target") || VERSION_APP_OBLIGATORIA;
-    localStorage.setItem("on_radio_app_version", versionAdminGlobal);
+  saveAdConfig({ enabled: adEnabled, duration: adDuration, images: nuevasImagenesAds });
+  localStorage.setItem("admin_grilla_programacion_v3", JSON.stringify(bloques));
+  
+  const versionAdminGlobal = localStorage.getItem("on_radio_admin_version_target") || VERSION_APP_OBLIGATORIA;
+  localStorage.setItem("on_radio_app_version", versionAdminGlobal);
 
-    renderizarGrillaPublica();
-    actualizarBloque();
-    cerrarPanelAdmin();
-    alert("¡Configuración guardada y publicada correctamente!");
-  });
+  renderizarGrillaPublica();
+  actualizarBloque();
+  cerrarPanelAdmin();
+  alert("¡Configuración guardada y publicada correctamente!");
 }
 
 function abrirSenales(){ document.getElementById("modalSenales").style.display = "flex"; }
