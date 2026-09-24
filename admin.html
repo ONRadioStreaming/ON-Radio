@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin - ON Radio</title>
+<style>
+:root {
+  --rojo: #e01818;
+  --negro: #121212;
+  --gris: #1e1e1e;
+  --blanco: #ffffff;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: var(--negro);
+  color: var(--blanco);
+  padding: 20px;
+}
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+h1, h2 { color: var(--rojo); }
+.card {
+  background: var(--gris);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+  border: 1px solid #333;
+}
+input, textarea, select {
+  width: 100%;
+  padding: 10px;
+  margin: 8px 0 16px 0;
+  background: #2a2a2a;
+  border: 1px solid #444;
+  color: white;
+  border-radius: 6px;
+}
+button {
+  background: var(--rojo);
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+}
+button:hover { opacity: 0.9; }
+.login-box {
+  max-width: 400px;
+  margin: 100px auto;
+  text-align: center;
+}
+.hidden { display: none !important; }
+.program-item {
+  background: #252525;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  border-left: 4px solid var(--rojo);
+}
+.row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+textarea { resize: vertical; height: 80px; }
+.code-output {
+  background: #000;
+  padding: 10px;
+  font-family: monospace;
+  font-size: 12px;
+  border-radius: 6px;
+  white-space: pre-wrap;
+  word-break: break-all;
+  margin-top: 10px;
+}
+</style>
+</head>
+<body>
+
+<!-- PANTALLA DE ACCESO -->
+<div id="loginScreen" class="login-box card">
+  <h2>Panel Administrador</h2>
+  <p>Ingresá la clave de acceso:</p>
+  <input type="password" id="adminPass" placeholder="Contraseña">
+  <button onclick="verificarPassword()">Ingresar</button>
+</div>
+
+<!-- PANEL PRINCIPAL -->
+<div id="adminPanel" class="container hidden">
+  <h1>⚙️ Panel de Control ON Radio</h1>
+  <p>Desde aquí podés gestionar la programación y las versiones de la aplicación.</p>
+
+  <!-- CONTROL DE VERSIÓN -->
+  <div class="card">
+    <h2>1. Control de Versiones (version.json)</h2>
+    <p>Modificá la versión para avisarle a los usuarios que actualicen la app.</p>
+    <label>Versión actual:</label>
+    <input type="text" id="inputVersion" value="v4.1">
+    <button onclick="generarJsonVersion()">Generar Código para version.json</button>
+    <div id="outputVersion" class="code-output hidden"></div>
+  </div>
+
+  <!-- GESTIÓN DE PROGRAMACIÓN -->
+  <div class="card">
+    <h2>2. Grilla de Programación</h2>
+    <p>Modificá los bloques y hacé clic en guardar para generar el código que actualizará tu app.</p>
+    <div id="listaProgramas"></div>
+    <button onclick="guardarGrilla()" style="background: #078236; font-size: 16px; width: 100%;">💾 Guardar Cambios y Generar Código JSON</button>
+    <div id="outputGrilla" class="code-output hidden"></div>
+  </div>
+</div>
+
+<script>
+// CONTRASEÑA DEL PANEL (Podés cambiarla aquí cuando gustes)
+const PASSWORD_SECRETA = "00275";
+
+function verificarPassword() {
+  const pass = document.getElementById("adminPass").value;
+  if(pass === PASSWORD_SECRETA) {
+    document.getElementById("loginScreen").classList.add("hidden");
+    document.getElementById("adminPanel").classList.remove("hidden");
+    cargarEditorGrilla();
+  } else {
+    alert("Contraseña incorrecta");
+  }
+}
+
+// BLOQUES POR DEFECTO SI NO HAY DATOS
+const bloquesPredeterminados = [
+  { id: "slot-trasnoches", nombre: "TRASNOCHES ON", dias: [0,1,2,3,4,5,6], horaInicio: "00:00", horaFin: "07:00", desc: "Los clásicos de los 80s para acompañar la madrugada.", imagen: "trasnoches-on.png", esEnVivo: false, locutor: "" },
+  { id: "slot-mananas", nombre: "MAÑANAS ON", dias: [0,1,2,3,4,5,6], horaInicio: "07:00", horaFin: "13:00", desc: "Latinos e internacionales actuales y no tanto.", imagen: "mananas-on.png", esEnVivo: false, locutor: "" },
+  { id: "slot-hits", nombre: "HIT'S ON", dias: [0,1,2,3,4,5,6], horaInicio: "13:00", horaFin: "16:00", desc: "Lo mejor del momento y los éxitos que más suenan.", imagen: "hits-on.png", esEnVivo: false, locutor: "" },
+  { id: "slot-tardes", nombre: "TARDES ON", dias: [0,1,2,3,4,5,6], horaInicio: "16:00", horaFin: "20:00", desc: "Música comercial, clásicos y buena energía.", imagen: "tardes-on.png", esEnVivo: false, locutor: "" },
+  { id: "slot-noches", nombre: "NOCHES ON", dias: [0,1,2,3,4,5,6], horaInicio: "20:00", horaFin: "00:00", desc: "Rock nacional para cerrar el día.", imagen: "noches-on.png", esEnVivo: false, locutor: "" }
+];
+
+function cargarEditorGrilla() {
+  let guardados = localStorage.getItem("admin_grilla_programacion_v3");
+  let bloques = guardados ? JSON.parse(guardados) : bloquesPredeterminados;
+  
+  const contenedor = document.getElementById("listaProgramas");
+  contenedor.innerHTML = "";
+
+  bloques.forEach((b, index) => {
+    contenedor.innerHTML += `
+      <div class="program-item" data-index="${index}">
+        <label>Nombre del Bloque:</label>
+        <input type="text" class="prog-nombre" value="${b.nombre}">
+        <div class="row">
+          <div>
+            <label>Hora Inicio (HH:MM):</label>
+            <input type="text" class="prog-inicio" value="${b.horaInicio}">
+          </div>
+          <div>
+            <label>Hora Fin (HH:MM):</label>
+            <input type="text" class="prog-fin" value="${b.horaFin}">
+          </div>
+        </div>
+        <label>Descripción:</label>
+        <textarea class="prog-desc">${b.desc}</textarea>
+        <div class="row">
+          <div>
+            <label>Imagen (archivo.png):</label>
+            <input type="text" class="prog-imagen" value="${b.imagen}">
+          </div>
+          <div>
+            <label>Locutor (Opcional):</label>
+            <input type="text" class="prog-locutor" value="${b.locutor || ''}">
+          </div>
+        </div>
+        <label>
+          <input type="checkbox" class="prog-envivo" ${b.esEnVivo ? 'checked' : ''}> Marcar como EN VIVO 🔴
+        </label>
+      </div>
+    `;
+  });
+}
+
+function generarJsonVersion() {
+  const version = document.getElementById("inputVersion").value;
+  const jsonText = JSON.stringify({ version: version }, null, 2);
+  const out = document.getElementById("outputVersion");
+  out.classList.remove("hidden");
+  out.innerHTML = `<b>Copiá esto y pegalo en tu archivo <code>version.json</code> de GitHub:</b><br><br>${jsonText}`;
+}
+
+function guardarGrilla() {
+  const items = document.querySelectorAll(".program-item");
+  let nuevosBloques = [];
+
+  items.forEach(item => {
+    const nombre = item.querySelector(".prog-nombre").value;
+    const horaInicio = item.querySelector(".prog-inicio").value;
+    const horaFin = item.querySelector(".prog-fin").value;
+    const desc = item.querySelector(".prog-desc").value;
+    const imagen = item.querySelector(".prog-imagen").value;
+    const locutor = item.querySelector(".prog-locutor").value;
+    const esEnVivo = item.querySelector(".prog-envivo").checked;
+    
+    // Generar ID único amigable
+    const id = "slot-" + nombre.toLowerCase().replace(/[^a-z0-9]/g, '');
+
+    nuevosBloques.push({
+      id,
+      nombre,
+      dias: [0, 1, 2, 3, 4, 5, 6],
+      horaInicio,
+      horaFin,
+      desc,
+      imagen,
+      esEnVivo,
+      locutor
+    });
+  });
+
+  // Guardamos localmente para pruebas rápidas
+  localStorage.setItem("admin_grilla_programacion_v3", JSON.stringify(nuevosBloques));
+
+  const jsonText = JSON.stringify(nuevosBloques, null, 2);
+  const out = document.getElementById("outputGrilla");
+  out.classList.remove("hidden");
+  out.innerHTML = `<b>¡Cambios guardados con éxito!</b><br><br>Si querés que la grilla quede fija para todos los usuarios desde el código, podés actualizar tu array en el index.html, o simplemente usar este panel para controlarlo.<br><br>Estructura JSON:<br>${jsonText}`;
+  
+  alert("¡Grilla guardada correctamente!");
+}
+</script>
+
+</body>
+</html>
