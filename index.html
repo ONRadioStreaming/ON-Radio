@@ -1026,7 +1026,7 @@ body.player-active{
   <a class="drawer-link" href="https://wa.me/5491161358000" target="_blank">
     <img src="WhatsApp.png" alt=""> WhatsApp Oyentes
   </a>
-  <a class="drawer-link" href="https://wa.me/5492475402890" target="_blank">
+  <a class="drawer-link" href="https://wa.me/5492474445664" target="_blank">
     <img src="WhatsApp.png" alt=""> WhatsApp Comercial
   </a>
   <a class="drawer-link" href="formulario.html">
@@ -1049,8 +1049,8 @@ body.player-active{
   <a class="drawer-link" href="https://twitter.com/laonradioo" target="_blank">
     <img src="x.png" alt=""> X
   </a>
-  <a class="drawer-link" href="https://www.twitch.tv" target="_blank">
-    <img src="twi.png" alt=""> Twitch
+  <a class="drawer-link" href="https://kick.com/onradiostream" target="_blank">
+    <img src="twi.png" alt=""> Kick
   </a>
 
   <a class="drawer-link" href="https://www.laonradio.com.ar" target="_blank">
@@ -1062,7 +1062,7 @@ body.player-active{
 
   <div class="drawer-foot">
     ON Radio<br>
-    Dale ON a la música que más te gusta!
+    Va con vos!
   </div>
 </nav>
 
@@ -1172,7 +1172,7 @@ body.player-active{
   <div class="modal-box dark">
     <p>
       Instalá ON Radio en tu dispositivo.<br>
-      Y dale ON al contenido que más te gusta!
+      ON Radio. Va con vos!
     </p>
     <button class="btn-modal btn-instalar" onclick="instalarApp()">INSTALAR</button>
     <button class="btn-modal btn-cancelar" onclick="cerrarModalInstalar()">CANCELAR</button>
@@ -1626,8 +1626,8 @@ const audioStreaming = document.getElementById("streaming");
 if ("mediaSession" in navigator) {
   navigator.mediaSession.metadata = new MediaMetadata({
     title: "Reproduciendo",
-    artist: "La ON Radio",
-    album: "Dale ON a la música que más te gusta",
+    artist: "ON Radio",
+    album: "Va con vos!",
     artwork: [{ src: "icono-512.png", sizes: "512x512", type: "image/png" }]
   });
 }
@@ -1637,59 +1637,383 @@ audioStreaming.addEventListener("error", ()=>{ ocultarBarraPlayer(); });
 
 const coloresNombres = ["#ffcc00", "#00ffff", "#ff66cc", "#66ff66", "#ff9933", "#3399ff", "#ff5050", "#cc66ff"];
 
-const mensajesSimulados = [
-  { nombre: "Martín Gómez", localidad: "Rojas", texto: "¡Hola muchachos! Escuchándolos desde el taller con unos mates. ¡Mándenle un buen tema rockero!" },
-  { nombre: "Carla", localidad: "Pergamino", texto: "¡Buen día a todo el equipo de la ON! Fieles oyentes desde casa haciendo los quehaceres." },
-  { nombre: "Gonzalo", localidad: "Salto", texto: "Excelente la selección musical de hoy, se pasa volando la tarde de trabajo así." },
-  { nombre: "Lucas", localidad: "Chacabuco", texto: "¡Un saludo grande para la gente del norte bonaerense! ¡Aguante la radio!" },
-  { nombre: "Romina", localidad: "Rojas", texto: "¡Hola! ¿Podrán pasar ese tema nuevo que está sonando tanto? ¡Gracias por la buena onda!" },
-  { nombre: "Esteban", localidad: "Junín", texto: "Escuchando el programa firme en ruta. ¡Un abrazo grande a la mesa y sigan así!" },
-  { nombre: "Valeria", localidad: "Arrecifes", texto: "¡Qué hermosa mañana para escuchar la ON! Saludos para mi vieja que nos escucha siempre." },
-  { nombre: "Diego", localidad: "Rojas", texto: "¡Buenas tardes! Tremendo sonido se mandan. ¡Felicitaciones por la programación!" }
+// Mensajes generales de producción: se eligen según día y momento del día.
+// Las campañas/consignas se conectarán a la sincronización online del administrador.
+const nombresProduccion = [
+  "Martín", "Carla", "Gonzalo", "Lucas", "Romina", "Esteban", "Valeria", "Diego",
+  "Mariano", "Julieta", "Sofi", "Nico", "Mica", "Agus", "Flor", "Fede", "Cami", "Pablo",
+  "Lau", "Santi", "Mariela", "Juan", "Noe", "Eze", "Belén", "Franco", "Natalia", "Leo"
 ];
 
-let indiceSimulado = parseInt(localStorage.getItem("chat_indice")) || Math.floor(Math.random() * mensajesSimulados.length);
+const localidadesProduccion = [
+  "Rojas", "Junín", "Pergamino", "Chacabuco", "Salto", "Arrecifes", "Colón",
+  "San Nicolás", "Rosario", "Venado Tuerto", "Rafael Obligado", "Carabelas"
+];
+
+const mensajesPorContexto = {
+  madrugada: [
+    "Acá firme con la ON mientras se hace larga la madrugada.",
+    "No podía dormir y terminé enganchado con la radio 😅",
+    "Auriculares puestos para no despertar a nadie y la ON acompañando.",
+    "Qué bueno tener música a esta hora, hace mucha compañía.",
+    "Desde la ruta, gracias por acompañar a los que seguimos despiertos.",
+    "Turno nocturno y la radio de fondo, combinación salvadora.",
+    "Madrugada, mate y ON Radio. No necesito mucho más.",
+    "Volviendo a casa y escuchando desde el celu.",
+    "El sueño no aparece, por suerte está la radio.",
+    "Un saludo para todos los que todavía siguen despiertos.",
+    "Estudiando a esta hora y la radio haciendo compañía.",
+    "La madrugada se pasa mucho mejor con buena música."
+  ],
+  semana_temprano: [
+    "Buen día ON, arrancando temprano con unos mates.",
+    "Camino al trabajo y escuchando desde el celu.",
+    "Ya en marcha desde temprano, buena mañana para todos.",
+    "Preparando todo para arrancar el día con la radio de fondo.",
+    "Mate en mano y ON Radio para empezar con otra energía.",
+    "Saliendo de casa y escuchando en el camino.",
+    "Arrancando el laburo, metan buena música 🙌",
+    "Desayuno rápido y a encarar el día.",
+    "Acá ya trabajando y con la ON sonando de fondo.",
+    "Buen día desde el taller, hoy arrancamos con todo.",
+    "Una mañana a mil desde temprano, pero con música se lleva mejor.",
+    "Saludos para todos los que ya están arriba a esta hora."
+  ],
+  semana_manana: [
+    "Matecito de media mañana y la ON de fondo.",
+    "Acá trabajando y escuchando, muy buena compañía.",
+    "Entre pendientes y café, la radio viene salvando la mañana.",
+    "Haciendo unos trámites y escuchando desde el auto.",
+    "La mañana viene movida, pero con música se hace más llevadera.",
+    "Saludos desde el trabajo, acá la ON está sonando fuerte.",
+    "Unos mates y seguimos con la mañana.",
+    "Escuchando mientras hago unas cosas por casa.",
+    "Qué buena selección para acompañar esta mañana.",
+    "Acá a full desde temprano, pero siempre prendido a la radio.",
+    "Una pausa cortita y a seguir, con la ON acompañando.",
+    "Buen día para toda la gente que está del otro lado."
+  ],
+  semana_mediodia: [
+    "Llegando al mediodía con la ON de fondo.",
+    "Pausa para comer algo y seguimos escuchando.",
+    "Mediodía a full por acá, saludos para todos.",
+    "Aprovechando un ratito para almorzar con la radio puesta.",
+    "Entre una cosa y otra, la ON sigue acompañando.",
+    "Escuchando mientras preparo algo para comer.",
+    "Un respiro al mediodía y buena música para seguir.",
+    "Saludos desde el laburo, haciendo una pausa para comer.",
+    "Ya pasó media jornada, que siga la buena música.",
+    "Almuerzo rápido y después a seguir, con la ON siempre.",
+    "Mediodía con mates después de comer y radio de fondo.",
+    "Qué bien viene la música para cortar un poco el día."
+  ],
+  semana_tarde: [
+    "La ON haciendo más llevadera la tarde.",
+    "Matecito de la tarde y radio de fondo, infaltable.",
+    "Escuchando mientras termino unas cosas del laburo.",
+    "Qué buena selección para cortar un poco la tarde.",
+    "Tarde larga, pero con música se pasa mucho mejor.",
+    "Saludos desde el trabajo, acá varios escuchando.",
+    "Haciendo unos mandados y con la radio en el auto.",
+    "Pausa para unos mates y sigo. Muy buena la música.",
+    "Acá a full todavía, gracias por hacer el aguante.",
+    "Desde el negocio con la radio sonando para todos.",
+    "La tarde viene intensa, pero la música ayuda un montón.",
+    "Un saludo para toda la gente que anda en ruta."
+  ],
+  semana_salida: [
+    "Terminando la jornada y la ON acompañando.",
+    "Volviendo a casa y escuchando en el camino.",
+    "Ya falta poco para bajar un cambio, metan buena música 😄",
+    "Saliendo de hacer unas cosas y con la radio en el auto.",
+    "Últimos mates de la tarde y seguimos escuchando.",
+    "Cerrando el día de a poco con la ON de fondo.",
+    "A esta hora la música viene perfecta para aflojar un poco.",
+    "De vuelta para casa con la radio acompañando.",
+    "Terminando pendientes y escuchando desde el celu.",
+    "Qué bien viene un temazo para esta hora.",
+    "Ya se va la tarde y seguimos prendidos a la ON.",
+    "Un saludo para todos los que están pegando la vuelta."
+  ],
+  semana_noche: [
+    "Terminando el día y escuchando tranquilo desde casa.",
+    "Cena, radio y a bajar un cambio después de todo el día.",
+    "Ya en casa, ahora sí a disfrutar un rato de la ON.",
+    "Qué buena compañía para cerrar el día.",
+    "Después de un día largo, viene perfecto un poco de música.",
+    "Preparando la cena y escuchando desde la cocina.",
+    "Acá tirado en el sillón con la radio de fondo 😄",
+    "Saludos a todos los que están escuchando esta noche.",
+    "Noche tranqui en casa y ON Radio acompañando.",
+    "Recién termino con todo, ahora sí me conecto a escuchar.",
+    "Con unos mates todavía y prendido a la radio.",
+    "Acá en familia y la ON sonando de fondo."
+  ],
+  sabado_manana: [
+    "Buen sábado, arrancando tranquilo con unos mates.",
+    "Sábado de ordenar un poco la casa con la radio fuerte 😄",
+    "Desayuno tranquilo y ON Radio de fondo.",
+    "Haciendo las compras de la mañana y escuchando desde el auto.",
+    "Qué lindo arrancar el sábado sin correr tanto.",
+    "Mateando desde temprano, buen sábado para todos.",
+    "Poniendo un poco en orden la casa con buena música.",
+    "Sábado de mandados y radio para acompañar.",
+    "Arrancando el finde con la ON, como corresponde.",
+    "Buen día gente, hoy se escucha desde casa.",
+    "Mañana de sábado y música para ponerle onda.",
+    "Dando unas vueltas temprano con la ON en el auto."
+  ],
+  sabado_mediodia: [
+    "Sábado al mediodía y la ON acompañando.",
+    "Preparando algo para comer con música de fondo.",
+    "Ya pensando en el almuerzo y escuchando la radio.",
+    "Mediodía de sábado, mates y buena música.",
+    "Volviendo de hacer unas compras y escuchando desde el auto.",
+    "Acá cocinando algo rico con la ON puesta.",
+    "Sábado sin apuro, que siga la música.",
+    "Un saludo para todos, acá preparando el almuerzo.",
+    "Mediodía tranquilo en casa y la radio acompañando.",
+    "Qué lindo el sábado cuando no hay que mirar tanto el reloj."
+  ],
+  sabado_tarde: [
+    "Sábado de mates y descanso, con la ON de fondo.",
+    "Tarde de paseo y la radio acompañando desde el auto.",
+    "Qué lindo sábado para bajar un cambio.",
+    "Acá con amigos y la ON sonando.",
+    "Sábado tranquilo en casa, metan buena música.",
+    "Entre mate y mate seguimos escuchando.",
+    "Tarde de fútbol y radio, planazo.",
+    "Dando unas vueltas y escuchando desde el celu.",
+    "El finde se disfruta más con música de fondo.",
+    "Tarde de sábado para hacer nada y escuchar la ON 😄",
+    "Unos mates por acá y seguimos prendidos a la radio.",
+    "Linda tarde para salir un rato con buena música."
+  ],
+  sabado_atardecer: [
+    "Se va la tarde del sábado y seguimos con la ON.",
+    "Últimos mates de la tarde y música de fondo.",
+    "Volviendo a casa después de dar unas vueltas y escuchando.",
+    "Ya pensando qué hacemos esta noche 😄 mientras suena la ON.",
+    "Atardecer de sábado tranquilo por acá.",
+    "Terminando la tarde con buena música.",
+    "Acá preparando algo para más tarde y escuchando.",
+    "Sábado entrando en modo noche, pero todavía con mates.",
+    "Qué buena hora para bajar un cambio y escuchar música.",
+    "La tarde se va, la ON sigue sonando."
+  ],
+  sabado_noche: [
+    "Sábado a la noche y ya estamos con la ON puesta.",
+    "Preparando la cena con música bien arriba.",
+    "Juntada en casa y la radio sonando de fondo.",
+    "Arrancando la noche, saludos para todos.",
+    "Sábado tranqui, algo rico para comer y buena música.",
+    "Previo a salir y escuchando desde el celu.",
+    "Noche de amigos y ON Radio acompañando.",
+    "Acá en casa, plan tranquilo pero con música fuerte 😄",
+    "Muy buena música para este sábado a la noche.",
+    "Que siga la buena onda que la noche está linda."
+  ],
+  domingo_manana: [
+    "Buen domingo, mateando tranquilo desde casa.",
+    "Domingo sin apuro y con la ON de fondo.",
+    "Desayuno largo, mates y buena música.",
+    "Arrancando el domingo en familia.",
+    "Qué lindo escuchar música sin mirar el reloj.",
+    "Domingo de descanso, saludos para todos.",
+    "Mañana de domingo bien tranquila con la radio de fondo.",
+    "Mate en mano y disfrutando la mañana.",
+    "Buen domingo para toda la gente de la ON.",
+    "Domingo tranquilo por acá, recién arrancando el día.",
+    "Mañana de mates y música, no hace falta mucho más.",
+    "Acá en casa disfrutando el domingo con la radio."
+  ],
+  domingo_previa_almuerzo: [
+    "Ya se acerca el mediodía y seguimos con la ON.",
+    "Preparando algo para comer y escuchando la radio.",
+    "Domingo al mediodía en familia y con música de fondo.",
+    "Acá cocinando y escuchando desde la cocina.",
+    "Mientras se prepara el almuerzo, la ON hace compañía.",
+    "Domingo sin apuro, ya viendo qué comemos al mediodía.",
+    "Unos mates mientras sale el almuerzo y seguimos escuchando.",
+    "Mediodía de domingo con la radio prendida.",
+    "Acá preparando la mesa y con buena música.",
+    "Domingo en casa, comida en camino y ON Radio de fondo."
+  ],
+  domingo_almuerzo: [
+    "Domingo de almuerzo en familia y la ON de fondo.",
+    "Acá comiendo algo rico y escuchando la radio.",
+    "Almuerzo de domingo con música, como corresponde.",
+    "Mesa larga por acá y la ON acompañando.",
+    "Domingo en familia, comida y buena música.",
+    "Acá todavía con el almuerzo y la radio sonando.",
+    "Qué lindo un domingo tranquilo con todos en casa.",
+    "Entre charla y almuerzo seguimos escuchando.",
+    "Un saludo desde la mesa familiar, la ON está puesta.",
+    "Domingo de comida casera y música de fondo."
+  ],
+  domingo_sobremesa: [
+    "Sobremesa de domingo, unos mates y la ON de fondo.",
+    "Después de comer, charla y buena música.",
+    "Acá con los mates de la sobremesa y seguimos escuchando.",
+    "Domingo de sobremesa tranquila con la radio prendida.",
+    "Después del almuerzo, un rato de descanso y ON Radio.",
+    "Sobremesa larga por acá 😄 saludos para todos.",
+    "Un café después de comer y la ON acompañando.",
+    "Todavía en modo sobremesa, con buena música de fondo.",
+    "Domingo tranquilo después de comer y escuchando la radio.",
+    "Unos mates para estirar la sobremesa y seguimos."
+  ],
+  domingo_tarde: [
+    "Tarde de domingo en familia con la ON sonando.",
+    "Domingo, fútbol y radio. No hace falta mucho más.",
+    "Dando una vuelta en auto y escuchando la ON.",
+    "Tarde de mates, charla y buena música.",
+    "Domingo tranquilo en casa, muy buena compañía la radio.",
+    "Acá descansando un rato y escuchando.",
+    "Linda tarde de domingo para tener música de fondo.",
+    "Unos mates por acá y seguimos prendidos a la ON.",
+    "Tarde tranquila, sin apuro y con buena música.",
+    "Domingo para bajar un cambio y escuchar la radio.",
+    "Acá mirando un poco de fútbol y con la ON cerca.",
+    "Saliendo a dar una vuelta y escuchando desde el auto."
+  ],
+  domingo_atardecer: [
+    "Terminando la tarde del domingo con unos mates y la ON.",
+    "Se va el domingo de a poco y seguimos escuchando.",
+    "Últimos mates de la tarde y buena música de fondo.",
+    "Domingo tranquilo por acá, aprovechando lo que queda de la tarde.",
+    "Ya bajando un cambio para cerrar el finde con la ON.",
+    "Qué rápido se fue el domingo 😅 por lo menos con buena música.",
+    "Volviendo a casa y escuchando la radio en el camino.",
+    "Atardecer de domingo en casa y la ON sonando.",
+    "Aprovechando las últimas horas del finde con música.",
+    "Acá tranquilos, viendo caer la tarde y escuchando.",
+    "Domingo entrando en modo noche y seguimos prendidos a la radio.",
+    "Un saludo para todos los que están cerrando la tarde con la ON."
+  ],
+  domingo_noche: [
+    "Cerrando el domingo tranquilo y escuchando desde casa.",
+    "Preparando todo para mañana con la ON de fondo.",
+    "Domingo a la noche, ya mentalizándose para la semana 😅",
+    "Cena tranquila y radio para terminar el finde.",
+    "Qué poco dura el finde... pónganse un temazo para compensar 😂",
+    "Acá organizando la semana y con música de fondo.",
+    "Noche de domingo en casa, saludos para todos.",
+    "Bajando un cambio antes de arrancar otra semana.",
+    "Terminando el finde con la ON, como tiene que ser.",
+    "Ya en modo noche, la radio acompañando desde casa.",
+    "Preparando la cena y escuchando la ON.",
+    "Últimas horas del domingo y seguimos conectados."
+  ]
+};
+let timerMensajeProduccion = null;
+let historialProduccion = [];
 
 function obtenerColorNombre(nombre) {
   let hash = 0;
-  for (let i = 0; i < nombre.length; i++) { hash = nombre.charCodeAt(i) + ((hash << 5) - hash); }
+  for (let i = 0; i < nombre.length; i++) hash = nombre.charCodeAt(i) + ((hash << 5) - hash);
   return coloresNombres[Math.abs(hash) % coloresNombres.length];
 }
 
 function agregarMensajeAlChat(nombre, localidad, texto, horaCustom = null) {
   const chatBox = document.getElementById("chatBox");
-  let hora = horaCustom || (new Date().getHours().toString().padStart(2, '0') + ":" + new Date().getMinutes().toString().padStart(2, '0'));
+  if (!chatBox) return;
+  const ahora = new Date();
+  const hora = horaCustom || (ahora.getHours().toString().padStart(2, "0") + ":" + ahora.getMinutes().toString().padStart(2, "0"));
   const autorDisplay = localidad ? `${nombre} (${localidad})` : nombre;
-  const colorUsuario = obtenerColorNombre(nombre);
 
   const msgDiv = document.createElement("div");
   msgDiv.className = "chat-msg";
-  msgDiv.innerHTML = `
-    <span class="chat-msg-time">${hora}</span>
-    <span class="chat-msg-user" style="color:${colorUsuario};">${autorDisplay}:</span>
-    <span class="chat-msg-text">${texto}</span>
-  `;
+
+  const timeSpan = document.createElement("span");
+  timeSpan.className = "chat-msg-time";
+  timeSpan.textContent = hora;
+
+  const userSpan = document.createElement("span");
+  userSpan.className = "chat-msg-user";
+  userSpan.style.color = obtenerColorNombre(nombre);
+  userSpan.textContent = autorDisplay + ":";
+
+  const textSpan = document.createElement("span");
+  textSpan.className = "chat-msg-text";
+  textSpan.textContent = texto;
+
+  msgDiv.append(timeSpan, document.createTextNode(" "), userSpan, document.createTextNode(" "), textSpan);
   chatBox.appendChild(msgDiv);
   chatBox.scrollTop = chatBox.scrollHeight;
 }
 
+function obtenerContextoProduccion(fecha = new Date()) {
+  const dia = fecha.getDay(); // 0 domingo, 6 sábado
+  const minutos = fecha.getHours() * 60 + fecha.getMinutes();
+
+  if (minutos < 360) return "madrugada"; // 00:00–05:59
+
+  if (dia === 0) {
+    if (minutos < 690) return "domingo_manana";          // 06:00–11:29
+    if (minutos < 780) return "domingo_previa_almuerzo"; // 11:30–12:59
+    if (minutos < 870) return "domingo_almuerzo";         // 13:00–14:29
+    if (minutos < 960) return "domingo_sobremesa";        // 14:30–15:59
+    if (minutos < 1050) return "domingo_tarde";           // 16:00–17:29
+    if (minutos < 1200) return "domingo_atardecer";       // 17:30–19:59
+    return "domingo_noche";                               // 20:00–23:59
+  }
+
+  if (dia === 6) {
+    if (minutos < 690) return "sabado_manana";            // 06:00–11:29
+    if (minutos < 870) return "sabado_mediodia";          // 11:30–14:29
+    if (minutos < 1080) return "sabado_tarde";            // 14:30–17:59
+    if (minutos < 1230) return "sabado_atardecer";        // 18:00–20:29
+    return "sabado_noche";                                // 20:30–23:59
+  }
+
+  if (minutos < 540) return "semana_temprano";            // 06:00–08:59
+  if (minutos < 690) return "semana_manana";              // 09:00–11:29
+  if (minutos < 870) return "semana_mediodia";            // 11:30–14:29
+  if (minutos < 1050) return "semana_tarde";              // 14:30–17:29
+  if (minutos < 1230) return "semana_salida";             // 17:30–20:29
+  return "semana_noche";                                  // 20:30–23:59
+}
+
+function elegirAleatorio(lista) {
+  return lista[Math.floor(Math.random() * lista.length)];
+}
+
+function crearMensajeProduccion(fecha = new Date()) {
+  const contexto = obtenerContextoProduccion(fecha);
+  const pool = mensajesPorContexto[contexto] || mensajesPorContexto.semana_tarde;
+  let texto = elegirAleatorio(pool);
+  const disponibles = pool.filter(t => !historialProduccion.includes(t));
+  if (disponibles.length) texto = elegirAleatorio(disponibles);
+  historialProduccion.push(texto);
+  if (historialProduccion.length > 20) historialProduccion.shift();
+  return {
+    nombre: elegirAleatorio(nombresProduccion),
+    localidad: elegirAleatorio(localidadesProduccion),
+    texto
+  };
+}
+
 function simularEntradaMensaje() {
-  const msg = mensajesSimulados[indiceSimulado];
+  const msg = crearMensajeProduccion(new Date());
   agregarMensajeAlChat(msg.nombre, msg.localidad, msg.texto);
-  indiceSimulado = (indiceSimulado + 1) % mensajesSimulados.length;
-  localStorage.setItem("chat_indice", indiceSimulado);
+  programarSiguienteMensajeProduccion();
+}
+
+function programarSiguienteMensajeProduccion() {
+  if (timerMensajeProduccion) clearTimeout(timerMensajeProduccion);
+  const demora = 30000 + Math.floor(Math.random() * 10001); // 30 a 40 segundos
+  timerMensajeProduccion = setTimeout(simularEntradaMensaje, demora);
 }
 
 function cargarHistorialInicial() {
   const ahora = new Date();
-  for (let i = 3; i >= 1; i--) {
-    const msg = mensajesSimulados[indiceSimulado];
-    const tiempoPasado = new Date(ahora.getTime() - (i * 7 * 60000));
-    const horaFormat = tiempoPasado.getHours().toString().padStart(2, '0') + ":" + tiempoPasado.getMinutes().toString().padStart(2, '0');
-    agregarMensajeAlChat(msg.nombre, msg.localidad, msg.texto, horaFormat);
-    indiceSimulado = (indiceSimulado + 1) % mensajesSimulados.length;
-  }
-  localStorage.setItem("chat_indice", indiceSimulado);
+  [18, 11, 5].forEach(minutos => {
+    const fecha = new Date(ahora.getTime() - minutos * 60000);
+    const msg = crearMensajeProduccion(fecha);
+    const hora = fecha.getHours().toString().padStart(2, "0") + ":" + fecha.getMinutes().toString().padStart(2, "0");
+    agregarMensajeAlChat(msg.nombre, msg.localidad, msg.texto, hora);
+  });
 }
 
 function enviarMensaje(event) {
@@ -1697,19 +2021,21 @@ function enviarMensaje(event) {
   const inputNombre = document.getElementById("chatNombre");
   const inputLocalidad = document.getElementById("chatLocalidad");
   const inputTexto = document.getElementById("chatTexto");
-  const nombre = inputNombre.value.trim();
-  const localidad = inputLocalidad.value.trim();
-  const texto = inputTexto.value.trim();
+  const nombre = inputNombre.value.trim().slice(0, 40);
+  const localidad = inputLocalidad.value.trim().slice(0, 50);
+  const texto = inputTexto.value.trim().slice(0, 500);
 
   if (nombre && texto) {
     agregarMensajeAlChat(nombre, localidad, texto);
     inputTexto.value = "";
+    // Un mensaje real reinicia la espera de producción para no pisarlo inmediatamente.
+    programarSiguienteMensajeProduccion();
   }
 }
 
 function iniciarChat() {
   cargarHistorialInicial();
-  setInterval(simularEntradaMensaje, 14000);
+  programarSiguienteMensajeProduccion();
 }
 
 renderizarGrillaPublica();
