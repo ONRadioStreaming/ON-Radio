@@ -1,9 +1,9 @@
 {
-  "id": "./administrador.html",
+  "id": "./admin.html",
   "name": "ON Radio Admin",
   "short_name": "ON Admin",
   "description": "Panel de administración de ON Radio",
-  "start_url": "./administrador.html",
+  "start_url": "./admin.html",
   "scope": "./",
   "display": "standalone",
   "background_color": "#111111",
