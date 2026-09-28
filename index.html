@@ -1248,17 +1248,22 @@ const defaultAdConfig = {
   schedule: "all",
   from: "00:00",
   to: "00:00",
+  days: [0,1,2,3,4,5,6],
   images: []
 };
 
-function popupDentroDeHorario(config) {
-  if ((config.schedule || "all") !== "range") return true;
+function popupEstaHabilitadoAhora(config) {
   const parts = new Intl.DateTimeFormat("en-GB", {
     timeZone: "America/Argentina/Buenos_Aires",
-    hour: "2-digit", minute: "2-digit", hourCycle: "h23"
+    weekday: "short", hour: "2-digit", minute: "2-digit", hourCycle: "h23"
   }).formatToParts(new Date());
-  const get = t => parts.find(p => p.type === t)?.value || "00";
-  const now = `${get("hour")}:${get("minute")}`;
+  const get = t => parts.find(p => p.type === t)?.value || "";
+  const weekdayMap={Mon:0,Tue:1,Wed:2,Thu:3,Fri:4,Sat:5,Sun:6};
+  const dia=weekdayMap[get("weekday")];
+  const days=Array.isArray(config.days)&&config.days.length?config.days.map(Number):[0,1,2,3,4,5,6];
+  if(!days.includes(dia)) return false;
+  if ((config.schedule || "all") !== "range") return true;
+  const now = `${get("hour")||"00"}:${get("minute")||"00"}`;
   const from = String(config.from || "00:00").slice(0,5);
   const to = String(config.to || "00:00").slice(0,5);
   if (from === to) return true;
@@ -1276,11 +1281,12 @@ async function cargarPublicidadDesdeNube() {
       schedule: data.schedule || "all",
       from: data.from || "00:00",
       to: data.to || "00:00",
+      days: Array.isArray(data.days) && data.days.length ? data.days.map(Number) : [0,1,2,3,4,5,6],
       images: Array.isArray(data.images)
         ? data.images.map(x => typeof x === "string" ? x : x?.data).filter(Boolean)
         : []
     };
-    if (config.enabled && config.images.length && popupDentroDeHorario(config)) {
+    if (config.enabled && config.images.length && popupEstaHabilitadoAhora(config)) {
       iniciarPopupPublicidad(config);
     }
   } catch (error) {
