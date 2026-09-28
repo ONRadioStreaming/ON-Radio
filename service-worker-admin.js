@@ -1,6 +1,6 @@
-const CACHE_NAME = "on-radio-admin-v1";
+const CACHE_NAME = "on-radio-admin-v2";
 const ADMIN_SHELL = [
-  "./administrador.html",
+  "./admin.html",
   "./manifest-admin.json",
   "./icono-admin-192.png",
   "./icono-admin-512.png"
@@ -29,24 +29,22 @@ self.addEventListener("fetch", event => {
 
   const url = new URL(event.request.url);
 
-  // Nunca interceptar Worker/API: el administrador debe leer y guardar datos actuales.
+  // Las llamadas externas al Worker/API quedan fuera del cache del administrador.
   if (url.origin !== self.location.origin) return;
 
-  // HTML: red primero, caché solo como respaldo.
   if (event.request.mode === "navigate") {
     event.respondWith(
       fetch(event.request, { cache: "no-store" })
         .then(response => {
           const copy = response.clone();
-          caches.open(CACHE_NAME).then(cache => cache.put("./administrador.html", copy)).catch(() => {});
+          caches.open(CACHE_NAME).then(cache => cache.put("./admin.html", copy)).catch(() => {});
           return response;
         })
-        .catch(() => caches.match("./administrador.html"))
+        .catch(() => caches.match("./admin.html"))
     );
     return;
   }
 
-  // Recursos locales: red primero.
   event.respondWith(
     fetch(event.request)
       .then(response => {
