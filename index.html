@@ -1440,8 +1440,40 @@ function clavePrograma(nombre){
 }
 
 function imagenPrograma(bloque){
-  const nube = imagenesProgramasNube.get(clavePrograma(bloque?.nombre));
+  const key = String(bloque?.imageKey || bloque?.image_key || clavePrograma(bloque?.nombre));
+  const nube = imagenesProgramasNube.get(key) || imagenesProgramasNube.get(clavePrograma(bloque?.nombre));
   return nube || bloque?.imagen || '';
+}
+
+async function cargarProgramacionDesdeNube(){
+  try{
+    const res=await fetch(`${ONRADIO_API}/programs?t=${Date.now()}`,{cache:'no-store'});
+    if(!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data=await res.json();
+    const programas=Array.isArray(data.programs)?data.programs:[];
+    if(!programas.length) return;
+
+    // El administrador y D1 usan Lunes=0 ... Domingo=6.
+    // Esta pantalla históricamente usa Date.getDay(): Domingo=0 ... Sábado=6.
+    // Convertimos al cargar para conservar intacta toda la lógica existente.
+    bloques=programas.map((p,i)=>({
+      id:`programa-${String(p.id||i).replace(/[^a-zA-Z0-9_-]/g,'-')}`,
+      nombre:String(p.name||'Programa'),
+      dias:(Array.isArray(p.days)?p.days:[]).map(d=>(Number(d)+1)%7),
+      horaInicio:String(p.start||'00:00').slice(0,5),
+      horaFin:String(p.end||'00:00').slice(0,5),
+      desc:String(p.desc||''),
+      imagen:'',
+      imageKey:String(p.image_key||clavePrograma(p.name||'')),
+      esEnVivo:p.live===true||p.live===1,
+      locutor:String(p.host||'')
+    }));
+
+    renderizarGrillaPublica();
+    actualizarBloque();
+  }catch(error){
+    console.log('No se pudo cargar la programación desde D1; se usa la programación incluida en la app como respaldo.',error);
+  }
 }
 
 async function cargarImagenesProgramasDesdeNube(){
@@ -2135,13 +2167,15 @@ function iniciarChat() {
 
 renderizarGrillaPublica();
 actualizarBloque();
+cargarProgramacionDesdeNube();
 cargarImagenesProgramasDesdeNube();
 iniciarSplash();
 sugerirInstalacion();
 iniciarChat();
 
 setInterval(actualizarBloque, 60000);
-// Refresca las imágenes sin necesidad de publicar una nueva versión de la app.
+// Refresca programación e imágenes desde D1 sin necesidad de publicar una nueva versión de la app.
+setInterval(cargarProgramacionDesdeNube, 60000);
 setInterval(cargarImagenesProgramasDesdeNube, 60000);
 </script>
 
