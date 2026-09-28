@@ -409,6 +409,10 @@ textarea{
   }
 }
 </style>
+
+<link rel="manifest" href="manifest-admin.json">
+<meta name="theme-color" content="#e01818">
+<link rel="apple-touch-icon" href="icono-admin-192.png">
 </head>
 
 <body>
@@ -3330,6 +3334,16 @@ loadCloudCampaigns();
 
 })();
 
+</script>
+
+
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./service-worker-admin.js")
+      .catch(error => console.log("No se pudo registrar ON Radio Admin como PWA", error));
+  });
+}
 </script>
 
 </body>
