@@ -1431,10 +1431,41 @@ function urlConCache(url){
   return url + "?v=2026";
 }
 
+// Imágenes oficiales de programas: D1 tiene prioridad; GitHub queda como respaldo.
+let imagenesProgramasNube = new Map();
+
+function clavePrograma(nombre){
+  return String(nombre||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+    .replace(/[^a-z0-9]+/g,' ').trim().replace(/\s+/g,'-').slice(0,120);
+}
+
+function imagenPrograma(bloque){
+  const nube = imagenesProgramasNube.get(clavePrograma(bloque?.nombre));
+  return nube || bloque?.imagen || '';
+}
+
+async function cargarImagenesProgramasDesdeNube(){
+  try{
+    const res=await fetch(`${ONRADIO_API}/program-images?t=${Date.now()}`,{cache:'no-store'});
+    if(!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data=await res.json();
+    const mapa=new Map();
+    for(const x of (Array.isArray(data.images)?data.images:[])){
+      const key=String(x?.key||clavePrograma(x?.name||''));
+      const img=String(x?.data||'');
+      if(key && img.startsWith('data:image/')) mapa.set(key,img);
+    }
+    imagenesProgramasNube=mapa;
+    actualizarBloque();
+  }catch(error){
+    console.log('No se pudieron cargar las imágenes de programas desde D1; se usan las de GitHub como respaldo.',error);
+  }
+}
+
 function aplicarImagenBloque(bloque){
   const hero = document.getElementById("heroImage");
-  const imgUrl = urlConCache(bloque.imagen);
-  hero.style.backgroundImage = `url("${imgUrl}")`;
+  const imgUrl = urlConCache(imagenPrograma(bloque));
+  hero.style.backgroundImage = imgUrl ? `url("${imgUrl}")` : 'none';
 }
 
 function renderizarGrillaPublica() {
@@ -2104,11 +2135,14 @@ function iniciarChat() {
 
 renderizarGrillaPublica();
 actualizarBloque();
+cargarImagenesProgramasDesdeNube();
 iniciarSplash();
 sugerirInstalacion();
 iniciarChat();
 
 setInterval(actualizarBloque, 60000);
+// Refresca las imágenes sin necesidad de publicar una nueva versión de la app.
+setInterval(cargarImagenesProgramasDesdeNube, 60000);
 </script>
 
 </body>
