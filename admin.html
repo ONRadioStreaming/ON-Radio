@@ -2,229 +2,3328 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin - ON Radio</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="theme-color" content="#e30613">
+<title>ON Radio — Administrador</title>
+
 <style>
-:root {
-  --rojo: #e01818;
-  --negro: #121212;
-  --gris: #1e1e1e;
-  --blanco: #ffffff;
+:root{
+  --red:#e30613;
+  --red-dark:#b9040e;
+  --bg:#101010;
+  --card:#1b1b1b;
+  --card2:#242424;
+  --line:#393939;
+  --text:#fff;
+  --muted:#aaa;
+  --green:#16a34a;
+  --danger:#dc2626;
 }
-* { box-sizing: border-box; }
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: var(--negro);
-  color: var(--blanco);
-  padding: 20px;
+
+*{box-sizing:border-box}
+
+html,body{
+  margin:0;
+  padding:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:Arial,Helvetica,sans-serif;
 }
-.container {
-  max-width: 800px;
-  margin: 0 auto;
+
+button,input,select,textarea{
+  font:inherit;
 }
-h1, h2 { color: var(--rojo); }
-.card {
-  background: var(--gris);
-  border-radius: 12px;
-  padding: 20px;
-  margin-bottom: 20px;
-  border: 1px solid #333;
+
+button{
+  cursor:pointer;
 }
-input, textarea, select {
-  width: 100%;
-  padding: 10px;
-  margin: 8px 0 16px 0;
-  background: #2a2a2a;
-  border: 1px solid #444;
-  color: white;
-  border-radius: 6px;
+
+header{
+  height:62px;
+  background:var(--red);
+  display:flex;
+  align-items:center;
+  padding:0 20px;
+  position:sticky;
+  top:0;
+  z-index:50;
+  box-shadow:0 2px 12px #0008;
 }
-button {
-  background: var(--rojo);
-  color: white;
-  border: none;
-  padding: 12px 20px;
-  border-radius: 6px;
-  font-weight: bold;
-  cursor: pointer;
+
+.logo{
+  font-weight:900;
+  font-size:22px;
 }
-button:hover { opacity: 0.9; }
-.login-box {
-  max-width: 400px;
-  margin: 100px auto;
-  text-align: center;
+
+.logo small{
+  display:block;
+  font-size:9px;
+  letter-spacing:2px;
+  opacity:.85;
 }
-.hidden { display: none !important; }
-.program-item {
-  background: #252525;
-  padding: 15px;
-  border-radius: 8px;
-  margin-bottom: 15px;
-  border-left: 4px solid var(--rojo);
+
+.header-right{
+  margin-left:auto;
+  font-size:12px;
+  font-weight:700;
 }
-.row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-textarea { resize: vertical; height: 80px; }
-.code-output {
-  background: #000;
-  padding: 10px;
-  font-family: monospace;
-  font-size: 12px;
-  border-radius: 6px;
-  white-space: pre-wrap;
-  word-break: break-all;
-  margin-top: 10px;
+
+.layout{
+  display:flex;
+  min-height:calc(100vh - 62px);
+}
+
+aside{
+  width:250px;
+  background:#151515;
+  border-right:1px solid var(--line);
+  padding:12px;
+  flex-shrink:0;
+}
+
+.nav{
+  width:100%;
+  display:block;
+  background:transparent;
+  color:#ddd;
+  border:0;
+  border-radius:9px;
+  text-align:left;
+  padding:13px 12px;
+  margin:3px 0;
+  font-weight:800;
+}
+
+.nav:hover,
+.nav.active{
+  background:var(--red);
+  color:#fff;
+}
+
+main{
+  width:100%;
+  max-width:1200px;
+  margin:0 auto;
+  padding:24px;
+}
+
+.tab{
+  display:none;
+}
+
+.tab.active{
+  display:block;
+}
+
+h1{
+  margin:0 0 6px;
+  font-size:28px;
+}
+
+.subtitle{
+  color:var(--muted);
+  margin:0 0 20px;
+}
+
+.card{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:18px;
+  margin-bottom:16px;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:13px;
+}
+
+.grid3{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:13px;
+}
+
+.field{
+  margin-bottom:13px;
+}
+
+.field label{
+  display:block;
+  font-size:11px;
+  font-weight:900;
+  color:#ccc;
+  margin-bottom:6px;
+  text-transform:uppercase;
+}
+
+input,
+select,
+textarea{
+  width:100%;
+  background:#0c0c0c;
+  color:#fff;
+  border:1px solid #4a4a4a;
+  border-radius:8px;
+  padding:10px;
+  outline:none;
+}
+
+input:focus,
+select:focus,
+textarea:focus{
+  border-color:var(--red);
+}
+
+textarea{
+  min-height:95px;
+  resize:vertical;
+}
+
+.actions{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-top:10px;
+}
+
+.btn{
+  border:0;
+  border-radius:8px;
+  padding:10px 14px;
+  background:var(--red);
+  color:#fff;
+  font-weight:900;
+}
+
+.btn:hover{
+  filter:brightness(1.12);
+}
+
+.btn.gray{
+  background:#444;
+}
+
+.btn.green{
+  background:var(--green);
+}
+
+.btn.danger{
+  background:var(--danger);
+}
+
+.notice{
+  background:#292929;
+  border-left:4px solid var(--red);
+  padding:12px;
+  border-radius:8px;
+  color:#ddd;
+}
+
+.list{
+  display:grid;
+  gap:10px;
+  margin-top:12px;
+}
+
+.item{
+  background:#111;
+  border:1px solid #383838;
+  border-radius:10px;
+  padding:13px;
+}
+
+.row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+}
+
+.muted{
+  color:var(--muted);
+  font-size:13px;
+}
+
+.tag{
+  display:inline-block;
+  padding:4px 8px;
+  border-radius:20px;
+  background:#333;
+  font-size:11px;
+  font-weight:900;
+}
+
+.tag.ok{
+  background:#14532d;
+}
+
+.tag.red{
+  background:#651313;
+}
+
+.checks{
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+}
+
+.check{
+  background:#0d0d0d;
+  border:1px solid #444;
+  border-radius:8px;
+  padding:8px;
+  font-size:12px;
+}
+
+.empty{
+  padding:25px;
+  text-align:center;
+  color:#777;
+  border:1px dashed #444;
+  border-radius:9px;
+}
+
+.frame{
+  position:relative;
+  width:210px;
+  height:374px;
+  background:#050505;
+  border-radius:11px;
+  overflow:hidden;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.frame.square{
+  width:220px;
+  height:220px;
+}
+
+.frame .blur{
+  position:absolute;
+  width:130%;
+  height:130%;
+  object-fit:cover;
+  filter:blur(18px);
+  transform:scale(1.06);
+  opacity:.82;
+}
+
+.frame .fit{
+  position:relative;
+  max-width:100%;
+  max-height:100%;
+  width:auto;
+  height:auto;
+  object-fit:contain;
+  z-index:1;
+}
+
+.modal-bg{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:#000c;
+  z-index:100;
+  align-items:center;
+  justify-content:center;
+  padding:15px;
+}
+
+.modal-bg.open{
+  display:flex;
+}
+
+.modal{
+  width:min(760px,100%);
+  max-height:92vh;
+  overflow:auto;
+  background:#1b1b1b;
+  border:1px solid #555;
+  border-radius:14px;
+  padding:18px;
+}
+
+.toast{
+  position:fixed;
+  right:16px;
+  bottom:16px;
+  background:#222;
+  border:1px solid #555;
+  border-radius:9px;
+  padding:12px 15px;
+  z-index:200;
+  display:none;
+}
+
+.toast.show{
+  display:block;
+}
+
+.campaign-status{display:inline-block;padding:4px 8px;border-radius:20px;font-size:11px;font-weight:900}.campaign-status.scheduled{background:#854d0e}.campaign-status.live{background:#14532d}.campaign-status.paused{background:#651313}.campaign-status.finished{background:#333}.campaign-metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:10px 0}.campaign-metric{background:#202020;border:1px solid #3a3a3a;border-radius:8px;padding:9px}.campaign-metric b{display:block;font-size:16px}.campaign-metric span{font-size:10px;color:#aaa;text-transform:uppercase;font-weight:800}@media(max-width:780px){.campaign-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+.campaign-msg{
+  display:inline-block;
+  background:#303030;
+  border-radius:8px;
+  padding:5px 8px;
+  margin:3px;
+  font-size:12px;
+}
+
+@media(max-width:780px){
+
+  .layout{
+    display:block;
+  }
+
+  aside{
+    width:100%;
+    display:flex;
+    overflow-x:auto;
+    position:sticky;
+    top:62px;
+    z-index:40;
+  }
+
+  .nav{
+    width:auto;
+    white-space:nowrap;
+    margin:2px;
+  }
+
+  .grid,
+  .grid3{
+    grid-template-columns:1fr;
+  }
+
+  main{
+    padding:14px;
+  }
+
+  .header-right{
+    display:none;
+  }
 }
 </style>
 </head>
+
 <body>
 
-<!-- PANTALLA DE ACCESO -->
-<div id="loginScreen" class="login-box card">
-  <h2>Panel Administrador</h2>
-  <p>Ingresá la clave de acceso:</p>
-  <input type="password" id="adminPass" placeholder="Contraseña">
-  <button onclick="verificarPassword()">Ingresar</button>
-</div>
-
-<!-- PANEL PRINCIPAL -->
-<div id="adminPanel" class="container hidden">
-  <h1>⚙️ Panel de Control ON Radio</h1>
-  <p>Desde aquí podés gestionar la programación y las versiones de la aplicación.</p>
-
-  <!-- CONTROL DE VERSIÓN -->
-  <div class="card">
-    <h2>1. Control de Versiones (version.json)</h2>
-    <p>Modificá la versión para avisarle a los usuarios que actualicen la app.</p>
-    <label>Versión actual:</label>
-    <input type="text" id="inputVersion" value="v4.1">
-    <button onclick="generarJsonVersion()">Generar Código para version.json</button>
-    <div id="outputVersion" class="code-output hidden"></div>
+<header>
+  <div class="logo">
+    ON Radio
+    <small>ADMINISTRADOR</small>
   </div>
 
-  <!-- GESTIÓN DE PROGRAMACIÓN -->
-  <div class="card">
-    <h2>2. Grilla de Programación</h2>
-    <p>Modificá los bloques y hacé clic en guardar para generar el código que actualizará tu app.</p>
-    <div id="listaProgramas"></div>
-    <button onclick="guardarGrilla()" style="background: #078236; font-size: 16px; width: 100%;">💾 Guardar Cambios y Generar Código JSON</button>
-    <div id="outputGrilla" class="code-output hidden"></div>
+  <div class="header-right">
+    Panel de control
   </div>
+</header>
+
+<div class="layout">
+
+<aside>
+
+<button class="nav active" data-tab="popup">
+📢 Pop-up
+</button>
+
+<button class="nav" data-tab="programacion">
+📻 Programación
+</button>
+
+<button class="nav" data-tab="mensajes">
+💬 Mensajes de oyentes
+</button>
+
+<button class="nav" data-tab="consignas">
+🎯 Consignas / generador
+</button>
+
+<button class="nav" data-tab="publicar">
+🔄 Publicar actualización
+</button>
+
+<button class="nav" data-tab="config">
+⚙️ Configuración
+</button>
+
+</aside>
+
+<main>
+
+<!-- ========================================================= -->
+<!-- POPUP -->
+<!-- ========================================================= -->
+
+<section id="tab-popup" class="tab active">
+
+<h1>Publicidad emergente</h1>
+
+<p class="subtitle">
+Administrá las publicidades que aparecen en la aplicación.
+</p>
+
+<div class="card">
+<div class="notice">Cada publicidad se configura de forma independiente. Podés elegir sus días, horario y segundos en pantalla. Si varias coinciden, la app rota solamente las que estén habilitadas en ese momento.</div>
+<div id="popPreview" style="display:none"></div>
+
+<div class="actions">
+
+<label class="btn">
+
+＋ Agregar imágenes
+
+<input
+id="popFiles"
+type="file"
+accept="image/*"
+multiple
+hidden>
+
+</label>
+
+<button
+class="btn gray"
+id="popClear">
+
+Limpiar imágenes
+
+</button>
+
+<button
+class="btn green"
+id="popSave">
+
+💾 Guardar publicidad
+
+</button>
+
 </div>
+
+<div
+id="popList"
+class="list">
+</div>
+
+</div>
+
+</section>
+
+
+<!-- ========================================================= -->
+<!-- PROGRAMACION -->
+<!-- ========================================================= -->
+
+<section
+id="tab-programacion"
+class="tab">
+
+<h1>Programación</h1>
+
+<p class="subtitle">
+Programas, días, horarios, conductores, imágenes y estado EN VIVO. Todo se guarda centralmente.
+</p>
+
+<div class="card">
+
+<div class="row">
+
+<h3>
+Programas
+</h3>
+
+<button
+class="btn"
+id="addProgram">
+
+＋ Agregar programa
+
+</button>
+
+</div>
+
+<div
+id="programList"
+class="list">
+</div>
+
+</div>
+
+</section>
+
+
+<!-- ========================================================= -->
+<!-- MENSAJES -->
+<!-- ========================================================= -->
+
+<section
+id="tab-mensajes"
+class="tab">
+
+<h1>
+Mensajes de oyentes
+</h1>
+
+<p class="subtitle">
+
+La producción general se pausa cuando hay
+una campaña activa. Los mensajes reales de
+oyentes no se bloquean.
+
+</p>
+
+<div class="card">
+
+<h3>
+Mensajes generales de producción
+</h3>
+
+<div class="notice" style="margin-bottom:12px">
+<label style="display:flex;gap:10px;align-items:center;font-weight:800">
+<input type="checkbox" id="genericMessagesEnabled" checked>
+Activar mensajes genéricos de la radio
+</label>
+<div class="muted" style="margin-top:6px">
+Desactivalos durante el programa en vivo cuando quieras trabajar solamente con la consigna.
+</div>
+</div>
+
+<div class="notice">
+
+Estos mensajes son material de producción.
+
+Cuando una campaña está activa en el horario
+correspondiente, la app debe priorizar los
+mensajes de esa campaña.
+
+</div>
+
+<div class="actions">
+
+<button
+class="btn"
+id="addGeneral">
+
+＋ Agregar mensaje
+
+</button>
+
+</div>
+
+<div
+id="generalList"
+class="list">
+</div>
+
+</div>
+
+
+<div class="card">
+
+<h3>
+Campañas de programas
+</h3>
+
+<div class="actions" style="margin-bottom:10px"><button class="btn danger" onclick="window.cleanFinishedCampaigns()">🧹 Limpiar campañas finalizadas</button></div>
+<div id="campaignList" class="list"></div>
+<hr style="border:0;border-top:1px solid #393939;margin:20px 0">
+<div class="row"><h3 style="margin:0">📚 Historial de consignas</h3><span class="muted">Se conserva aunque elimines la campaña</span></div>
+<div class="actions" style="margin:10px 0"><button class="btn danger" onclick="window.resetPromptHistory()">🧹 Reiniciar historial de consignas</button></div>
+<div id="promptHistoryList" class="list"></div>
+
+</div>
+
+</section>
+
+
+<!-- ========================================================= -->
+<!-- CONSIGNAS -->
+<!-- ========================================================= -->
+
+<section
+id="tab-consignas"
+class="tab">
+
+<h1>
+Consignas / generador
+</h1>
+
+<p class="subtitle">
+
+Elegí un tema y nivel, generá una consigna
+y convertíla en una campaña con mensajes asociados.
+
+</p>
+
+<div class="card">
+
+<div class="grid">
+
+<div class="field">
+
+<label>Tema</label>
+
+<select id="topic">
+</select>
+
+</div>
+
+<div class="field">
+
+<label>Nivel</label>
+
+<select id="level">
+
+<option>
+suave
+</option>
+
+<option>
+picante
+</option>
+
+<option>
+muy picante
+</option>
+
+<option>
+humor
+</option>
+
+<option>
+incómoda
+</option>
+
+</select>
+
+</div>
+
+</div>
+
+<div class="field" style="margin-top:12px">
+<label>Consigna</label>
+<textarea id="customPrompt" rows="3" placeholder="Escribí tu propia consigna o generá una sugerencia para editarla"></textarea>
+<div class="muted" style="margin-top:6px">Podés editar libremente la consigna antes de generar los mensajes.</div>
+</div>
+
+<div class="actions" style="margin-top:10px">
+<button class="btn" id="genPrompt">🎯 Generar consigna</button>
+<button class="btn gray" id="useCustomPrompt">✍️ Usar mi consigna</button>
+</div>
+
+<div
+id="promptBox"
+class="notice"
+style="display:none;margin-top:12px">
+</div>
+
+</div>
+
+
+<div class="card">
+
+<h3>Campaña del programa</h3>
+
+<div class="grid">
+<div class="field">
+<label>Programa</label>
+<input id="campaignProgram" placeholder="Ej.: NO ES LO QUE PARECE">
+</div>
+<div class="field">
+<label>Conductor/a</label>
+<input id="campaignHost" placeholder="Ej.: Guille Caballini">
+</div>
+<div class="field">
+<label>Fecha de emisión</label>
+<input id="campDate" type="date">
+</div>
+<div class="field">
+<label>Inicio de la consigna</label>
+<input id="campFrom" type="time" value="22:15">
+</div>
+<div class="field">
+<label>Fin de la campaña</label>
+<input id="campTo" type="time" value="00:00">
+</div>
+</div>
+<div id="campaignTimingPreview" class="notice" style="margin-top:12px">Elegí fecha, horario y cantidad de mensajes para calcular el ritmo.</div>
+
+<div class="notice" style="margin-top:14px">
+<b>Mensajes para esta consigna</b><br>
+Primero generá una tanda borrador. Revisá, editá o eliminá mensajes antes de activar la campaña.
+</div>
+
+<div class="grid" style="margin-top:14px">
+<div class="field">
+<label>Cantidad de mensajes</label>
+<input id="aiMessageCount" type="number" min="5" max="60" value="20">
+</div>
+<div class="field">
+<label>Endpoint seguro de IA</label>
+<input id="aiEndpoint" placeholder="https://tu-backend.../generar-mensajes">
+<small class="muted">La clave de IA debe vivir en el backend, nunca dentro del HTML.</small>
+</div>
+</div>
+
+<div class="actions">
+<button class="btn" id="generateAIMessages">🤖 Generar mensajes con IA</button>
+<button class="btn" id="generateLocalDraft">🧪 Generar borrador local</button>
+<button class="btn danger" id="clearDraft">Vaciar borrador</button>
+</div>
+
+<div id="aiStatus" class="notice" style="display:none;margin-top:12px"></div>
+<div id="draftMessages" class="list" style="margin-top:12px"></div>
+
+<button class="btn green" id="createCampaign" style="margin-top:14px">
+📅 Programar campaña con estos mensajes
+</button>
+
+</div>
+
+</section>
+
+
+<!-- ========================================================= -->
+<!-- PUBLICAR -->
+<!-- ========================================================= -->
+
+<section
+id="tab-publicar"
+class="tab">
+
+<h1>
+Publicar actualización
+</h1>
+
+<p class="subtitle">
+Versión del contenido administrado.
+</p>
+
+<div class="card">
+
+<div class="grid">
+
+<div class="field">
+
+<label>Versión actual</label>
+
+<input
+id="version"
+type="number"
+min="1">
+
+</div>
+
+<div class="notice">
+
+Este panel guarda los datos localmente.
+
+Para que los cambios lleguen a todos los teléfonos
+será necesario conectar después este administrador
+a una base de datos central.
+
+</div>
+
+</div>
+
+<button
+class="btn green"
+id="publish">
+
+🚀 Publicar actualización
+
+</button>
+
+<div
+id="pubResult"
+style="margin-top:12px">
+</div>
+
+</div>
+
+</section>
+
+
+<!-- ========================================================= -->
+<!-- CONFIG -->
+<!-- ========================================================= -->
+
+<section
+id="tab-config"
+class="tab">
+
+<h1>
+Configuración
+</h1>
+
+<p class="subtitle">
+Datos generales de ON Radio.
+</p>
+
+<div class="card">
+
+<div class="grid">
+
+<div class="field">
+<label>Nombre</label>
+<input id="cfgName">
+</div>
+
+<div class="field">
+<label>Slogan</label>
+<input id="cfgSlogan">
+</div>
+
+<div class="field">
+<label>WhatsApp</label>
+<input id="cfgWhats">
+</div>
+
+<div class="field">
+<label>Instagram</label>
+<input id="cfgIg">
+</div>
+
+<div class="field">
+<label>Facebook</label>
+<input id="cfgFb">
+</div>
+
+<div class="field">
+<label>TikTok</label>
+<input id="cfgTk">
+</div>
+
+<div class="field">
+<label>Kick</label>
+<input id="cfgKick">
+</div>
+
+<div class="field">
+<label>Web</label>
+<input id="cfgWeb">
+</div>
+
+</div>
+
+<button
+class="btn green"
+id="saveCfg">
+
+💾 Guardar configuración
+
+</button>
+
+<button
+class="btn danger"
+id="reset">
+
+Restablecer datos
+
+</button>
+
+</div>
+
+</section>
+
+</main>
+
+</div>
+
+
+<!-- ========================================================= -->
+<!-- MODAL -->
+<!-- ========================================================= -->
+
+<div
+id="modalBg"
+class="modal-bg">
+
+<div class="modal">
+
+<div id="modalContent">
+</div>
+
+<div
+class="actions"
+id="modalActions">
+
+<button
+class="btn gray"
+id="cancelModal">
+
+Cancelar
+
+</button>
+
+<button
+class="btn green"
+id="modalSave">
+
+Guardar
+
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+
+<div
+id="toast"
+class="toast">
+</div>
+
 
 <script>
-// CONTRASEÑA DEL PANEL (Podés cambiarla aquí cuando gustes)
-const PASSWORD_SECRETA = "00275";
 
-function verificarPassword() {
-  const pass = document.getElementById("adminPass").value;
-  if(pass === PASSWORD_SECRETA) {
-    document.getElementById("loginScreen").classList.add("hidden");
-    document.getElementById("adminPanel").classList.remove("hidden");
-    cargarEditorGrilla();
-  } else {
-    alert("Contraseña incorrecta");
+(function(){
+
+"use strict";
+
+
+/* ========================================================= */
+/* CONFIGURACION */
+/* ========================================================= */
+
+const STORAGE_KEY="onradio_admin_v7";
+
+const DAYS=[
+"lunes",
+"martes",
+"miércoles",
+"jueves",
+"viernes",
+"sábado",
+"domingo"
+];
+
+const TOPICS=[
+
+"relaciones",
+"parejas",
+"sexo",
+"citas",
+"infidelidad",
+"primer amor",
+"ex",
+"celos",
+"amistad",
+"trabajo",
+"jefe y compañeros",
+"familia",
+"anécdotas",
+"vergüenzas",
+"mentiras",
+"secretos",
+"dinero",
+"salidas",
+"redes sociales",
+"música",
+"viajes",
+"situaciones incómodas",
+"humor",
+"confesiones",
+"fiestas",
+"rutinas",
+"celular",
+"televisión",
+"fútbol",
+"comida"
+
+];
+
+
+const PROMPTS={
+
+
+"relaciones":[
+
+"¿Cuántas veces tenés relaciones sexuales por semana?",
+
+"¿Quién suele tomar la iniciativa en tu pareja?",
+
+"¿Qué cosa te da vergüenza admitir sobre tu vida sexual?"
+
+],
+
+
+"parejas":[
+
+"¿Qué es lo que más valorás de una pareja?",
+
+"¿Cuál fue la discusión más absurda que tuviste en pareja?",
+
+"¿Perdonarías una mentira importante?"
+
+],
+
+
+"sexo":[
+
+"¿Qué tema relacionado con sexo nunca te animaste a hablar con nadie?",
+
+"¿Qué tan importante es el sexo para vos en una relación?",
+
+"¿Alguna vez fingiste que estabas disfrutando?"
+
+],
+
+
+"citas":[
+
+"¿Cuál fue tu peor primera cita?",
+
+"¿Qué cosa te hace descartar a alguien en una primera cita?",
+
+"¿Alguna vez te fuiste de una cita sin despedirte?"
+
+],
+
+
+"infidelidad":[
+
+"¿Perdonarías una infidelidad?",
+
+"¿Qué considerás infidelidad además de un beso o una relación sexual?",
+
+"¿Alguna vez descubriste una infidelidad por una pista absurda?"
+
+],
+
+
+"primer amor":[
+
+"¿Te acordás de tu primer amor?",
+
+"¿Volverías a hablar con tu primer amor?",
+
+"¿Qué fue lo más ridículo que hiciste por tu primer amor?"
+
+],
+
+
+"ex":[
+
+"¿Seguís teniendo contacto con algún ex?",
+
+"¿Volverías con algún ex?",
+
+"¿Qué cosa de tu ex todavía recordás?"
+
+],
+
+
+"celos":[
+
+"¿Sos celoso/a o nada que ver?",
+
+"¿Cuál fue tu escena de celos más absurda?",
+
+"¿Revisarías el celular de tu pareja si tuvieras la oportunidad?"
+
+],
+
+
+"amistad":[
+
+"¿Un amigo puede traicionar y seguir siendo amigo?",
+
+"¿Tenés un amigo que considerás familia?",
+
+"¿Qué cosa jamás perdonarías a un amigo?"
+
+],
+
+
+"trabajo":[
+
+"¿Qué es lo más insólito que hiciste para no ir a trabajar?",
+
+"¿Alguna vez te enamoraste de alguien del trabajo?",
+
+"¿Cuál fue tu peor error laboral?"
+
+],
+
+
+"jefe y compañeros":[
+
+"¿Alguna vez hablaste mal de tu jefe y te escuchó?",
+
+"¿Qué compañero de trabajo te vuelve loco/a?",
+
+"¿Alguna vez te hiciste el enfermo para faltar?"
+
+],
+
+
+"familia":[
+
+"¿Cuál es el secreto familiar más raro que conocés?",
+
+"¿Quién manda realmente en tu familia?",
+
+"¿Qué costumbre familiar te da vergüenza?"
+
+],
+
+
+"anécdotas":[
+
+"Contanos una anécdota que nadie te crea pero sea verdad.",
+
+"¿Cuál fue la situación más insólita que viviste?",
+
+"¿Qué historia tuya siempre termina haciendo reír a todos?"
+
+],
+
+
+"vergüenzas":[
+
+"¿Cuál fue tu papelón más grande?",
+
+"¿Qué hiciste pensando que nadie te veía?",
+
+"¿Alguna vez saludaste a alguien pensando que era otra persona?"
+
+],
+
+
+"mentiras":[
+
+"¿Cuál fue la mentira más grande que dijiste para zafar?",
+
+"¿Mentira piadosa o verdad brutal?",
+
+"¿Alguna vez te descubrieron mintiendo por WhatsApp?"
+
+],
+
+
+"secretos":[
+
+"¿Qué secreto guardaste durante años?",
+
+"¿Tenés un secreto que jamás contarías al aire?",
+
+"¿Cuál es el secreto más raro que te confiaron?"
+
+],
+
+
+"dinero":[
+
+"¿En qué gastaste plata y después te arrepentiste?",
+
+"¿Prestarías plata a un amigo?",
+
+"¿Cuál fue tu compra más innecesaria?"
+
+],
+
+
+"salidas":[
+
+"¿Cuál fue la peor salida que tuviste?",
+
+"¿Bar, boliche o juntada en casa?",
+
+"¿Alguna vez te echaron de un lugar?"
+
+],
+
+
+"redes sociales":[
+
+"¿Alguna vez stalkeaste a alguien durante horas?",
+
+"¿Borrarías una foto por la cantidad de likes?",
+
+"¿Cuál es la red social que más te atrapa?"
+
+],
+
+
+"música":[
+
+"¿Qué canción te da vergüenza admitir que te encanta?",
+
+"¿Qué tema te sabés entero aunque nunca lo reconocerías?",
+
+"¿Qué canción te recuerda a alguien?"
+
+],
+
+
+"viajes":[
+
+"¿Cuál fue tu peor experiencia viajando?",
+
+"¿Con quién jamás viajarías?",
+
+"¿Qué lugar volverías a visitar mañana?"
+
+],
+
+
+"situaciones incómodas":[
+
+"¿Cuál fue el silencio más incómodo que viviste?",
+
+"¿Alguna vez escuchaste una conversación que no debías?",
+
+"¿Qué situación te hizo querer desaparecer?"
+
+],
+
+
+"humor":[
+
+"¿Cuál es la excusa más absurda que usaste?",
+
+"¿Qué cosa te hace reír aunque no deberías?",
+
+"¿Cuál fue tu peor chiste contado en público?"
+
+],
+
+
+"confesiones":[
+
+"Confesá algo que nunca contaste al aire.",
+
+"¿Qué cosa hacés a escondidas y nadie sabe?",
+
+"¿Qué pequeña locura nunca admitirías frente a tus amigos?"
+
+],
+
+
+"fiestas":[
+
+"¿Cuál fue la fiesta que terminó peor de lo esperado?",
+
+"¿Alguna vez te quedaste dormido/a en una fiesta?",
+
+"¿Qué fue lo más raro que hiciste después de una fiesta?"
+
+],
+
+
+"rutinas":[
+
+"¿Qué hábito raro tenés todos los días?",
+
+"¿Qué hacés siempre antes de dormir?",
+
+"¿Qué costumbre tuya nadie entiende?"
+
+],
+
+
+"celular":[
+
+"¿Qué es lo primero que mirás en el celular al despertarte?",
+
+"¿Alguna vez mandaste un mensaje al chat equivocado?",
+
+"¿Qué app te roba más tiempo?"
+
+],
+
+
+"televisión":[
+
+"¿Qué programa podrías mirar mil veces?",
+
+"¿Qué serie te da vergüenza admitir que viste completa?",
+
+"¿Qué personaje de TV odiás?"
+
+],
+
+
+"fútbol":[
+
+"¿Qué fue la peor discusión futbolera que tuviste?",
+
+"¿Mirarías un partido de tu rival si define algo importante?",
+
+"¿Qué jugador te cae mal sin explicación?"
+
+],
+
+
+"comida":[
+
+"¿Cuál es la combinación de comida más rara que te gusta?",
+
+"¿Qué comida odiás aunque todos la amen?",
+
+"¿Qué comés cuando nadie te está mirando?"
+
+]
+
+};
+
+
+/* ========================================================= */
+/* DATOS POR DEFECTO */
+/* ========================================================= */
+
+const DEFAULT={
+
+popup:{images:[]},
+
+programs:[
+
+{
+id:1,
+name:"TRASNOCHES ON",
+host:"",
+days:[0,1,2,3,4,5,6],
+start:"00:00",
+end:"07:00",
+image:"trasnoches-on.png",
+desc:"Clásicos 80",
+live:false
+},
+
+{
+id:2,
+name:"MAÑANAS ON",
+host:"",
+days:[0,1,2,3,4,5,6],
+start:"07:00",
+end:"13:00",
+image:"mananas-on.png",
+desc:"Latinos e Internacionales comerciales",
+live:false
+},
+
+{
+id:3,
+name:"HIT'S ON",
+host:"",
+days:[0,1,2,3,4,5,6],
+start:"13:00",
+end:"16:00",
+image:"hits-on.png",
+desc:"Hits del Momento",
+live:false
+},
+
+{
+id:4,
+name:"TARDES ON",
+host:"",
+days:[0,1,2,3,4,5,6],
+start:"16:00",
+end:"20:00",
+image:"tardes-on.png",
+desc:"Latinos e Internacionales",
+live:false
+},
+
+{
+id:5,
+name:"NOCHES ON",
+host:"",
+days:[0,1,2,3,4,5,6],
+start:"20:00",
+end:"00:00",
+image:"noches-on.png",
+desc:"Rock Nacional",
+live:false
+}
+
+],
+
+general:[],
+
+campaigns:[],
+
+live:{
+name:"NO ES LO QUE PARECE",
+host:"Guille Caballini",
+days:[0,1,2,3,4],
+from:"22:00",
+to:"00:00",
+image:"",
+active:true
+},
+
+config:{
+name:"ON Radio",
+slogan:"Va con vos!",
+whats:"11 6135 8000",
+ig:"la_on_radio",
+fb:"onradioo",
+tk:"@laonradio",
+kick:"@ONRadioStream",
+web:"www.laonradio.com.ar"
+},
+
+version:1
+
+};
+
+
+let state=loadState();
+
+let currentImage="";
+
+let generatedPrompt="";
+
+
+/* ========================================================= */
+/* UTILIDADES */
+/* ========================================================= */
+
+function clone(obj){
+
+return JSON.parse(
+JSON.stringify(obj)
+);
+
+}
+
+
+function mergeDeep(base,src){
+
+const out=clone(base);
+
+if(!src || typeof src!=="object")
+return out;
+
+Object.keys(src).forEach(k=>{
+
+if(
+src[k] &&
+typeof src[k]==="object" &&
+!Array.isArray(src[k]) &&
+out[k] &&
+typeof out[k]==="object" &&
+!Array.isArray(out[k])
+){
+
+out[k]=mergeDeep(
+out[k],
+src[k]
+);
+
+}else{
+
+out[k]=src[k];
+
+}
+
+});
+
+return out;
+
+}
+
+
+function loadState(){
+
+try{
+
+const raw=
+localStorage.getItem(
+STORAGE_KEY
+);
+
+return raw
+?mergeDeep(
+DEFAULT,
+JSON.parse(raw)
+)
+:clone(DEFAULT);
+
+}catch(e){
+
+return clone(DEFAULT);
+
+}
+
+}
+
+
+function saveState(){
+
+try{
+
+localStorage.setItem(
+STORAGE_KEY,
+JSON.stringify(state)
+);
+
+return true;
+
+}catch(e){
+
+alert(
+"No se pudieron guardar los datos. Las imágenes pueden ser demasiado grandes para el almacenamiento local."
+);
+
+return false;
+
+}
+
+}
+
+
+function esc(value){
+
+return String(
+value==null?"":value
+).replace(
+/[&<>"']/g,
+m=>({
+
+"&":"&amp;",
+"<":"&lt;",
+">":"&gt;",
+'"':"&quot;",
+"'":"&#39;"
+
+}[m])
+);
+
+}
+
+
+function toast(message){
+
+const t=
+document.getElementById(
+"toast"
+);
+
+t.textContent=message;
+
+t.classList.add("show");
+
+clearTimeout(
+window.__toastTimer
+);
+
+window.__toastTimer=
+setTimeout(
+()=>{
+t.classList.remove("show");
+},
+2200
+);
+
+}
+
+
+function imageFrame(src,square){
+
+if(!src){
+
+return `
+<div class="empty">
+Sin imagen
+</div>
+`;
+
+}
+
+return `
+<div class="frame ${square?"square":""}">
+
+<img
+class="blur"
+src="${esc(src)}"
+onerror="this.style.display='none'">
+
+<img
+class="fit"
+src="${esc(src)}"
+onerror="this.style.display='none'">
+
+</div>
+`;
+
+}
+
+
+function readFile(file){
+
+return new Promise(
+(resolve,reject)=>{
+
+const reader=
+new FileReader();
+
+reader.onload=()=>{
+resolve(
+reader.result
+);
+};
+
+reader.onerror=reject;
+
+reader.readAsDataURL(
+file
+);
+
+}
+);
+
+}
+
+
+function daysText(days){
+
+const a=[
+...(days||[])
+].sort(
+(x,y)=>x-y
+);
+
+if(a.length===7)
+return"Todos los días";
+
+if(
+a.join(",")==="0,1,2,3,4"
+)
+return"Lunes a viernes";
+
+if(!a.length)
+return"Sin días";
+
+return a
+.map(i=>DAYS[i])
+.join(", ");
+
+}
+
+
+function renderDayChecks(
+containerId,
+selected
+){
+
+const box=
+document.getElementById(
+containerId
+);
+
+box.innerHTML=
+DAYS.map(
+(day,i)=>
+`
+<label class="check">
+
+<input
+type="checkbox"
+data-day="${i}"
+${selected.includes(i)?"checked":""}>
+
+${day}
+
+</label>
+`
+).join("");
+
+}
+
+
+function readDayChecks(
+containerId
+){
+
+return [
+...document.querySelectorAll(
+"#"+containerId+
+" input[data-day]:checked"
+)
+].map(
+x=>Number(
+x.dataset.day
+)
+);
+
+}
+
+
+/* ========================================================= */
+/* NAVEGACION */
+/* ========================================================= */
+
+document
+.querySelectorAll(".nav")
+.forEach(btn=>{
+
+btn.addEventListener(
+"click",
+()=>{
+
+document
+.querySelectorAll(".nav")
+.forEach(
+x=>x.classList.remove(
+"active"
+)
+);
+
+document
+.querySelectorAll(".tab")
+.forEach(
+x=>x.classList.remove(
+"active"
+)
+);
+
+btn.classList.add(
+"active"
+);
+
+document
+.getElementById(
+"tab-"+btn.dataset.tab
+)
+.classList.add(
+"active"
+);
+
+}
+);
+
+});
+
+
+/* ========================================================= */
+/* POPUP CENTRALIZADO */
+/* ========================================================= */
+
+let popupCloudLoaded=false;
+
+async function compressPopupImage(file){
+  if(!file || !String(file.type||"").startsWith("image/")) throw new Error("El archivo no es una imagen válida.");
+  const source=await new Promise((resolve,reject)=>{
+    const r=new FileReader();
+    r.onload=()=>resolve(r.result); r.onerror=reject; r.readAsDataURL(file);
+  });
+  const img=await new Promise((resolve,reject)=>{
+    const x=new Image(); x.onload=()=>resolve(x); x.onerror=()=>reject(new Error("No se pudo leer la imagen.")); x.src=source;
+  });
+  const maxW=1080,maxH=1920;
+  const scale=Math.min(1,maxW/img.naturalWidth,maxH/img.naturalHeight);
+  const w=Math.max(1,Math.round(img.naturalWidth*scale));
+  const h=Math.max(1,Math.round(img.naturalHeight*scale));
+  const canvas=document.createElement("canvas"); canvas.width=w; canvas.height=h;
+  const ctx=canvas.getContext("2d",{alpha:false});
+  ctx.fillStyle="#000"; ctx.fillRect(0,0,w,h); ctx.drawImage(img,0,0,w,h);
+  let quality=.82, out=canvas.toDataURL("image/jpeg",quality);
+  while(out.length>820000 && quality>.42){ quality-=.08; out=canvas.toDataURL("image/jpeg",quality); }
+  if(out.length>880000) throw new Error("La imagen sigue siendo demasiado grande. Probá con una imagen de menor resolución.");
+  return out;
+}
+
+function popupAdDefaults(data){
+  if(typeof data==='string') return {data,enabled:true,seconds:5,schedule:'all',from:'00:00',to:'00:00',days:[0,1,2,3,4,5,6]};
+  return {data:String(data?.data||''),enabled:data?.enabled!==false,seconds:Math.max(1,Math.min(60,Number(data?.seconds)||5)),schedule:data?.schedule==='range'?'range':'all',from:data?.from||'00:00',to:data?.to||'00:00',days:Array.isArray(data?.days)&&data.days.length?data.days.map(Number):[0,1,2,3,4,5,6]};
+}
+function renderPopup(){
+  state.popup.images=(state.popup.images||[]).map(popupAdDefaults);
+  popList.innerHTML=state.popup.images.length?state.popup.images.map((ad,i)=>{
+    const all=ad.days.length===7;
+    return `<div class="item"><div class="row"><b>Publicidad ${i+1}</b><button class="btn danger" onclick="window.removePopupImage(${i})">Eliminar</button></div>
+      <div class="grid" style="margin-top:12px"><div>${imageFrame(ad.data,false)}</div><div>
+      <div class="field"><label>Publicidad activa</label><select onchange="window.setPopupField(${i},'enabled',this.value==='1')"><option value="1" ${ad.enabled?'selected':''}>Sí, mostrar</option><option value="0" ${!ad.enabled?'selected':''}>No, desactivar</option></select></div>
+      <div class="field"><label>Segundos en pantalla</label><input type="number" min="1" max="60" value="${ad.seconds}" onchange="window.setPopupField(${i},'seconds',this.value)"></div>
+      <div class="field"><label>Horario de publicación</label><select onchange="window.setPopupField(${i},'schedule',this.value)"><option value="all" ${ad.schedule==='all'?'selected':''}>24 horas</option><option value="range" ${ad.schedule==='range'?'selected':''}>Desde / Hasta</option></select></div>
+      ${ad.schedule==='range'?`<div class="grid"><div class="field"><label>Desde</label><input type="time" value="${ad.from}" onchange="window.setPopupField(${i},'from',this.value)"></div><div class="field"><label>Hasta</label><input type="time" value="${ad.to}" onchange="window.setPopupField(${i},'to',this.value)"></div></div>`:''}
+      <div class="field"><label>Días en que se muestra</label><div class="checks"><label class="check"><input type="checkbox" ${all?'checked':''} onchange="window.setPopupAllDays(${i},this.checked)"> Todos los días</label>${['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'].map((n,d)=>`<label class="check"><input type="checkbox" ${ad.days.includes(d)?'checked':''} ${all?'disabled':''} onchange="window.setPopupDay(${i},${d},this.checked)"> ${n}</label>`).join('')}</div></div>
+      </div></div></div>`;
+  }).join(''):'<div class="empty">No hay publicidades cargadas.</div>';
+}
+async function loadCloudPopup(){
+  try{const res=await fetch(ONRADIO_API+'/popup',{cache:'no-store'});if(!res.ok)throw new Error('HTTP '+res.status);const data=await res.json();state.popup={images:Array.isArray(data.images)?data.images.map(popupAdDefaults):[]};popupCloudLoaded=true;saveState();renderPopup();}catch(e){console.warn('No se pudo cargar la publicidad online:',e);toast('No se pudo consultar la publicidad online');}
+}
+window.setPopupField=function(i,k,v){const a=state.popup.images[i];if(!a)return;if(k==='seconds')v=Math.max(1,Math.min(60,Number(v)||5));a[k]=v;saveState();renderPopup();};
+window.setPopupAllDays=function(i,on){const a=state.popup.images[i];if(!a)return;a.days=on?[0,1,2,3,4,5,6]:[];saveState();renderPopup();};
+window.setPopupDay=function(i,d,on){const a=state.popup.images[i];if(!a)return;const s=new Set(a.days||[]);on?s.add(d):s.delete(d);a.days=[...s].sort((x,y)=>x-y);saveState();renderPopup();};
+window.removePopupImage=function(index){state.popup.images.splice(index,1);saveState();renderPopup();toast('Publicidad quitada. Tocá Guardar publicidad para publicarlo.');};
+popFiles.addEventListener('change',async e=>{const available=Math.max(0,20-state.popup.images.length);const files=[...e.target.files].slice(0,available);if(!available){e.target.value='';return toast('Ya alcanzaste el máximo de 20 imágenes');}try{for(const file of files)state.popup.images.push(popupAdDefaults(await compressPopupImage(file)));saveState();renderPopup();toast(files.length===1?'Publicidad preparada':'Publicidades preparadas');}catch(err){alert(err?.message||'No se pudo preparar la imagen.');}e.target.value='';});
+popClear.addEventListener('click',()=>{state.popup.images=[];saveState();renderPopup();toast('Publicidades quitadas. Tocá Guardar publicidad para publicarlo.');});
+popSave.addEventListener('click',async()=>{state.popup.images=(state.popup.images||[]).map(popupAdDefaults);const bad=state.popup.images.findIndex(a=>!a.days.length);if(bad>=0){alert(`Elegí al menos un día para la publicidad ${bad+1}.`);return;}saveState();const old=popSave.textContent;popSave.disabled=true;popSave.textContent='⏳ Publicando...';try{const res=await fetch(ONRADIO_API+'/popup',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({images:state.popup.images})});const data=await res.json().catch(()=>({}));if(!res.ok)throw new Error(data.error||('HTTP '+res.status));popupCloudLoaded=true;renderPopup();toast(`Publicidad publicada · ${data.images||0} imagen${Number(data.images)===1?'':'es'}`);}catch(err){alert('No se pudo publicar la publicidad.\n\n'+(err?.message||String(err)));}finally{popSave.disabled=false;popSave.textContent=old;}});
+
+/* ========================================================= */
+/* IMAGENES DE PROGRAMAS EN LA NUBE */
+/* ========================================================= */
+function normalizeProgramKey(v){
+  return String(v||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"")
+    .replace(/[^a-z0-9]+/g," ").trim().replace(/\s+/g,"-").slice(0,120);
+}
+async function loadCloudProgramImages(){
+  try{
+    const res=await fetch(ONRADIO_API+"/program-images",{cache:"no-store"});
+    if(!res.ok) throw new Error("HTTP "+res.status);
+    const data=await res.json();
+    const map=new Map((Array.isArray(data.images)?data.images:[]).map(x=>[String(x.key||normalizeProgramKey(x.name)),x.data||x.image||""]));
+    let changed=false;
+    state.programs=(state.programs||[]).map(p=>{
+      const cloud=map.get(normalizeProgramKey(p.name));
+      if(cloud && cloud!==p.image){changed=true;return {...p,image:cloud};}
+      return p;
+    });
+    const liveCloud=map.get(normalizeProgramKey(state.live?.name));
+    if(liveCloud && liveCloud!==state.live.image){state.live.image=liveCloud;changed=true;}
+    if(changed) saveState();
+    renderPrograms();
+  }catch(err){
+    console.warn("No se pudieron cargar las imágenes de programas:",err);
   }
 }
 
-// BLOQUES POR DEFECTO SI NO HAY DATOS
-const bloquesPredeterminados = [
-  { id: "slot-trasnoches", nombre: "TRASNOCHES ON", dias: [0,1,2,3,4,5,6], horaInicio: "00:00", horaFin: "07:00", desc: "Los clásicos de los 80s para acompañar la madrugada.", imagen: "trasnoches-on.png", esEnVivo: false, locutor: "" },
-  { id: "slot-mananas", nombre: "MAÑANAS ON", dias: [0,1,2,3,4,5,6], horaInicio: "07:00", horaFin: "13:00", desc: "Latinos e internacionales actuales y no tanto.", imagen: "mananas-on.png", esEnVivo: false, locutor: "" },
-  { id: "slot-hits", nombre: "HIT'S ON", dias: [0,1,2,3,4,5,6], horaInicio: "13:00", horaFin: "16:00", desc: "Lo mejor del momento y los éxitos que más suenan.", imagen: "hits-on.png", esEnVivo: false, locutor: "" },
-  { id: "slot-tardes", nombre: "TARDES ON", dias: [0,1,2,3,4,5,6], horaInicio: "16:00", horaFin: "20:00", desc: "Música comercial, clásicos y buena energía.", imagen: "tardes-on.png", esEnVivo: false, locutor: "" },
-  { id: "slot-noches", nombre: "NOCHES ON", dias: [0,1,2,3,4,5,6], horaInicio: "20:00", horaFin: "00:00", desc: "Rock nacional para cerrar el día.", imagen: "noches-on.png", esEnVivo: false, locutor: "" }
+/* ========================================================= */
+/* PROGRAMACION CENTRALIZADA EN D1 */
+/* ========================================================= */
+async function loadCloudPrograms(){
+  try{
+    const res=await fetch(ONRADIO_API+"/programs",{cache:"no-store"});
+    if(!res.ok) throw new Error("HTTP "+res.status);
+    const data=await res.json();
+    const list=Array.isArray(data.programs)?data.programs:[];
+    // Si D1 todavía está vacío, conservamos la grilla local para poder publicarla al primer guardado.
+    if(list.length){
+      const localImages=new Map((state.programs||[]).map(p=>[normalizeProgramKey(p.name),p.image||""]));
+      state.programs=list.map((p,i)=>({
+        id:p.id||Date.now()+i,name:String(p.name||""),host:String(p.host||""),
+        days:Array.isArray(p.days)?p.days.map(Number):[],start:p.start||"00:00",end:p.end||"00:00",
+        desc:String(p.desc||""),image:localImages.get(normalizeProgramKey(p.name))||"",live:p.live===true
+      }));
+      const liveProgram=state.programs.find(p=>p.live);
+      if(liveProgram) state.live={name:liveProgram.name,host:liveProgram.host,days:[...liveProgram.days],from:liveProgram.start,to:liveProgram.end,image:liveProgram.image||"",active:true};
+      saveState();
+      renderPrograms();
+      campaignProgram.value=state.live?.name||"";
+      campaignHost.value=state.live?.host||"";
+    }
+    return list;
+  }catch(err){
+    console.warn("No se pudo cargar la programación online:",err);
+    toast("No se pudo consultar la programación online");
+    return [];
+  }
+}
+
+async function saveCloudPrograms(){
+  const payload=(state.programs||[]).map(p=>({
+    id:String(p.id),name:p.name,host:p.host||"",days:(p.days||[]).map(Number),
+    start:p.start,end:p.end,desc:p.desc||"",image_key:normalizeProgramKey(p.name),live:p.live===true
+  }));
+  const res=await fetch(ONRADIO_API+"/programs",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({programs:payload})});
+  const data=await res.json().catch(()=>({}));
+  if(!res.ok) throw new Error(data.error||("HTTP "+res.status));
+  return data;
+}
+
+/* ========================================================= */
+/* MODAL - restaurado */
+/* ========================================================= */
+function openModal(title,html){
+  modalContent.innerHTML=`<h2 style="margin-top:0">${title}</h2>${html}`;
+  modalBg.classList.add("open");
+}
+function closeModal(){
+  modalBg.classList.remove("open");
+  modalContent.innerHTML="";
+  currentImage="";
+}
+cancelModal.addEventListener("click",closeModal);
+modalBg.addEventListener("click",e=>{if(e.target===modalBg)closeModal();});
+
+function renderPrograms(){
+
+programList.innerHTML=
+state.programs.length
+
+?state.programs.map(
+p=>`
+
+<div class="item">
+
+<div class="row">
+
+<b>
+${esc(p.name)} ${p.live?'<span class="tag ok" style="margin-left:6px">EN VIVO</span>':''}
+</b>
+
+<button
+class="btn"
+type="button" data-edit-program="${p.id}">
+
+Editar
+
+</button>
+
+</div>
+
+<p class="muted">
+
+${esc(
+p.host||"Sin conductor"
+)}
+
+·
+
+${daysText(p.days)}
+
+·
+
+${esc(p.start)}
+–
+
+${esc(p.end)}
+
+</p>
+
+<p>
+${esc(p.desc||"")}
+</p>
+
+${imageFrame(
+p.image,
+true
+)}
+
+</div>
+
+`
+).join("")
+
+:'<div class="empty">No hay programas.</div>';
+
+}
+
+
+addProgram.addEventListener(
+"click",
+()=>{
+
+openProgram({
+
+id:null,
+name:"",
+host:"",
+days:[
+0,1,2,3,4,5,6
+],
+start:"00:00",
+end:"00:00",
+image:"",
+desc:"",
+live:false
+
+});
+
+}
+);
+
+
+window.editProgram=function(id){
+
+const numericId=Number(id);
+const p=state.programs.find(x=>Number(x.id)===numericId);
+
+if(p) openProgram(p);
+
+};
+
+// Delegación robusta: evita depender de onclick inline en los botones Editar.
+programList.addEventListener("click",e=>{
+  const btn=e.target.closest("[data-edit-program]");
+  if(!btn)return;
+  e.preventDefault();
+  window.editProgram(btn.dataset.editProgram);
+});
+
+
+function openProgram(
+program
+){
+
+currentImage=
+program.image||"";
+
+openModal(
+program.id
+?"Editar programa"
+:"Nuevo programa",
+
+`
+
+<div class="grid">
+
+<div class="field">
+
+<label>
+Nombre
+</label>
+
+<input
+id="formName"
+value="${esc(program.name)}">
+
+</div>
+
+
+<div class="field">
+
+<label>
+Conductor/a
+</label>
+
+<input
+id="formHost"
+value="${esc(program.host)}">
+
+</div>
+
+
+<div class="field">
+
+<label>
+Desde
+</label>
+
+<input
+id="formStart"
+type="time"
+value="${esc(program.start)}">
+
+</div>
+
+
+<div class="field">
+
+<label>
+Hasta
+</label>
+
+<input
+id="formEnd"
+type="time"
+value="${esc(program.end)}">
+
+</div>
+
+
+<div class="field">
+
+<label>
+Descripción
+</label>
+
+<input
+id="formDesc"
+value="${esc(program.desc)}">
+
+</div>
+
+
+<div class="field">
+
+<label>
+Reemplazar imagen
+</label>
+
+<input
+id="formFile"
+type="file"
+accept="image/*">
+
+<div
+id="formPreview"
+style="margin-top:8px">
+
+${imageFrame(
+currentImage,
+true
+)}
+
+</div>
+
+</div>
+
+</div>
+
+
+<div class="field">
+
+<label>
+Días
+</label>
+
+<div
+id="formDays"
+class="checks">
+</div>
+
+</div>
+
+<div class="field">
+<label>Tipo de programa</label>
+<label class="check" style="display:inline-flex;align-items:center;gap:8px;width:auto">
+<input id="formLive" type="checkbox" ${program.live?"checked":""}>
+Programa en vivo — mostrar leyenda EN VIVO en el reproductor
+</label>
+</div>
+
+<div class="actions">
+
+${
+program.id
+
+?`
+
+<button
+class="btn danger"
+id="deleteProgram">
+
+🗑️ Eliminar programa
+
+</button>
+
+`
+
+:""
+
+}
+
+<button
+class="btn green"
+id="saveProgram">
+
+💾 Guardar programa
+
+</button>
+
+</div>
+
+`
+);
+
+renderDayChecks(
+"formDays",
+program.days||[]
+);
+
+
+document
+.getElementById(
+"formFile"
+)
+.addEventListener(
+"change",
+async e=>{
+
+if(
+e.target.files[0]
+){
+
+currentImage=
+await compressPopupImage(
+e.target.files[0]
+);
+
+document
+.getElementById(
+"formPreview"
+)
+.innerHTML=
+imageFrame(
+currentImage,
+true
+);
+
+}
+
+}
+);
+
+
+document
+.getElementById(
+"saveProgram"
+)
+.addEventListener(
+"click",
+async()=>{
+
+const item={
+
+id:
+program.id||
+Date.now(),
+
+name:
+document
+.getElementById(
+"formName"
+)
+.value
+.trim(),
+
+host:
+document
+.getElementById(
+"formHost"
+)
+.value
+.trim(),
+
+start:
+document
+.getElementById(
+"formStart"
+)
+.value,
+
+end:
+document
+.getElementById(
+"formEnd"
+)
+.value,
+
+desc:
+document
+.getElementById(
+"formDesc"
+)
+.value
+.trim(),
+
+days:
+readDayChecks(
+"formDays"
+),
+
+image:
+currentImage,
+
+live:
+document.getElementById("formLive").checked
+
+};
+
+
+if(!item.name){
+
+return toast(
+"Ingresá el nombre del programa"
+);
+
+}
+
+
+if(!item.days.length){
+
+return toast(
+"Seleccioná al menos un día"
+);
+
+}
+
+
+if(program.id){
+
+const idx=
+state.programs.findIndex(
+x=>x.id===program.id
+);
+
+state.programs[idx]=item;
+
+}else{
+
+state.programs.push(
+item
+);
+
+}
+
+// Si este programa es el que está configurado actualmente como "Programa en vivo",
+// sincroniza también su ficha local: una sola imagen oficial por programa.
+const liveNameKey=normalizeProgramKey(state.live?.name);
+const liveMatchesEditedProgram = liveNameKey && (
+  liveNameKey===normalizeProgramKey(program.name) ||
+  liveNameKey===normalizeProgramKey(item.name)
+);
+if(liveMatchesEditedProgram){
+  state.live.name=item.name;
+  state.live.host=item.host;
+  state.live.from=item.start;
+  state.live.to=item.end;
+  state.live.days=[...item.days];
+  if(item.image) state.live.image=item.image;
+}
+
+// Publica la imagen oficial del programa en D1.
+// La misma imagen será usada por la grilla y el reproductor público.
+if(item.image){
+  try{
+    const res=await fetch(ONRADIO_API+"/program-images",{
+      method:"PUT",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({name:item.name,image:item.image})
+    });
+    const data=await res.json().catch(()=>({}));
+    if(!res.ok) throw new Error(data.error||("HTTP "+res.status));
+    // D1 confirmó la imagen: la misma fuente queda aplicada en toda la ficha local.
+    const saved=state.programs.find(x=>Number(x.id)===Number(item.id));
+    if(saved) saved.image=item.image;
+    if(liveMatchesEditedProgram) state.live.image=item.image;
+  }catch(err){
+    return alert("No se pudo publicar la imagen del programa.\n\n"+(err?.message||String(err)));
+  }
+}
+
+// Mantiene compatibilidad con campañas: toma como referencia el programa marcado EN VIVO.
+if(item.live){
+  state.live={name:item.name,host:item.host,days:[...item.days],from:item.start,to:item.end,image:item.image||"",active:true};
+}
+
+saveState();
+
+try{
+  await saveCloudPrograms();
+}catch(err){
+  return alert("No se pudo guardar la programación en la nube.\n\n"+(err?.message||String(err)));
+}
+
+closeModal();
+renderPrograms();
+campaignProgram.value=state.live?.name||"";
+campaignHost.value=state.live?.host||"";
+toast("Programa guardado en la nube");
+
+}
+);
+
+
+if(program.id){
+
+document
+.getElementById(
+"deleteProgram"
+)
+.addEventListener(
+"click",
+async()=>{
+
+if(confirm("¿Eliminar este programa?")){
+  state.programs=state.programs.filter(x=>String(x.id)!==String(program.id));
+  saveState();
+  try{
+    await saveCloudPrograms();
+  }catch(err){
+    return alert("No se pudo eliminar el programa de la nube.\n\n"+(err?.message||String(err)));
+  }
+  closeModal();
+  renderPrograms();
+  toast("Programa eliminado de la programación");
+}
+
+}
+);
+
+}
+
+}
+
+
+const ONRADIO_API="https://onradio-ia.guillermocaballini.workers.dev";
+
+function cloudCampaignToLocal(c){
+ return {
+  id:Number(c.id),
+  cloudId:Number(c.id),
+  cloud:true,
+  active:false,
+  manualPause:Number(c.paused||0)===1,
+  forceActive:Number(c.forced_start||0)===1,
+  finished:String(c.status||"")==="finished",
+  date:c.emission_date||"",
+  program:c.program||"",
+  host:c.host||"",
+  days:[],
+  from:c.start_time||"",
+  to:c.end_time||"",
+  prompt:c.prompt||"",
+  topic:"",
+  level:"",
+  suppressGeneral:true,
+  distribution:"adaptive",
+  reserveEndMinutes:0,
+  emittedCount:Number(c.emitted_messages||0),
+  totalMessages:Number(c.total_messages||0),
+  messages:[]
+ };
+}
+
+async function loadCloudCampaigns(){
+ try{
+  const res=await fetch(ONRADIO_API+"/campaigns",{cache:"no-store"});
+  if(!res.ok)throw new Error("HTTP "+res.status);
+  const data=await res.json();
+  if(!Array.isArray(data.campaigns))throw new Error("Respuesta inválida");
+  const localOnly=(state.campaigns||[]).filter(c=>!c.cloud);
+  state.campaigns=[...localOnly,...data.campaigns.map(cloudCampaignToLocal)];
+  renderMessages();
+ }catch(e){
+  console.warn("No se pudieron cargar campañas online:",e);
+ }
+}
+
+function localDateISO(d=new Date()){
+ const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,"0"),day=String(d.getDate()).padStart(2,"0");
+ return `${y}-${m}-${day}`;
+}
+function campaignStartMs(c){
+ if(!c.date)return 0;
+ return new Date(`${c.date}T${c.from||"00:00"}:00`).getTime();
+}
+function campaignEndMs(c){
+ if(!c.date)return 0;
+ let end=new Date(`${c.date}T${c.to||"00:00"}:00`);
+ const start=new Date(`${c.date}T${c.from||"00:00"}:00`);
+ if(end<=start)end.setDate(end.getDate()+1);
+ return end.getTime();
+}
+function campaignDurationMinutes(c){
+ const a=campaignStartMs(c),b=campaignEndMs(c);
+ return a&&b?Math.max(0,(b-a)/60000):0;
+}
+function campaignStatus(c){
+ if(c.finished)return "finished";
+ if(c.manualPause)return "paused";
+ if(c.forceActive)return "live";
+ if(!c.date)return c.active?"live":"paused";
+ const now=Date.now(),a=campaignStartMs(c),b=campaignEndMs(c);
+ if(now>=b)return "finished";
+ if(now>=a&&now<b)return "live";
+ return "scheduled";
+}
+function campaignPaceMinutes(c,pending){
+ if(!pending)return 0;
+ const end=campaignEndMs(c);
+ let available;
+ if(campaignStatus(c)==="live") available=Math.max(0,(end-Date.now())/60000);
+ else available=campaignDurationMinutes(c);
+ return available/pending;
+}
+function formatPace(mins){
+ const sec=Math.max(1,Math.round(mins*60));
+ const m=Math.floor(sec/60),s=sec%60;
+ return m?`~${m}:${String(s).padStart(2,"0")} min`:`~${s} s`;
+}
+function formatCampaignDate(v){
+ if(!v)return "Sin fecha";
+ const [y,m,d]=v.split("-");return `${d}/${m}/${y}`;
+}
+function updateCampaignTimingPreview(){
+ const box=document.getElementById("campaignTimingPreview");
+ if(!box)return;
+ const date=campDate.value,from=campFrom.value,to=campTo.value,n=Math.max(5,Math.min(60,Number(aiMessageCount.value)||20));
+ if(!date||!from||!to){box.textContent="Elegí fecha, horario y cantidad de mensajes para calcular el ritmo.";return;}
+ const c={date,from,to};const dur=campaignDurationMinutes(c);const pace=dur/n;
+ box.innerHTML=`<b>Distribución automática</b><br>${n} mensajes en ${Math.round(dur)} minutos · ritmo medio ${formatPace(pace)}.<br><span class="muted">El sistema usa toda la ventana de campaña. Los mensajes reales se intercalan inmediatamente sin modificar el ritmo de los automáticos.</span>`;
+}
+
+
+let promptHistory=[];
+async function loadPromptHistory(){
+ try{
+  const res=await fetch(ONRADIO_API+"/prompt-history",{cache:"no-store"});
+  if(!res.ok)throw new Error("HTTP "+res.status);
+  const data=await res.json(); promptHistory=Array.isArray(data.history)?data.history:[]; renderMessages();
+ }catch(e){ console.warn("No se pudo cargar historial de consignas",e); }
+}
+window.deletePromptHistoryEntry=async function(id){
+ if(!confirm("¿Eliminar esta consigna del historial?\n\nDejará de usarse para detectar futuras repeticiones. La campaña no será eliminada."))return;
+ try{
+  const res=await fetch(ONRADIO_API+"/prompt-history/"+id,{method:"DELETE"});
+  const data=await res.json().catch(()=>({}));
+  if(!res.ok)throw new Error(data.error||("HTTP "+res.status));
+  await loadPromptHistory(); toast("Consigna eliminada del historial");
+ }catch(e){toast("No se pudo eliminar del historial");console.error(e);}
+};
+window.resetPromptHistory=async function(){
+ if(!confirm("¿Reiniciar TODO el historial de consignas?\n\nSe eliminará la memoria usada para detectar consignas repetidas. Las campañas y sus mensajes NO serán eliminados.\n\nEsta acción no se puede deshacer."))return;
+ try{
+  const res=await fetch(ONRADIO_API+"/prompt-history",{method:"DELETE"});
+  const data=await res.json().catch(()=>({}));
+  if(!res.ok)throw new Error(data.error||("HTTP "+res.status));
+  promptHistory=[]; renderMessages(); toast(`Historial reiniciado · ${Number(data.deleted||0)} entradas eliminadas`);
+ }catch(e){toast("No se pudo reiniciar el historial");console.error(e);}
+};
+
+async function checkPromptHistory(prompt,showBox=true){
+ if(!prompt)return [];
+ try{
+  const res=await fetch(ONRADIO_API+"/prompt-check?prompt="+encodeURIComponent(prompt),{cache:"no-store"});
+  const data=await res.json(); const matches=Array.isArray(data.matches)?data.matches:[];
+  if(showBox && matches.length){
+   const best=matches[0], exact=Number(best.similarity)>=0.99;
+   promptBox.style.display="block";
+   promptBox.innerHTML=`<b>⚠️ ${exact?"Esta consigna ya fue utilizada":"Encontré una consigna muy parecida"}</b><br>${esc(prompt)}<hr style="border-color:#444"><span class="muted">${exact?"Usada":"Similar a"}: “${esc(best.prompt)}” · ${esc(formatCampaignDate(best.emission_date))} · ${esc(best.program)}</span><br><span class="muted">Podés usarla igualmente si querés.</span>`;
+  }
+  return matches;
+ }catch(e){ console.warn("No se pudo comprobar la consigna",e); return []; }
+}
+async function deleteCloudCampaign(id){
+ const res=await fetch(ONRADIO_API+"/campaigns/"+id,{method:"DELETE"});
+ const data=await res.json().catch(()=>({})); if(!res.ok)throw new Error(data.error||("HTTP "+res.status)); return data;
+}
+async function updateCloudCampaign(id,payload){
+ const res=await fetch(ONRADIO_API+"/campaigns/"+id,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
+ const data=await res.json().catch(()=>({})); if(!res.ok)throw new Error(data.error||("HTTP "+res.status)); return data;
+}
+
+/* ========================================================= */
+/* MENSAJES */
+/* ========================================================= */
+
+function normalizeHistoryText(v){return String(v||"").toLowerCase().trim().replace(/\s+/g," ");}
+
+function renderMessages(){
+
+generalList.innerHTML=
+state.general.length
+
+?state.general.map(
+(m,i)=>`
+
+<div class="item">
+
+<div class="row">
+
+<b>
+${esc(
+m.name||
+"Producción ON"
+)}
+</b>
+
+<button
+class="btn danger"
+onclick="window.deleteGeneral(${i})">
+
+Eliminar
+
+</button>
+
+</div>
+
+<p>
+${esc(m.text)}
+</p>
+
+</div>
+
+`
+).join("")
+
+:'<div class="empty">No hay mensajes generales.</div>';
+
+
+campaignList.innerHTML=
+state.campaigns.length
+?state.campaigns.slice().sort((a,b)=>campaignStartMs(a)-campaignStartMs(b)).map((c)=>{
+ const i=state.campaigns.findIndex(x=>x.id===c.id);
+ const st=campaignStatus(c);
+ const total=c.cloud ? Number(c.totalMessages||0) : (c.messages||[]).length;
+ const emitted=Math.min(Number(c.emittedCount)||0,total);
+ const pending=Math.max(0,total-emitted);
+ const dur=campaignDurationMinutes(c);
+ const pace=pending?campaignPaceMinutes(c,pending):0;
+ const statusLabel={scheduled:"PROGRAMADA",live:"EN CURSO",paused:"PAUSADA",finished:"FINALIZADA"}[st];
+ return `
+<div class="item">
+ <div class="row"><b>${esc(c.program)}</b><span class="campaign-status ${st}">${statusLabel}</span></div>
+ <p class="muted"><b>Conductor:</b> ${esc(c.host)} · ${esc(formatCampaignDate(c.date))} · ${esc(c.from)}–${esc(c.to)}</p>
+ <p><b>Consigna:</b> ${esc(c.prompt)}</p>
+ <div class="campaign-metrics">
+  <div class="campaign-metric"><b>${emitted}/${total}</b><span>emitidos</span></div>
+  <div class="campaign-metric"><b>${pending}</b><span>pendientes</span></div>
+  <div class="campaign-metric"><b>${Math.round(dur)} min</b><span>ventana</span></div>
+  <div class="campaign-metric"><b>${pace?formatPace(pace):"—"}</b><span>ritmo estimado</span></div>
+ </div>
+ ${c.cloud?`<div class="notice" style="margin-top:8px">☁️ Campaña guardada online · ${total} mensajes en D1.</div>`:`<details><summary style="cursor:pointer;font-weight:800">Ver ${total} mensajes preparados</summary><div style="margin-top:8px">${(c.messages||[]).map(m=>`<span class="campaign-msg">${esc(typeof m==="string"?m:m.text)}</span>`).join("")}</div></details>`}
+ <div class="actions">
+  ${c.cloud
+    ? `<span class="tag ok">☁️ ONLINE</span>
+       ${st==="scheduled"?`<button class="btn gray" onclick="window.editCloudCampaign(${c.cloudId})">✏️ Editar</button>`:""}
+       <button class="btn danger" onclick="window.deleteCloudCampaignUI(${c.cloudId})">🗑️ Eliminar</button>`
+    : `${st!=="finished"?`<button class="btn" onclick="window.toggleCampaign(${i})">${st==="paused"?"Reanudar":st==="live"?"Pausar":"Activar ahora"}</button>`:""}
+       <button class="btn gray" onclick="window.editCampaignSchedule(${i})">Editar horario</button>
+       <button class="btn danger" onclick="window.deleteCampaign(${i})">Eliminar</button>`}
+ </div>
+</div>`;
+}).join("")
+:'<div class="empty">No hay campañas creadas.</div>';
+
+const historyBox=document.getElementById("promptHistoryList");
+if(historyBox){
+ const seen=new Set();
+ const unique=(promptHistory||[]).filter(h=>{const k=[normalizeHistoryText(h.prompt),h.emission_date,h.program].join("|");if(seen.has(k))return false;seen.add(k);return true;});
+ historyBox.innerHTML=unique.length?unique.map(h=>`<div class="item"><div class="row"><b>${esc(h.prompt)}</b><button class="btn danger" onclick="window.deletePromptHistoryEntry(${Number(h.id)})">🗑️ Eliminar</button></div><p class="muted">${esc(formatCampaignDate(h.emission_date))} · ${esc(h.program)}${h.host?" · "+esc(h.host):""}</p></div>`).join(""):'<div class="empty">Todavía no hay consignas históricas.</div>';
+}
+
+}
+
+addGeneral.addEventListener(
+"click",
+()=>{
+
+openModal(
+"Nuevo mensaje general",
+
+`
+
+<div class="field">
+
+<label>
+Identificador
+</label>
+
+<input
+id="generalName"
+value="Producción ON">
+
+</div>
+
+
+<div class="field">
+
+<label>
+Mensaje
+</label>
+
+<textarea
+id="generalText">
+</textarea>
+
+</div>
+
+`
+);
+
+
+modalSave.onclick=()=>{
+
+const text=
+document
+.getElementById(
+"generalText"
+)
+.value
+.trim();
+
+
+if(!text){
+
+return toast(
+"Escribí el mensaje"
+);
+
+}
+
+
+state.general.push({
+
+id:Date.now(),
+
+name:
+document
+.getElementById(
+"generalName"
+)
+.value
+.trim()
+||
+"Producción ON",
+
+text:text,
+
+type:"produccion"
+
+});
+
+
+saveState();
+
+closeModal();
+
+renderMessages();
+
+toast(
+"Mensaje agregado"
+);
+
+};
+
+}
+);
+
+
+window.deleteGeneral=function(i){
+
+state.general.splice(
+i,
+1
+);
+
+saveState();
+
+renderMessages();
+
+toast(
+"Mensaje eliminado"
+);
+
+};
+
+
+window.toggleCampaign=function(i){
+ const c=state.campaigns[i];
+ const st=campaignStatus(c);
+ if(st==="paused"){
+   c.manualPause=false;
+   c.forceActive=false;
+   toast("Campaña reanudada");
+ }else if(st==="live"){
+   c.manualPause=true;
+   toast("Campaña pausada");
+ }else{
+   c.forceActive=true;
+   c.manualPause=false;
+   toast("Campaña activada manualmente");
+ }
+ saveState();
+ renderMessages();
+};
+
+window.editCampaignSchedule=function(i){
+ const c=state.campaigns[i];
+ openModal("Editar programación de campaña",`
+  <div class="field"><label>Fecha</label><input id="editCampDate" type="date" value="${esc(c.date||localDateISO())}"></div>
+  <div class="grid"><div class="field"><label>Inicio</label><input id="editCampFrom" type="time" value="${esc(c.from||"22:15")}"></div><div class="field"><label>Fin</label><input id="editCampTo" type="time" value="${esc(c.to||"00:00")}"></div></div>
+  <div class="notice">Al guardar, la campaña vuelve a quedar programada para esa ventana.</div>`);
+ modalSave.onclick=()=>{
+   c.date=document.getElementById("editCampDate").value;
+   c.from=document.getElementById("editCampFrom").value;
+   c.to=document.getElementById("editCampTo").value;
+   if(!c.date||!c.from||!c.to)return toast("Completá fecha y horarios");
+   c.manualPause=false;c.forceActive=false;c.finished=false;
+   saveState();closeModal();renderMessages();toast("Programación actualizada");
+ };
+};
+
+
+
+window.deleteCloudCampaignUI=async function(id){
+ const c=state.campaigns.find(x=>x.cloudId===id); if(!c)return;
+ if(!confirm(`¿Eliminar la campaña “${c.prompt}”?\n\nLa consigna quedará guardada en el historial para detectar futuras repeticiones.`))return;
+ try{await deleteCloudCampaign(id);await Promise.all([loadCloudCampaigns(),loadPromptHistory()]);toast("Campaña eliminada · consigna conservada en historial");}
+ catch(e){toast("No se pudo eliminar: "+e.message);}
+};
+window.editCloudCampaign=function(id){
+ const c=state.campaigns.find(x=>x.cloudId===id); if(!c)return;
+ openModal("Editar campaña programada",`
+  <div class="field"><label>Programa</label><input id="ecProgram" value="${esc(c.program)}"></div>
+  <div class="field"><label>Conductor/a</label><input id="ecHost" value="${esc(c.host)}"></div>
+  <div class="field"><label>Consigna</label><textarea id="ecPrompt">${esc(c.prompt)}</textarea></div>
+  <div class="field"><label>Fecha</label><input id="ecDate" type="date" value="${esc(c.date)}"></div>
+  <div class="grid"><div class="field"><label>Inicio</label><input id="ecFrom" type="time" value="${esc(c.from)}"></div><div class="field"><label>Fin</label><input id="ecTo" type="time" value="${esc(c.to)}"></div></div>
+  <div class="notice">Solo se modifica la programación y la consigna. Los mensajes ya generados se conservan.</div>`);
+ modalSave.onclick=async()=>{
+  const payload={program:ecProgram.value.trim(),host:ecHost.value.trim(),prompt:ecPrompt.value.trim(),emission_date:ecDate.value,start_time:ecFrom.value,end_time:ecTo.value};
+  if(!payload.program||!payload.prompt||!payload.emission_date||!payload.start_time||!payload.end_time)return toast("Completá los datos");
+  const matches=await checkPromptHistory(payload.prompt,false);
+  const other=matches.find(m=>Number(m.campaign_id)!==Number(id));
+  if(other && !confirm(`⚠️ Esta consigna ya fue usada o es muy parecida a una anterior (${formatCampaignDate(other.emission_date)} · ${other.program}).\n\n¿Guardar igualmente?`))return;
+  try{await updateCloudCampaign(id,payload);closeModal();await Promise.all([loadCloudCampaigns(),loadPromptHistory()]);toast("Campaña actualizada");}catch(e){toast("No se pudo editar: "+e.message);}
+ };
+};
+window.cleanFinishedCampaigns=async function(){
+ if(!confirm("¿Eliminar de D1 todas las campañas finalizadas?\n\nSus consignas seguirán guardadas en el historial."))return;
+ try{const res=await fetch(ONRADIO_API+"/campaigns/finished",{method:"DELETE"});const d=await res.json();if(!res.ok)throw new Error(d.error||("HTTP "+res.status));await Promise.all([loadCloudCampaigns(),loadPromptHistory()]);toast(`${d.deleted||0} campañas finalizadas eliminadas`);}catch(e){toast("No se pudo limpiar: "+e.message);}
+};
+
+window.deleteCampaign=function(i){
+
+if(
+confirm(
+"¿Eliminar esta campaña?"
+)
+){
+
+state.campaigns.splice(
+i,
+1
+);
+
+saveState();
+
+renderMessages();
+
+toast(
+"Campaña eliminada"
+);
+
+}
+
+};
+
+
+/* ========================================================= */
+/* CONSIGNAS */
+/* ========================================================= */
+
+topic.innerHTML=
+TOPICS.map(
+x=>
+`
+<option value="${esc(x)}">
+${esc(x)}
+</option>
+`
+).join("");
+
+
+genPrompt.addEventListener(
+"click",
+async()=>{
+
+const list=
+PROMPTS[
+topic.value
+]||
+[
+"¿Qué opinás sobre "+
+topic.value+
+"?"
 ];
 
-function cargarEditorGrilla() {
-  let guardados = localStorage.getItem("admin_grilla_programacion_v3");
-  let bloques = guardados ? JSON.parse(guardados) : bloquesPredeterminados;
-  
-  const contenedor = document.getElementById("listaProgramas");
-  contenedor.innerHTML = "";
 
-  bloques.forEach((b, index) => {
-    contenedor.innerHTML += `
-      <div class="program-item" data-index="${index}">
-        <label>Nombre del Bloque:</label>
-        <input type="text" class="prog-nombre" value="${b.nombre}">
-        <div class="row">
-          <div>
-            <label>Hora Inicio (HH:MM):</label>
-            <input type="text" class="prog-inicio" value="${b.horaInicio}">
-          </div>
-          <div>
-            <label>Hora Fin (HH:MM):</label>
-            <input type="text" class="prog-fin" value="${b.horaFin}">
-          </div>
-        </div>
-        <label>Descripción:</label>
-        <textarea class="prog-desc">${b.desc}</textarea>
-        <div class="row">
-          <div>
-            <label>Imagen (archivo.png):</label>
-            <input type="text" class="prog-imagen" value="${b.imagen}">
-          </div>
-          <div>
-            <label>Locutor (Opcional):</label>
-            <input type="text" class="prog-locutor" value="${b.locutor || ''}">
-          </div>
-        </div>
-        <label>
-          <input type="checkbox" class="prog-envivo" ${b.esEnVivo ? 'checked' : ''}> Marcar como EN VIVO 🔴
-        </label>
-      </div>
-    `;
+const levelSelected=
+level.value;
+
+
+let index={
+"suave":0,
+"picante":1,
+"muy picante":2,
+"humor":2,
+"incómoda":1
+}[levelSelected]??0;
+
+
+generatedPrompt=
+list[
+index%list.length
+];
+
+customPrompt.value=generatedPrompt;
+promptBox.style.display="block";
+promptBox.innerHTML=`<b>Consigna generada.</b><br><span class="muted">Podés editarla en el campo de arriba antes de usarla.</span>`;
+
+await checkPromptHistory(generatedPrompt,true);
+
+}
+);
+
+useCustomPrompt.addEventListener("click",async()=>{
+ const own=customPrompt.value.trim();
+ if(!own)return toast("Escribí una consigna");
+ generatedPrompt=own;
+ promptBox.style.display="block";
+ promptBox.innerHTML=`<b>Consigna seleccionada:</b><br>${esc(generatedPrompt)}`;
+ const matches=await checkPromptHistory(generatedPrompt,true);
+ if(!matches.length){
+  promptBox.innerHTML=`<b>✅ Consigna lista para usar</b><br>${esc(generatedPrompt)}<br><span class="muted">No encontramos una consigna igual o suficientemente parecida en el historial.</span>`;
+ }
+ toast("Consigna lista");
+});
+
+customPrompt.addEventListener("input",()=>{
+ // Si se edita el texto, debe confirmarse nuevamente con “Usar mi consigna”.
+ if(customPrompt.value.trim()!==generatedPrompt){
+  generatedPrompt="";
+  promptBox.style.display="block";
+  promptBox.innerHTML=`<b>Consigna modificada.</b><br><span class="muted">Tocá “Usar mi consigna” para comprobar el historial y dejarla lista.</span>`;
+ }
+});
+
+let campaignDraft=[];
+
+function draftPerson(i){
+ const p=[["Romina","Junín"],["Mariano","Rojas"],["Carla","Pergamino"],["Lucas","Chacabuco"],["Sofi","Salto"],["Nico","Rosario"],["Valeria","Arrecifes"],["Fede","Colón"],["Mica","San Nicolás"],["Pablo","Venado Tuerto"],["Flor","Junín"],["Diego","Rojas"],["Natalia","Pergamino"],["Leo","Salto"],["Agus","Chacabuco"],["Cami","Rojas"],["Gonzalo","Junín"],["Belén","Arrecifes"],["Mauro","San Nicolás"],["Julieta","Pergamino"]][i%20];
+ return {name:p[0],city:p[1],province:(p[1]==="Rosario"||p[1]==="Venado Tuerto")?"Santa Fe":"Buenos Aires",country:"Argentina"};
+}
+function renderDraft(){
+ draftMessages.innerHTML=campaignDraft.length?campaignDraft.map((m,i)=>`
+ <div class="item">
+ <div class="row"><b>${esc(m.name)} · ${esc(m.city)}</b><button class="btn danger" onclick="deleteDraftMessage(${i})">Eliminar</button></div>
+ <textarea rows="3" onchange="editDraftMessage(${i},this.value)">${esc(m.text)}</textarea>
+ </div>`).join(""):'<div class="empty">Todavía no hay mensajes borrador.</div>';
+}
+window.deleteDraftMessage=i=>{campaignDraft.splice(i,1);renderDraft();};
+window.editDraftMessage=(i,v)=>{if(campaignDraft[i])campaignDraft[i].text=v;};
+
+function localAnswer(prompt,i,host){
+ const q=(prompt||"").toLowerCase(), g=((host||"Guille").split(/\s+/)[0]||"Guille").replace(/^guillermo$/i,"Guille");
+ const lead=[`Hola ${g}! `,`${g}, `,"",`Buenas! `,"",`${g}, te digo la mía: `,"",""][i%8];
+ let a;
+ if(q.includes("cita")&&(q.includes("descart")||q.includes("segunda")||q.includes("chau"))){
+  a=["si trata mal al mozo o a alguien que lo atiende, para mí ya está. No hay segunda cita.",
+  "que esté toda la noche mirando el celular. Si nos estamos conociendo, soltalo un rato 😂.",
+  "que hable de la ex durante toda la cita. Me pasó y parecía que habíamos salido los tres.",
+  "la soberbia. Puede ser una persona hermosa, pero si mira a todos de arriba, chau.",
+  "que no me deje hablar y convierta la cita en un monólogo. También quiero sentir que le interesa conocerme.",
+  "la falta de higiene, sin vueltas. Hay cosas que para mí son básicas.",
+  "que mienta en cosas que se notan enseguida. Si arrancamos así, mala señal.",
+  "que llegue tardísimo y ni avise. No es por los minutos, es por la falta de consideración.",
+  "si se pasa toda la noche hablando de plata y de lo que tiene, me la baja muchísimo.",
+  "que esté más pendiente de las redes que de la charla. Para eso me quedaba en casa."];
+ }else if(q.includes("infidel")){
+  a=["yo no podría seguir. Para mí cuando se rompe la confianza cuesta muchísimo volver.",
+  "depende de la historia. No sé si respondería que no sin pensarlo.",
+  "perdonar capaz sí, seguir en pareja ya es otra cosa.",
+  "me pasó y traté de seguir, pero después desconfiaba de todo. En mi caso no funcionó.",
+  "aunque haya sido una vez, hubo una decisión. Para mí eso pesa mucho."];
+ }else if(q.includes("celos")){
+  a=["un poquito puede pasar, pero controlar el celular o con quién salís ya cruza un límite.",
+  "yo era bastante celosa y entendí que sin confianza te volvés loca vos y volvés loco al otro.",
+  "para mí los celos no demuestran amor. Si tengo que vigilar a mi pareja, algo ya está mal.",
+  "algo puede aparecer porque somos humanos; otra cosa es hacer escenas por cualquier cosa."];
+ }else if(q.includes("mentira")||q.includes("mentiste")){
+  a=["una vez dije que estaba con fiebre y después subí una historia tomando mate afuera 😂.",
+  "inventé que se me había roto el auto y justo me crucé a un compañero en el centro. Quería desaparecer.",
+  "dije que tenía un turno médico y después no sabía qué médico inventar cuando me preguntaron cómo me había ido.",
+  "yo usé la clásica del dolor de panza. Poco creativa, pero difícil de discutir 😂."];
+ }else{
+  a=["yo lo veo muy ligado a la situación concreta. No me sale responderlo como un sí o un no automático.",
+  "esta pregunta da para debate porque hoy no respondería lo mismo que hace unos años.",
+  "en mi caso la experiencia me cambió bastante la forma de ver este tema.",
+  "yo tengo una postura marcada, aunque entiendo perfecto que otra persona lo viva distinto."];
+ }
+ return lead+a[i%a.length];
+}
+
+generateLocalDraft.addEventListener("click",()=>{
+ if(!generatedPrompt)return toast("Primero generá una consigna");
+ const program=(campaignProgram.value||state.live.name||"").trim(),host=(campaignHost.value||state.live.host||"").trim();
+ if(!program||!host)return toast("Indicá programa y conductor/a");
+ const n=Math.max(5,Math.min(60,Number(aiMessageCount.value)||20));
+ campaignDraft=Array.from({length:n},(_,i)=>({...draftPerson(i),text:localAnswer(generatedPrompt,i,host),type:"simulated",source:"produccion",program,host,prompt:generatedPrompt,topic:topic.value,level:level.value}));
+ renderDraft();aiStatus.style.display="block";aiStatus.innerHTML="<b>Borrador generado.</b> Revisalo antes de activar la campaña.";
+});
+clearDraft.addEventListener("click",()=>{campaignDraft=[];renderDraft();aiStatus.style.display="none";});
+
+generateAIMessages.addEventListener("click",async()=>{
+ if(!generatedPrompt)return toast("Primero generá una consigna");
+ const endpoint=aiEndpoint.value.trim(),program=(campaignProgram.value||state.live.name||"").trim(),host=(campaignHost.value||state.live.host||"").trim();
+ if(!endpoint)return toast("Configurá el endpoint seguro de IA");
+ if(!program||!host)return toast("Indicá programa y conductor/a");
+ const n=Math.max(5,Math.min(60,Number(aiMessageCount.value)||20));
+ localStorage.setItem("onradio_ai_endpoint",endpoint);aiStatus.style.display="block";aiStatus.innerHTML="<b>Generando...</b>";generateAIMessages.disabled=true;
+ try{
+  const res=await fetch(endpoint,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({task:"listener_messages",program,host,prompt:generatedPrompt,topic:topic.value,level:level.value,count:n,locale:"es-AR",instructions:["Responder específicamente a la consigna.","Variar postura, longitud, vocabulario y estilo.","No repetir estructuras.","Usar el nombre del conductor solo en algunos mensajes.","No inventar horarios.","Devolver JSON {messages:[{name,city,province,country,text}]}"]})});
+  if(!res.ok)throw new Error("HTTP "+res.status);
+  const d=await res.json(),arr=Array.isArray(d)?d:d.messages;if(!Array.isArray(arr)||!arr.length)throw new Error("Sin mensajes");
+  campaignDraft=arr.slice(0,n).map((m,i)=>({...draftPerson(i),...m,text:String(m.text||"").trim(),type:"simulated",source:"produccion",program,host,prompt:generatedPrompt,topic:topic.value,level:level.value})).filter(x=>x.text);
+  renderDraft();aiStatus.innerHTML=`<b>${campaignDraft.length} mensajes generados.</b> Revisalos y después activá la campaña.`;
+ }catch(e){aiStatus.innerHTML=`<b>No se pudo generar con IA:</b> ${esc(e.message)}. Podés usar el borrador local.`;}
+ finally{generateAIMessages.disabled=false;}
+});
+
+createCampaign.addEventListener("click",async()=>{
+ if(!generatedPrompt)return toast("Primero generá una consigna");
+ if(!campaignDraft.length)return toast("Primero generá y revisá los mensajes");
+ const program=(campaignProgram.value||state.live.name||"").trim(),host=(campaignHost.value||state.live.host||"").trim();
+ if(!program||!host)return toast("Indicá programa y conductor/a");
+ if(!campDate.value||!campFrom.value||!campTo.value)return toast("Indicá fecha y horario de la campaña");
+ const timing={date:campDate.value,from:campFrom.value,to:campTo.value};
+ const duration=campaignDurationMinutes(timing);
+ if(duration<=0)return toast("Revisá el horario de la campaña");
+
+ const matches=await checkPromptHistory(generatedPrompt,false);
+ const previous=matches[0];
+ if(previous && !confirm(`⚠️ ${Number(previous.similarity)>=0.99?"Esta consigna ya fue utilizada":"Esta consigna es muy parecida a una anterior"}.
+
+${previous.prompt}
+${formatCampaignDate(previous.emission_date)} · ${previous.program}
+
+¿Querés programarla igualmente?`))return;
+
+ const payload={
+  program,
+  host,
+  prompt:generatedPrompt,
+  emission_date:campDate.value,
+  start_time:campFrom.value,
+  end_time:campTo.value,
+  messages:campaignDraft.map(m=>({
+   name:m.name||"Oyente",
+   city:m.city||"",
+   province:m.province||"",
+   country:m.country||"Argentina",
+   text:String(m.text||"").trim()
+  })).filter(m=>m.text)
+ };
+
+ if(!payload.messages.length)return toast("No hay mensajes válidos para guardar");
+
+ createCampaign.disabled=true;
+ const oldLabel=createCampaign.textContent;
+ createCampaign.textContent="☁️ Guardando campaña online...";
+
+ try{
+  const res=await fetch(ONRADIO_API+"/campaigns",{
+   method:"POST",
+   headers:{"Content-Type":"application/json"},
+   body:JSON.stringify(payload)
   });
+  const data=await res.json().catch(()=>({}));
+  if(!res.ok)throw new Error(data.error||("HTTP "+res.status));
+  if(Number(data.messages)!==payload.messages.length){
+   throw new Error(`D1 confirmó ${data.messages||0} de ${payload.messages.length} mensajes`);
+  }
+
+  campaignDraft=[];
+  renderDraft();
+  await loadCloudCampaigns();
+  toast(`Campaña #${data.campaign_id} guardada online · ${data.messages} mensajes`);
+  aiStatus.style.display="block";
+  aiStatus.innerHTML=`<b>☁️ Campaña programada online.</b> D1 confirmó ${data.messages} mensajes guardados. ID de campaña: ${data.campaign_id}.`;
+ }catch(e){
+  aiStatus.style.display="block";
+  aiStatus.innerHTML=`<b>No se pudo guardar la campaña en D1:</b> ${esc(e.message)}. El borrador sigue intacto.`;
+  toast("No se pudo guardar online");
+ }finally{
+  createCampaign.disabled=false;
+  createCampaign.textContent=oldLabel;
+ }
+});
+
+/* ========================================================= */
+/* CONFIGURACION */
+/* ========================================================= */
+
+function renderConfig(){
+
+const c=
+state.config;
+
+cfgName.value=
+c.name||"";
+
+cfgSlogan.value=
+c.slogan||"";
+
+cfgWhats.value=
+c.whats||"";
+
+cfgIg.value=
+c.ig||"";
+
+cfgFb.value=
+c.fb||"";
+
+cfgTk.value=
+c.tk||"";
+
+cfgKick.value=
+c.kick||"";
+
+cfgWeb.value=
+c.web||"";
+
+version.value=
+state.version||1;
+
 }
 
-function generarJsonVersion() {
-  const version = document.getElementById("inputVersion").value;
-  const jsonText = JSON.stringify({ version: version }, null, 2);
-  const out = document.getElementById("outputVersion");
-  out.classList.remove("hidden");
-  out.innerHTML = `<b>Copiá esto y pegalo en tu archivo <code>version.json</code> de GitHub:</b><br><br>${jsonText}`;
+
+saveCfg.addEventListener(
+"click",
+()=>{
+
+state.config={
+
+name:
+cfgName.value.trim(),
+
+slogan:
+cfgSlogan.value.trim(),
+
+whats:
+cfgWhats.value.trim(),
+
+ig:
+cfgIg.value.trim(),
+
+fb:
+cfgFb.value.trim(),
+
+tk:
+cfgTk.value.trim(),
+
+kick:
+cfgKick.value.trim(),
+
+web:
+cfgWeb.value.trim()
+
+};
+
+
+saveState();
+
+toast(
+"Configuración guardada"
+);
+
+}
+);
+
+
+reset.addEventListener(
+"click",
+()=>{
+
+if(
+confirm(
+"¿Restablecer todos los datos de este administrador?"
+)
+){
+
+state=
+clone(DEFAULT);
+
+saveState();
+
+renderAll();
+
+toast(
+"Datos restablecidos"
+);
+
 }
 
-function guardarGrilla() {
-  const items = document.querySelectorAll(".program-item");
-  let nuevosBloques = [];
-
-  items.forEach(item => {
-    const nombre = item.querySelector(".prog-nombre").value;
-    const horaInicio = item.querySelector(".prog-inicio").value;
-    const horaFin = item.querySelector(".prog-fin").value;
-    const desc = item.querySelector(".prog-desc").value;
-    const imagen = item.querySelector(".prog-imagen").value;
-    const locutor = item.querySelector(".prog-locutor").value;
-    const esEnVivo = item.querySelector(".prog-envivo").checked;
-    
-    // Generar ID único amigable
-    const id = "slot-" + nombre.toLowerCase().replace(/[^a-z0-9]/g, '');
-
-    nuevosBloques.push({
-      id,
-      nombre,
-      dias: [0, 1, 2, 3, 4, 5, 6],
-      horaInicio,
-      horaFin,
-      desc,
-      imagen,
-      esEnVivo,
-      locutor
-    });
-  });
-
-  // Guardamos localmente para pruebas rápidas
-  localStorage.setItem("admin_grilla_programacion_v3", JSON.stringify(nuevosBloques));
-
-  const jsonText = JSON.stringify(nuevosBloques, null, 2);
-  const out = document.getElementById("outputGrilla");
-  out.classList.remove("hidden");
-  out.innerHTML = `<b>¡Cambios guardados con éxito!</b><br><br>Si querés que la grilla quede fija para todos los usuarios desde el código, podés actualizar tu array en el index.html, o simplemente usar este panel para controlarlo.<br><br>Estructura JSON:<br>${jsonText}`;
-  
-  alert("¡Grilla guardada correctamente!");
 }
+);
+
+
+/* ========================================================= */
+/* PUBLICAR */
+/* ========================================================= */
+
+publish.addEventListener(
+"click",
+()=>{
+
+const n=
+Math.max(
+1,
+Number(version.value)||1
+);
+
+state.version=
+n+1;
+
+saveState();
+
+version.value=
+state.version;
+
+pubResult.innerHTML=
+
+`
+<div class="notice">
+
+Actualización publicada.
+
+Versión de contenido:
+
+<b>
+v${state.version}
+</b>
+
+</div>
+`;
+
+toast(
+"Actualización publicada"
+);
+
+}
+);
+
+
+/* ========================================================= */
+/* RENDER GENERAL */
+/* ========================================================= */
+
+function renderAll(){
+
+if(state.genericMessagesEnabled===undefined) state.genericMessagesEnabled=true;
+genericMessagesEnabled.checked=state.genericMessagesEnabled;
+genericMessagesEnabled.addEventListener("change",()=>{state.genericMessagesEnabled=genericMessagesEnabled.checked;saveState();});
+campaignProgram.value=state.live.name||"";
+campaignHost.value=state.live.host||"";
+aiEndpoint.value=localStorage.getItem("onradio_ai_endpoint")||"";
+renderDraft();
+
+renderPopup();
+
+renderPrograms();
+
+renderMessages();
+
+renderConfig();
+
+}
+
+
+/* ========================================================= */
+/* INICIO */
+/* ========================================================= */
+
+
+// Programador de campañas
+if(!campDate.value)campDate.value=localDateISO();
+[campDate,campFrom,campTo,aiMessageCount].forEach(el=>el.addEventListener("input",updateCampaignTimingPreview));
+updateCampaignTimingPreview();
+setInterval(()=>{renderMessages();
+loadCloudCampaigns();updateCampaignTimingPreview();},30000);
+renderAll();
+loadCloudPopup();
+loadCloudPrograms().then(()=>loadCloudProgramImages());
+loadPromptHistory();
+loadCloudCampaigns();
+
+})();
+
 </script>
 
 </body>
