@@ -1243,23 +1243,54 @@ let deferredPrompt = null;
 const VERSION_APP_LOCAL = "v4.0"; 
 
 const defaultAdConfig = {
-  enabled: true,
-  duration: 5, 
-  images: ["mananas-on.png"]
+  enabled: false,
+  duration: 5,
+  schedule: "all",
+  from: "00:00",
+  to: "00:00",
+  images: []
 };
 
-function getAdConfig() {
-  const saved = localStorage.getItem("on_radio_ad_config");
-  return saved ? JSON.parse(saved) : defaultAdConfig;
+function popupDentroDeHorario(config) {
+  if ((config.schedule || "all") !== "range") return true;
+  const parts = new Intl.DateTimeFormat("en-GB", {
+    timeZone: "America/Argentina/Buenos_Aires",
+    hour: "2-digit", minute: "2-digit", hourCycle: "h23"
+  }).formatToParts(new Date());
+  const get = t => parts.find(p => p.type === t)?.value || "00";
+  const now = `${get("hour")}:${get("minute")}`;
+  const from = String(config.from || "00:00").slice(0,5);
+  const to = String(config.to || "00:00").slice(0,5);
+  if (from === to) return true;
+  return from < to ? (now >= from && now < to) : (now >= from || now < to);
+}
+
+async function cargarPublicidadDesdeNube() {
+  try {
+    const res = await fetch(`${ONRADIO_API}/popup?t=${Date.now()}`, { cache: "no-store" });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    const config = {
+      enabled: Boolean(data.enabled),
+      duration: Math.max(1, Math.min(60, Number(data.seconds) || 5)),
+      schedule: data.schedule || "all",
+      from: data.from || "00:00",
+      to: data.to || "00:00",
+      images: Array.isArray(data.images)
+        ? data.images.map(x => typeof x === "string" ? x : x?.data).filter(Boolean)
+        : []
+    };
+    if (config.enabled && config.images.length && popupDentroDeHorario(config)) {
+      iniciarPopupPublicidad(config);
+    }
+  } catch (error) {
+    console.log("No se pudo cargar la publicidad online", error);
+  }
 }
 
 window.addEventListener("DOMContentLoaded", () => {
   verificarVersionRemota();
-
-  const config = getAdConfig();
-  if (config.enabled && config.images && config.images.length > 0) {
-    iniciarPopupPublicidad(config);
-  }
+  cargarPublicidadDesdeNube();
 });
 
 // VERIFICACIÓN AUTOMÁTICA DE VERSIÓN DESDE LA NUBE (version.json)
