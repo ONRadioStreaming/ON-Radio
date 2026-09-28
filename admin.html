@@ -1563,9 +1563,15 @@ function saveState(){
 
 try{
 
+// Las imágenes oficiales de programas viven en D1. No se duplican en localStorage
+// porque los Data URL pueden superar fácilmente la cuota del navegador móvil.
+const localState=clone(state);
+localState.programs=(localState.programs||[]).map(p=>({...p,image:""}));
+if(localState.live) localState.live.image="";
+
 localStorage.setItem(
 STORAGE_KEY,
-JSON.stringify(state)
+JSON.stringify(localState)
 );
 
 return true;
