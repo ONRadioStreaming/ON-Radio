@@ -1242,62 +1242,19 @@ body.player-active{
 let deferredPrompt = null;
 const VERSION_APP_LOCAL = "v4.0"; 
 
-const defaultAdConfig = {
-  enabled: false,
-  duration: 5,
-  schedule: "all",
-  from: "00:00",
-  to: "00:00",
-  days: [0,1,2,3,4,5,6],
-  images: []
-};
-
-function popupEstaHabilitadoAhora(config) {
-  const parts = new Intl.DateTimeFormat("en-GB", {
-    timeZone: "America/Argentina/Buenos_Aires",
-    weekday: "short", hour: "2-digit", minute: "2-digit", hourCycle: "h23"
-  }).formatToParts(new Date());
-  const get = t => parts.find(p => p.type === t)?.value || "";
-  const weekdayMap={Mon:0,Tue:1,Wed:2,Thu:3,Fri:4,Sat:5,Sun:6};
-  const dia=weekdayMap[get("weekday")];
-  const days=Array.isArray(config.days)&&config.days.length?config.days.map(Number):[0,1,2,3,4,5,6];
-  if(!days.includes(dia)) return false;
-  if ((config.schedule || "all") !== "range") return true;
-  const now = `${get("hour")||"00"}:${get("minute")||"00"}`;
-  const from = String(config.from || "00:00").slice(0,5);
-  const to = String(config.to || "00:00").slice(0,5);
-  if (from === to) return true;
-  return from < to ? (now >= from && now < to) : (now >= from || now < to);
+const defaultAdConfig = { images: [] };
+function popupEstaHabilitadoAhora(ad) {
+  if(ad.enabled===false) return false;
+  const parts=new Intl.DateTimeFormat('en-GB',{timeZone:'America/Argentina/Buenos_Aires',weekday:'short',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).formatToParts(new Date());
+  const get=t=>parts.find(p=>p.type===t)?.value||''; const map={Mon:0,Tue:1,Wed:2,Thu:3,Fri:4,Sat:5,Sun:6};
+  const days=Array.isArray(ad.days)&&ad.days.length?ad.days.map(Number):[0,1,2,3,4,5,6]; if(!days.includes(map[get('weekday')]))return false;
+  if((ad.schedule||'all')!=='range')return true; const now=`${get('hour')||'00'}:${get('minute')||'00'}`,from=String(ad.from||'00:00').slice(0,5),to=String(ad.to||'00:00').slice(0,5);
+  if(from===to)return true; return from<to?(now>=from&&now<to):(now>=from||now<to);
 }
-
-async function cargarPublicidadDesdeNube() {
-  try {
-    const res = await fetch(`${ONRADIO_API}/popup?t=${Date.now()}`, { cache: "no-store" });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const data = await res.json();
-    const config = {
-      enabled: Boolean(data.enabled),
-      duration: Math.max(1, Math.min(60, Number(data.seconds) || 5)),
-      schedule: data.schedule || "all",
-      from: data.from || "00:00",
-      to: data.to || "00:00",
-      days: Array.isArray(data.days) && data.days.length ? data.days.map(Number) : [0,1,2,3,4,5,6],
-      images: Array.isArray(data.images)
-        ? data.images.map(x => typeof x === "string" ? x : x?.data).filter(Boolean)
-        : []
-    };
-    if (config.enabled && config.images.length && popupEstaHabilitadoAhora(config)) {
-      iniciarPopupPublicidad(config);
-    }
-  } catch (error) {
-    console.log("No se pudo cargar la publicidad online", error);
-  }
+async function cargarPublicidadDesdeNube(){
+  try{const res=await fetch(`${ONRADIO_API}/popup?t=${Date.now()}`,{cache:'no-store'});if(!res.ok)throw new Error(`HTTP ${res.status}`);const data=await res.json();const ads=(Array.isArray(data.images)?data.images:[]).map(x=>({data:String(typeof x==='string'?x:(x?.data||'')),enabled:x?.enabled!==false,seconds:Math.max(1,Math.min(60,Number(x?.seconds)||5)),schedule:x?.schedule==='range'?'range':'all',from:x?.from||'00:00',to:x?.to||'00:00',days:Array.isArray(x?.days)&&x.days.length?x.days.map(Number):[0,1,2,3,4,5,6]})).filter(x=>x.data&&popupEstaHabilitadoAhora(x));if(ads.length)iniciarPopupPublicidad({ads});}catch(error){console.log('No se pudo cargar la publicidad online',error);}
 }
-
-window.addEventListener("DOMContentLoaded", () => {
-  verificarVersionRemota();
-  cargarPublicidadDesdeNube();
-});
+window.addEventListener('DOMContentLoaded',()=>{verificarVersionRemota();cargarPublicidadDesdeNube();});
 
 // VERIFICACIÓN AUTOMÁTICA DE VERSIÓN DESDE LA NUBE (version.json)
 async function verificarVersionRemota() {
@@ -1339,102 +1296,16 @@ function forzarRecargaCache() {
 
 // CONTROL DE POP-UP CORREGIDO
 function iniciarPopupPublicidad(config) {
-  const overlay = document.getElementById("adPopupOverlay");
-  const track = document.getElementById("adTrack");
-  const dotsContainer = document.getElementById("adDots");
-  const btnPrev = document.getElementById("adPrev");
-  const btnNext = document.getElementById("adNext");
-  
-  const imagenesValidas = config.images.map(img => img.trim()).filter(Boolean);
-  if (imagenesValidas.length === 0) return;
-
-  track.innerHTML = imagenesValidas.map(img => `
-    <div class="ad-slide-wrapper">
-      <div class="ad-slide-bg" style="background-image: url('${img}');"></div>
-      <img src="${img}" class="ad-slide-img" alt="Publicidad">
-    </div>
-  `).join("");
-  
-  let currentIndex = 0;
-  const totalSlides = imagenesValidas.length;
-  const duracionMs = (config.duration || 5) * 1000;
-  let temporizadorCarrusel = null;
-
-  function cerrarPopup() {
-    overlay.style.display = "none";
-    if (temporizadorCarrusel) {
-      clearInterval(temporizadorCarrusel);
-      clearTimeout(temporizadorCarrusel);
-      temporizadorCarrusel = null;
-    }
-  }
-
-  function updateCarousel() {
-    track.style.transform = `translateX(-${currentIndex * 100}%)`;
-    const dots = dotsContainer.querySelectorAll(".ad-dot");
-    dots.forEach((d, idx) => { d.classList.toggle("active", idx === currentIndex); });
-  }
-
-  if (totalSlides === 1) {
-    btnPrev.style.display = "none";
-    btnNext.style.display = "none";
-    dotsContainer.style.display = "none";
-    temporizadorCarrusel = setTimeout(() => { cerrarPopup(); }, duracionMs);
-  } else {
-    btnPrev.style.display = "flex";
-    btnNext.style.display = "flex";
-    dotsContainer.style.display = "flex";
-
-    dotsContainer.innerHTML = "";
-    for (let i = 0; i < totalSlides; i++) {
-      const dot = document.createElement("div");
-      dot.className = `ad-dot ${i === 0 ? "active" : ""}`;
-      dot.onclick = () => {
-        currentIndex = i;
-        updateCarousel();
-        resetAutoPlay();
-      };
-      dotsContainer.appendChild(dot);
-    }
-
-    btnNext.onclick = () => {
-      if (currentIndex < totalSlides - 1) {
-        currentIndex++;
-        updateCarousel();
-        resetAutoPlay();
-      } else {
-        cerrarPopup();
-      }
-    };
-
-    btnPrev.onclick = () => {
-      if (currentIndex > 0) {
-        currentIndex--;
-        updateCarousel();
-        resetAutoPlay();
-      }
-    };
-
-    function avanzarPaso() {
-      if (currentIndex < totalSlides - 1) {
-        currentIndex++;
-        updateCarousel();
-      } else {
-        cerrarPopup();
-      }
-    }
-
-    temporizadorCarrusel = setInterval(avanzarPaso, duracionMs);
-
-    function resetAutoPlay() {
-      if (temporizadorCarrusel) clearInterval(temporizadorCarrusel);
-      temporizadorCarrusel = setInterval(avanzarPaso, duracionMs);
-    }
-  }
-
-  document.getElementById("adCloseBtn").onclick = () => { cerrarPopup(); };
-  overlay.onclick = (e) => { if (e.target === overlay) cerrarPopup(); };
-  overlay.style.display = "flex";
+  const overlay=document.getElementById('adPopupOverlay'),track=document.getElementById('adTrack'),dotsContainer=document.getElementById('adDots'),btnPrev=document.getElementById('adPrev'),btnNext=document.getElementById('adNext');
+  const ads=(config.ads||[]).filter(a=>a.data); if(!ads.length)return;
+  track.innerHTML=ads.map(a=>`<div class="ad-slide-wrapper"><div class="ad-slide-bg" style="background-image:url('${a.data}')"></div><img src="${a.data}" class="ad-slide-img" alt="Publicidad"></div>`).join('');
+  let currentIndex=0,timer=null; const total=ads.length;
+  function close(){overlay.style.display='none';if(timer)clearTimeout(timer);timer=null;}
+  function update(){track.style.transform=`translateX(-${currentIndex*100}%)`;dotsContainer.querySelectorAll('.ad-dot').forEach((d,i)=>d.classList.toggle('active',i===currentIndex));}
+  function schedule(){if(timer)clearTimeout(timer);timer=setTimeout(()=>{if(currentIndex<total-1){currentIndex++;update();schedule();}else close();},(ads[currentIndex].seconds||5)*1000);}
+  if(total===1){btnPrev.style.display='none';btnNext.style.display='none';dotsContainer.style.display='none';}
+  else{btnPrev.style.display='flex';btnNext.style.display='flex';dotsContainer.style.display='flex';dotsContainer.innerHTML=ads.map((_,i)=>`<div class="ad-dot ${i===0?'active':''}"></div>`).join('');[...dotsContainer.children].forEach((d,i)=>d.onclick=()=>{currentIndex=i;update();schedule();});btnNext.onclick=()=>{if(currentIndex<total-1){currentIndex++;update();schedule();}else close();};btnPrev.onclick=()=>{if(currentIndex>0){currentIndex--;update();schedule();}};}
+  document.getElementById('adCloseBtn').onclick=close;overlay.onclick=e=>{if(e.target===overlay)close();};overlay.style.display='flex';update();schedule();
 }
 
 const bloquesPredeterminados = [
