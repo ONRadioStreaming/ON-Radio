@@ -448,6 +448,10 @@ textarea{
 🎯 Consignas / generador
 </button>
 
+<button class="nav" data-tab="registros">
+📊 Registros
+</button>
+
 <button class="nav" data-tab="publicar">
 🔄 Publicar actualización
 </button>
@@ -791,6 +795,38 @@ Primero generá una tanda borrador. Revisá, editá o eliminá mensajes antes de
 
 </section>
 
+
+<!-- ========================================================= -->
+<!-- REGISTROS DE AUDIENCIA -->
+<!-- ========================================================= -->
+<section id="tab-registros" class="tab">
+<h1>Registros de audiencia</h1>
+<p class="subtitle">Medición de dispositivos que realmente están reproduciendo ON Radio.</p>
+<div class="grid3">
+  <div class="card"><div class="muted">🎧 ESCUCHANDO AHORA</div><h1 id="audNow">—</h1></div>
+  <div class="card"><div class="muted">📈 PICO DEL PERÍODO</div><h1 id="audPeak">—</h1><div class="muted" id="audPeakTime"></div></div>
+  <div class="card"><div class="muted">📱 DISPOSITIVOS ÚNICOS</div><h1 id="audUnique">—</h1></div>
+</div>
+<div class="card">
+  <div class="grid">
+    <div class="field"><label>Desde</label><input type="date" id="audFrom"></div>
+    <div class="field"><label>Hasta</label><input type="date" id="audTo"></div>
+  </div>
+  <div class="actions"><button class="btn" id="audRefresh">🔄 Consultar</button></div>
+</div>
+<div class="grid3">
+  <div class="card"><div class="muted">⏱️ MINUTOS DE ESCUCHA</div><h2 id="audMinutes">—</h2></div>
+  <div class="card"><div class="muted">▶️ SESIONES</div><h2 id="audSessions">—</h2></div>
+  <div class="card"><div class="muted">🏆 MEJOR DÍA DEL PERÍODO</div><h2 id="audBestDay">—</h2></div>
+</div>
+<div class="card">
+  <h3>Audiencia simultánea</h3>
+  <div class="muted" style="margin-bottom:12px">Muestras cada 15 minutos. Cada barra representa dispositivos reproduciendo simultáneamente.</div>
+  <div id="audChart" style="display:flex;align-items:flex-end;gap:3px;height:230px;overflow-x:auto;border-bottom:1px solid #444;padding:10px 2px 0"></div>
+  <div id="audChartLegend" class="muted" style="margin-top:10px"></div>
+</div>
+<div class="notice">Los valores representan dispositivos/conexiones de escucha. Un dispositivo puede estar siendo escuchado por una o varias personas.</div>
+</section>
 
 <!-- ========================================================= -->
 <!-- PUBLICAR -->
@@ -3291,6 +3327,41 @@ toast(
 
 
 /* ========================================================= */
+/* REGISTROS DE AUDIENCIA */
+/* ========================================================= */
+function audLocalDate(){
+  const p=new Intl.DateTimeFormat("en-CA",{timeZone:"America/Argentina/Buenos_Aires",year:"numeric",month:"2-digit",day:"2-digit"}).formatToParts(new Date());
+  const g=t=>p.find(x=>x.type===t)?.value||""; return `${g("year")}-${g("month")}-${g("day")}`;
+}
+function audFormatDate(s){if(!s)return "—";const [y,m,d]=s.split("-");return `${d}/${m}/${y}`;}
+async function loadAudienceStats(){
+  const from=document.getElementById("audFrom"),to=document.getElementById("audTo");
+  if(!from||!to)return;
+  if(!from.value)from.value=audLocalDate(); if(!to.value)to.value=from.value;
+  const btn=document.getElementById("audRefresh"); if(btn){btn.disabled=true;btn.textContent="⏳ Consultando...";}
+  try{
+    const res=await fetch(`${ONRADIO_API}/audience/stats?from=${encodeURIComponent(from.value)}&to=${encodeURIComponent(to.value)}&t=${Date.now()}`,{cache:"no-store"});
+    const d=await res.json(); if(!res.ok)throw new Error(d.error||`HTTP ${res.status}`);
+    document.getElementById("audNow").textContent=d.now_listening;
+    document.getElementById("audPeak").textContent=d.peak?.listeners??0;
+    document.getElementById("audPeakTime").textContent=d.peak?.local?d.peak.local.replace("T"," ")+" hs":"Sin datos todavía";
+    document.getElementById("audUnique").textContent=d.unique_devices??0;
+    document.getElementById("audMinutes").textContent=(d.listener_minutes??0).toLocaleString("es-AR");
+    document.getElementById("audSessions").textContent=(d.sessions??0).toLocaleString("es-AR");
+    document.getElementById("audBestDay").textContent=d.best_day?`${audFormatDate(d.best_day.date)} · pico ${d.best_day.peak}`:"—";
+    const chart=document.getElementById("audChart"); chart.innerHTML="";
+    const pts=Array.isArray(d.timeline)?d.timeline:[]; const max=Math.max(1,...pts.map(x=>Number(x.listeners)||0));
+    pts.forEach((p,idx)=>{const b=document.createElement("div");b.title=`${String(p.local||"").replace("T"," ")} · ${p.listeners} escuchando`;b.style.cssText=`min-width:8px;width:8px;height:${Math.max(2,Math.round((Number(p.listeners)||0)/max*200))}px;background:#e30613;border-radius:3px 3px 0 0`;chart.appendChild(b);});
+    document.getElementById("audChartLegend").textContent=pts.length?`${audFormatDate(d.from)} → ${audFormatDate(d.to)} · pico ${d.peak?.listeners||0} conexiones simultáneas`:"Todavía no hay registros para este período.";
+  }catch(e){toast("No se pudieron cargar los registros: "+e.message);}
+  finally{if(btn){btn.disabled=false;btn.textContent="🔄 Consultar";}}
+}
+const audRefresh=document.getElementById("audRefresh"); if(audRefresh)audRefresh.addEventListener("click",loadAudienceStats);
+const audFrom=document.getElementById("audFrom"),audTo=document.getElementById("audTo");
+if(audFrom&&!audFrom.value)audFrom.value=audLocalDate(); if(audTo&&!audTo.value)audTo.value=audLocalDate();
+setInterval(()=>{const tab=document.getElementById("tab-registros");if(tab&&tab.classList.contains("active"))loadAudienceStats();},60000);
+
+/* ========================================================= */
 /* RENDER GENERAL */
 /* ========================================================= */
 
@@ -3331,6 +3402,7 @@ loadCloudPopup();
 loadCloudPrograms().then(()=>loadCloudProgramImages());
 loadPromptHistory();
 loadCloudCampaigns();
+loadAudienceStats();
 
 })();
 
