@@ -1643,6 +1643,39 @@ if ("mediaSession" in navigator) {
 audioStreaming.addEventListener("ended", ()=>{ ocultarBarraPlayer(); });
 audioStreaming.addEventListener("error", ()=>{ ocultarBarraPlayer(); });
 
+// AUDIENCIA: cuenta únicamente cuando el streaming está reproduciéndose.
+const AUDIENCE_DEVICE_KEY="onradio_audience_device_v1";
+let audienceDeviceId=localStorage.getItem(AUDIENCE_DEVICE_KEY)||"";
+if(!audienceDeviceId){
+  audienceDeviceId=(crypto.randomUUID?crypto.randomUUID():`dev-${Date.now()}-${Math.random().toString(36).slice(2)}`);
+  localStorage.setItem(AUDIENCE_DEVICE_KEY,audienceDeviceId);
+}
+let audienceSessionId="";
+let audienceTimer=null;
+function newAudienceSession(){return crypto.randomUUID?crypto.randomUUID():`ses-${Date.now()}-${Math.random().toString(36).slice(2)}`;}
+async function audiencePing(playing=true,beacon=false){
+  if(!audienceSessionId) return;
+  const body=JSON.stringify({device_id:audienceDeviceId,session_id:audienceSessionId,playing});
+  try{
+    if(beacon&&navigator.sendBeacon){navigator.sendBeacon(`${ONRADIO_API}/audience/ping`,new Blob([body],{type:"application/json"}));return;}
+    await fetch(`${ONRADIO_API}/audience/ping`,{method:"POST",headers:{"Content-Type":"application/json"},body,keepalive:!playing});
+  }catch(e){console.log("Audiencia: no se pudo informar el estado",e);}
+}
+function audienceStart(){
+  if(!audienceSessionId) audienceSessionId=newAudienceSession();
+  audiencePing(true);
+  clearInterval(audienceTimer);
+  audienceTimer=setInterval(()=>{if(!audioStreaming.paused&&!audioStreaming.ended)audiencePing(true);},60000);
+}
+function audienceStop(){
+  clearInterval(audienceTimer); audienceTimer=null;
+  if(audienceSessionId){audiencePing(false,true);audienceSessionId="";}
+}
+audioStreaming.addEventListener("playing",audienceStart);
+audioStreaming.addEventListener("pause",audienceStop);
+audioStreaming.addEventListener("ended",audienceStop);
+
+
 const coloresNombres = ["#ffcc00", "#00ffff", "#ff66cc", "#66ff66", "#ff9933", "#3399ff", "#ff5050", "#cc66ff"];
 
 // Mensajes generales de producción: se eligen según día y momento del día.
