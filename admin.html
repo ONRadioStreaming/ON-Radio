@@ -810,7 +810,9 @@ Primero generá una tanda borrador. Revisá, editá o eliminá mensajes antes de
 <div class="card">
   <div class="grid">
     <div class="field"><label>Desde</label><input type="date" id="audFrom"></div>
+    <div class="field"><label>Hora desde</label><input type="time" id="audFromTime" value="00:00"></div>
     <div class="field"><label>Hasta</label><input type="date" id="audTo"></div>
+    <div class="field"><label>Hora hasta</label><input type="time" id="audToTime" value="00:00"></div>
   </div>
   <div class="actions"><button class="btn" id="audRefresh">🔄 Consultar</button></div>
 </div>
@@ -3335,12 +3337,13 @@ function audLocalDate(){
 }
 function audFormatDate(s){if(!s)return "—";const [y,m,d]=s.split("-");return `${d}/${m}/${y}`;}
 async function loadAudienceStats(){
-  const from=document.getElementById("audFrom"),to=document.getElementById("audTo");
-  if(!from||!to)return;
+  const from=document.getElementById("audFrom"),to=document.getElementById("audTo"),fromTime=document.getElementById("audFromTime"),toTime=document.getElementById("audToTime");
+  if(!from||!to||!fromTime||!toTime)return;
   if(!from.value)from.value=audLocalDate(); if(!to.value)to.value=from.value;
+  if(!fromTime.value)fromTime.value="00:00"; if(!toTime.value)toTime.value="00:00";
   const btn=document.getElementById("audRefresh"); if(btn){btn.disabled=true;btn.textContent="⏳ Consultando...";}
   try{
-    const res=await fetch(`${ONRADIO_API}/audience/stats?from=${encodeURIComponent(from.value)}&to=${encodeURIComponent(to.value)}&t=${Date.now()}`,{cache:"no-store"});
+    const res=await fetch(`${ONRADIO_API}/audience/stats?from=${encodeURIComponent(from.value)}&to=${encodeURIComponent(to.value)}&from_time=${encodeURIComponent(fromTime.value)}&to_time=${encodeURIComponent(toTime.value)}&t=${Date.now()}`,{cache:"no-store"});
     const d=await res.json(); if(!res.ok)throw new Error(d.error||`HTTP ${res.status}`);
     document.getElementById("audNow").textContent=d.now_listening;
     document.getElementById("audPeak").textContent=d.peak?.listeners??0;
@@ -3352,7 +3355,7 @@ async function loadAudienceStats(){
     const chart=document.getElementById("audChart"); chart.innerHTML="";
     const pts=Array.isArray(d.timeline)?d.timeline:[]; const max=Math.max(1,...pts.map(x=>Number(x.listeners)||0));
     pts.forEach((p,idx)=>{const b=document.createElement("div");b.title=`${String(p.local||"").replace("T"," ")} · ${p.listeners} escuchando`;b.style.cssText=`min-width:8px;width:8px;height:${Math.max(2,Math.round((Number(p.listeners)||0)/max*200))}px;background:#e30613;border-radius:3px 3px 0 0`;chart.appendChild(b);});
-    document.getElementById("audChartLegend").textContent=pts.length?`${audFormatDate(d.from)} → ${audFormatDate(d.to)} · pico ${d.peak?.listeners||0} conexiones simultáneas`:"Todavía no hay registros para este período.";
+    document.getElementById("audChartLegend").textContent=pts.length?`${audFormatDate(d.from)} ${d.from_time||"00:00"} → ${audFormatDate(d.end_date||d.to)} ${d.to_time||"00:00"} · pico ${d.peak?.listeners||0} conexiones simultáneas`:"Todavía no hay registros para este período.";
   }catch(e){toast("No se pudieron cargar los registros: "+e.message);}
   finally{if(btn){btn.disabled=false;btn.textContent="🔄 Consultar";}}
 }
