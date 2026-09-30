@@ -807,6 +807,14 @@ Primero generá una tanda borrador. Revisá, editá o eliminá mensajes antes de
   <div class="card"><div class="muted">📈 PICO DEL PERÍODO</div><h1 id="audPeak">—</h1><div class="muted" id="audPeakTime"></div></div>
   <div class="card"><div class="muted">📱 DISPOSITIVOS ÚNICOS</div><h1 id="audUnique">—</h1></div>
 </div>
+<div class="grid">
+  <div class="card"><div class="muted">📲 INSTALACIONES DEL PERÍODO</div><h2 id="audInstallsPeriod">—</h2></div>
+  <div class="card"><div class="muted">📲 INSTALACIONES TOTALES</div><h2 id="audInstallsTotal">—</h2></div>
+</div>
+<div class="grid">
+  <div class="card"><div class="muted">👆 CLICS EN PUBLICIDADES DEL PERÍODO</div><h2 id="audAdClicksPeriod">—</h2></div>
+  <div class="card"><div class="muted">👆 CLICS PUBLICITARIOS TOTALES</div><h2 id="audAdClicksTotal">—</h2></div>
+</div>
 <div class="card">
   <div class="grid">
     <div class="field"><label>Desde</label><input type="date" id="audFrom"></div>
@@ -1882,9 +1890,10 @@ async function compressPopupImage(file){
   return out;
 }
 
+function popupAdKey(){return 'ad-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,10);}
 function popupAdDefaults(data){
-  if(typeof data==='string') return {data,enabled:true,seconds:5,schedule:'all',from:'00:00',to:'00:00',days:[0,1,2,3,4,5,6]};
-  return {data:String(data?.data||''),enabled:data?.enabled!==false,seconds:Math.max(1,Math.min(60,Number(data?.seconds)||5)),schedule:data?.schedule==='range'?'range':'all',from:data?.from||'00:00',to:data?.to||'00:00',days:Array.isArray(data?.days)&&data.days.length?data.days.map(Number):[0,1,2,3,4,5,6]};
+  if(typeof data==='string') return {data,ad_key:popupAdKey(),link:'',total_clicks:0,enabled:true,seconds:5,schedule:'all',from:'00:00',to:'00:00',days:[0,1,2,3,4,5,6]};
+  return {data:String(data?.data||''),ad_key:String(data?.ad_key||'')||popupAdKey(),link:String(data?.link||''),total_clicks:Number(data?.total_clicks||0),enabled:data?.enabled!==false,seconds:Math.max(1,Math.min(60,Number(data?.seconds)||5)),schedule:data?.schedule==='range'?'range':'all',from:data?.from||'00:00',to:data?.to||'00:00',days:Array.isArray(data?.days)&&data.days.length?data.days.map(Number):[0,1,2,3,4,5,6]};
 }
 function renderPopup(){
   state.popup.images=(state.popup.images||[]).map(popupAdDefaults);
@@ -1894,6 +1903,8 @@ function renderPopup(){
       <div class="grid" style="margin-top:12px"><div>${imageFrame(ad.data,false)}</div><div>
       <div class="field"><label>Publicidad activa</label><select onchange="window.setPopupField(${i},'enabled',this.value==='1')"><option value="1" ${ad.enabled?'selected':''}>Sí, mostrar</option><option value="0" ${!ad.enabled?'selected':''}>No, desactivar</option></select></div>
       <div class="field"><label>Segundos en pantalla</label><input type="number" min="1" max="60" value="${ad.seconds}" onchange="window.setPopupField(${i},'seconds',this.value)"></div>
+      <div class="field"><label>Enlace al tocar la publicidad (opcional)</label><input type="url" placeholder="https://..." value="${esc(ad.link)}" onchange="window.setPopupField(${i},'link',this.value.trim())"><div class="muted" style="margin-top:6px">Puede ser web, Facebook, Instagram o un enlace de WhatsApp.</div></div>
+      <div class="notice" style="margin:8px 0"><b>👆 Clics acumulados:</b> ${(ad.total_clicks||0).toLocaleString('es-AR')}</div>
       <div class="field"><label>Horario de publicación</label><select onchange="window.setPopupField(${i},'schedule',this.value)"><option value="all" ${ad.schedule==='all'?'selected':''}>24 horas</option><option value="range" ${ad.schedule==='range'?'selected':''}>Desde / Hasta</option></select></div>
       ${ad.schedule==='range'?`<div class="grid"><div class="field"><label>Desde</label><input type="time" value="${ad.from}" onchange="window.setPopupField(${i},'from',this.value)"></div><div class="field"><label>Hasta</label><input type="time" value="${ad.to}" onchange="window.setPopupField(${i},'to',this.value)"></div></div>`:''}
       <div class="field"><label>Días en que se muestra</label><div class="checks"><label class="check"><input type="checkbox" ${all?'checked':''} onchange="window.setPopupAllDays(${i},this.checked)"> Todos los días</label>${['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'].map((n,d)=>`<label class="check"><input type="checkbox" ${ad.days.includes(d)?'checked':''} ${all?'disabled':''} onchange="window.setPopupDay(${i},${d},this.checked)"> ${n}</label>`).join('')}</div></div>
@@ -3335,11 +3346,16 @@ function audLocalDate(){
   const p=new Intl.DateTimeFormat("en-CA",{timeZone:"America/Argentina/Buenos_Aires",year:"numeric",month:"2-digit",day:"2-digit"}).formatToParts(new Date());
   const g=t=>p.find(x=>x.type===t)?.value||""; return `${g("year")}-${g("month")}-${g("day")}`;
 }
+function audTomorrowDate(){
+  const today=audLocalDate();
+  const d=new Date(`${today}T00:00:00Z`); d.setUTCDate(d.getUTCDate()+1);
+  return d.toISOString().slice(0,10);
+}
 function audFormatDate(s){if(!s)return "—";const [y,m,d]=s.split("-");return `${d}/${m}/${y}`;}
 async function loadAudienceStats(){
   const from=document.getElementById("audFrom"),to=document.getElementById("audTo"),fromTime=document.getElementById("audFromTime"),toTime=document.getElementById("audToTime");
   if(!from||!to||!fromTime||!toTime)return;
-  if(!from.value)from.value=audLocalDate(); if(!to.value)to.value=from.value;
+  if(!from.value)from.value=audLocalDate(); if(!to.value)to.value=audTomorrowDate();
   if(!fromTime.value)fromTime.value="00:00"; if(!toTime.value)toTime.value="00:00";
   const btn=document.getElementById("audRefresh"); if(btn){btn.disabled=true;btn.textContent="⏳ Consultando...";}
   try{
@@ -3349,6 +3365,10 @@ async function loadAudienceStats(){
     document.getElementById("audPeak").textContent=d.peak?.listeners??0;
     document.getElementById("audPeakTime").textContent=d.peak?.local?d.peak.local.replace("T"," ")+" hs":"Sin datos todavía";
     document.getElementById("audUnique").textContent=d.unique_devices??0;
+    document.getElementById("audInstallsPeriod").textContent=(d.installations_period??0).toLocaleString("es-AR");
+    document.getElementById("audInstallsTotal").textContent=(d.installations_total??0).toLocaleString("es-AR");
+    document.getElementById("audAdClicksPeriod").textContent=(d.ad_clicks_period??0).toLocaleString("es-AR");
+    document.getElementById("audAdClicksTotal").textContent=(d.ad_clicks_total??0).toLocaleString("es-AR");
     document.getElementById("audMinutes").textContent=(d.listener_minutes??0).toLocaleString("es-AR");
     document.getElementById("audSessions").textContent=(d.sessions??0).toLocaleString("es-AR");
     document.getElementById("audBestDay").textContent=d.best_day?`${audFormatDate(d.best_day.date)} · pico ${d.best_day.peak}`:"—";
@@ -3361,7 +3381,7 @@ async function loadAudienceStats(){
 }
 const audRefresh=document.getElementById("audRefresh"); if(audRefresh)audRefresh.addEventListener("click",loadAudienceStats);
 const audFrom=document.getElementById("audFrom"),audTo=document.getElementById("audTo");
-if(audFrom&&!audFrom.value)audFrom.value=audLocalDate(); if(audTo&&!audTo.value)audTo.value=audLocalDate();
+if(audFrom&&!audFrom.value)audFrom.value=audLocalDate(); if(audTo&&!audTo.value)audTo.value=audTomorrowDate();
 setInterval(()=>{const tab=document.getElementById("tab-registros");if(tab&&tab.classList.contains("active"))loadAudienceStats();},60000);
 
 /* ========================================================= */
