@@ -1252,7 +1252,7 @@ function popupEstaHabilitadoAhora(ad) {
   if(from===to)return true; return from<to?(now>=from&&now<to):(now>=from||now<to);
 }
 async function cargarPublicidadDesdeNube(){
-  try{const res=await fetch(`${ONRADIO_API}/popup?t=${Date.now()}`,{cache:'no-store'});if(!res.ok)throw new Error(`HTTP ${res.status}`);const data=await res.json();const ads=(Array.isArray(data.images)?data.images:[]).map(x=>({data:String(typeof x==='string'?x:(x?.data||'')),enabled:x?.enabled!==false,seconds:Math.max(1,Math.min(60,Number(x?.seconds)||5)),schedule:x?.schedule==='range'?'range':'all',from:x?.from||'00:00',to:x?.to||'00:00',days:Array.isArray(x?.days)&&x.days.length?x.days.map(Number):[0,1,2,3,4,5,6]})).filter(x=>x.data&&popupEstaHabilitadoAhora(x));if(ads.length)iniciarPopupPublicidad({ads});}catch(error){console.log('No se pudo cargar la publicidad online',error);}
+  try{const res=await fetch(`${ONRADIO_API}/popup?t=${Date.now()}`,{cache:'no-store'});if(!res.ok)throw new Error(`HTTP ${res.status}`);const data=await res.json();const ads=(Array.isArray(data.images)?data.images:[]).map(x=>({data:String(typeof x==='string'?x:(x?.data||'')),ad_key:String(x?.ad_key||''),link:String(x?.link||''),enabled:x?.enabled!==false,seconds:Math.max(1,Math.min(60,Number(x?.seconds)||5)),schedule:x?.schedule==='range'?'range':'all',from:x?.from||'00:00',to:x?.to||'00:00',days:Array.isArray(x?.days)&&x.days.length?x.days.map(Number):[0,1,2,3,4,5,6]})).filter(x=>x.data&&popupEstaHabilitadoAhora(x));if(ads.length)iniciarPopupPublicidad({ads});}catch(error){console.log('No se pudo cargar la publicidad online',error);}
 }
 window.addEventListener('DOMContentLoaded',()=>{verificarVersionRemota();cargarPublicidadDesdeNube();});
 
@@ -1298,8 +1298,15 @@ function forzarRecargaCache() {
 function iniciarPopupPublicidad(config) {
   const overlay=document.getElementById('adPopupOverlay'),track=document.getElementById('adTrack'),dotsContainer=document.getElementById('adDots'),btnPrev=document.getElementById('adPrev'),btnNext=document.getElementById('adNext');
   const ads=(config.ads||[]).filter(a=>a.data); if(!ads.length)return;
-  track.innerHTML=ads.map(a=>`<div class="ad-slide-wrapper"><div class="ad-slide-bg" style="background-image:url('${a.data}')"></div><img src="${a.data}" class="ad-slide-img" alt="Publicidad"></div>`).join('');
+  track.innerHTML=ads.map((a,idx)=>`<div class="ad-slide-wrapper" data-ad-index="${idx}" style="${a.link?'cursor:pointer;':''}"><div class="ad-slide-bg" style="background-image:url('${a.data}')"></div><img src="${a.data}" class="ad-slide-img" alt="Publicidad"></div>`).join('');
   let currentIndex=0,timer=null; const total=ads.length;
+  let lastAdClickAt=0;
+  track.querySelectorAll('.ad-slide-wrapper').forEach((slide,idx)=>slide.addEventListener('click',()=>{
+    const ad=ads[idx]; if(!ad?.link)return;
+    const now=Date.now(); if(now-lastAdClickAt<800)return; lastAdClickAt=now;
+    if(ad.ad_key){fetch(`${ONRADIO_API}/popup-click`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({ad_key:ad.ad_key,device_id:audienceDeviceId}),keepalive:true}).catch(()=>{});}
+    window.open(ad.link,'_blank','noopener,noreferrer');
+  }));
   function close(){overlay.style.display='none';if(timer)clearTimeout(timer);timer=null;}
   function update(){track.style.transform=`translateX(-${currentIndex*100}%)`;dotsContainer.querySelectorAll('.ad-dot').forEach((d,i)=>d.classList.toggle('active',i===currentIndex));}
   function schedule(){if(timer)clearTimeout(timer);timer=setTimeout(()=>{if(currentIndex<total-1){currentIndex++;update();schedule();}else close();},(ads[currentIndex].seconds||5)*1000);}
@@ -1591,7 +1598,18 @@ window.addEventListener("beforeinstallprompt",(e)=>{
   deferredPrompt = e;
 });
 
+async function registrarInstalacionApp(){
+  try{
+    await fetch(`${ONRADIO_API}/app-install`,{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({device_id:audienceDeviceId}),
+      keepalive:true
+    });
+  }catch(e){console.log("No se pudo registrar la instalación",e);}
+}
 function instalarApp(){
+  registrarInstalacionApp();
   if(deferredPrompt){
     deferredPrompt.prompt();
     deferredPrompt = null;
