@@ -801,41 +801,27 @@ Primero generá una tanda borrador. Revisá, editá o eliminá mensajes antes de
 <!-- ========================================================= -->
 <section id="tab-registros" class="tab">
 <h1>Registros de audiencia</h1>
-<p class="subtitle">Medición de dispositivos que realmente están reproduciendo ON Radio.</p>
+<p class="subtitle">Audiencia real del streaming + rendimiento de la App de ON Radio.</p>
 <div class="grid3">
-  <div class="card"><div class="muted">🎧 ESCUCHANDO AHORA</div><h1 id="audNow">—</h1></div>
-  <div class="card"><div class="muted">📈 PICO DEL PERÍODO</div><h1 id="audPeak">—</h1><div class="muted" id="audPeakTime"></div></div>
-  <div class="card"><div class="muted">📱 DISPOSITIVOS ÚNICOS</div><h1 id="audUnique">—</h1></div>
+  <div class="card"><div class="muted">🎧 ESCUCHANDO AHORA · TOTAL</div><h1 id="audNow">—</h1><div class="muted">SonicPanel</div></div>
+  <div class="card"><div class="muted">📱 DESDE LA APP</div><h1 id="audAppNow">—</h1><div class="muted">Incluidos en el total</div></div>
+  <div class="card"><div class="muted">🌐 OTRAS VÍAS</div><h1 id="audOtherNow">—</h1><div class="muted">Total menos App</div></div>
 </div>
-<div class="grid">
+<div class="grid3">
+  <div class="card"><div class="muted">📈 PICO DEL PERÍODO</div><h1 id="audPeak">—</h1><div class="muted" id="audPeakTime"></div></div>
   <div class="card"><div class="muted">📲 INSTALACIONES DEL PERÍODO</div><h2 id="audInstallsPeriod">—</h2></div>
   <div class="card"><div class="muted">📲 INSTALACIONES TOTALES</div><h2 id="audInstallsTotal">—</h2></div>
-</div>
-<div class="grid">
-  <div class="card"><div class="muted">👆 CLICS EN PUBLICIDADES DEL PERÍODO</div><h2 id="audAdClicksPeriod">—</h2></div>
-  <div class="card"><div class="muted">👆 CLICS PUBLICITARIOS TOTALES</div><h2 id="audAdClicksTotal">—</h2></div>
 </div>
 <div class="card">
   <div class="grid">
     <div class="field"><label>Desde</label><input type="date" id="audFrom"></div>
-    <div class="field"><label>Hora desde</label><input type="time" id="audFromTime" value="00:00"></div>
+    <div class="field"><label>Hora desde</label><input type="time" id="audFromTime"></div>
     <div class="field"><label>Hasta</label><input type="date" id="audTo"></div>
-    <div class="field"><label>Hora hasta</label><input type="time" id="audToTime" value="00:00"></div>
+    <div class="field"><label>Hora hasta</label><input type="time" id="audToTime"></div>
   </div>
   <div class="actions"><button class="btn" id="audRefresh">🔄 Consultar</button></div>
 </div>
-<div class="grid3">
-  <div class="card"><div class="muted">⏱️ MINUTOS DE ESCUCHA</div><h2 id="audMinutes">—</h2></div>
-  <div class="card"><div class="muted">▶️ SESIONES</div><h2 id="audSessions">—</h2></div>
-  <div class="card"><div class="muted">🏆 MEJOR DÍA DEL PERÍODO</div><h2 id="audBestDay">—</h2></div>
-</div>
-<div class="card">
-  <h3>Audiencia simultánea</h3>
-  <div class="muted" style="margin-bottom:12px">Muestras cada 15 minutos. Cada barra representa dispositivos reproduciendo simultáneamente.</div>
-  <div id="audChart" style="display:flex;align-items:flex-end;gap:3px;height:230px;overflow-x:auto;border-bottom:1px solid #444;padding:10px 2px 0"></div>
-  <div id="audChartLegend" class="muted" style="margin-top:10px"></div>
-</div>
-<div class="notice">Los valores representan dispositivos/conexiones de escucha. Un dispositivo puede estar siendo escuchado por una o varias personas.</div>
+<div class="notice" id="audPeriodNote">El histórico total comienza a registrarse desde la activación del nuevo medidor.</div>
 </section>
 
 <!-- ========================================================= -->
@@ -3346,42 +3332,44 @@ function audLocalDate(){
   const p=new Intl.DateTimeFormat("en-CA",{timeZone:"America/Argentina/Buenos_Aires",year:"numeric",month:"2-digit",day:"2-digit"}).formatToParts(new Date());
   const g=t=>p.find(x=>x.type===t)?.value||""; return `${g("year")}-${g("month")}-${g("day")}`;
 }
-function audTomorrowDate(){
-  const today=audLocalDate();
-  const d=new Date(`${today}T00:00:00Z`); d.setUTCDate(d.getUTCDate()+1);
-  return d.toISOString().slice(0,10);
+function audLocalTime(){
+  const p=new Intl.DateTimeFormat("en-GB",{timeZone:"America/Argentina/Buenos_Aires",hour:"2-digit",minute:"2-digit",hour12:false}).formatToParts(new Date());
+  const g=t=>p.find(x=>x.type===t)?.value||"00"; return `${g("hour")}:${g("minute")}`;
 }
 function audFormatDate(s){if(!s)return "—";const [y,m,d]=s.split("-");return `${d}/${m}/${y}`;}
-async function loadAudienceStats(){
+function initAudienceRange(){
   const from=document.getElementById("audFrom"),to=document.getElementById("audTo"),fromTime=document.getElementById("audFromTime"),toTime=document.getElementById("audToTime");
   if(!from||!to||!fromTime||!toTime)return;
-  if(!from.value)from.value=audLocalDate(); if(!to.value)to.value=audTomorrowDate();
-  if(!fromTime.value)fromTime.value="00:00"; if(!toTime.value)toTime.value="00:00";
+  if(!from.value)from.value=audLocalDate();
+  if(!to.value)to.value=audLocalDate();
+  if(!fromTime.value)fromTime.value="00:00";
+  if(!toTime.value)toTime.value=audLocalTime();
+}
+async function loadAudienceStats(){
+  initAudienceRange();
+  const from=document.getElementById("audFrom"),to=document.getElementById("audTo"),fromTime=document.getElementById("audFromTime"),toTime=document.getElementById("audToTime");
+  if(!from||!to||!fromTime||!toTime)return;
   const btn=document.getElementById("audRefresh"); if(btn){btn.disabled=true;btn.textContent="⏳ Consultando...";}
   try{
     const res=await fetch(`${ONRADIO_API}/audience/stats?from=${encodeURIComponent(from.value)}&to=${encodeURIComponent(to.value)}&from_time=${encodeURIComponent(fromTime.value)}&to_time=${encodeURIComponent(toTime.value)}&t=${Date.now()}`,{cache:"no-store"});
     const d=await res.json(); if(!res.ok)throw new Error(d.error||`HTTP ${res.status}`);
-    document.getElementById("audNow").textContent=d.now_listening;
-    document.getElementById("audPeak").textContent=d.peak?.listeners??0;
-    document.getElementById("audPeakTime").textContent=d.peak?.local?d.peak.local.replace("T"," ")+" hs":"Sin datos todavía";
-    document.getElementById("audUnique").textContent=d.unique_devices??0;
-    document.getElementById("audInstallsPeriod").textContent=(d.installations_period??0).toLocaleString("es-AR");
-    document.getElementById("audInstallsTotal").textContent=(d.installations_total??0).toLocaleString("es-AR");
-    document.getElementById("audAdClicksPeriod").textContent=(d.ad_clicks_period??0).toLocaleString("es-AR");
-    document.getElementById("audAdClicksTotal").textContent=(d.ad_clicks_total??0).toLocaleString("es-AR");
-    document.getElementById("audMinutes").textContent=(d.listener_minutes??0).toLocaleString("es-AR");
-    document.getElementById("audSessions").textContent=(d.sessions??0).toLocaleString("es-AR");
-    document.getElementById("audBestDay").textContent=d.best_day?`${audFormatDate(d.best_day.date)} · pico ${d.best_day.peak}`:"—";
-    const chart=document.getElementById("audChart"); chart.innerHTML="";
-    const pts=Array.isArray(d.timeline)?d.timeline:[]; const max=Math.max(1,...pts.map(x=>Number(x.listeners)||0));
-    pts.forEach((p,idx)=>{const b=document.createElement("div");b.title=`${String(p.local||"").replace("T"," ")} · ${p.listeners} escuchando`;b.style.cssText=`min-width:8px;width:8px;height:${Math.max(2,Math.round((Number(p.listeners)||0)/max*200))}px;background:#e30613;border-radius:3px 3px 0 0`;chart.appendChild(b);});
-    document.getElementById("audChartLegend").textContent=pts.length?`${audFormatDate(d.from)} ${d.from_time||"00:00"} → ${audFormatDate(d.end_date||d.to)} ${d.to_time||"00:00"} · pico ${d.peak?.listeners||0} conexiones simultáneas`:"Todavía no hay registros para este período.";
+    const fmt=v=>v===null||v===undefined?"—":Number(v).toLocaleString("es-AR");
+    document.getElementById("audNow").textContent=fmt(d.now_listening);
+    document.getElementById("audAppNow").textContent=fmt(d.app_now);
+    document.getElementById("audOtherNow").textContent=fmt(d.other_now);
+    document.getElementById("audPeak").textContent=fmt(d.peak?.listeners??0);
+    document.getElementById("audPeakTime").textContent=d.peak?.local?d.peak.local.replace("T"," ")+" hs":"Sin histórico todavía";
+    document.getElementById("audInstallsPeriod").textContent=fmt(d.installations_period??0);
+    document.getElementById("audInstallsTotal").textContent=fmt(d.installations_total??0);
+    const note=document.getElementById("audPeriodNote");
+    if(note) note.textContent=d.stream_samples>0
+      ?`Período consultado: ${audFormatDate(d.from)} ${d.from_time} → ${audFormatDate(d.end_date||d.to)} ${d.to_time}. Muestras del streaming: ${d.stream_samples}.`
+      :"Todavía no hay muestras del streaming para este período. El histórico empieza desde que activamos el medidor automático.";
   }catch(e){toast("No se pudieron cargar los registros: "+e.message);}
   finally{if(btn){btn.disabled=false;btn.textContent="🔄 Consultar";}}
 }
 const audRefresh=document.getElementById("audRefresh"); if(audRefresh)audRefresh.addEventListener("click",loadAudienceStats);
-const audFrom=document.getElementById("audFrom"),audTo=document.getElementById("audTo");
-if(audFrom&&!audFrom.value)audFrom.value=audLocalDate(); if(audTo&&!audTo.value)audTo.value=audTomorrowDate();
+initAudienceRange();
 setInterval(()=>{const tab=document.getElementById("tab-registros");if(tab&&tab.classList.contains("active"))loadAudienceStats();},60000);
 
 /* ========================================================= */
