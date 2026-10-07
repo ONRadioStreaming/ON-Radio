@@ -773,7 +773,7 @@ Primero generá una tanda borrador. Revisá, editá o eliminá mensajes antes de
 </div>
 <div class="field">
 <label>Endpoint seguro de IA</label>
-<input id="aiEndpoint" placeholder="https://tu-backend.../generar-mensajes">
+<input id="aiEndpoint" value="https://onradio-ia.guillermocaballini.workers.dev/generar-mensajes" readonly>
 <small class="muted">La clave de IA debe vivir en el backend, nunca dentro del HTML.</small>
 </div>
 </div>
@@ -3383,7 +3383,7 @@ genericMessagesEnabled.checked=state.genericMessagesEnabled;
 genericMessagesEnabled.addEventListener("change",()=>{state.genericMessagesEnabled=genericMessagesEnabled.checked;saveState();});
 campaignProgram.value=state.live.name||"";
 campaignHost.value=state.live.host||"";
-aiEndpoint.value=localStorage.getItem("onradio_ai_endpoint")||"";
+aiEndpoint.value="https://onradio-ia.guillermocaballini.workers.dev/generar-mensajes";
 renderDraft();
 
 renderPopup();
