@@ -448,6 +448,10 @@ textarea{
 🎯 Consignas / generador
 </button>
 
+<button class="nav" data-tab="notificaciones">
+🔔 Notificaciones
+</button>
+
 <button class="nav" data-tab="registros">
 📊 Registros
 </button>
@@ -648,6 +652,40 @@ Campañas de programas
 
 </section>
 
+
+
+<!-- NOTIFICACIONES PUSH - módulo independiente -->
+<section id="tab-notificaciones" class="tab">
+<h1>🔔 Notificaciones</h1>
+<p class="subtitle">Avisos para los oyentes que aceptaron recibir notificaciones. Los días se repiten cada semana.</p>
+<div class="card">
+ <div class="notice" style="margin-bottom:14px">Las notificaciones son independientes de las campañas de consignas. Para administrar envíos, necesitás configurar el acceso seguro de Cloudflare.</div>
+ <div class="field"><label>Clave de administración de notificaciones</label><input id="pushAdminToken" type="password" autocomplete="off" placeholder="Clave configurada como ADMIN_PUSH_TOKEN en Cloudflare"><small class="muted">Se mantiene solo durante esta sesión. No se guarda en GitHub ni en el HTML.</small></div>
+ <div class="actions"><button class="btn gray" id="pushConnect">🔐 Conectar y cargar avisos</button></div>
+</div>
+<div class="card">
+ <h3 id="pushFormTitle">Nueva notificación</h3>
+ <div class="field"><label>Título</label><input id="pushTitle" maxlength="90" value="🔴 ¡Estamos en vivo!"></div>
+ <div class="field"><label>Mensaje</label><textarea id="pushBody" maxlength="220" placeholder="¡Arrancó No Es Lo Que Parece! Escuchalo en ON Radio."></textarea></div>
+ <div class="grid">
+  <div class="field"><label>Horario (Argentina)</label><input id="pushTime" type="time" value="22:00"></div>
+  <div class="field"><label>Modalidad</label><select id="pushMode"><option value="weekly">Semanal, días seleccionados</option><option value="once">Una sola vez</option></select></div>
+ </div>
+ <div id="pushDaysWrap" class="field"><label>Días de envío</label><div class="checks" id="pushDays">
+  <label class="check"><input type="checkbox" value="1" checked> Lunes</label>
+  <label class="check"><input type="checkbox" value="2" checked> Martes</label>
+  <label class="check"><input type="checkbox" value="3" checked> Miércoles</label>
+  <label class="check"><input type="checkbox" value="4" checked> Jueves</label>
+  <label class="check"><input type="checkbox" value="5" checked> Viernes</label>
+  <label class="check"><input type="checkbox" value="6"> Sábado</label>
+  <label class="check"><input type="checkbox" value="0"> Domingo</label>
+ </div></div>
+ <div id="pushDateWrap" class="field" style="display:none"><label>Fecha de envío</label><input id="pushDate" type="date"></div>
+ <div class="actions"><button class="btn green" id="pushSave">💾 Guardar notificación</button><button class="btn gray" id="pushCancel">Cancelar edición</button></div>
+ <p class="muted" id="pushFeedback" role="status"></p>
+</div>
+<div class="card"><h3>Notificaciones programadas</h3><div id="pushList" class="list"><div class="empty">Conectá Cloudflare para consultar las notificaciones.</div></div></div>
+</section>
 
 <!-- ========================================================= -->
 <!-- CONSIGNAS -->
@@ -3429,5 +3467,36 @@ if ("serviceWorker" in navigator) {
 }
 </script>
 
+<script>
+
+/* MÓDULO NOTIFICACIONES - independiente del resto del administrador */
+(()=>{
+ const API='https://onradio-ia.guillermocaballini.workers.dev';
+ const el=id=>document.getElementById(id);
+ let token='',editing=null;
+ const headers=()=>({'Content-Type':'application/json','Authorization':'Bearer '+token});
+ const feedback=t=>{el('pushFeedback').textContent=t;};
+ async function req(path,options={}){
+  if(!token)throw Error('Primero ingresá la clave y presioná Conectar.');
+  const res=await fetch(API+path,{...options,headers:{...headers(),...(options.headers||{})},cache:'no-store'});
+  const d=await res.json().catch(()=>({}));if(!res.ok)throw Error(d.error||'HTTP '+res.status);return d;
+ }
+ function reset(){editing=null;el('pushFormTitle').textContent='Nueva notificación';el('pushTitle').value='🔴 ¡Estamos en vivo!';el('pushBody').value='';el('pushTime').value='22:00';el('pushMode').value='weekly';el('pushMode').dispatchEvent(new Event('change'));feedback('');}
+ el('pushMode').addEventListener('change',()=>{const once=el('pushMode').value==='once';el('pushDaysWrap').style.display=once?'none':'';el('pushDateWrap').style.display=once?'':'none';});
+ async function load(){const d=await req('/push/notifications');const list=el('pushList');list.replaceChildren();if(!d.notifications.length){list.textContent='No hay notificaciones programadas.';return;}
+  for(const n of d.notifications){const item=document.createElement('div');item.className='item';const title=document.createElement('strong');title.textContent=n.title;item.append(title);
+   const desc=document.createElement('p');desc.className='muted';desc.textContent=n.body+' · '+n.time+' hs · '+(n.mode==='weekly'?'Días: '+n.days.join(', '):n.send_date)+' · '+(n.enabled?'ACTIVA':'PAUSADA');item.append(desc);
+   const actions=document.createElement('div');actions.className='actions';
+   for(const [label,fn,cls] of [['✏️ Editar',()=>{editing=n.id;el('pushFormTitle').textContent='Editar notificación';el('pushTitle').value=n.title;el('pushBody').value=n.body;el('pushTime').value=n.time;el('pushMode').value=n.mode;el('pushDate').value=n.send_date||'';el('pushDays').querySelectorAll('input').forEach(x=>x.checked=n.days.includes(Number(x.value)));el('pushMode').dispatchEvent(new Event('change'));el('pushTitle').focus();},'gray'],[n.enabled?'⏸ Pausar':'▶ Activar',async()=>{await req('/push/notifications/'+n.id,{method:'PATCH',body:JSON.stringify({enabled:!n.enabled})});await load();},'gray'],['🗑 Eliminar',async()=>{if(!confirm('¿Eliminar esta notificación?'))return;await req('/push/notifications/'+n.id,{method:'DELETE'});await load();},'danger']]){
+    const b=document.createElement('button');b.className='btn '+cls;b.textContent=label;b.onclick=async()=>{try{await fn();}catch(e){feedback(e.message);}};actions.append(b);
+   }item.append(actions);list.append(item);
+  }
+ }
+ el('pushConnect').onclick=async()=>{token=el('pushAdminToken').value.trim();try{await load();feedback('Conexión correcta.');}catch(e){feedback(e.message);}};
+ el('pushCancel').onclick=reset;
+ el('pushSave').onclick=async()=>{try{const mode=el('pushMode').value;const data={title:el('pushTitle').value.trim(),body:el('pushBody').value.trim(),time:el('pushTime').value,mode,days:[...el('pushDays').querySelectorAll('input:checked')].map(x=>Number(x.value)),send_date:el('pushDate').value};if(!data.title||!data.body||!data.time||(mode==='weekly'&&!data.days.length)||(mode==='once'&&!data.send_date))throw Error('Completá el texto, horario y días o fecha.');await req('/push/notifications'+(editing?'/'+editing:''),{method:editing?'PUT':'POST',body:JSON.stringify(data)});reset();await load();feedback('Notificación guardada.');}catch(e){feedback(e.message);}};
+})();
+
+</script>
 </body>
 </html>
