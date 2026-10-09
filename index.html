@@ -2230,5 +2230,31 @@ setInterval(cargarProgramacionDesdeNube, 60000);
 setInterval(cargarImagenesProgramasDesdeNube, 60000);
 </script>
 
+<div id="pushOptin" style="position:fixed;right:12px;bottom:75px;z-index:88;max-width:225px;display:none;background:#191919;border:1px solid #e01818;border-radius:12px;padding:12px;color:white;box-shadow:0 5px 20px #0008;font:13px Arial"><strong>🔔 Avisos de ON Radio</strong><p style="margin:8px 0">Enterate cuando empieza un programa. Solo si vos querés.</p><button id="pushOptinButton" style="background:#e01818;border:0;color:#fff;padding:8px;border-radius:7px;font-weight:bold">Activar notificaciones</button><button id="pushOptinDismiss" aria-label="Cerrar" style="background:none;border:0;color:#ddd;margin-left:6px">Ahora no</button></div>
+<script>
+(()=>{
+ const API='https://onradio-ia.guillermocaballini.workers.dev';
+ const box=document.getElementById('pushOptin');
+ const decode=s=>{const x=atob(s.replace(/-/g,'+').replace(/_/g,'/')+'='.repeat((4-s.length%4)%4));return Uint8Array.from(x,c=>c.charCodeAt(0));};
+ if(!('serviceWorker' in navigator)||!('PushManager' in window)||!('Notification' in window))return;
+ if(Notification.permission==='denied'||localStorage.getItem('onradio_push_dismiss')==='1')return;
+ navigator.serviceWorker.ready.then(async reg=>{
+  if(await reg.pushManager.getSubscription())return;
+  if(Notification.permission!=='granted')box.style.display='block';
+ }).catch(()=>{});
+ document.getElementById('pushOptinDismiss').onclick=()=>{box.style.display='none';localStorage.setItem('onradio_push_dismiss','1');};
+ document.getElementById('pushOptinButton').onclick=async()=>{
+  const btn=document.getElementById('pushOptinButton');btn.disabled=true;btn.textContent='Activando...';
+  try{
+   const p=await Notification.requestPermission();if(p!=='granted')throw Error('Permiso no concedido.');
+   const k=await fetch(API+'/push/public-key').then(r=>r.json());if(!k.publicKey)throw Error('Notificaciones aún no configuradas.');
+   const reg=await navigator.serviceWorker.ready;
+   const sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:decode(k.publicKey)});
+   const r=await fetch(API+'/push/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(sub)});
+   if(!r.ok)throw Error('No se pudo registrar el dispositivo.');box.style.display='none';
+  }catch(e){btn.disabled=false;btn.textContent='Reintentar';alert(e.message);}
+ };
+})();
+</script>
 </body>
 </html>
