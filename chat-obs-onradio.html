@@ -5,22 +5,25 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>LA ON RADIO · Chat de oyentes para OBS</title>
 <style>
-  :root {color-scheme:dark;--rojo:#ff283d;--borde:rgba(255,72,83,.52)}
+  :root {color-scheme:dark;--rojo:#ff2638;--borde:rgba(255,58,72,.66)}
   *{box-sizing:border-box}
-  html,body{margin:0;width:100%;height:100%;background:transparent!important;overflow:hidden;font-family:Arial,Helvetica,sans-serif;color:white}
-  #panel{height:100%;display:flex;flex-direction:column;padding:10px 9px 12px;gap:7px;overflow:hidden}
-  #consigna{display:none;border-left:4px solid #fa2538;padding:9px 10px;margin:0 0 2px;border-radius:7px;background:rgba(100,10,20,.78);box-shadow:0 1px 7px #0006}
+  html,body{margin:0;width:100%;height:100%;background:transparent!important;overflow:hidden;font-family:Arial,Helvetica,sans-serif;color:#fff}
+  #panel{height:100%;width:100%;padding:9px 8px 10px;display:flex;flex-direction:column;gap:9px;overflow:hidden}
+  /* La consigna queda fijada arriba; los mensajes ingresan desde abajo. */
+  #consigna{display:none;flex-shrink:0;border:1px solid rgba(255,68,79,.65);border-left:5px solid var(--rojo);border-radius:10px;background:rgba(93,10,23,.94);padding:12px 13px;box-shadow:0 3px 8px #0005}
   #consigna.show{display:block}
-  #consigna strong{display:block;font-size:12px;color:#ff8790;letter-spacing:.6px;text-transform:uppercase;margin-bottom:5px}
-  #consigna span{font-size:16px;line-height:1.3;font-weight:700;white-space:pre-wrap;overflow-wrap:anywhere}
-  #mensajes{display:flex;flex-direction:column;justify-content:flex-end;gap:9px;overflow:hidden;min-height:0;flex:1}
-  .mensaje{flex-shrink:0;border:1px solid var(--borde);border-left:3px solid #f51c32;padding:10px 11px 11px;border-radius:11px;background:rgba(18,10,15,.91);box-shadow:0 1px 5px rgba(0,0,0,.25);animation:entra .28s ease-out}
-  .cabecera{display:flex;align-items:baseline;gap:5px;margin-bottom:5px}
-  .nombre{font-weight:900;font-size:16px;color:#fff;min-width:0;overflow-wrap:anywhere;flex:1}
-  .hora{color:#c7bec0;font-size:11px;white-space:nowrap}
-  .texto{display:block;color:#fff;font-size:16px;line-height:1.33;white-space:pre-wrap;overflow-wrap:anywhere}
-  #espera{font-size:15px;line-height:1.45;text-align:center;color:#d4bfc4;align-self:center;opacity:.82;padding:20px 5px}
-  @keyframes entra{from{transform:translateY(7px);opacity:0}to{transform:translateY(0);opacity:1}}
+  #consigna strong{display:block;color:#ff8f98;font-size:17px;font-weight:900;letter-spacing:.4px;text-transform:uppercase;margin:0 0 7px}
+  #consigna span{display:block;color:#fff;font-size:22px;line-height:1.25;font-weight:700;white-space:pre-wrap;overflow-wrap:anywhere}
+  /* justify-content:end hace subir los mensajes viejos cuando llegan nuevos. */
+  #mensajes{flex:1;min-height:0;display:flex;flex-direction:column;justify-content:flex-end;gap:10px;overflow:hidden}
+  .mensaje{flex-shrink:0;background:rgba(22,16,20,.96);border:1px solid var(--borde);border-left:5px solid var(--rojo);border-radius:12px;padding:11px 12px 13px;box-shadow:0 2px 7px #0008;animation:entra .55s cubic-bezier(.19,.75,.22,1) both}
+  .cabecera{display:flex;align-items:flex-start;gap:6px;margin-bottom:7px}
+  .nombre{font-size:21px;line-height:1.14;color:#fff;font-weight:900;min-width:0;flex:1;overflow-wrap:anywhere}
+  .hora{font-size:12px;color:#b9acb1;font-weight:700;line-height:1.25;white-space:nowrap;flex-shrink:0;padding-top:2px}
+  .texto{font-size:24px;line-height:1.24;font-weight:500;color:#fff;display:block;white-space:pre-wrap;overflow-wrap:anywhere}
+  #espera{font-size:18px;line-height:1.4;text-align:center;color:#d8c7cb;align-self:center;opacity:.82;padding:15px 5px}
+  @keyframes entra{0%{opacity:0;transform:translateY(28px)}100%{opacity:1;transform:translateY(0)}}
+  @media (prefers-reduced-motion: reduce){.mensaje{animation:none!important}}
 </style>
 </head>
 <body>
@@ -47,11 +50,24 @@ function horaAR(value){
   return new Intl.DateTimeFormat('es-AR',{timeZone:'America/Argentina/Buenos_Aires',hour:'2-digit',minute:'2-digit',hour12:false}).format(date);
 }
 function oyenteReciente(value){const date=fechaNormalizada(value);return !date||Date.now()-date.getTime()<=6*3600000;}
+function mantenerTarjetasCompletas(){
+  // Evitar que quede visible media tarjeta cortada en el borde superior.
+  const margen=4, disponible=contenedor.clientHeight-margen;
+  const gap=parseFloat(getComputedStyle(contenedor).rowGap)||0;
+  const tarjetas=[...contenedor.querySelectorAll('.mensaje')];
+  let total=tarjetas.reduce((s,el)=>s+el.offsetHeight,0)+Math.max(0,tarjetas.length-1)*gap;
+  while(total>disponible && tarjetas.length>1){
+    const vieja=tarjetas.shift();
+    total-=vieja.offsetHeight+gap;
+    vieja.remove();
+  }
+}
 function actualizarConsigna(data){
   const c=document.getElementById('consigna'),t=document.getElementById('texto-consigna');
   const mostrar=!!data.active_campaign && !!data.consigna?.prompt;
   c.classList.toggle('show',mostrar);
   t.textContent=mostrar?String(data.consigna.prompt):'';
+  mantenerTarjetasCompletas();
 }
 function anadirMensaje(m){
   const nombre=String(m.name||'Oyente').slice(0,55);
@@ -63,6 +79,8 @@ function anadirMensaje(m){
   vistos.add(clave);cola.push(clave);
   if(cola.length>150){vistos.delete(cola.shift());}
   espera.remove();
+  // Guardar las posiciones anteriores para animar la subida de las tarjetas existentes.
+  const previos=new Map([...contenedor.querySelectorAll('.mensaje')].map(el=>[el,el.getBoundingClientRect().top]));
   const item=document.createElement('article');item.className='mensaje';
   const cabecera=document.createElement('div');cabecera.className='cabecera';
   const autor=document.createElement('div');autor.className='nombre';
@@ -70,8 +88,14 @@ function anadirMensaje(m){
   const hora=document.createElement('span');hora.className='hora';hora.textContent=horaAR(m.created_at);
   const texto=document.createElement('span');texto.className='texto';texto.textContent=mensaje;
   cabecera.append(autor,hora);item.append(cabecera,texto);contenedor.append(item);
-  // Hasta 12 mensajes en el DOM; el espacio limitado recorta desde arriba.
-  while(contenedor.querySelectorAll('.mensaje').length>12)contenedor.querySelector('.mensaje').remove();
+  // Conservar un historial acotado; el panel recorta los más antiguos por arriba.
+  while(contenedor.querySelectorAll('.mensaje').length>8)contenedor.querySelector('.mensaje').remove();
+  mantenerTarjetasCompletas();
+  for(const [el,antes] of previos){
+    if(!el.isConnected||typeof el.animate!=='function')continue;
+    const delta=antes-el.getBoundingClientRect().top;
+    if(Math.abs(delta)>1)el.animate([{transform:`translateY(${delta}px)`},{transform:'translateY(0)'}],{duration:420,easing:'ease-out'});
+  }
 }
 async function refrescar(){
  if(polling)return;polling=true;
