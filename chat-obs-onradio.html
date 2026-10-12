@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>LA ON RADIO · Chat de oyentes para OBS</title>
+<style>
+  :root {color-scheme:dark;--rojo:#ff283d;--borde:rgba(255,72,83,.52)}
+  *{box-sizing:border-box}
+  html,body{margin:0;width:100%;height:100%;background:transparent!important;overflow:hidden;font-family:Arial,Helvetica,sans-serif;color:white}
+  #panel{height:100%;display:flex;flex-direction:column;padding:10px 9px 12px;gap:7px;overflow:hidden}
+  #consigna{display:none;border-left:4px solid #fa2538;padding:9px 10px;margin:0 0 2px;border-radius:7px;background:rgba(100,10,20,.78);box-shadow:0 1px 7px #0006}
+  #consigna.show{display:block}
+  #consigna strong{display:block;font-size:12px;color:#ff8790;letter-spacing:.6px;text-transform:uppercase;margin-bottom:5px}
+  #consigna span{font-size:16px;line-height:1.3;font-weight:700;white-space:pre-wrap;overflow-wrap:anywhere}
+  #mensajes{display:flex;flex-direction:column;justify-content:flex-end;gap:9px;overflow:hidden;min-height:0;flex:1}
+  .mensaje{flex-shrink:0;border:1px solid var(--borde);border-left:3px solid #f51c32;padding:10px 11px 11px;border-radius:11px;background:rgba(18,10,15,.91);box-shadow:0 1px 5px rgba(0,0,0,.25);animation:entra .28s ease-out}
+  .cabecera{display:flex;align-items:baseline;gap:5px;margin-bottom:5px}
+  .nombre{font-weight:900;font-size:16px;color:#fff;min-width:0;overflow-wrap:anywhere;flex:1}
+  .hora{color:#c7bec0;font-size:11px;white-space:nowrap}
+  .texto{display:block;color:#fff;font-size:16px;line-height:1.33;white-space:pre-wrap;overflow-wrap:anywhere}
+  #espera{font-size:15px;line-height:1.45;text-align:center;color:#d4bfc4;align-self:center;opacity:.82;padding:20px 5px}
+  @keyframes entra{from{transform:translateY(7px);opacity:0}to{transform:translateY(0);opacity:1}}
+</style>
+</head>
+<body>
+<div id="panel">
+  <div id="consigna"><strong>🔥 Consigna de hoy</strong><span id="texto-consigna"></span></div>
+  <div id="mensajes"><div id="espera">Esperando mensajes de oyentes...</div></div>
+</div>
+<script>
+'use strict';
+// Misma API y endpoint utilizados por el index oficial de LA ON RADIO.
+const API='https://onradio-ia.guillermocaballini.workers.dev';
+let listenerCursor=0,campaignCursor=0;
+let polling=false,firstLoad=true;
+const vistos=new Set(), cola=[];
+const contenedor=document.getElementById('mensajes');
+const espera=document.getElementById('espera');
+function fechaNormalizada(value){
+  if(!value)return null;
+  const raw=String(value);const date=new Date(raw.includes('T')?raw:raw.replace(' ','T')+'Z');
+  return Number.isNaN(date.getTime())?null:date;
+}
+function horaAR(value){
+  const date=fechaNormalizada(value)||new Date();
+  return new Intl.DateTimeFormat('es-AR',{timeZone:'America/Argentina/Buenos_Aires',hour:'2-digit',minute:'2-digit',hour12:false}).format(date);
+}
+function oyenteReciente(value){const date=fechaNormalizada(value);return !date||Date.now()-date.getTime()<=6*3600000;}
+function actualizarConsigna(data){
+  const c=document.getElementById('consigna'),t=document.getElementById('texto-consigna');
+  const mostrar=!!data.active_campaign && !!data.consigna?.prompt;
+  c.classList.toggle('show',mostrar);
+  t.textContent=mostrar?String(data.consigna.prompt):'';
+}
+function anadirMensaje(m){
+  const nombre=String(m.name||'Oyente').slice(0,55);
+  const localidad=String(m.city||m.localidad||'').slice(0,60);
+  const mensaje=String(m.text||'').slice(0,800);
+  if(!mensaje.trim())return;
+  const clave=String(m.source||'msg')+':'+String(m.id??m.created_at+':'+nombre+':'+mensaje);
+  if(vistos.has(clave))return;
+  vistos.add(clave);cola.push(clave);
+  if(cola.length>150){vistos.delete(cola.shift());}
+  espera.remove();
+  const item=document.createElement('article');item.className='mensaje';
+  const cabecera=document.createElement('div');cabecera.className='cabecera';
+  const autor=document.createElement('div');autor.className='nombre';
+  autor.textContent=localidad?nombre+' ('+localidad+')':nombre;
+  const hora=document.createElement('span');hora.className='hora';hora.textContent=horaAR(m.created_at);
+  const texto=document.createElement('span');texto.className='texto';texto.textContent=mensaje;
+  cabecera.append(autor,hora);item.append(cabecera,texto);contenedor.append(item);
+  // Hasta 12 mensajes en el DOM; el espacio limitado recorta desde arriba.
+  while(contenedor.querySelectorAll('.mensaje').length>12)contenedor.querySelector('.mensaje').remove();
+}
+async function refrescar(){
+ if(polling)return;polling=true;
+ try{
+   const url=`${API}/chat/live?after_listener=${listenerCursor}&after_campaign=${campaignCursor}&t=${Date.now()}`;
+   const respuesta=await fetch(url,{cache:'no-store'});
+   if(!respuesta.ok)throw new Error('HTTP '+respuesta.status);
+   const data=await respuesta.json();
+   actualizarConsigna(data);
+   const ms=Array.isArray(data.messages)?data.messages:[];
+   for(const m of ms){if(firstLoad&&m.source==='listener'&&!oyenteReciente(m.created_at))continue;anadirMensaje(m);}
+   if(data.cursor){listenerCursor=Math.max(listenerCursor,Number(data.cursor.listener)||0);campaignCursor=Math.max(campaignCursor,Number(data.cursor.campaign)||0);}
+   firstLoad=false;
+ }catch(err){
+   // Mantener en pantalla mensajes previos durante fallas de conexión.
+   if(!contenedor.querySelector('.mensaje'))espera.textContent='Conectando al chat de LA ON RADIO...';
+   console.warn('ON Radio chat para OBS:',err);
+ }finally{polling=false;}
+}
+refrescar();setInterval(refrescar,5000);
+</script>
+</body>
+</html>
