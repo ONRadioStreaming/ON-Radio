@@ -1438,6 +1438,26 @@ function urlConCache(url){
   return url + "?v=2026";
 }
 
+// Respaldo persistente de respuestas exitosas para cuando D1 supera su cuota.
+const ONRADIO_CACHE_NAME='onradio-datos-estables-v1';
+async function obtenerDatosEstables(ruta){
+  const url=`${ONRADIO_API}${ruta}`;
+  let cache=null;
+  try{if('caches' in window)cache=await caches.open(ONRADIO_CACHE_NAME);}catch(e){}
+  try{
+    const res=await fetch(`${url}?t=${Date.now()}`,{cache:'no-store'});
+    if(!res.ok)throw new Error(`HTTP ${res.status}`);
+    const data=await res.json();
+    const validos=ruta==='/programs'?Array.isArray(data.programs)&&data.programs.length>0:Array.isArray(data.images)&&data.images.length>0;
+    if(!validos)throw new Error('Respuesta sin datos; se conserva el respaldo anterior');
+    if(cache){try{await cache.put(url,new Response(JSON.stringify(data),{headers:{'Content-Type':'application/json'}}));}catch(e){console.warn('No se pudo actualizar respaldo:',e);}}
+    return data;
+  }catch(err){
+    if(cache){const anterior=await cache.match(url);if(anterior){console.warn('ON Radio: usando datos guardados para '+ruta,err);return anterior.json();}}
+    throw err;
+  }
+}
+
 // Imágenes oficiales de programas: D1 tiene prioridad; GitHub queda como respaldo.
 let imagenesProgramasNube = new Map();
 
@@ -1454,9 +1474,7 @@ function imagenPrograma(bloque){
 
 async function cargarProgramacionDesdeNube(){
   try{
-    const res=await fetch(`${ONRADIO_API}/programs?t=${Date.now()}`,{cache:'no-store'});
-    if(!res.ok) throw new Error(`HTTP ${res.status}`);
-    const data=await res.json();
+    const data=await obtenerDatosEstables('/programs');
     const programas=Array.isArray(data.programs)?data.programs:[];
     if(!programas.length) return;
 
@@ -1470,7 +1488,7 @@ async function cargarProgramacionDesdeNube(){
       horaInicio:String(p.start||'00:00').slice(0,5),
       horaFin:String(p.end||'00:00').slice(0,5),
       desc:String(p.desc||''),
-      imagen:'',
+      imagen:bloquesPredeterminados.find(b=>clavePrograma(b.nombre)===clavePrograma(p.name||''))?.imagen||'',
       imageKey:String(p.image_key||clavePrograma(p.name||'')),
       esEnVivo:p.live===true||p.live===1,
       locutor:String(p.host||'')
@@ -1485,9 +1503,7 @@ async function cargarProgramacionDesdeNube(){
 
 async function cargarImagenesProgramasDesdeNube(){
   try{
-    const res=await fetch(`${ONRADIO_API}/program-images?t=${Date.now()}`,{cache:'no-store'});
-    if(!res.ok) throw new Error(`HTTP ${res.status}`);
-    const data=await res.json();
+    const data=await obtenerDatosEstables('/program-images');
     const mapa=new Map();
     for(const x of (Array.isArray(data.images)?data.images:[])){
       const key=String(x?.key||clavePrograma(x?.name||''));
@@ -2213,7 +2229,7 @@ function iniciarChat() {
   cargarHistorialInicial();
   programarSiguienteMensajeProduccion();
   actualizarChatDesdeNube();
-  setInterval(actualizarChatDesdeNube, 5000);
+  setInterval(()=>{if(!document.hidden)actualizarChatDesdeNube();}, 15000);
 }
 
 renderizarGrillaPublica();
@@ -2226,8 +2242,8 @@ iniciarChat();
 
 setInterval(actualizarBloque, 60000);
 // Refresca programación e imágenes desde D1 sin necesidad de publicar una nueva versión de la app.
-setInterval(cargarProgramacionDesdeNube, 60000);
-setInterval(cargarImagenesProgramasDesdeNube, 60000);
+setInterval(()=>{if(!document.hidden)cargarProgramacionDesdeNube();}, 15*60000);
+setInterval(()=>{if(!document.hidden)cargarImagenesProgramasDesdeNube();}, 60*60000);
 </script>
 
 <div id="pushOptin" style="position:fixed;right:12px;bottom:75px;z-index:88;max-width:225px;display:none;background:#191919;border:1px solid #e01818;border-radius:12px;padding:12px;color:white;box-shadow:0 5px 20px #0008;font:13px Arial"><strong>🔔 Avisos de ON Radio</strong><p style="margin:8px 0">Enterate cuando empieza un programa. Solo si vos querés.</p><button id="pushOptinButton" style="background:#e01818;border:0;color:#fff;padding:8px;border-radius:7px;font-weight:bold">Activar notificaciones</button><button id="pushOptinDismiss" aria-label="Cerrar" style="background:none;border:0;color:#ddd;margin-left:6px">Ahora no</button></div>
