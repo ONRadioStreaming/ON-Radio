@@ -374,6 +374,15 @@ textarea{
   font-size:12px;
 }
 
+.medidas-recomendadas{background:#221717;border:1px solid #713333;border-radius:10px;padding:11px 13px;margin:10px 0;color:#f7f7f7;display:flex;flex-direction:column;gap:4px}
+.medidas-recomendadas b{color:#fff;font-size:14px}
+.medidas-recomendadas span{color:#bbb;font-size:12px;line-height:1.4}
+.frame.horizontal{width:min(100%,360px);height:auto;aspect-ratio:16/9}
+.web-ad-preview{margin-top:12px;width:145px;aspect-ratio:1/1;background:#101010;border:1px dashed #666;border-radius:10px;display:grid;place-items:center;overflow:hidden}
+.web-ad-preview img{width:100%;height:100%;object-fit:cover}
+.web-ad-thumb{width:105px;height:105px;object-fit:cover;border-radius:8px;border:1px solid #555}
+.web-ad-item-layout{display:flex;align-items:start;gap:15px;flex-wrap:wrap}
+.web-ad-item-layout>div:last-child{flex:1;min-width:200px}
 @media(max-width:780px){
 
   .layout{
@@ -436,6 +445,10 @@ textarea{
 📢 Pop-up
 </button>
 
+<button class="nav" data-tab="publicidad-web">
+🖥️ Publicidad Web
+</button>
+
 <button class="nav" data-tab="programacion">
 📻 Programación
 </button>
@@ -481,14 +494,17 @@ Administrá las publicidades que aparecen en la aplicación.
 </p>
 
 <div class="card">
-<div class="notice">Cada publicidad se configura de forma independiente. Podés elegir sus días, horario y segundos en pantalla. Si varias coinciden, la app rota solamente las que estén habilitadas en ese momento.</div>
+<div class="notice">Cada publicidad se configura de forma independiente. Podés elegir días, horarios y segundos en pantalla. Si varias coinciden, la app rota solamente las habilitadas.</div>
+<div class="medidas-recomendadas"><b>📱 Imagen vertical para celulares: 1080 × 1920 px (9:16)</b><span>Prepará el flyer en esa proporción para aprovechar el contenedor sin franjas.</span></div>
+<div class="medidas-recomendadas"><b>🖥️ Imagen horizontal opcional para PC: 1920 × 1080 px (16:9)</b><span>Se carga por separado dentro de cada publicidad. La imagen vertical de la app no se altera.</span></div>
+<div class="notice" style="margin-top:10px">🔐 Para subir imágenes horizontales, ingresá primero la clave comercial desde la pestaña <b>Publicidad Web</b>. Las publicidades verticales continúan funcionando como siempre.</div>
 <div id="popPreview" style="display:none"></div>
 
 <div class="actions">
 
 <label class="btn">
 
-＋ Agregar imágenes
+＋ Agregar imágenes verticales (9:16)
 
 <input
 id="popFiles"
@@ -526,6 +542,43 @@ class="list">
 
 </section>
 
+<!-- PUBLICIDAD WEB - MODULO INDEPENDIENTE. No modifica el sistema de POP-UP -->
+<section id="tab-publicidad-web" class="tab">
+  <h1>🖥️ Publicidad Web</h1>
+  <p class="subtitle">Anuncios cuadrados exclusivos del carrusel de la página web, para planes Destacado e Integral. No aparecen en la aplicación.</p>
+  <div class="card">
+    <div class="notice" style="margin-bottom:14px"><b>Publicidad web independiente:</b> únicamente los planes Destacado e Integral aparecen en el carrusel. Los anuncios se guardan en Cloudflare y se reflejan en la web sin tocar el sistema de pop-ups.</div>
+    <div class="field"><label for="webAdminToken">Clave comercial (secreto ONRADIO_WEB_ADMIN_TOKEN de Cloudflare)</label><input id="webAdminToken" type="password" autocomplete="off" placeholder="Ingresá la clave configurada en Cloudflare"><small class="muted">La clave habilita Publicidad Web y las imágenes 16:9 del Pop-up. Nunca se incorpora al archivo HTML ni a GitHub.</small></div>
+    <div class="field" style="margin-top:12px">
+      <label style="display:flex;align-items:center;gap:10px;font-size:13px;text-transform:none;font-weight:700;color:#fff;cursor:pointer">
+        <input id="webRememberToken" type="checkbox" style="width:auto;flex:none;margin:0">
+        🔒 Recordar clave en esta computadora
+      </label>
+      <small class="muted" style="display:block;margin-top:7px">Opcional: guarda la clave sin cifrar en los datos locales de este navegador, solo después de una conexión correcta. Usalo únicamente en una computadora personal de confianza. Si borrás los datos de Chrome, cambiás de navegador o pasás del archivo local a GitHub, podría perderse. Conservá otra copia en un gestor de contraseñas.</small>
+    </div>
+    <div class="actions"><button class="btn gray" type="button" id="webAdConnect">🔐 Conectar a Cloudflare / Actualizar listado</button><span id="webAdConnection" class="muted" role="status" aria-live="polite">No conectado</span></div>
+    <div class="medidas-recomendadas"><b>▣ Imagen cuadrada: 1080 × 1080 px (1:1)</b><span>Usá este tamaño para que el flyer ocupe todo el cuadrado del carrusel, sin márgenes ni cortes.</span></div>
+    <form id="webAdForm" autocomplete="off">
+      <h3 id="webAdFormTitle">Agregar publicidad web</h3>
+      <div class="grid">
+        <div class="field"><label for="webAdName">Nombre del comercio (solo para administración)</label><input id="webAdName" required maxlength="80" placeholder="Nombre del anunciante"></div>
+        <div class="field"><label for="webAdPlan">Plan contratado</label><select id="webAdPlan"><option value="destacado">Destacado</option><option value="integral">Integral</option></select></div>
+      </div>
+      <div class="field"><label for="webAdUrl">Enlace al tocar la publicidad (opcional)</label><input type="url" id="webAdUrl" placeholder="https://wa.me/... o https://..."><small class="muted">Si no tiene página web, WhatsApp o redes, dejá este campo vacío: el anuncio se mostrará sin enlace. Si agregás uno, se abrirá en otra pestaña.</small></div>
+      <div class="grid">
+        <div class="field"><label for="webAdStart">Inicio (opcional)</label><input type="date" id="webAdStart"></div>
+        <div class="field"><label for="webAdEnd">Vencimiento (opcional)</label><input type="date" id="webAdEnd"></div>
+      </div>
+      <div class="grid">
+        <div class="field"><label for="webAdImage">Imagen cuadrada — 1080 × 1080 px</label><input type="file" id="webAdImage" accept="image/*"><small class="muted">Proporción 1:1 obligatoria. Podés reutilizar una misma imagen en varios anuncios. Al editar, si no elegís otra imagen, se conserva la existente.</small></div>
+        <div class="field"><label for="webAdEnabled">Visibilidad</label><select id="webAdEnabled"><option value="1">Activa</option><option value="0">Inactiva</option></select><div id="webAdPreview" class="web-ad-preview"><span class="muted">Vista previa 1:1</span></div></div>
+      </div>
+      <div class="actions"><button class="btn green" type="submit" id="webAdSave">💾 Guardar en Cloudflare</button><button class="btn gray" type="button" id="webAdCancel">Cancelar edición</button></div>
+      <div id="webAdFeedback" class="muted" role="status" aria-live="polite" style="margin-top:10px"></div>
+    </form>
+  </div>
+  <div class="card"><h3>Publicidades web guardadas</h3><p class="muted">Orden del carrusel en la web. Si todas las publicidades entran, permanecen quietas; si desbordan, avanzan automáticamente.</p><div id="webAdList" class="list"><div class="empty">Todavía no hay anuncios cargados.</div></div></div>
+</section>
 
 <!-- ========================================================= -->
 <!-- PROGRAMACION -->
@@ -1892,6 +1945,47 @@ document
 
 let popupCloudLoaded=false;
 
+// Las imágenes horizontales se publican por una ruta separada; PUT /popup conserva su comportamiento.
+// Contenido 16:9 ligado al mismo ad_key y almacenado en D1, nunca en localStorage.
+// La clave se introduce en Publicidad Web y solo permanece en memoria durante la sesión.
+let webCommercialToken="";
+function commercialHeaders(){return {'Content-Type':'application/json','Authorization':'Bearer '+webCommercialToken};}
+window.onradioCommercialAuth={apiBase:'https://onradio-ia.guillermocaballini.workers.dev',setToken(value){webCommercialToken=String(value||'').trim();},hasToken(){return webCommercialToken.length>=20;},headers:commercialHeaders};
+async function compressImageRatio(file,ratio,maxW,maxH,maxLength){
+  if(!file||!String(file.type||"").startsWith("image/"))throw Error("Elegí una imagen válida.");
+  const source=await readFile(file);
+  const img=await new Promise((resolve,reject)=>{const x=new Image();x.onload=()=>resolve(x);x.onerror=()=>reject(Error("No se pudo leer la imagen."));x.src=source;});
+  if(Math.abs(img.naturalWidth/img.naturalHeight-ratio)>0.018)throw Error(`La imagen tiene proporción ${img.naturalWidth} × ${img.naturalHeight}. Necesitamos ${ratio===1?'1:1 (cuadrada)':'16:9 (horizontal)'} para que ocupe el contenedor completo, sin franjas.`);
+  const scale=Math.min(1,maxW/img.naturalWidth,maxH/img.naturalHeight);
+  const c=document.createElement('canvas');c.width=Math.round(img.naturalWidth*scale);c.height=Math.round(img.naturalHeight*scale);
+  const ctx=c.getContext('2d',{alpha:false});ctx.fillStyle='#fff';ctx.fillRect(0,0,c.width,c.height);ctx.drawImage(img,0,0,c.width,c.height);
+  let result='',quality=.8;
+  while(quality>=.36){result=c.toDataURL('image/jpeg',quality);if(result.length<=maxLength)break;quality-=.08;}
+  if(result.length>maxLength)throw Error("La imagen es demasiado pesada para guardarla. Reducí su tamaño.");
+  return result;
+}
+window.setPopupHorizontalDraft=async function(i,input){
+  const ad=state.popup.images[i],file=input.files?.[0];if(!ad||!file)return;
+  if(!webCommercialToken){alert('Ingresá primero tu clave comercial desde la pestaña Publicidad Web.');input.value='';return;}
+  try{
+    const data=await compressImageRatio(file,16/9,1920,1080,280000);
+    const res=await fetch(ONRADIO_API+'/popup-horizontal',{method:'PUT',headers:commercialHeaders(),body:JSON.stringify({ad_key:ad.ad_key,data_horizontal:data})});
+    const out=await res.json().catch(()=>({}));if(!res.ok)throw Error(out.error||'HTTP '+res.status);
+    ad.data_horizontal=data;renderPopup();toast('Imagen horizontal 16:9 publicada en Cloudflare.');
+  }catch(err){alert('No se pudo guardar la imagen horizontal: '+(err.message||String(err)));}
+  finally{input.value='';}
+};
+window.deletePopupHorizontalDraft=async function(i){
+  const ad=state.popup.images[i];if(!ad||!ad.data_horizontal)return;
+  if(!webCommercialToken)return alert('Ingresá tu clave comercial desde Publicidad Web.');
+  if(!confirm('¿Eliminar solamente la versión horizontal de esta publicidad? La vertical se conserva.'))return;
+  try{
+    const res=await fetch(ONRADIO_API+'/popup-horizontal',{method:'PUT',headers:commercialHeaders(),body:JSON.stringify({ad_key:ad.ad_key,data_horizontal:''})});
+    const out=await res.json().catch(()=>({}));if(!res.ok)throw Error(out.error||'HTTP '+res.status);
+    ad.data_horizontal='';renderPopup();toast('Imagen horizontal eliminada; la vertical se mantiene.');
+  }catch(err){alert('No se pudo quitar la imagen horizontal: '+(err.message||String(err)));}
+};
+
 async function compressPopupImage(file){
   if(!file || !String(file.type||"").startsWith("image/")) throw new Error("El archivo no es una imagen válida.");
   const source=await new Promise((resolve,reject)=>{
@@ -1917,14 +2011,21 @@ async function compressPopupImage(file){
 function popupAdKey(){return 'ad-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,10);}
 function popupAdDefaults(data){
   if(typeof data==='string') return {data,ad_key:popupAdKey(),link:'',total_clicks:0,enabled:true,seconds:5,schedule:'all',from:'00:00',to:'00:00',days:[0,1,2,3,4,5,6]};
-  return {data:String(data?.data||''),ad_key:String(data?.ad_key||'')||popupAdKey(),link:String(data?.link||''),total_clicks:Number(data?.total_clicks||0),enabled:data?.enabled!==false,seconds:Math.max(1,Math.min(60,Number(data?.seconds)||5)),schedule:data?.schedule==='range'?'range':'all',from:data?.from||'00:00',to:data?.to||'00:00',days:Array.isArray(data?.days)&&data.days.length?data.days.map(Number):[0,1,2,3,4,5,6]};
+  return {data:String(data?.data||''),data_horizontal:String(data?.data_horizontal||''),ad_key:String(data?.ad_key||'')||popupAdKey(),link:String(data?.link||''),total_clicks:Number(data?.total_clicks||0),enabled:data?.enabled!==false,seconds:Math.max(1,Math.min(60,Number(data?.seconds)||5)),schedule:data?.schedule==='range'?'range':'all',from:data?.from||'00:00',to:data?.to||'00:00',days:Array.isArray(data?.days)&&data.days.length?data.days.map(Number):[0,1,2,3,4,5,6]};
 }
 function renderPopup(){
   state.popup.images=(state.popup.images||[]).map(popupAdDefaults);
   popList.innerHTML=state.popup.images.length?state.popup.images.map((ad,i)=>{
     const all=ad.days.length===7;
     return `<div class="item"><div class="row"><b>Publicidad ${i+1}</b><button class="btn danger" onclick="window.removePopupImage(${i})">Eliminar</button></div>
-      <div class="grid" style="margin-top:12px"><div>${imageFrame(ad.data,false)}</div><div>
+      <div class="grid" style="margin-top:12px"><div>
+          <div class="medidas-recomendadas"><b>📱 Vertical: 1080 × 1920 px (9:16)</b><span>Imagen actual de la app y celulares.</span></div>
+          ${imageFrame(ad.data,false)}
+          <div class="medidas-recomendadas"><b>🖥️ Horizontal: 1920 × 1080 px (16:9)</b><span>Imagen opcional para computadora, guardada en Cloudflare sin modificar la vertical.</span></div>
+          ${ad.data_horizontal?`<div class="frame horizontal"><img class="blur" src="${esc(ad.data_horizontal)}" alt=""><img class="fit" src="${esc(ad.data_horizontal)}" alt="Previsualización horizontal"></div>`:'<div class="empty">Sin imagen horizontal: la web usará la vertical con fondo desenfocado.</div>'}
+          <label class="btn gray" style="display:inline-block;margin-top:9px">📁 Elegir imagen 16:9<input type="file" accept="image/*" hidden onchange="window.setPopupHorizontalDraft(${i},this)"></label>
+          ${ad.data_horizontal?`<button type="button" class="btn danger" style="margin-top:9px" onclick="window.deletePopupHorizontalDraft(${i})">Quitar 16:9</button>`:''}
+        </div><div>
       <div class="field"><label>Publicidad activa</label><select onchange="window.setPopupField(${i},'enabled',this.value==='1')"><option value="1" ${ad.enabled?'selected':''}>Sí, mostrar</option><option value="0" ${!ad.enabled?'selected':''}>No, desactivar</option></select></div>
       <div class="field"><label>Segundos en pantalla</label><input type="number" min="1" max="60" value="${ad.seconds}" onchange="window.setPopupField(${i},'seconds',this.value)"></div>
       <div class="field"><label>Enlace al tocar la publicidad (opcional)</label><input type="url" placeholder="https://..." value="${esc(ad.link)}" onchange="window.setPopupField(${i},'link',this.value.trim())"><div class="muted" style="margin-top:6px">Puede ser web, Facebook, Instagram o un enlace de WhatsApp.</div></div>
@@ -2224,8 +2325,9 @@ value="${esc(program.desc)}">
 <div class="field">
 
 <label>
-Reemplazar imagen
+Reemplazar imagen — 1080 × 1080 px (1:1)
 </label>
+<div class="medidas-recomendadas"><b>▣ Imagen del programa: 1080 × 1080 px</b><span>Cuadrada (1:1). Así llena correctamente la portada del programa sin deformarse.</span></div>
 
 <input
 id="formFile"
@@ -3498,5 +3600,143 @@ if ("serviceWorker" in navigator) {
 })();
 
 </script>
+
+<script>
+// PUBLICIDAD WEB: módulo aislado, CRUD remoto. No modifica las demás funciones.
+(function(){
+ 'use strict';
+ const byId=id=>document.getElementById(id);
+ const form=byId('webAdForm'), tokenEl=byId('webAdminToken'), connectBtn=byId('webAdConnect'), rememberEl=byId('webRememberToken');
+ const REMEMBER_KEY='onradio_commercial_admin_token_202610';
+ let ads=[],editing=null,preparedImage='',connected=false,busy=false;
+ const notice=text=>{byId('webAdFeedback').textContent=text;};
+ const status=text=>{byId('webAdConnection').textContent=text;};
+ const url=path=>window.onradioCommercialAuth.apiBase+path;
+ function credentials(){if(!window.onradioCommercialAuth.hasToken())throw Error('Ingresá tu clave comercial y tocá Conectar a Cloudflare.');return window.onradioCommercialAuth.headers();}
+ async function req(path,opts={}){
+   const response=await fetch(url(path),{cache:'no-store',...opts,headers:{...credentials(),...(opts.headers||{})}});
+   let data=await response.json().catch(()=>({}));
+   if(!response.ok)throw Error(data.error||'Error HTTP '+response.status);
+   return data;
+ }
+ function inProgress(b){busy=b;byId('webAdSave').disabled=b;connectBtn.disabled=b;}
+ async function load(){
+   const d=await req('/web-ads/admin');
+   ads=(Array.isArray(d.ads)?d.ads:[]).map(x=>({...x,url:x.link,start:x.start_date||'',end:x.end_date||'',enabled:x.enabled!==false}));
+   connected=true;status('🟢 Conectado · '+ads.length+' anuncios en Cloudflare');render();
+ }
+ function persistValidatedToken(){
+   if(!rememberEl.checked)return;
+   try{localStorage.setItem(REMEMBER_KEY,tokenEl.value.trim());}
+   catch(err){notice('Conectado, pero Chrome no permitió recordar la clave en este archivo. Guardala en tu gestor de contraseñas.');}
+ }
+ async function connectAndValidate(){
+   window.onradioCommercialAuth.setToken(tokenEl.value);connected=false;
+   if(!window.onradioCommercialAuth.hasToken()){status('La clave debe tener al menos 20 caracteres.');return;}
+   inProgress(true);
+   try{await load();persistValidatedToken();notice('Conexión correcta con Cloudflare. '+(rememberEl.checked?'Clave recordada en este navegador.':'Clave en uso solo mientras esta página permanezca abierta.'));}
+   catch(e){status('No se pudo conectar');notice(e.message);}
+   finally{inProgress(false);}
+ }
+ connectBtn.onclick=connectAndValidate;
+ tokenEl.addEventListener('input',()=>{
+   window.onradioCommercialAuth.setToken(tokenEl.value);
+   connected=false;
+   status('Clave modificada. Tocá Conectar a Cloudflare para verificarla. La clave guardada no se reemplaza sin validar.');
+ });
+ rememberEl.addEventListener('change',()=>{
+   if(!rememberEl.checked){
+     let exists=false;try{exists=Boolean(localStorage.getItem(REMEMBER_KEY));}catch(e){}
+     if(exists && !confirm('¿Querés dejar de recordar la clave en esta computadora? Tendrás que ingresarla nuevamente la próxima vez.')){
+       rememberEl.checked=true;return;
+     }
+     try{localStorage.removeItem(REMEMBER_KEY);}catch(e){}
+     status('La clave sigue activa en esta pestaña, pero ya no quedará recordada.');
+   }else if(connected){
+     persistValidatedToken();status('Clave recordada en este navegador.');
+   }else{
+     status('Tocá Conectar a Cloudflare. La clave se guardará solo si funciona.');
+   }
+ });
+ // Recuperación opcional: no incluye la clave en el HTML ni la publica en GitHub.
+ try{
+   const remembered=localStorage.getItem(REMEMBER_KEY)||'';
+   if(remembered.length>=20){
+     tokenEl.value=remembered;
+     rememberEl.checked=true;
+     window.onradioCommercialAuth.setToken(remembered);
+     status('Clave recuperada de esta computadora. Verificando Cloudflare…');
+     connectAndValidate();
+   }
+ }catch(e){status('Recordatorio de clave no disponible en este navegador.');}
+ function reset(){
+   // La imagen se guarda como Data URL preparado; el selector de archivo nunca debe ser obligatorio.
+   // Si Chrome exige un archivo luego de guardar, bloquea todos los anuncios siguientes.
+   editing=null;
+   preparedImage='';
+   form.reset();
+   const file=byId('webAdImage');
+   file.value='';
+   file.removeAttribute('required');
+   file.setCustomValidity('');
+   byId('webAdFormTitle').textContent='Agregar publicidad web';
+   preview('');
+   notice('');
+ }
+ function preview(img){const p=byId('webAdPreview');p.replaceChildren();if(img){const e=document.createElement('img');e.src=img;e.alt='Vista previa anuncio cuadrado';p.append(e);}else p.textContent='Vista previa 1:1';}
+ function fechaAR(){return new Date().toLocaleDateString('en-CA',{timeZone:'America/Argentina/Buenos_Aires'});}
+ function estado(ad){const hoy=fechaAR();if(!ad.enabled)return 'Inactivo';if(ad.start&&ad.start>hoy)return 'Programado';if(ad.end&&ad.end<hoy)return 'Vencido';return 'Activo';}
+ async function compressSquare(f){
+   if(!String(f?.type||'').startsWith('image/'))throw Error('Elegí una imagen válida.');
+   const src=await new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(r.result);r.onerror=reject;r.readAsDataURL(f);});
+   const img=await new Promise((resolve,reject)=>{const i=new Image();i.onload=()=>resolve(i);i.onerror=reject;i.src=src;});
+   if(Math.abs(img.naturalWidth/img.naturalHeight-1)>.025)throw Error('Esta publicidad debe ser cuadrada 1:1. Prepará una imagen de 1080 × 1080 px.');
+   const n=Math.min(1080,img.naturalWidth,img.naturalHeight),c=document.createElement('canvas');c.width=c.height=n;
+   const ctx=c.getContext('2d',{alpha:false});ctx.fillStyle='#fff';ctx.fillRect(0,0,n,n);ctx.drawImage(img,0,0,n,n);
+   let out='',q=.85;for(;q>=.25;q-=.07){out=c.toDataURL('image/jpeg',q);if(out.length<=330000)break;}
+   if(out.length>330000)throw Error('Imagen demasiado pesada. Probá con JPG optimizado.');return out;
+ }
+ byId('webAdImage').onchange=async e=>{
+   const f=e.target.files?.[0];if(!f)return;
+   try{preparedImage=await compressSquare(f);preview(preparedImage);notice('Imagen cuadrada preparada: 1080 × 1080 px (1:1).');}
+   catch(err){preparedImage='';preview('');notice(err.message);}finally{e.target.value='';e.target.removeAttribute('required');e.target.setCustomValidity('');}
+ };
+ function render(){
+   const list=byId('webAdList');list.replaceChildren();
+   if(!ads.length){const empty=document.createElement('div');empty.className='empty';empty.textContent=connected?'No hay publicidades web guardadas.':'Conectate para consultar las publicidades.';list.append(empty);return;}
+   ads.forEach((ad,i)=>{
+     const item=document.createElement('div');item.className='item';const layout=document.createElement('div');layout.className='web-ad-item-layout';
+     const img=document.createElement('img');img.className='web-ad-thumb';img.src=ad.image;img.alt='Flyer '+ad.name;layout.append(img);
+     const right=document.createElement('div');const b=document.createElement('b');b.textContent=ad.name;right.append(b);
+     const p=document.createElement('p');p.className='muted';p.textContent=(ad.plan==='integral'?'Integral':'Destacado')+' · '+estado(ad)+' · '+(ad.start||'Sin inicio')+' → '+(ad.end||'Sin vencimiento');right.append(p);
+     if(ad.url){const a=document.createElement('a');a.href=ad.url;a.target='_blank';a.rel='noopener noreferrer';a.textContent='Abrir destino ↗';a.style.color='#93c5fd';right.append(a);}
+     const actions=document.createElement('div');actions.className='actions';
+     function btn(label,fn,kind='gray'){const el=document.createElement('button');el.type='button';el.className='btn '+kind;el.textContent=label;el.onclick=async()=>{if(busy)return;try{await fn();}catch(e){notice(e.message);}};actions.append(el);}
+     btn('✏️ Editar',()=>{editing=ad.id;preparedImage=ad.image;byId('webAdFormTitle').textContent='Editar publicidad web';byId('webAdName').value=ad.name;byId('webAdPlan').value=ad.plan;byId('webAdUrl').value=ad.url;byId('webAdStart').value=ad.start;byId('webAdEnd').value=ad.end;byId('webAdEnabled').value=ad.enabled?'1':'0';byId('webAdImage').removeAttribute('required');byId('webAdImage').setCustomValidity('');preview(preparedImage);form.scrollIntoView({behavior:'smooth',block:'start'});notice('Editando anuncio: '+ad.name);});
+     async function ordenar(j){if(j<0||j>=ads.length)return;inProgress(true);try{const ids=ads.map(x=>x.id);[ids[i],ids[j]]=[ids[j],ids[i]];await req('/web-ads/order',{method:'PATCH',body:JSON.stringify({ids})});await load();notice('Orden actualizado en Cloudflare.');}finally{inProgress(false);}}
+     btn('↑',()=>ordenar(i-1));btn('↓',()=>ordenar(i+1));
+     btn('🗑 Eliminar',async()=>{if(!confirm('¿Eliminar la publicidad web de '+ad.name+'?'))return;inProgress(true);try{await req('/web-ads/'+encodeURIComponent(ad.id),{method:'DELETE'});await load();if(editing===ad.id)reset();notice('Publicidad eliminada de Cloudflare.');}finally{inProgress(false);}},'danger');
+     right.append(actions);layout.append(right);item.append(layout);list.append(item);
+   });
+ }
+ form.addEventListener('submit',async e=>{
+   e.preventDefault();if(busy)return;
+   if(!connected)return notice('Primero ingresá tu clave comercial y conectate a Cloudflare.');
+   const name=byId('webAdName').value.trim(),plan=byId('webAdPlan').value,urlDest=byId('webAdUrl').value.trim(),start=byId('webAdStart').value,end=byId('webAdEnd').value,enabled=byId('webAdEnabled').value==='1';
+   if(!preparedImage){notice('Elegí una imagen cuadrada de 1080 × 1080 px.');return;}
+   if(start&&end&&end<start){notice('El vencimiento no puede ser anterior a la fecha de inicio.');return;}
+   inProgress(true);try{
+     const data={name,plan,link:urlDest,start_date:start,end_date:end,enabled,image:preparedImage};
+     await req(editing?'/web-ads/'+encodeURIComponent(editing):'/web-ads',{method:editing?'PUT':'POST',body:JSON.stringify(data)});
+     reset();await load();notice('✅ Publicidad guardada en Cloudflare. El formulario está listo para agregar otra sin cerrar el administrador.');
+   }catch(err){notice('No se pudo guardar: '+err.message);}finally{inProgress(false);}
+ });
+ byId('webAdCancel').onclick=reset;
+ // Limpiar cualquier validación nativa heredada de formularios anteriores.
+ byId('webAdImage').removeAttribute('required');
+ render();
+})();
+</script>
+
 </body>
 </html>
