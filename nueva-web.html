@@ -1195,7 +1195,8 @@ body.player-active{
   border-radius:16px;
 }
 .ads-web-viewport::-webkit-scrollbar {display:none;}
-.ads-web-track {display:flex;align-items:stretch;gap:14px;width:max-content;min-width:100%;}
+/* Centrar anuncios cuando entran completos; al desbordar, conservar desplazamiento desde el primero. */
+.ads-web-track {display:flex;align-items:stretch;justify-content:center;gap:14px;width:max-content;min-width:100%;}
 .ads-web-item {
   display:block;
   flex:0 0 clamp(150px,17vw,205px);
@@ -1214,11 +1215,7 @@ body.player-active{
 .ads-web-item.is-linked:hover {outline:2px solid #fff;outline-offset:-2px;}
 .ads-web-item:focus-visible {outline:3px solid #fff;outline-offset:-3px;}
 .ads-web-item img {display:block;width:100%;height:100%;object-fit:cover;}
-.ads-web-item-name {
-  position:absolute;bottom:0;left:0;right:0;padding:22px 8px 8px;
-  background:linear-gradient(transparent,#000c);color:#fff;
-  font-size:13px;font-weight:800;text-align:center;
-}
+/* Los anuncios se presentan sin rótulos: la imagen ocupa la tarjeta completa. */
 .ads-web-demo-note {display:none;margin-top:9px;text-align:center;font-size:11px;color:#fff;opacity:.8;}
 .ads-web.is-demo .ads-web-demo-note {display:block;}
 @media(min-width:920px) and (max-width:1090px) {.ads-web-item {flex-basis:clamp(136px,17vw,160px);}}
@@ -1231,8 +1228,20 @@ body.player-active{
 
 /* El modo PC (o móvil horizontal ancho) muestra el MISMO popup, en lienzo 16:9. */
 @media (min-width: 920px), (orientation: landscape) and (min-width: 560px) {
-  .ad-modal-container {width:min(92vw,1000px);max-width:1000px;max-height:calc(100dvh - 28px);border-radius:17px;}
-  .ad-carousel {aspect-ratio:16 / 9;max-height:calc(100dvh - 80px);background:#130909;}
+  /* Tanto el ancho como el alto respetan una proporción REAL de 16:9.
+     Limitar solo la altura (sin ajustar el ancho) generaba las franjas laterales. */
+  .ad-modal-container {
+    width: min(92vw, 1000px, calc((100dvh - 72px) * 16 / 9));
+    max-width: 1000px;
+    max-height: calc(100dvh - 28px);
+    border-radius: 17px;
+  }
+  .ad-carousel {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    max-height: none;
+    background: #130909;
+  }
   .ad-slide-wrapper{background:#130909;}
   .ad-slide-bg{filter:blur(27px) brightness(.47);inset:-35px;}
   .ad-slide-img{height:100%;width:100%;max-width:100%;max-height:100%;object-fit:contain;box-shadow:none;}
@@ -1263,6 +1272,141 @@ a.drawer-foot.cabapps-foot .cabapps-caption{
 a.drawer-foot.cabapps-foot .cabapps-phone{
   font-size:15px;color:#7def27;font-weight:900;line-height:1.35;letter-spacing:.01em;
 }
+
+/* ================================
+   LA ON RADIO · INVITACIÓN PWA WEB
+   Barra fija independiente de la app
+   ================================ */
+.on-pwa-invite {
+  position: fixed;
+  left: 50%;
+  bottom: max(12px, env(safe-area-inset-bottom));
+  transform: translateX(-50%);
+  z-index: 1000;
+  width: min(1050px, calc(100% - 32px));
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  background: linear-gradient(112deg, #171717 0%, #241010 70%, #390b0e 100%);
+  border: 1px solid rgba(255, 80, 80, .65);
+  border-radius: 16px;
+  padding: 11px 46px 11px 13px;
+  box-shadow: 0 12px 40px rgba(0,0,0,.67), 0 0 0 1px rgba(255,255,255,.035) inset;
+  color: #fff;
+  font-family: Arial, Helvetica, sans-serif;
+}
+body.player-active .on-pwa-invite {
+  bottom: calc(70px + env(safe-area-inset-bottom));
+}
+body.on-pwa-invite-visible {
+  padding-bottom: calc(var(--on-pwa-invite-height, 94px) + 26px);
+}
+body.on-pwa-invite-visible.player-active {
+  padding-bottom: calc(var(--on-pwa-invite-height, 94px) + 84px);
+}
+.on-pwa-invite[hidden] { display: none !important; }
+.on-pwa-invite__logo {
+  width: 57px;
+  height: 57px;
+  object-fit: contain;
+  border-radius: 12px;
+  flex: 0 0 auto;
+  background: #080808;
+}
+.on-pwa-invite__body { flex: 1; min-width: 0; }
+.on-pwa-invite__eyebrow {
+  color: #ff7474;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  margin: 0 0 3px;
+}
+.on-pwa-invite__title {
+  margin: 0;
+  color: white;
+  font-size: clamp(14px, 1.6vw, 18px);
+  font-weight: 900;
+  line-height: 1.2;
+}
+.on-pwa-invite__hint {
+  font-size: 11px;
+  line-height: 1.3;
+  color: #dadada;
+  margin: 4px 0 0;
+}
+.on-pwa-invite__cta {
+  background: #e01818;
+  color: #fff;
+  text-decoration: none;
+  border: 0;
+  border-radius: 11px;
+  padding: 13px 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  font-size: 13px;
+  font-weight: 900;
+  white-space: nowrap;
+  flex: 0 0 auto;
+  min-height: 44px;
+}
+.on-pwa-invite__cta:hover { background: #ff2525; }
+.on-pwa-invite__cta:focus-visible,
+.on-pwa-invite__close:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: 3px;
+}
+.on-pwa-invite__close {
+  position: absolute;
+  top: 8px;
+  right: 9px;
+  width: 30px;
+  height: 30px;
+  color: #fff;
+  border-radius: 50%;
+  background: #3a2929;
+  border: 1px solid #6b4141;
+  font-size: 21px;
+  line-height: 1;
+  cursor: pointer;
+}
+@media (max-width: 600px) {
+  .on-pwa-invite {
+    width: calc(100% - 16px);
+    gap: 9px;
+    padding: 9px 35px 9px 9px;
+    border-radius: 13px;
+    bottom: max(7px, env(safe-area-inset-bottom));
+  }
+  body.player-active .on-pwa-invite {
+    bottom: calc(64px + env(safe-area-inset-bottom));
+  }
+  .on-pwa-invite__logo { width: 42px; height: 42px; border-radius: 9px; }
+  .on-pwa-invite__title { font-size: 12.5px; }
+  .on-pwa-invite__eyebrow { font-size: 8px; }
+  .on-pwa-invite__hint { font-size: 9px; }
+  .on-pwa-invite__cta { padding: 8px; min-height: 38px; font-size: 11px; white-space: normal; text-align: center; max-width: 93px; }
+  .on-pwa-invite__close { top: 5px; right: 4px; width: 26px; height: 26px; font-size: 18px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .on-pwa-invite { scroll-behavior: auto; }
+}
+
+
+/* Redes adicionales SOLO para pantallas de PC: la vista móvil original permanece igual. */
+.redes-pills .social-extra-desktop { display:none; }
+@media (min-width: 920px) and (pointer: fine) {
+  .main > .redes-top { max-width:none; width:100%; }
+  .main > .redes-top .redes-pills { grid-template-columns:repeat(7,minmax(0,1fr)); gap:clamp(8px,1.25vw,16px); }
+  .redes-pills .social-extra-desktop { display:flex; }
+}
+.redes-pills .pill.tiktok {background:#050505;}
+.redes-pills .pill.tiktok svg {filter:drop-shadow(2px 0 #fe2c55) drop-shadow(-1px -1px #25f4ee);}
+.redes-pills .pill.twitch {background:#9146ff;}
+.redes-pills .pill.kick {background:#53fc47;}
+
 </style>
 </head>
 
@@ -1279,7 +1423,7 @@ a.drawer-foot.cabapps-foot .cabapps-phone{
   </div>
 
   <div class="header-actions">
-    <button class="icon-btn play-header" onclick="abrirSenales()" aria-label="Reproducir">▶</button>
+    <button class="icon-btn play-header" onclick="escucharRadio()" aria-label="Reproducir">▶</button>
     <button class="icon-btn share-header" onclick="compartirApp()" aria-label="Compartir">
       <svg width="30" height="30" viewBox="0 0 24 24">
         <circle cx="18" cy="5" r="3" fill="white"/>
@@ -1362,6 +1506,10 @@ a.drawer-foot.cabapps-foot .cabapps-phone{
 <a class="pill x-network" href="https://twitter.com/laonradioo" target="_blank" rel="noopener" aria-label="X de LA ON Radio" title="X"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M6 5H12.7L26.2 27H19.5Z" stroke="white" stroke-width="2" fill="none"/><path d="M25.2 5 6.7 27" stroke="white" stroke-width="2.2"/></svg></a>
 <a class="pill youtube" href="https://www.youtube.com/@laonradio" target="_blank" rel="noopener" aria-label="YouTube de LA ON Radio" title="YouTube"><svg viewBox="0 0 32 32" aria-hidden="true"><path fill="white" d="M12 8.6 25.2 16 12 23.4Z"/></svg></a>
 <a class="pill facebook" href="https://www.facebook.com/onradioo" target="_blank" rel="noopener" aria-label="Facebook de LA ON Radio" title="Facebook"><svg viewBox="0 0 32 32" aria-hidden="true"><path fill="white" d="M19.2 29V17.2h4l.6-4.8h-4.6V9.4c0-1.4.4-2.3 2.3-2.3H24V2.8c-.5-.1-2-.2-3.8-.2-3.8 0-6.3 2.3-6.3 6.4v3.4h-4.1v4.8h4.1V29Z"/></svg></a>
+<!-- Solo escritorio: las redes que ya existen en el menú de la app -->
+<a class="pill tiktok social-extra-desktop" href="https://www.tiktok.com/@laonradio" target="_blank" rel="noopener noreferrer" aria-label="TikTok de La ON Radio" title="TikTok"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="white" d="M16.7 2.5c.2 2.4 1.7 3.8 4 4V10a9 9 0 0 1-4-1v6.3a7.1 7.1 0 1 1-7.1-7.1h.6v3.7h-.6a3.4 3.4 0 1 0 3.4 3.4V2.5h3.7Z"/></svg></a>
+<a class="pill twitch social-extra-desktop" href="https://www.twitch.tv/laonradio" target="_blank" rel="noopener noreferrer" aria-label="Twitch de La ON Radio" title="Twitch"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="white" d="M4.5 2 2 6.7V19h4.5v3H10l3-3h4.4L22 14.4V2H4.5Zm15 11.1L16.5 16h-4.4l-3 3v-3H5V4.5h14.5v8.6ZM15.9 7h-2v5h2V7Zm-5 0h-2v5h2V7Z"/></svg></a>
+<a class="pill kick social-extra-desktop" href="https://kick.com/onradiostream" target="_blank" rel="noopener noreferrer" aria-label="Kick de La ON Radio" title="Kick"><svg viewBox="0 0 29 29" aria-hidden="true"><path fill="#071307" d="M7 5h5v8h4v-3h4V6h4v8h-4v4h4v7h-5v-5h-7v5H7Z"/></svg></a>
 </div>
   </section>
 
@@ -1372,7 +1520,7 @@ a.drawer-foot.cabapps-foot .cabapps-phone{
       </div>
       <div id="musicBadge" class="music-badge">ON AIR</div>
       <div id="heroBgText" class="hero-bg-text">ON RADIO</div>
-      <button class="play-center" onclick="abrirSenales()" aria-label="Reproducir">▶</button>
+      <button class="play-center" onclick="escucharRadio()" aria-label="Reproducir">▶</button>
     </div>
 
     <div class="hero-info">
@@ -1425,13 +1573,12 @@ a.drawer-foot.cabapps-foot .cabapps-phone{
   </section>
 
   <!-- PUBLICIDAD EXCLUSIVA WEB - planes Destacado e Integral.
-       El panel y backend aún deben incorporar la carga real de /web-ads.
-       En nueva-web.html se muestran anuncios de DEMOSTRACIÓN hasta disponer de esa API. -->
+       Imágenes del administrador en Cloudflare; el nombre es solo administrativo. -->
   <section id="espacio-publicitario" class="ads-web" aria-labelledby="ads-web-title">
     <div class="ads-web-heading">
       <div>
-        <h2 id="ads-web-title">ESPACIO PUBLICITARIO</h2>
-        <p>Comercios y marcas que acompañan a La ON Radio</p>
+        <h2 id="ads-web-title">ESPACIO DISPONIBLE PARA PUBLICIDAD</h2>
+        <p>Tu comercio o marca puede acompañar a La ON Radio</p>
       </div>
   <a class="publicidad-main"
      href="https://onradiostreaming.github.io/ON-Radio/index-carpeta-formulario.html"
@@ -1472,15 +1619,6 @@ a.drawer-foot.cabapps-foot .cabapps-phone{
     <span class="radio">ON Radio</span>
   </div>
   <button class="stop-btn" onclick="detenerRadio()" aria-label="Detener reproducción"></button>
-</div>
-
-<div id="modalSenales" class="modal">
-  <div class="modal-box">
-    <h2 class="signal-title">Elegí una opción</h2>
-    <button class="signal-option" onclick="escucharRadio()">Escuchanos en vivo</button>
-    <button class="signal-option" onclick="verEnVivo()">Miranos en vivo</button>
-    <button class="signal-option cancel" onclick="cerrarSenales()">Cancelar</button>
-  </div>
 </div>
 
 <div id="modalInstalar" class="modal">
@@ -1873,12 +2011,28 @@ function actualizarBloque(){
   if(activeCard) activeCard.classList.add("active");
 }
 
-function abrirSenales(){ document.getElementById("modalSenales").style.display = "flex"; }
-function cerrarSenales(){ document.getElementById("modalSenales").style.display = "none"; }
+// Play directo: el botón jamás abre un selector de audio/video.
+// El acceso a video se agregará aparte solo con una señal en vivo verificable.
 function escucharRadio(){
-  cerrarSenales();
-  document.getElementById("streaming").play();
-  mostrarBarraPlayer();
+  const audio=document.getElementById("streaming");
+  if(!audio) return;
+  if(!audio.paused){mostrarBarraPlayer();return;}
+  try{
+    const intento=audio.play();
+    if(intento && typeof intento.then==="function"){
+      intento.then(()=>mostrarBarraPlayer()).catch(error=>{
+        console.warn("La reproducción de La ON Radio no pudo iniciarse:",error);
+        ocultarBarraPlayer();
+        alert("No se pudo iniciar La ON Radio. Comprobá tu conexión e intentá nuevamente.");
+      });
+    }else{
+      mostrarBarraPlayer();
+    }
+  }catch(error){
+    console.warn("Error al reproducir La ON Radio:",error);
+    ocultarBarraPlayer();
+    alert("No se pudo iniciar La ON Radio. Intentá nuevamente.");
+  }
 }
 function mostrarBarraPlayer(){
   document.getElementById("playerBar").classList.add("show");
@@ -1893,10 +2047,6 @@ function detenerRadio(){
   audio.pause();
   audio.currentTime = 0;
   ocultarBarraPlayer();
-}
-function verEnVivo(){
-  cerrarSenales();
-  window.open("https://www.youtube.com/@laonradio/live", "_blank");
 }
 function abrirMenu(){
   document.getElementById("drawer").classList.add("open");
@@ -2549,12 +2699,9 @@ setInterval(()=>{if(!document.hidden)cargarImagenesProgramasDesdeNube();}, 60*60
 
 /* =============================================================
    ESPACIO PUBLICITARIO EXCLUSIVO DE LA WEB
-   La URL /web-ads es el contrato PREVISTO para el panel futuro;
-   no se debe mezclar con /popup ni mostrar estas tarjetas en la app.
-   Estructura esperada: {ads:[{name,image,link,plan,active,
-                               start_date,end_date,order}]}
-   Con el endpoint aún sin crear, SÓLO en esta página de prueba
-   se muestra una simulación señalizada para validar el carrusel.
+   /web-ads consulta anuncios públicos sin datos internos del comercio.
+   No se mezcla con /popup ni se muestra esta sección en la app.
+   El nombre se gestiona exclusivamente en /web-ads/admin.
    ============================================================= */
 (function inicializarPublicidadWeb(){
   'use strict';
@@ -2592,7 +2739,6 @@ setInterval(()=>{if(!document.hidden)cargarImagenesProgramasDesdeNube();}, 60*60
   function normalizarAds(items){
     return items.filter(ad=>ad&&typeof ad==='object')
       .map(ad=>({
-        name:String(ad.name||ad.nombre||'Anunciante').trim().slice(0,90),
         image:String(ad.image||ad.imagen||ad.image_url||'').trim(),
         link:String(ad.link||ad.url||'').trim(),
         plan:String(ad.plan||'').toLowerCase().trim(),
@@ -2621,9 +2767,12 @@ setInterval(()=>{if(!document.hidden)cargarImagenesProgramasDesdeNube();}, 60*60
       const primero = track.querySelector('.ads-web-item');
       const gap = parseFloat(getComputedStyle(track).gap)||0;
       const avance = (primero?.getBoundingClientRect().width || 180)+gap;
-      const limite = viewport.scrollWidth-viewport.clientWidth;
-      const proximo = viewport.scrollLeft+avance;
-      viewport.scrollTo({left:proximo>limite+2?0:proximo,behavior:'smooth'});
+      const limite = Math.max(0, viewport.scrollWidth-viewport.clientWidth);
+      // Mostrar también la última tarjeta COMPLETA. Antes, si el salto
+      // superaba el final, regresábamos a cero y esa tarjeta nunca aparecía.
+      const alFinal = viewport.scrollLeft >= limite-3;
+      const proximo = alFinal ? 0 : Math.min(limite, viewport.scrollLeft+avance);
+      viewport.scrollTo({left:proximo,behavior:'smooth'});
     },intervaloMs);
   }
   function mostrarAds(items,demostracion){
@@ -2637,18 +2786,21 @@ setInterval(()=>{if(!document.hidden)cargarImagenesProgramasDesdeNube();}, 60*60
       const enlace=urlSegura(ad.link);
       const card=document.createElement(enlace?'a':'div');
       card.className='ads-web-item'+(enlace?' is-linked':'');
-      if(enlace){card.href=enlace;card.target='_blank';card.rel='noopener noreferrer';card.title='Visitar '+ad.name+' (otra pestaña)';}
+      if(enlace){card.href=enlace;card.target='_blank';card.rel='noopener noreferrer';card.setAttribute('aria-label','Abrir publicidad en otra pestaña');}
       const img=document.createElement('img');
-      img.src=ad.image;img.alt=ad.name;img.loading='lazy';img.decoding='async';
+      img.src=ad.image;img.alt='Publicidad de La ON Radio';img.loading='lazy';img.decoding='async';
       card.appendChild(img);
-      if(!demostracion){const nombre=document.createElement('span');nombre.className='ads-web-item-name';nombre.textContent=ad.name;card.appendChild(nombre);}
+      // El nombre del comercio es un dato administrativo. Nunca se superpone al flyer.
       track.appendChild(card);
     });
     viewport.scrollLeft=0;
     requestAnimationFrame(actualizarCarrusel);
   }
-  viewport.addEventListener('mouseenter',()=>{pausado=true;limpiarTimer();});
-  viewport.addEventListener('mouseleave',()=>{pausado=false;actualizarCarrusel();});
+  // Mantener el avance automático aunque el cursor quede sobre el carrusel.
+  // Sólo se detiene durante una interacción real (arrastre/pulsación o foco con teclado).
+  viewport.addEventListener('pointerdown',()=>{pausado=true;limpiarTimer();});
+  viewport.addEventListener('pointerup',()=>{pausado=false;actualizarCarrusel();});
+  viewport.addEventListener('pointercancel',()=>{pausado=false;actualizarCarrusel();});
   viewport.addEventListener('focusin',()=>{pausado=true;limpiarTimer();});
   viewport.addEventListener('focusout',()=>{pausado=false;actualizarCarrusel();});
   document.addEventListener('visibilitychange',actualizarCarrusel);
@@ -2682,5 +2834,65 @@ setInterval(()=>{if(!document.hidden)cargarImagenesProgramasDesdeNube();}, 60*60
 
 <div id="pushOptin" style="position:fixed;right:12px;bottom:75px;z-index:88;max-width:225px;display:none;background:#191919;border:1px solid #e01818;border-radius:12px;padding:12px;color:white;box-shadow:0 5px 20px #0008;font:13px Arial"><strong>🔔 Avisos de ON Radio</strong><p style="margin:8px 0">Enterate cuando empieza un programa. Solo si vos querés.</p><button id="pushOptinButton" style="background:#e01818;border:0;color:#fff;padding:8px;border-radius:7px;font-weight:bold">Activar notificaciones</button><button id="pushOptinDismiss" aria-label="Cerrar" style="background:none;border:0;color:#ddd;margin-left:6px">Ahora no</button></div>
 <script>/* Push de PWA deshabilitado sólo en la versión web de prueba. */</script>
+
+<!-- Invitación a instalar la PWA oficial (el mismo enlace para todos los sistemas). -->
+<aside class="on-pwa-invite" id="onPwaInvite" aria-label="Instalar la aplicación oficial de La ON Radio" hidden>
+  <img class="on-pwa-invite__logo" src="https://onradiostreaming.github.io/ON-Radio/logotipo.png" alt="Logo de La ON Radio" loading="lazy">
+  <div class="on-pwa-invite__body">
+    <div class="on-pwa-invite__eyebrow">📲 LA ON RADIO · ¡VA CON VOS!</div>
+    <p class="on-pwa-invite__title" id="onPwaInviteTitle">Instalá la app oficial de La ON Radio</p>
+    <p class="on-pwa-invite__hint" id="onPwaInviteHint">Escuchanos directamente desde tu dispositivo.</p>
+  </div>
+  <a class="on-pwa-invite__cta" id="onPwaInviteOpen"
+     href="https://onradiostreaming.github.io/ON-Radio/"
+     target="_blank" rel="noopener noreferrer"
+     aria-label="Abrir la aplicación oficial de La ON Radio para instalarla">
+    <span aria-hidden="true">↗</span> Instalar App
+  </a>
+  <button class="on-pwa-invite__close" id="onPwaInviteClose" type="button" aria-label="Cerrar invitación de instalación">×</button>
+</aside>
+<script>
+/* Banner de instalación exclusivo de esta web; no altera la PWA ni el reproductor. */
+(function iniciarInvitacionAppOficial(){
+  'use strict';
+  const barra=document.getElementById('onPwaInvite');
+  const titulo=document.getElementById('onPwaInviteTitle');
+  const indicacion=document.getElementById('onPwaInviteHint');
+  const cerrar=document.getElementById('onPwaInviteClose');
+  if(!barra||!titulo||!indicacion||!cerrar)return;
+  const ua=navigator.userAgent||'';
+  const iOS=/iPhone|iPad|iPod/i.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+  const android=/Android/i.test(ua);
+  const windows=/Windows/i.test(ua);
+  if(iOS){
+    titulo.textContent='Instalá la app oficial de La ON Radio en tu iPhone';
+    indicacion.textContent='Abrila en Safari y tocá Compartir → Agregar a pantalla de inicio.';
+  }else if(android){
+    titulo.textContent='Instalá la app oficial de La ON Radio en tu Android';
+    indicacion.textContent='Abrila en Chrome y elegí Instalar app desde el menú del navegador.';
+  }else if(windows){
+    titulo.textContent='Instalá la app oficial de La ON Radio en Windows';
+    indicacion.textContent='Abrila en Chrome o Edge y elegí Instalar desde el navegador.';
+  }else{
+    titulo.textContent='Instalá la app oficial de La ON Radio';
+    indicacion.textContent='Abrila y usá la opción Instalar de tu navegador, si está disponible.';
+  }
+  const clave='onradio_web_invite_closed_this_session';
+  try{if(sessionStorage.getItem(clave)==='1')return;}catch(_e){}
+  barra.hidden=false;
+  document.body.classList.add('on-pwa-invite-visible');
+  const actualizarAlto=()=>document.body.style.setProperty('--on-pwa-invite-height',Math.ceil(barra.getBoundingClientRect().height)+'px');
+  actualizarAlto();
+  if('ResizeObserver' in window){new ResizeObserver(actualizarAlto).observe(barra);}
+  window.addEventListener('resize',actualizarAlto,{passive:true});
+  cerrar.addEventListener('click',()=>{
+    barra.hidden=true;
+    document.body.classList.remove('on-pwa-invite-visible');
+    document.body.style.removeProperty('--on-pwa-invite-height');
+    try{sessionStorage.setItem(clave,'1');}catch(_e){}
+  });
+})();
+</script>
+
 </body>
 </html>
