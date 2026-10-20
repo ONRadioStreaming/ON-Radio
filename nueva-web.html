@@ -1407,6 +1407,21 @@ body.on-pwa-invite-visible.player-active {
 .redes-pills .pill.twitch {background:#9146ff;}
 .redes-pills .pill.kick {background:#53fc47;}
 
+
+/* LA ON RADIO · compatibilidad tipográfica de Windows (solo PC).
+   Evita la superposición de caracteres del título ¿Querés hacer radio?
+   en motores Chromium/DirectWrite, sin alterar el diseño móvil. */
+@media (min-width: 780px) {
+  .form-card > h2 {
+    font-family: "Segoe UI", Verdana, sans-serif !important;
+    font-weight: 700 !important;
+    font-kerning: none !important;
+    font-variant-ligatures: none !important;
+    font-feature-settings: "kern" 0, "liga" 0 !important;
+    letter-spacing: 0 !important;
+    text-rendering: auto !important;
+  }
+}
 </style>
 </head>
 
@@ -2847,7 +2862,7 @@ setInterval(()=>{if(!document.hidden)cargarImagenesProgramasDesdeNube();}, 60*60
      href="https://onradiostreaming.github.io/ON-Radio/"
      target="_blank" rel="noopener noreferrer"
      aria-label="Abrir la aplicación oficial de La ON Radio para instalarla">
-    <span aria-hidden="true">↗</span> Instalar App
+    <span aria-hidden="true">↗</span> Abrir app
   </a>
   <button class="on-pwa-invite__close" id="onPwaInviteClose" type="button" aria-label="Cerrar invitación de instalación">×</button>
 </aside>
