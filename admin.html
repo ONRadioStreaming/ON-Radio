@@ -378,9 +378,9 @@ textarea{
 .medidas-recomendadas b{color:#fff;font-size:14px}
 .medidas-recomendadas span{color:#bbb;font-size:12px;line-height:1.4}
 .frame.horizontal{width:min(100%,360px);height:auto;aspect-ratio:16/9}
-.web-ad-preview{margin-top:12px;width:145px;aspect-ratio:1/1;background:#101010;border:1px dashed #666;border-radius:10px;display:grid;place-items:center;overflow:hidden}
-.web-ad-preview img{width:100%;height:100%;object-fit:cover}
-.web-ad-thumb{width:105px;height:105px;object-fit:cover;border-radius:8px;border:1px solid #555}
+.web-ad-preview{margin-top:12px;width:145px;aspect-ratio:9/16;background:#101010;border:1px dashed #666;border-radius:10px;display:grid;place-items:center;overflow:hidden}
+.web-ad-preview img{width:100%;height:100%;object-fit:contain}
+.web-ad-thumb{width:105px;aspect-ratio:9/16;height:auto;object-fit:contain;background:#101010;border-radius:8px;border:1px solid #555}
 .web-ad-item-layout{display:flex;align-items:start;gap:15px;flex-wrap:wrap}
 .web-ad-item-layout>div:last-child{flex:1;min-width:200px}
 @media(max-width:780px){
@@ -545,7 +545,7 @@ class="list">
 <!-- PUBLICIDAD WEB - MODULO INDEPENDIENTE. No modifica el sistema de POP-UP -->
 <section id="tab-publicidad-web" class="tab">
   <h1>🖥️ Publicidad Web</h1>
-  <p class="subtitle">Anuncios cuadrados exclusivos del carrusel de la página web, para planes Destacado e Integral. No aparecen en la aplicación.</p>
+  <p class="subtitle">Anuncios verticales 9:16 exclusivos del carrusel de la página web, para planes Destacado e Integral. No aparecen en la aplicación.</p>
   <div class="card">
     <div class="notice" style="margin-bottom:14px"><b>Publicidad web independiente:</b> únicamente los planes Destacado e Integral aparecen en el carrusel. Los anuncios se guardan en Cloudflare y se reflejan en la web sin tocar el sistema de pop-ups.</div>
     <div class="field"><label for="webAdminToken">Clave comercial (secreto ONRADIO_WEB_ADMIN_TOKEN de Cloudflare)</label><input id="webAdminToken" type="password" autocomplete="off" placeholder="Ingresá la clave configurada en Cloudflare"><small class="muted">La clave habilita Publicidad Web y las imágenes 16:9 del Pop-up. Nunca se incorpora al archivo HTML ni a GitHub.</small></div>
@@ -557,7 +557,7 @@ class="list">
       <small class="muted" style="display:block;margin-top:7px">Opcional: guarda la clave sin cifrar en los datos locales de este navegador, solo después de una conexión correcta. Usalo únicamente en una computadora personal de confianza. Si borrás los datos de Chrome, cambiás de navegador o pasás del archivo local a GitHub, podría perderse. Conservá otra copia en un gestor de contraseñas.</small>
     </div>
     <div class="actions"><button class="btn gray" type="button" id="webAdConnect">🔐 Conectar a Cloudflare / Actualizar listado</button><span id="webAdConnection" class="muted" role="status" aria-live="polite">No conectado</span></div>
-    <div class="medidas-recomendadas"><b>▣ Imagen cuadrada: 1080 × 1080 px (1:1)</b><span>Usá este tamaño para que el flyer ocupe todo el cuadrado del carrusel, sin márgenes ni cortes.</span></div>
+    <div class="medidas-recomendadas"><b>▯ Imagen vertical: 1080 × 1920 px (9:16)</b><span>Usá este tamaño vertical para aprovechar la tarjeta completa del carrusel, sin franjas ni recortes. Las imágenes anteriores se conservan hasta que las reemplaces.</span></div>
     <form id="webAdForm" autocomplete="off">
       <h3 id="webAdFormTitle">Agregar publicidad web</h3>
       <div class="grid">
@@ -570,8 +570,8 @@ class="list">
         <div class="field"><label for="webAdEnd">Vencimiento (opcional)</label><input type="date" id="webAdEnd"></div>
       </div>
       <div class="grid">
-        <div class="field"><label for="webAdImage">Imagen cuadrada — 1080 × 1080 px</label><input type="file" id="webAdImage" accept="image/*"><small class="muted">Proporción 1:1 obligatoria. Podés reutilizar una misma imagen en varios anuncios. Al editar, si no elegís otra imagen, se conserva la existente.</small></div>
-        <div class="field"><label for="webAdEnabled">Visibilidad</label><select id="webAdEnabled"><option value="1">Activa</option><option value="0">Inactiva</option></select><div id="webAdPreview" class="web-ad-preview"><span class="muted">Vista previa 1:1</span></div></div>
+        <div class="field"><label for="webAdImage">Imagen vertical — 1080 × 1920 px</label><input type="file" id="webAdImage" accept="image/*"><small class="muted">Proporción 9:16 obligatoria. La imagen se prepara a 1080 × 1920 px. Podés reutilizarla en varios anuncios. Al editar, si no elegís otra, se conserva la existente.</small></div>
+        <div class="field"><label for="webAdEnabled">Visibilidad</label><select id="webAdEnabled"><option value="1">Activa</option><option value="0">Inactiva</option></select><div id="webAdPreview" class="web-ad-preview"><span class="muted">Vista previa 9:16</span></div></div>
       </div>
       <div class="actions"><button class="btn green" type="submit" id="webAdSave">💾 Guardar en Cloudflare</button><button class="btn gray" type="button" id="webAdCancel">Cancelar edición</button></div>
       <div id="webAdFeedback" class="muted" role="status" aria-live="polite" style="margin-top:10px"></div>
@@ -3683,23 +3683,29 @@ if ("serviceWorker" in navigator) {
    preview('');
    notice('');
  }
- function preview(img){const p=byId('webAdPreview');p.replaceChildren();if(img){const e=document.createElement('img');e.src=img;e.alt='Vista previa anuncio cuadrado';p.append(e);}else p.textContent='Vista previa 1:1';}
+ function preview(img){const p=byId('webAdPreview');p.replaceChildren();if(img){const e=document.createElement('img');e.src=img;e.alt='Vista previa anuncio vertical 9:16';p.append(e);}else p.textContent='Vista previa 9:16';}
  function fechaAR(){return new Date().toLocaleDateString('en-CA',{timeZone:'America/Argentina/Buenos_Aires'});}
  function estado(ad){const hoy=fechaAR();if(!ad.enabled)return 'Inactivo';if(ad.start&&ad.start>hoy)return 'Programado';if(ad.end&&ad.end<hoy)return 'Vencido';return 'Activo';}
- async function compressSquare(f){
+ async function compressWebAdVertical(f){
    if(!String(f?.type||'').startsWith('image/'))throw Error('Elegí una imagen válida.');
    const src=await new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(r.result);r.onerror=reject;r.readAsDataURL(f);});
    const img=await new Promise((resolve,reject)=>{const i=new Image();i.onload=()=>resolve(i);i.onerror=reject;i.src=src;});
-   if(Math.abs(img.naturalWidth/img.naturalHeight-1)>.025)throw Error('Esta publicidad debe ser cuadrada 1:1. Prepará una imagen de 1080 × 1080 px.');
-   const n=Math.min(1080,img.naturalWidth,img.naturalHeight),c=document.createElement('canvas');c.width=c.height=n;
-   const ctx=c.getContext('2d',{alpha:false});ctx.fillStyle='#fff';ctx.fillRect(0,0,n,n);ctx.drawImage(img,0,0,n,n);
-   let out='',q=.85;for(;q>=.25;q-=.07){out=c.toDataURL('image/jpeg',q);if(out.length<=330000)break;}
-   if(out.length>330000)throw Error('Imagen demasiado pesada. Probá con JPG optimizado.');return out;
+   const ratio=9/16;
+   if(Math.abs(img.naturalWidth/img.naturalHeight-ratio)>.018)
+     throw Error('Esta publicidad debe ser vertical 9:16. Prepará una imagen de 1080 × 1920 px (no cuadrada).');
+   const c=document.createElement('canvas');c.width=1080;c.height=1920;
+   const ctx=c.getContext('2d',{alpha:false});ctx.fillStyle='#fff';ctx.fillRect(0,0,c.width,c.height);
+   ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';
+   ctx.drawImage(img,0,0,c.width,c.height);
+   let out='',q=.85;
+   for(;q>=.25;q-=.07){out=c.toDataURL('image/jpeg',q);if(out.length<=330000)break;}
+   if(out.length>330000)throw Error('La imagen 9:16 es demasiado pesada para guardarla. Probá con un JPG optimizado.');
+   return out;
  }
  byId('webAdImage').onchange=async e=>{
    const f=e.target.files?.[0];if(!f)return;
-   try{preparedImage=await compressSquare(f);preview(preparedImage);notice('Imagen cuadrada preparada: 1080 × 1080 px (1:1).');}
-   catch(err){preparedImage='';preview('');notice(err.message);}finally{e.target.value='';e.target.removeAttribute('required');e.target.setCustomValidity('');}
+   try{preparedImage=await compressWebAdVertical(f);preview(preparedImage);notice('Imagen vertical preparada: 1080 × 1920 px (9:16).');}
+   catch(err){preview(preparedImage);notice(err.message+' Se conserva la imagen anterior si estabas editando.');}finally{e.target.value='';e.target.removeAttribute('required');e.target.setCustomValidity('');}
  };
  function render(){
    const list=byId('webAdList');list.replaceChildren();
@@ -3723,7 +3729,7 @@ if ("serviceWorker" in navigator) {
    e.preventDefault();if(busy)return;
    if(!connected)return notice('Primero ingresá tu clave comercial y conectate a Cloudflare.');
    const name=byId('webAdName').value.trim(),plan=byId('webAdPlan').value,urlDest=byId('webAdUrl').value.trim(),start=byId('webAdStart').value,end=byId('webAdEnd').value,enabled=byId('webAdEnabled').value==='1';
-   if(!preparedImage){notice('Elegí una imagen cuadrada de 1080 × 1080 px.');return;}
+   if(!preparedImage){notice('Elegí una imagen vertical de 1080 × 1920 px (9:16).');return;}
    if(start&&end&&end<start){notice('El vencimiento no puede ser anterior a la fecha de inicio.');return;}
    inProgress(true);try{
      const data={name,plan,link:urlDest,start_date:start,end_date:end,enabled,image:preparedImage};
