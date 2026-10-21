@@ -788,6 +788,12 @@ body.player-active{
   font-size:15px;
 }
 
+.drawer-link.drawer-email{
+  gap:12px;
+  font-size:clamp(12px, 3.4vw, 16px);
+  overflow-wrap:anywhere;
+}
+
 /* MODALES */
 .modal{
   position:fixed;
@@ -1214,6 +1220,8 @@ body.player-active{
 .ads-web-item.is-linked {cursor:pointer;}
 .ads-web-item.is-linked:hover {outline:2px solid #fff;outline-offset:-2px;}
 .ads-web-item:focus-visible {outline:3px solid #fff;outline-offset:-3px;}
+/* Mantener enteras las imágenes cuadradas actuales durante la prueba 9:16.
+   Con imágenes verticales 9:16, el flyer llenará todo el espacio. */
 .ads-web-item img {display:block;width:100%;height:100%;object-fit:contain;}
 /* Los anuncios se presentan sin rótulos: la imagen ocupa la tarjeta completa. */
 .ads-web-demo-note {display:none;margin-top:9px;text-align:center;font-size:11px;color:#fff;opacity:.8;}
@@ -1467,6 +1475,13 @@ body.on-pwa-invite-visible.player-active {
     <img src="https://onradiostreaming.github.io/ON-Radio/WhatsApp.png" alt="">
     WhatsApp Oyentes
   </a>
+  <a class="drawer-link drawer-email" href="mailto:contacto@laonradio.com.ar" aria-label="Enviar correo a contacto@laonradio.com.ar" onclick="cerrarMenu()">
+    <svg width="29" height="29" viewBox="0 0 24 24" aria-hidden="true" style="flex:0 0 29px" fill="none" stroke="#d51926" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="2.5" y="5" width="19" height="14" rx="2"/>
+      <path d="m3 6 9 7 9-7"/>
+    </svg>
+    <span>contacto@laonradio.com.ar</span>
+  </a>
   <a class="drawer-link" href="https://onradiostreaming.github.io/ON-Radio/index-carpeta-formulario.html" onclick="cerrarMenu()">
     <svg width="29" height="29" viewBox="0 0 24 24" role="img" aria-label="Carpeta comercial" style="flex:0 0 29px">
       <path fill="#e01818" d="M3 5a2 2 0 0 1 2-2h5l2 2h7a2 2 0 0 1 2 2v2H3V5Z"/>
@@ -1498,8 +1513,13 @@ body.on-pwa-invite-visible.player-active {
   <a class="drawer-link" href="https://www.twitch.tv/laonradio" target="_blank" rel="noopener"><img src="https://onradiostreaming.github.io/ON-Radio/twi.png" alt=""> Twitch</a>
   <a class="drawer-link" href="https://kick.com/onradiostream" target="_blank" rel="noopener"><svg class="kick-icon" width="29" height="29" viewBox="0 0 29 29" aria-hidden="true"><rect width="29" height="29" rx="4" fill="#53fc47"/><path d="M7 5h5v8h4v-3h4V6h4v8h-4v4h4v7h-5v-5h-7v5H7Z" fill="#071307"/></svg> Kick</a>
 
-  <a class="drawer-link" href="https://www.laonradio.com.ar" target="_blank">
-    <img src="https://onradiostreaming.github.io/ON-Radio/web.png" alt=""> Nuestra web
+  <a class="drawer-link" href="https://onradiostreaming.github.io/ON-Radio/" target="_blank" rel="noopener noreferrer" aria-label="Abrir la aplicación de La ON Radio">
+    <svg width="29" height="29" viewBox="0 0 24 24" aria-hidden="true" style="flex:0 0 29px" fill="none" stroke="#d51926" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="6" y="2" width="12" height="20" rx="2"/>
+      <path d="M11 18h2"/>
+      <path d="M10 11.5 12 13.5l2-2"/>
+    </svg>
+    Nuestra app
   </a>
 
   <a class="drawer-foot cabapps-foot" href="https://wa.me/5492474445664" target="_blank" rel="noopener noreferrer" aria-label="Desarrollado por Cabapps. Páginas web y aplicaciones móviles. WhatsApp 2474 445 664">
@@ -2772,45 +2792,129 @@ setInterval(()=>{if(!document.hidden)cargarImagenesProgramasDesdeNube();}, 60*60
     }catch(_){return '';}
   }
   function limpiarTimer(){ if(timer!==null){clearInterval(timer); timer=null;} }
-  function hayDesborde(){ return viewport.scrollWidth-viewport.clientWidth > 3; }
+
+  // Carrusel circular 9:16: duplicar SOLO los anuncios que hagan falta
+  // para cubrir ambos extremos. El contenido original sigue viniendo de D1.
+  let anchoPaso = 0;
+  let cantidadClones = 0;
+  let inicioReales = 0;
+  let anchoCiclo = 0;
+  let finDesplazamientoTimer = null;
+  let reposicionando = false;
+  const modulo = (n, total) => ((n % total) + total) % total;
+
+  function crearTarjeta(ad){
+    const enlace=urlSegura(ad.link);
+    const card=document.createElement(enlace?'a':'div');
+    card.className='ads-web-item'+(enlace?' is-linked':'');
+    if(enlace){
+      card.href=enlace;card.target='_blank';card.rel='noopener noreferrer';
+      card.setAttribute('aria-label','Abrir publicidad en otra pestaña');
+    }
+    const img=document.createElement('img');
+    img.src=ad.image;img.alt='Publicidad de La ON Radio';
+    img.loading='lazy';img.decoding='async';
+    card.appendChild(img);
+    return card;
+  }
+
+  function moverSinAnimacion(posicion){
+    // También se desactiva temporalmente el snap: si no, Chrome puede
+    // animar el salto interno y parecería que el carrusel retrocede.
+    const comportamiento=viewport.style.scrollBehavior;
+    const snap=viewport.style.scrollSnapType;
+    viewport.style.scrollBehavior='auto';
+    viewport.style.scrollSnapType='none';
+    viewport.scrollLeft=posicion;
+    void viewport.offsetWidth;
+    viewport.style.scrollBehavior=comportamiento;
+    viewport.style.scrollSnapType=snap;
+  }
+
+  function reconstruirCarrusel(indice=0){
+    if(!visibles.length)return;
+    // Medir el ancho real de una tarjeta (incluido el espacio entre tarjetas),
+    // para adaptarse a PC, TV y cualquier cambio de tamaño de pantalla.
+    track.replaceChildren(crearTarjeta(visibles[0]));
+    const tarjeta=track.firstElementChild;
+    const separacion=parseFloat(getComputedStyle(track).gap)||0;
+    anchoPaso=tarjeta.getBoundingClientRect().width+separacion;
+    if(anchoPaso<1)return;
+
+    // Los clones permiten que, después del último, aparezca el primero.
+    // Si hay un solo anuncio activo, se repite para no dejar huecos.
+    cantidadClones=Math.max(5,Math.ceil(viewport.clientWidth/anchoPaso)+3);
+    const fragmento=document.createDocumentFragment();
+    const total=visibles.length;
+    for(let i=-cantidadClones;i<0;i++){
+      const clon=crearTarjeta(visibles[modulo(i,total)]);
+      clon.setAttribute('aria-hidden','true');
+      if(clon.tagName==='A')clon.tabIndex=-1;
+      fragmento.appendChild(clon);
+    }
+    visibles.forEach(ad=>fragmento.appendChild(crearTarjeta(ad)));
+    for(let i=0;i<cantidadClones;i++){
+      const clon=crearTarjeta(visibles[i%total]);
+      clon.setAttribute('aria-hidden','true');
+      if(clon.tagName==='A')clon.tabIndex=-1;
+      fragmento.appendChild(clon);
+    }
+    track.replaceChildren(fragmento);
+    inicioReales=cantidadClones*anchoPaso;
+    anchoCiclo=total*anchoPaso;
+    moverSinAnimacion(inicioReales+modulo(indice,total)*anchoPaso);
+  }
+
+  function normalizarPosicion(){
+    if(reposicionando||!anchoCiclo||!visibles.length)return;
+    const actual=viewport.scrollLeft;
+    // Volver imperceptiblemente a la copia central del mismo anuncio.
+    // Todos los elementos vecinos son idénticos en el punto de unión.
+    if(actual<inicioReales-anchoPaso/2 || actual>=inicioReales+anchoCiclo-anchoPaso/2){
+      const equivalente=inicioReales+modulo(actual-inicioReales,anchoCiclo);
+      if(Math.abs(equivalente-actual)>.2){
+        reposicionando=true;
+        moverSinAnimacion(equivalente);
+        reposicionando=false;
+      }
+    }
+  }
+
+  function hayDesborde(){return viewport.scrollWidth-viewport.clientWidth>3;}
   function actualizarCarrusel(){
     limpiarTimer();
-    if (!visibles.length || viewport.hidden || !hayDesborde() || pausado || !enPantalla || document.hidden ||
-        window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    timer = window.setInterval(()=>{
-      if(!hayDesborde()) {limpiarTimer();return;}
-      const primero = track.querySelector('.ads-web-item');
-      const gap = parseFloat(getComputedStyle(track).gap)||0;
-      const avance = (primero?.getBoundingClientRect().width || 180)+gap;
-      const limite = Math.max(0, viewport.scrollWidth-viewport.clientWidth);
-      // Mostrar también la última tarjeta COMPLETA. Antes, si el salto
-      // superaba el final, regresábamos a cero y esa tarjeta nunca aparecía.
-      const alFinal = viewport.scrollLeft >= limite-3;
-      const proximo = alFinal ? 0 : Math.min(limite, viewport.scrollLeft+avance);
-      viewport.scrollTo({left:proximo,behavior:'smooth'});
+    if(!visibles.length||viewport.hidden||!anchoPaso||!hayDesborde()||pausado||!enPantalla||document.hidden||
+       window.matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+    timer=window.setInterval(()=>{
+      if(!hayDesborde()){limpiarTimer();return;}
+      normalizarPosicion();
+      viewport.scrollBy({left:anchoPaso,behavior:'smooth'});
     },intervaloMs);
   }
+
   function mostrarAds(items,demostracion){
-    visibles=normalizarAds(items);
+    const nuevos=normalizarAds(items);
+    const sonIguales=visibles.length===nuevos.length && visibles.every((anuncio,i)=>
+      anuncio.image===nuevos[i].image && anuncio.link===nuevos[i].link &&
+      anuncio.order===nuevos[i].order && anuncio.plan===nuevos[i].plan);
+    section.classList.toggle('is-demo',Boolean(demostracion)&&nuevos.length>0);
+    if(sonIguales)return; // La sincronización periódica no reinicia la animación.
+    limpiarTimer();
+    visibles=nuevos;
     track.replaceChildren();
-    viewport.hidden = !visibles.length;
+    viewport.hidden=!visibles.length;
     section.classList.toggle('has-ads',visibles.length>0);
-    section.classList.toggle('is-demo',Boolean(demostracion)&&visibles.length>0);
-    if(!visibles.length){limpiarTimer();return;}
-    visibles.forEach((ad,i)=>{
-      const enlace=urlSegura(ad.link);
-      const card=document.createElement(enlace?'a':'div');
-      card.className='ads-web-item'+(enlace?' is-linked':'');
-      if(enlace){card.href=enlace;card.target='_blank';card.rel='noopener noreferrer';card.setAttribute('aria-label','Abrir publicidad en otra pestaña');}
-      const img=document.createElement('img');
-      img.src=ad.image;img.alt='Publicidad de La ON Radio';img.loading='lazy';img.decoding='async';
-      card.appendChild(img);
-      // El nombre del comercio es un dato administrativo. Nunca se superpone al flyer.
-      track.appendChild(card);
-    });
-    viewport.scrollLeft=0;
+    if(!visibles.length){anchoPaso=0;anchoCiclo=0;return;}
+    reconstruirCarrusel();
     requestAnimationFrame(actualizarCarrusel);
   }
+
+  // Al terminar un desplazamiento, empalmar la última tarjeta con la primera.
+  viewport.addEventListener('scrollend',normalizarPosicion,{passive:true});
+  viewport.addEventListener('scroll',()=>{
+    clearTimeout(finDesplazamientoTimer);
+    finDesplazamientoTimer=setTimeout(normalizarPosicion,180);
+  },{passive:true});
   // Mantener el avance automático aunque el cursor quede sobre el carrusel.
   // Sólo se detiene durante una interacción real (arrastre/pulsación o foco con teclado).
   viewport.addEventListener('pointerdown',()=>{pausado=true;limpiarTimer();});
@@ -2825,8 +2929,18 @@ setInterval(()=>{if(!document.hidden)cargarImagenesProgramasDesdeNube();}, 60*60
       actualizarCarrusel();
     },{threshold:0.2}).observe(section);
   }else{enPantalla=true;}
-  window.addEventListener('resize',actualizarCarrusel,{passive:true});
-  if('ResizeObserver' in window){new ResizeObserver(actualizarCarrusel).observe(viewport);}
+  // Recalcular la cantidad de tarjetas de relleno cuando cambia el ancho.
+  let ultimoAncho = -1;
+  function adaptarTamano(){
+    const nuevoAncho=viewport.clientWidth;
+    if(!visibles.length||nuevoAncho===ultimoAncho)return;
+    ultimoAncho=nuevoAncho;
+    const indice=anchoCiclo && anchoPaso ? modulo((viewport.scrollLeft-inicioReales)/anchoPaso,visibles.length) : 0;
+    reconstruirCarrusel(Math.round(indice));
+    actualizarCarrusel();
+  }
+  window.addEventListener('resize',adaptarTamano,{passive:true});
+  if('ResizeObserver' in window){new ResizeObserver(adaptarTamano).observe(viewport);}
 
   async function consultarAnunciantes(){
     try{
