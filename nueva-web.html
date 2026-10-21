@@ -2764,9 +2764,21 @@ setInterval(()=>{if(!document.hidden)cargarImagenesProgramasDesdeNube();}, 60*60
   }));
   function fechaVigente(ad){
     // Vigencia YYYY-MM-DD interpretada con fecha Argentina.
-    const partes = new Intl.DateTimeFormat('en-GB',{timeZone:'America/Argentina/Buenos_Aires',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());
-    const get=t=>partes.find(p=>p.type===t)?.value||'';
-    const hoy = `${get('year')}-${get('month')}-${get('day')}`;
+    // Evitar encadenamiento opcional (encadenamiento) y ofrecer compatibilidad a navegadores TV.
+    var hoy;
+    try {
+      var formato = new Intl.DateTimeFormat('en-GB',{timeZone:'America/Argentina/Buenos_Aires',year:'numeric',month:'2-digit',day:'2-digit'});
+      var partes = formato.formatToParts(new Date());
+      function getParte(tipo){
+        for(var p=0;p<partes.length;p++){if(partes[p].type===tipo)return partes[p].value;}
+        return '';
+      }
+      hoy = getParte('year')+'-'+getParte('month')+'-'+getParte('day');
+    } catch(_e) {
+      // El reloj local es una reserva únicamente cuando el navegador no admite esa API.
+      var fechaLocal=new Date();
+      hoy=fechaLocal.getFullYear()+'-'+('0'+(fechaLocal.getMonth()+1)).slice(-2)+'-'+('0'+fechaLocal.getDate()).slice(-2);
+    }
     const fechaDesde=String(ad.start_date||ad.fecha_inicio||'').slice(0,10);
     const fechaHasta=String(ad.end_date||ad.fecha_fin||'').slice(0,10);
     return (!fechaDesde || hoy>=fechaDesde) && (!fechaHasta || hoy<=fechaHasta);
@@ -2778,7 +2790,7 @@ setInterval(()=>{if(!document.hidden)cargarImagenesProgramasDesdeNube();}, 60*60
         link:String(ad.link||ad.url||'').trim(),
         plan:String(ad.plan||'').toLowerCase().trim(),
         active:ad.active!==false&&ad.enabled!==false&&ad.activo!==false,
-        order:Number(ad.order ?? ad.orden ?? 0)||0,
+        order:Number(ad.order!=null?ad.order:(ad.orden!=null?ad.orden:0))||0,
         start_date:ad.start_date||ad.fecha_inicio||'',
         end_date:ad.end_date||ad.fecha_fin||''
       }))
@@ -2801,6 +2813,7 @@ setInterval(()=>{if(!document.hidden)cargarImagenesProgramasDesdeNube();}, 60*60
   let anchoCiclo = 0;
   let finDesplazamientoTimer = null;
   let reposicionando = false;
+  let animando = false;
   const modulo = (n, total) => ((n % total) + total) % total;
 
   function crearTarjeta(ad){
@@ -2813,7 +2826,7 @@ setInterval(()=>{if(!document.hidden)cargarImagenesProgramasDesdeNube();}, 60*60
     }
     const img=document.createElement('img');
     img.src=ad.image;img.alt='Publicidad de La ON Radio';
-    img.loading='lazy';img.decoding='async';
+    img.loading='eager';img.decoding='async';
     card.appendChild(img);
     return card;
   }
@@ -2835,7 +2848,8 @@ setInterval(()=>{if(!document.hidden)cargarImagenesProgramasDesdeNube();}, 60*60
     if(!visibles.length)return;
     // Medir el ancho real de una tarjeta (incluido el espacio entre tarjetas),
     // para adaptarse a PC, TV y cualquier cambio de tamaño de pantalla.
-    track.replaceChildren(crearTarjeta(visibles[0]));
+    track.textContent='';
+    track.appendChild(crearTarjeta(visibles[0]));
     const tarjeta=track.firstElementChild;
     const separacion=parseFloat(getComputedStyle(track).gap)||0;
     anchoPaso=tarjeta.getBoundingClientRect().width+separacion;
@@ -2843,7 +2857,7 @@ setInterval(()=>{if(!document.hidden)cargarImagenesProgramasDesdeNube();}, 60*60
 
     // Los clones permiten que, después del último, aparezca el primero.
     // Si hay un solo anuncio activo, se repite para no dejar huecos.
-    cantidadClones=Math.max(5,Math.ceil(viewport.clientWidth/anchoPaso)+3);
+    cantidadClones=Math.max(5,Math.ceil(viewport.clientWidth/anchoPaso)+1);
     const fragmento=document.createDocumentFragment();
     const total=visibles.length;
     for(let i=-cantidadClones;i<0;i++){
@@ -2859,14 +2873,15 @@ setInterval(()=>{if(!document.hidden)cargarImagenesProgramasDesdeNube();}, 60*60
       if(clon.tagName==='A')clon.tabIndex=-1;
       fragmento.appendChild(clon);
     }
-    track.replaceChildren(fragmento);
+    track.textContent='';
+    track.appendChild(fragmento);
     inicioReales=cantidadClones*anchoPaso;
     anchoCiclo=total*anchoPaso;
     moverSinAnimacion(inicioReales+modulo(indice,total)*anchoPaso);
   }
 
   function normalizarPosicion(){
-    if(reposicionando||!anchoCiclo||!visibles.length)return;
+    if(reposicionando||animando||!anchoCiclo||!visibles.length)return;
     const actual=viewport.scrollLeft;
     // Volver imperceptiblemente a la copia central del mismo anuncio.
     // Todos los elementos vecinos son idénticos en el punto de unión.
@@ -2881,14 +2896,41 @@ setInterval(()=>{if(!document.hidden)cargarImagenesProgramasDesdeNube();}, 60*60
   }
 
   function hayDesborde(){return viewport.scrollWidth-viewport.clientWidth>3;}
+  // Movimiento suave sin ScrollToOptions, scrollBy ni scrollend: compatibles
+  // con motores de navegador anteriores a los de Chrome de escritorio.
+  function avanzarUnAnuncio(){
+    if(animando||!anchoPaso)return;
+    normalizarPosicion();
+    var desde=viewport.scrollLeft;
+    var inicio=Date.now();
+    var duracion=700;
+    var comportamiento=viewport.style.scrollBehavior;
+    var snap=viewport.style.scrollSnapType;
+    viewport.style.scrollBehavior='auto';
+    viewport.style.scrollSnapType='none';
+    animando=true;
+    function fotograma(){
+      var progreso=Math.min(1,(Date.now()-inicio)/duracion);
+      var suavizado=progreso*progreso*(3-2*progreso);
+      viewport.scrollLeft=desde+anchoPaso*suavizado;
+      if(progreso<1){
+        window.requestAnimationFrame(fotograma);
+      }else{
+        animando=false;
+        viewport.style.scrollBehavior=comportamiento;
+        viewport.style.scrollSnapType=snap;
+        normalizarPosicion();
+      }
+    }
+    window.requestAnimationFrame(fotograma);
+  }
   function actualizarCarrusel(){
     limpiarTimer();
     if(!visibles.length||viewport.hidden||!anchoPaso||!hayDesborde()||pausado||!enPantalla||document.hidden||
-       window.matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+       (window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches))return;
     timer=window.setInterval(()=>{
       if(!hayDesborde()){limpiarTimer();return;}
-      normalizarPosicion();
-      viewport.scrollBy({left:anchoPaso,behavior:'smooth'});
+      avanzarUnAnuncio();
     },intervaloMs);
   }
 
@@ -2901,7 +2943,7 @@ setInterval(()=>{if(!document.hidden)cargarImagenesProgramasDesdeNube();}, 60*60
     if(sonIguales)return; // La sincronización periódica no reinicia la animación.
     limpiarTimer();
     visibles=nuevos;
-    track.replaceChildren();
+    track.textContent='';
     viewport.hidden=!visibles.length;
     section.classList.toggle('has-ads',visibles.length>0);
     if(!visibles.length){anchoPaso=0;anchoCiclo=0;return;}
@@ -2910,7 +2952,8 @@ setInterval(()=>{if(!document.hidden)cargarImagenesProgramasDesdeNube();}, 60*60
   }
 
   // Al terminar un desplazamiento, empalmar la última tarjeta con la primera.
-  viewport.addEventListener('scrollend',normalizarPosicion,{passive:true});
+  // No es necesario usar el evento moderno 'scrollend': el temporizador y
+  // la animación ejecutan la normalización también en navegadores viejos.
   viewport.addEventListener('scroll',()=>{
     clearTimeout(finDesplazamientoTimer);
     finDesplazamientoTimer=setTimeout(normalizarPosicion,180);
@@ -2925,7 +2968,7 @@ setInterval(()=>{if(!document.hidden)cargarImagenesProgramasDesdeNube();}, 60*60
   document.addEventListener('visibilitychange',actualizarCarrusel);
   if('IntersectionObserver' in window){
     new IntersectionObserver(entries=>{
-      enPantalla=entries[0]?.isIntersecting===true;
+      enPantalla=!!(entries && entries.length && entries[0] && entries[0].isIntersecting);
       actualizarCarrusel();
     },{threshold:0.2}).observe(section);
   }else{enPantalla=true;}
