@@ -1230,6 +1230,23 @@ body.player-active{
 @media(prefers-reduced-motion:reduce){.ads-web-viewport{scroll-behavior:auto;}}
 
 
+
+/* Carrusel continuo: se mueve la tira, no el scroll del navegador del TV. */
+.ads-web-viewport {
+  overflow: hidden !important;
+  scroll-behavior: auto !important;
+  scroll-snap-type: none !important;
+}
+.ads-web-track {
+  justify-content: flex-start !important;
+  min-width: 0 !important;
+  width: max-content !important;
+  position: relative;
+  transform: translate3d(0,0,0);
+  -webkit-transform: translate3d(0,0,0);
+}
+.ads-web-item { scroll-snap-align: none !important; }
+
 /* LA ON RADIO · MEJORAS WEB v3 · sin alterar el diseño vertical original */
 .contacto-whatsapp span{display:flex;flex-direction:column;gap:3px;align-items:flex-start}
 .contacto-whatsapp small{font-size:13px;letter-spacing:.01em;font-weight:650;color:#4d4d4d}
@@ -2805,184 +2822,175 @@ setInterval(()=>{if(!document.hidden)cargarImagenesProgramasDesdeNube();}, 60*60
   }
   function limpiarTimer(){ if(timer!==null){clearInterval(timer); timer=null;} }
 
-  // Carrusel circular 9:16: duplicar SOLO los anuncios que hagan falta
-  // para cubrir ambos extremos. El contenido original sigue viniendo de D1.
-  let anchoPaso = 0;
-  let cantidadClones = 0;
-  let inicioReales = 0;
-  let anchoCiclo = 0;
-  let finDesplazamientoTimer = null;
-  let reposicionando = false;
-  let animando = false;
-  const modulo = (n, total) => ((n % total) + total) % total;
+  // Carrusel continuo para TV: NO depende de scrollLeft, scroll-snap ni scrollend.
+  // Las copias se enlazan sin dejar huecos, también cuando hay pocos anunciantes.
+  var anchoPaso = 0;
+  var indiceActual = 0;
+  var cantidadPrevias = 0;
+  var posicionActual = 0;
+  var animando = false;
+  var ultimoAncho = -1;
+  var fotogramaActivo = 0;
+  var reinicioPendiente = null;
+
+  function modulo(n, total){ return ((n % total) + total) % total; }
 
   function crearTarjeta(ad){
-    const enlace=urlSegura(ad.link);
-    const card=document.createElement(enlace?'a':'div');
+    var enlace=urlSegura(ad.link);
+    var card=document.createElement(enlace?'a':'div');
     card.className='ads-web-item'+(enlace?' is-linked':'');
     if(enlace){
       card.href=enlace;card.target='_blank';card.rel='noopener noreferrer';
       card.setAttribute('aria-label','Abrir publicidad en otra pestaña');
     }
-    const img=document.createElement('img');
+    var img=document.createElement('img');
     img.src=ad.image;img.alt='Publicidad de La ON Radio';
-    img.loading='eager';img.decoding='async';
+    img.loading='eager';
     card.appendChild(img);
     return card;
   }
 
-  function moverSinAnimacion(posicion){
-    // También se desactiva temporalmente el snap: si no, Chrome puede
-    // animar el salto interno y parecería que el carrusel retrocede.
-    const comportamiento=viewport.style.scrollBehavior;
-    const snap=viewport.style.scrollSnapType;
-    viewport.style.scrollBehavior='auto';
-    viewport.style.scrollSnapType='none';
-    viewport.scrollLeft=posicion;
-    void viewport.offsetWidth;
-    viewport.style.scrollBehavior=comportamiento;
-    viewport.style.scrollSnapType=snap;
+  function pintarPosicion(posicion){
+    // Los navegadores de Smart TV suelen soportar transform mejor que scrollLeft.
+    var valor='translate3d('+(-posicion)+'px,0,0)';
+    track.style.transform=valor;
+    track.style.webkitTransform=valor;
   }
 
-  function reconstruirCarrusel(indice=0){
-    if(!visibles.length)return;
-    // Medir el ancho real de una tarjeta (incluido el espacio entre tarjetas),
-    // para adaptarse a PC, TV y cualquier cambio de tamaño de pantalla.
-    track.textContent='';
-    track.appendChild(crearTarjeta(visibles[0]));
-    const tarjeta=track.firstElementChild;
-    const separacion=parseFloat(getComputedStyle(track).gap)||0;
-    anchoPaso=tarjeta.getBoundingClientRect().width+separacion;
-    if(anchoPaso<1)return;
+  function detenerAnimacion(){
+    animando=false;
+    if(fotogramaActivo && window.cancelAnimationFrame)window.cancelAnimationFrame(fotogramaActivo);
+    fotogramaActivo=0;
+    if(reinicioPendiente!==null){clearTimeout(reinicioPendiente);reinicioPendiente=null;}
+  }
 
-    // Los clones permiten que, después del último, aparezca el primero.
-    // Si hay un solo anuncio activo, se repite para no dejar huecos.
-    cantidadClones=Math.max(5,Math.ceil(viewport.clientWidth/anchoPaso)+1);
-    const fragmento=document.createDocumentFragment();
-    const total=visibles.length;
-    for(let i=-cantidadClones;i<0;i++){
-      const clon=crearTarjeta(visibles[modulo(i,total)]);
-      clon.setAttribute('aria-hidden','true');
-      if(clon.tagName==='A')clon.tabIndex=-1;
-      fragmento.appendChild(clon);
+  function reconstruirCarrusel(indice){
+    detenerAnimacion();
+    if(!visibles.length)return;
+    track.textContent='';
+    // Medimos con una tarjeta real; CSS conserva el tamaño adaptable original.
+    var muestra=crearTarjeta(visibles[0]);
+    track.appendChild(muestra);
+    var separacion=parseFloat(window.getComputedStyle(track).gap)||14;
+    anchoPaso=muestra.getBoundingClientRect().width+separacion;
+    if(!(anchoPaso>1)){anchoPaso=muestra.offsetWidth+separacion;}
+    if(!(anchoPaso>1))return;
+
+    var necesarios=Math.ceil(viewport.clientWidth/anchoPaso)+3;
+    // Un bloque completo antes y múltiples después, incluso con un solo anuncio.
+    cantidadPrevias=Math.max(necesarios,visibles.length);
+    var cantidadPosteriores=Math.max(necesarios+visibles.length,visibles.length*2);
+    var fragmento=document.createDocumentFragment();
+    var i, tarjeta;
+    for(i=-cantidadPrevias;i<0;i++){
+      tarjeta=crearTarjeta(visibles[modulo(i,visibles.length)]);
+      tarjeta.setAttribute('aria-hidden','true');
+      if(tarjeta.tagName==='A')tarjeta.tabIndex=-1;
+      fragmento.appendChild(tarjeta);
     }
-    visibles.forEach(ad=>fragmento.appendChild(crearTarjeta(ad)));
-    for(let i=0;i<cantidadClones;i++){
-      const clon=crearTarjeta(visibles[i%total]);
-      clon.setAttribute('aria-hidden','true');
-      if(clon.tagName==='A')clon.tabIndex=-1;
-      fragmento.appendChild(clon);
+    for(i=0;i<visibles.length;i++)fragmento.appendChild(crearTarjeta(visibles[i]));
+    for(i=0;i<cantidadPosteriores;i++){
+      tarjeta=crearTarjeta(visibles[i%visibles.length]);
+      tarjeta.setAttribute('aria-hidden','true');
+      if(tarjeta.tagName==='A')tarjeta.tabIndex=-1;
+      fragmento.appendChild(tarjeta);
     }
     track.textContent='';
     track.appendChild(fragmento);
-    inicioReales=cantidadClones*anchoPaso;
-    anchoCiclo=total*anchoPaso;
-    moverSinAnimacion(inicioReales+modulo(indice,total)*anchoPaso);
+    indiceActual=modulo(Math.round(indice||0),visibles.length);
+    posicionActual=(cantidadPrevias+indiceActual)*anchoPaso;
+    pintarPosicion(posicionActual);
   }
 
-  function normalizarPosicion(){
-    if(reposicionando||animando||!anchoCiclo||!visibles.length)return;
-    const actual=viewport.scrollLeft;
-    // Volver imperceptiblemente a la copia central del mismo anuncio.
-    // Todos los elementos vecinos son idénticos en el punto de unión.
-    if(actual<inicioReales-anchoPaso/2 || actual>=inicioReales+anchoCiclo-anchoPaso/2){
-      const equivalente=inicioReales+modulo(actual-inicioReales,anchoCiclo);
-      if(Math.abs(equivalente-actual)>.2){
-        reposicionando=true;
-        moverSinAnimacion(equivalente);
-        reposicionando=false;
-      }
-    }
-  }
-
-  function hayDesborde(){return viewport.scrollWidth-viewport.clientWidth>3;}
-  // Movimiento suave sin ScrollToOptions, scrollBy ni scrollend: compatibles
-  // con motores de navegador anteriores a los de Chrome de escritorio.
   function avanzarUnAnuncio(){
-    if(animando||!anchoPaso)return;
-    normalizarPosicion();
-    var desde=viewport.scrollLeft;
-    var inicio=Date.now();
-    var duracion=700;
-    var comportamiento=viewport.style.scrollBehavior;
-    var snap=viewport.style.scrollSnapType;
-    viewport.style.scrollBehavior='auto';
-    viewport.style.scrollSnapType='none';
+    if(animando||!visibles.length||!anchoPaso||document.hidden)return;
     animando=true;
-    function fotograma(){
-      var progreso=Math.min(1,(Date.now()-inicio)/duracion);
-      var suavizado=progreso*progreso*(3-2*progreso);
-      viewport.scrollLeft=desde+anchoPaso*suavizado;
+    var desde=posicionActual;
+    var hasta=desde+anchoPaso;
+    var comienzo=Date.now();
+    var duracion=700;
+
+    function terminar(){
+      if(!animando)return;
+      indiceActual=modulo(indiceActual+1,visibles.length);
+      // Volvemos a la copia central sin movimiento visible:
+      // las tarjetas vecinas coinciden exactamente.
+      posicionActual=(cantidadPrevias+indiceActual)*anchoPaso;
+      pintarPosicion(posicionActual);
+      animando=false;
+      fotogramaActivo=0;
+    }
+    function cuadro(){
+      if(!animando)return;
+      var progreso=Math.min(1,(Date.now()-comienzo)/duracion);
+      var suave=progreso*progreso*(3-2*progreso);
+      pintarPosicion(desde+(hasta-desde)*suave);
       if(progreso<1){
-        window.requestAnimationFrame(fotograma);
+        fotogramaActivo=window.requestAnimationFrame(cuadro);
       }else{
-        animando=false;
-        viewport.style.scrollBehavior=comportamiento;
-        viewport.style.scrollSnapType=snap;
-        normalizarPosicion();
+        terminar();
       }
     }
-    window.requestAnimationFrame(fotograma);
+    if(window.requestAnimationFrame){
+      fotogramaActivo=window.requestAnimationFrame(cuadro);
+      // Protección para televisores que suspenden cuadros mientras cargan imágenes.
+      reinicioPendiente=setTimeout(function(){
+        reinicioPendiente=null;
+        if(animando)terminar();
+      },duracion+800);
+    }else{
+      pintarPosicion(hasta);
+      terminar();
+    }
   }
+
   function actualizarCarrusel(){
     limpiarTimer();
-    if(!visibles.length||viewport.hidden||!anchoPaso||!hayDesborde()||pausado||!enPantalla||document.hidden||
-       (window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches))return;
-    timer=window.setInterval(()=>{
-      if(!hayDesborde()){limpiarTimer();return;}
-      avanzarUnAnuncio();
-    },intervaloMs);
+    if(!visibles.length||viewport.hidden||!anchoPaso||pausado||!enPantalla||document.hidden||
+      (window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches))return;
+    timer=window.setInterval(avanzarUnAnuncio,intervaloMs);
   }
 
   function mostrarAds(items,demostracion){
-    const nuevos=normalizarAds(items);
-    const sonIguales=visibles.length===nuevos.length && visibles.every((anuncio,i)=>
-      anuncio.image===nuevos[i].image && anuncio.link===nuevos[i].link &&
-      anuncio.order===nuevos[i].order && anuncio.plan===nuevos[i].plan);
+    var nuevos=normalizarAds(items);
+    var sonIguales=visibles.length===nuevos.length && visibles.every(function(anuncio,i){
+      return anuncio.image===nuevos[i].image && anuncio.link===nuevos[i].link &&
+        anuncio.order===nuevos[i].order && anuncio.plan===nuevos[i].plan;
+    });
     section.classList.toggle('is-demo',Boolean(demostracion)&&nuevos.length>0);
-    if(sonIguales)return; // La sincronización periódica no reinicia la animación.
+    if(sonIguales)return;
     limpiarTimer();
+    detenerAnimacion();
     visibles=nuevos;
     track.textContent='';
     viewport.hidden=!visibles.length;
     section.classList.toggle('has-ads',visibles.length>0);
-    if(!visibles.length){anchoPaso=0;anchoCiclo=0;return;}
-    reconstruirCarrusel();
-    requestAnimationFrame(actualizarCarrusel);
-  }
-
-  // Al terminar un desplazamiento, empalmar la última tarjeta con la primera.
-  // No es necesario usar el evento moderno 'scrollend': el temporizador y
-  // la animación ejecutan la normalización también en navegadores viejos.
-  viewport.addEventListener('scroll',()=>{
-    clearTimeout(finDesplazamientoTimer);
-    finDesplazamientoTimer=setTimeout(normalizarPosicion,180);
-  },{passive:true});
-  // Mantener el avance automático aunque el cursor quede sobre el carrusel.
-  // Sólo se detiene durante una interacción real (arrastre/pulsación o foco con teclado).
-  viewport.addEventListener('pointerdown',()=>{pausado=true;limpiarTimer();});
-  viewport.addEventListener('pointerup',()=>{pausado=false;actualizarCarrusel();});
-  viewport.addEventListener('pointercancel',()=>{pausado=false;actualizarCarrusel();});
-  viewport.addEventListener('focusin',()=>{pausado=true;limpiarTimer();});
-  viewport.addEventListener('focusout',()=>{pausado=false;actualizarCarrusel();});
-  document.addEventListener('visibilitychange',actualizarCarrusel);
-  if('IntersectionObserver' in window){
-    new IntersectionObserver(entries=>{
-      enPantalla=!!(entries && entries.length && entries[0] && entries[0].isIntersecting);
-      actualizarCarrusel();
-    },{threshold:0.2}).observe(section);
-  }else{enPantalla=true;}
-  // Recalcular la cantidad de tarjetas de relleno cuando cambia el ancho.
-  let ultimoAncho = -1;
-  function adaptarTamano(){
-    const nuevoAncho=viewport.clientWidth;
-    if(!visibles.length||nuevoAncho===ultimoAncho)return;
-    ultimoAncho=nuevoAncho;
-    const indice=anchoCiclo && anchoPaso ? modulo((viewport.scrollLeft-inicioReales)/anchoPaso,visibles.length) : 0;
-    reconstruirCarrusel(Math.round(indice));
+    if(!visibles.length){anchoPaso=0;return;}
+    reconstruirCarrusel(0);
     actualizarCarrusel();
   }
-  window.addEventListener('resize',adaptarTamano,{passive:true});
+
+  // No se usa ningún evento scroll para mover o reiniciar las tarjetas.
+  viewport.addEventListener('pointerdown',function(){pausado=true;limpiarTimer();});
+  viewport.addEventListener('pointerup',function(){pausado=false;actualizarCarrusel();});
+  viewport.addEventListener('pointercancel',function(){pausado=false;actualizarCarrusel();});
+  viewport.addEventListener('focusin',function(){pausado=true;limpiarTimer();});
+  viewport.addEventListener('focusout',function(){pausado=false;actualizarCarrusel();});
+  document.addEventListener('visibilitychange',actualizarCarrusel);
+  if('IntersectionObserver' in window){
+    new IntersectionObserver(function(entries){
+      enPantalla=!!(entries&&entries.length&&entries[0]&&entries[0].isIntersecting);
+      actualizarCarrusel();
+    },{threshold:0.1}).observe(section);
+  }else{enPantalla=true;}
+  function adaptarTamano(){
+    var nuevoAncho=viewport.clientWidth;
+    if(!visibles.length||nuevoAncho===ultimoAncho)return;
+    ultimoAncho=nuevoAncho;
+    reconstruirCarrusel(indiceActual);
+    actualizarCarrusel();
+  }
+  window.addEventListener('resize',adaptarTamano);
   if('ResizeObserver' in window){new ResizeObserver(adaptarTamano).observe(viewport);}
 
   async function consultarAnunciantes(){
