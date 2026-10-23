@@ -1447,6 +1447,20 @@ body.on-pwa-invite-visible.player-active {
     text-rendering: auto !important;
   }
 }
+
+/* Ampliación de anuncios: misma experiencia de la app, sin alterar el carrusel TV */
+.ads-web-item{position:relative}
+.ads-web-ampliar{position:absolute;right:7px;bottom:7px;z-index:3;background:rgba(0,0,0,.9);border:1px solid #ffffffa0;color:#fff;border-radius:7px;padding:7px 9px;font:800 12px Arial,sans-serif;cursor:pointer;line-height:1.2}
+.ads-web-ampliar:focus-visible{outline:3px solid #fff;outline-offset:2px}
+.on-web-ad-modal[hidden]{display:none!important}
+.on-web-ad-modal{position:fixed;inset:0;z-index:10030;background:rgba(0,0,0,.96);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:55px 12px 18px;gap:13px}
+.on-web-ad-close{position:absolute;top:12px;right:14px;border:1px solid #999;background:#333;color:white;border-radius:50%;width:42px;height:42px;font-size:26px;cursor:pointer}
+.on-web-ad-stage{width:100%;max-width:1100px;max-height:75vh;overflow:auto;text-align:center;border-radius:8px;background:#171717;touch-action:pan-x pan-y}
+.on-web-ad-image{display:block;width:100%;height:auto;max-width:none}
+.on-web-ad-actions{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:10px}
+.on-web-ad-actions button,.on-web-ad-actions a{border:0;border-radius:9px;padding:12px 17px;font:800 14px Arial,sans-serif;color:white;background:#414141;cursor:pointer;text-decoration:none}
+.on-web-ad-actions a{background:#e01818}
+body.on-web-ad-open{overflow:hidden}
 </style>
 
 <style>
@@ -2835,6 +2849,17 @@ setInterval(actualizarBloque, 60000);
 setInterval(()=>{if(!document.hidden)cargarProgramacionDesdeNube();}, 15*60000);
 setInterval(()=>{if(!document.hidden)cargarImagenesProgramasDesdeNube();}, 60*60000);
 </script>
+
+<!-- Visor ampliado de publicidad web; independiente de los enlaces comerciales -->
+<div id="onWebAdModal" class="on-web-ad-modal" role="dialog" aria-modal="true" aria-label="Publicidad ampliada" hidden>
+  <button id="onWebAdClose" type="button" class="on-web-ad-close" aria-label="Cerrar publicidad">×</button>
+  <div id="onWebAdStage" class="on-web-ad-stage"><img id="onWebAdImage" class="on-web-ad-image" alt="Publicidad ampliada"></div>
+  <div class="on-web-ad-actions">
+    <button id="onWebAdMinus" type="button" aria-label="Reducir imagen">−</button>
+    <button id="onWebAdPlus" type="button" aria-label="Ampliar imagen">+ Zoom</button>
+    <a id="onWebAdVisit" target="_blank" rel="noopener noreferrer" hidden>VISITAR COMERCIO ↗</a>
+  </div>
+</div>
 <script>
 
 
@@ -2856,6 +2881,33 @@ setInterval(()=>{if(!document.hidden)cargarImagenesProgramasDesdeNube();}, 60*60
   let enPantalla = false;
   let visibles = [];
   const intervaloMs = 4500;
+  const modal=document.getElementById('onWebAdModal');
+  const imagenGrande=document.getElementById('onWebAdImage');
+  const escenario=document.getElementById('onWebAdStage');
+  const visitar=document.getElementById('onWebAdVisit');
+  let zoom=1;
+  function ajustarZoom(n){zoom=Math.max(1,Math.min(4,n));imagenGrande.style.width=(zoom*100)+'%';}
+  function abrirAmpliacion(ad){
+    pausado=true;limpiarTimer();
+    var destino=urlSegura(ad.link);
+    imagenGrande.src=ad.image;
+    zoom=1;ajustarZoom(1);escenario.scrollTop=0;escenario.scrollLeft=0;
+    visitar.hidden=!destino;
+    if(destino)visitar.href=destino;else visitar.removeAttribute('href');
+    modal.hidden=false;document.body.classList.add('on-web-ad-open');
+    document.getElementById('onWebAdClose').focus();
+  }
+  function cerrarAmpliacion(){
+    modal.hidden=true;document.body.classList.remove('on-web-ad-open');
+    imagenGrande.removeAttribute('src');
+    pausado=false;actualizarCarrusel();
+  }
+  document.getElementById('onWebAdClose').addEventListener('click',cerrarAmpliacion);
+  document.getElementById('onWebAdMinus').addEventListener('click',function(){ajustarZoom(zoom-.5);});
+  document.getElementById('onWebAdPlus').addEventListener('click',function(){ajustarZoom(zoom+.5);});
+  modal.addEventListener('click',function(e){if(e.target===modal)cerrarAmpliacion();});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!modal.hidden)cerrarAmpliacion();});
+
 
   function fechaVigente(ad){
     // Vigencia YYYY-MM-DD interpretada con fecha Argentina.
@@ -2909,7 +2961,13 @@ setInterval(()=>{if(!document.hidden)cargarImagenesProgramasDesdeNube();}, 60*60
     if(enlace){card.href=enlace;card.target='_blank';card.rel='noopener noreferrer';}
     var img=document.createElement('img');
     img.src=ad.image;img.alt='Publicidad de La ON Radio';img.loading='eager';
-    card.appendChild(img);return card;
+    card.appendChild(img);
+    var ampliar=document.createElement('button');
+    ampliar.type='button';ampliar.className='ads-web-ampliar';
+    ampliar.textContent='⛶ Ampliar';ampliar.setAttribute('aria-label','Ampliar publicidad');
+    ampliar.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();abrirAmpliacion(ad);});
+    card.appendChild(ampliar);
+    return card;
   }
   function pintar(pos){
     var v='translate3d(0,'+(-pos)+'px,0)';
@@ -2983,7 +3041,7 @@ setInterval(()=>{if(!document.hidden)cargarImagenesProgramasDesdeNube();}, 60*60
     reconstruir();actualizarCarrusel();
   }
   viewport.addEventListener('mouseenter',function(){pausado=true;limpiarTimer();});
-  viewport.addEventListener('mouseleave',function(){pausado=false;actualizarCarrusel();});
+  viewport.addEventListener('mouseleave',function(){if(modal.hidden){pausado=false;actualizarCarrusel();}});
   document.addEventListener('visibilitychange',actualizarCarrusel);
   window.addEventListener('resize',function(){if(visibles.length){reconstruir();actualizarCarrusel();}});
   // Datos reales compartidos con el administrador comercial y la futura app.
