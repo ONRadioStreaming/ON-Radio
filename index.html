@@ -1071,6 +1071,19 @@ body.player-active{
   font-size: 13px;
   font-weight: 800;
 }
+
+/* LA ON RADIO · banners horizontales compartidos con la web (1920 × 720) */
+.on-banner-section{margin:0 auto 24px;padding:13px;background:rgba(18,10,10,.89);border:1px solid rgba(255,255,255,.18);border-radius:18px;box-shadow:0 8px 20px rgba(0,0,0,.3);overflow:hidden}
+.on-banner-section h2{font-size:18px;line-height:1.15;margin:0 0 5px;color:#fff;font-weight:900}
+.on-banner-section .on-banner-sub{font-size:11px;margin:0 0 10px;color:#eee;line-height:1.35}
+.on-banner-cta{display:block;text-decoration:none;text-align:center;color:#fff;background:#e01818;border-radius:11px;padding:10px 8px;margin:0 0 11px;font-size:16px;font-weight:900}
+.on-banner-cta small{display:block;font-size:10px;font-weight:650;margin-top:2px}
+.on-banner-viewport{overflow:hidden;position:relative;width:100%;height:clamp(155px,53vw,310px);border-radius:10px;contain:paint}
+.on-banner-viewport[hidden],.on-banner-section[hidden]{display:none!important}
+.on-banner-track{display:flex;flex-direction:column;gap:10px;will-change:transform;transform:translate3d(0,0,0);-webkit-transform:translate3d(0,0,0)}
+.on-banner-card{display:block;flex:0 0 auto;width:100%;aspect-ratio:8 / 3;overflow:hidden;border-radius:9px;background:#151515;border:1px solid #ffffff22}
+.on-banner-card img{width:100%;height:100%;display:block;object-fit:contain}
+
 </style>
 </head>
 
@@ -1195,6 +1208,17 @@ body.player-active{
       </div>
     </div>
     <div class="progress"><span id="progressBar"></span></div>
+  </section>
+
+
+  <!-- Banners públicos de Cloudflare: independientes de los pop-ups de la app -->
+  <section class="on-banner-section" id="onBannerSection" aria-label="Espacio publicitario" hidden>
+    <h2>ESPACIO DISPONIBLE PARA PUBLICIDAD</h2>
+    <p class="on-banner-sub">Tu comercio o marca puede acompañar a La ON Radio</p>
+    <a class="on-banner-cta" href="https://www.laonradio.com.ar/" target="_blank" rel="noopener noreferrer">📣 PUBLICITÁ EN LA ON<small>Conocé nuestros planes y hacé crecer tu comercio</small></a>
+    <div class="on-banner-viewport" id="onBannerViewport" aria-label="Anuncios de comercios">
+      <div class="on-banner-track" id="onBannerTrack"></div>
+    </div>
   </section>
 
   <a class="whatsapp-main" href="https://wa.me/5491161358000?text=Hola%20ON%20Radio,%20les%20mando%20mi%20audio:" target="_blank">
@@ -2337,5 +2361,76 @@ setInterval(()=>{if(!document.hidden)cargarImagenesProgramasDesdeNube();}, 60*60
  };
 })();
 </script>
+
+<script>
+/* Banners horizontales 1920×720. Lectura pública, sin clave comercial.
+   No interfiere con el sistema independiente de pop-ups. */
+(function(){
+  'use strict';
+  var section=document.getElementById('onBannerSection');
+  var viewport=document.getElementById('onBannerViewport');
+  var track=document.getElementById('onBannerTrack');
+  if(!section||!viewport||!track)return;
+  var endpoint='https://onradio-ia.guillermocaballini.workers.dev/web-ads';
+  var anuncios=[],intervalo=null,animando=false,frame=0,respaldo=null;
+  var paso=0,posicion=0,pausa=false;
+  function fechaHoy(){
+    try{
+      var partes=new Intl.DateTimeFormat('en-GB',{timeZone:'America/Argentina/Buenos_Aires',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());
+      var a={};for(var i=0;i<partes.length;i++)a[partes[i].type]=partes[i].value;
+      return a.year+'-'+a.month+'-'+a.day;
+    }catch(e){var d=new Date();return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2);}
+  }
+  function normalizar(datos){
+    var hoy=fechaHoy();
+    return datos.filter(function(a){return a&&typeof a==='object';}).map(function(a){
+      return {image:String(a.image||a.imagen||a.image_url||'').trim(),link:String(a.link||a.url||'').trim(),plan:String(a.plan||'').toLowerCase().trim(),active:a.active!==false&&a.enabled!==false&&a.activo!==false,order:Number(a.order!=null?a.order:(a.orden!=null?a.orden:0))||0,desde:String(a.start_date||a.fecha_inicio||'').slice(0,10),hasta:String(a.end_date||a.fecha_fin||'').slice(0,10)};
+    }).filter(function(a){return (a.plan==='destacado'||a.plan==='integral')&&a.active&&a.image&&(!a.desde||hoy>=a.desde)&&(!a.hasta||hoy<=a.hasta);}).sort(function(a,b){return a.order-b.order;});
+  }
+  function segura(url){try{var u=new URL(url,location.href);return u.protocol==='https:'||u.protocol==='http:'?u.href:'';}catch(e){return '';}}
+  function detener(){if(intervalo!==null){clearInterval(intervalo);intervalo=null;}}
+  function pintar(p){var v='translate3d(0,'+(-p)+'px,0)';track.style.transform=v;track.style.webkitTransform=v;}
+  function tarjeta(a){
+    var link=segura(a.link),card=document.createElement(link?'a':'div');
+    card.className='on-banner-card';if(link){card.href=link;card.target='_blank';card.rel='noopener noreferrer';}
+    var img=document.createElement('img');img.src=a.image;img.alt='Publicidad de La ON Radio';img.loading='eager';card.appendChild(img);return card;
+  }
+  function reconstruir(){
+    if(respaldo!==null){clearTimeout(respaldo);respaldo=null;}
+    if(frame&&window.cancelAnimationFrame)cancelAnimationFrame(frame);
+    animando=false;track.textContent='';if(!anuncios.length)return;
+    var fragmento=document.createDocumentFragment();
+    for(var i=0,n=Math.max(12,anuncios.length*3);i<n;i++)fragmento.appendChild(tarjeta(anuncios[i%anuncios.length]));
+    track.appendChild(fragmento);
+    paso=track.firstElementChild.getBoundingClientRect().height+10;
+    posicion=0;pintar(0);
+  }
+  function avanzar(){
+    if(animando||!anuncios.length||!paso||document.hidden)return;
+    animando=true;
+    var inicio=posicion,fin=inicio+paso,t0=Date.now(),duracion=850;
+    function terminar(){posicion=fin;if(posicion>=paso*anuncios.length)posicion=0;pintar(posicion);animando=false;if(respaldo!==null){clearTimeout(respaldo);respaldo=null;}}
+    function cuadro(){var t=Math.min(1,(Date.now()-t0)/duracion);pintar(inicio+(fin-inicio)*(t*t*(3-2*t)));if(t<1)frame=requestAnimationFrame(cuadro);else terminar();}
+    if(window.requestAnimationFrame){frame=requestAnimationFrame(cuadro);respaldo=setTimeout(function(){respaldo=null;if(!animando)return;if(window.cancelAnimationFrame)cancelAnimationFrame(frame);terminar();},duracion+800);}else terminar();
+  }
+  function reanudar(){detener();if(anuncios.length&&!pausa&&!document.hidden)intervalo=setInterval(avanzar,4500);}
+  function mostrar(nuevos){
+    var iguales=anuncios.length===nuevos.length&&anuncios.every(function(a,i){return a.image===nuevos[i].image&&a.link===nuevos[i].link&&a.order===nuevos[i].order;});
+    if(iguales)return;
+    detener();anuncios=nuevos;section.hidden=!anuncios.length;
+    if(!anuncios.length){track.textContent='';return;}
+    reconstruir();reanudar();
+  }
+  viewport.addEventListener('mouseenter',function(){pausa=true;detener();});
+  viewport.addEventListener('mouseleave',function(){pausa=false;reanudar();});
+  document.addEventListener('visibilitychange',reanudar);
+  window.addEventListener('resize',function(){if(anuncios.length){reconstruir();reanudar();}});
+  function cargar(){
+    fetch(endpoint,{method:'GET',cache:'no-store'}).then(function(r){if(!r.ok)throw Error('HTTP '+r.status);return r.json();}).then(function(d){var a=Array.isArray(d)?d:(Array.isArray(d.ads)?d.ads:(Array.isArray(d.publicidades)?d.publicidades:(Array.isArray(d.items)?d.items:[])));mostrar(normalizar(a));}).catch(function(e){console.warn('No se pudieron actualizar los banners públicos:',e);});
+  }
+  cargar();setInterval(cargar,120000);
+})();
+</script>
+
 </body>
 </html>
