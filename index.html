@@ -1084,6 +1084,20 @@ body.player-active{
 .on-banner-card{display:block;flex:0 0 auto;width:100%;aspect-ratio:8 / 3;overflow:hidden;border-radius:9px;background:#151515;border:1px solid #ffffff22}
 .on-banner-card img{width:100%;height:100%;display:block;object-fit:contain}
 
+
+/* Ampliacion accesible de banners, independiente de enlaces y pop-ups */
+.on-banner-card{position:relative}
+.on-banner-zoom{position:absolute;right:7px;bottom:7px;z-index:2;background:rgba(0,0,0,.88);border:1px solid #fff9;color:#fff;border-radius:8px;padding:7px 9px;font-size:12px;font-weight:800;cursor:pointer;line-height:1.2}
+.on-banner-lightbox[hidden]{display:none!important}
+.on-banner-lightbox{position:fixed;inset:0;z-index:10020;background:rgba(0,0,0,.96);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:52px 12px 20px;gap:13px}
+.on-banner-lightbox-close{position:absolute;right:14px;top:12px;background:#333;color:white;border:1px solid #888;border-radius:50%;width:42px;height:42px;font-size:26px;cursor:pointer}
+.on-banner-lightbox-stage{width:100%;max-width:1000px;max-height:75vh;overflow:auto;touch-action:pan-x pan-y;text-align:center;border-radius:8px;background:#171717}
+.on-banner-lightbox-img{display:block;width:100%;height:auto;max-width:none;transform-origin:top left}
+.on-banner-lightbox-actions{display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap}
+.on-banner-lightbox-actions button,.on-banner-lightbox-actions a{background:#e01818;border:0;color:white;text-decoration:none;border-radius:9px;padding:11px 16px;font-size:15px;font-weight:800;cursor:pointer}
+.on-banner-lightbox-actions button{background:#444}
+.on-banner-lightbox-actions a[hidden]{display:none!important}
+body.on-banner-modal-open{overflow:hidden}
 </style>
 </head>
 
@@ -2362,6 +2376,17 @@ setInterval(()=>{if(!document.hidden)cargarImagenesProgramasDesdeNube();}, 60*60
 })();
 </script>
 
+
+<div id="onBannerLightbox" class="on-banner-lightbox" role="dialog" aria-modal="true" aria-label="Publicidad ampliada" hidden>
+  <button type="button" id="onBannerClose" class="on-banner-lightbox-close" aria-label="Cerrar publicidad">×</button>
+  <div id="onBannerStage" class="on-banner-lightbox-stage"><img id="onBannerLargeImage" class="on-banner-lightbox-img" alt="Publicidad ampliada"></div>
+  <div class="on-banner-lightbox-actions">
+    <button type="button" id="onBannerZoomOut" aria-label="Reducir imagen">−</button>
+    <button type="button" id="onBannerZoomIn" aria-label="Ampliar imagen">+ Zoom</button>
+    <a id="onBannerVisit" href="#" target="_blank" rel="noopener noreferrer" hidden>VISITAR COMERCIO ↗</a>
+  </div>
+</div>
+
 <script>
 /* Banners horizontales 1920×720. Lectura pública, sin clave comercial.
    No interfiere con el sistema independiente de pop-ups. */
@@ -2374,6 +2399,24 @@ setInterval(()=>{if(!document.hidden)cargarImagenesProgramasDesdeNube();}, 60*60
   var endpoint='https://onradio-ia.guillermocaballini.workers.dev/web-ads';
   var anuncios=[],intervalo=null,animando=false,frame=0,respaldo=null;
   var paso=0,posicion=0,pausa=false;
+  var modal=document.getElementById('onBannerLightbox'),large=document.getElementById('onBannerLargeImage');
+  var stage=document.getElementById('onBannerStage'),visit=document.getElementById('onBannerVisit');
+  var zoom=1;
+  function ajustarZoom(n){zoom=Math.max(1,Math.min(4,n));large.style.width=(zoom*100)+'%';}
+  function cerrarAmpliacion(){modal.hidden=true;document.body.classList.remove('on-banner-modal-open');large.removeAttribute('src');pausa=false;reanudar();}
+  function ampliar(a){
+    pausa=true;detener();zoom=1;stage.scrollTop=0;stage.scrollLeft=0;ajustarZoom(1);
+    large.src=a.image;var url=segura(a.link);visit.hidden=!url;
+    if(url)visit.href=url;else visit.removeAttribute('href');
+    modal.hidden=false;document.body.classList.add('on-banner-modal-open');
+    document.getElementById('onBannerClose').focus();
+  }
+  document.getElementById('onBannerClose').addEventListener('click',cerrarAmpliacion);
+  document.getElementById('onBannerZoomIn').addEventListener('click',function(){ajustarZoom(zoom+.5);});
+  document.getElementById('onBannerZoomOut').addEventListener('click',function(){ajustarZoom(zoom-.5);});
+  modal.addEventListener('click',function(e){if(e.target===modal)cerrarAmpliacion();});
+  document.addEventListener('keydown',function(e){if(!modal.hidden&&e.key==='Escape')cerrarAmpliacion();});
+
   function fechaHoy(){
     try{
       var partes=new Intl.DateTimeFormat('en-GB',{timeZone:'America/Argentina/Buenos_Aires',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());
@@ -2393,7 +2436,9 @@ setInterval(()=>{if(!document.hidden)cargarImagenesProgramasDesdeNube();}, 60*60
   function tarjeta(a){
     var link=segura(a.link),card=document.createElement(link?'a':'div');
     card.className='on-banner-card';if(link){card.href=link;card.target='_blank';card.rel='noopener noreferrer';}
-    var img=document.createElement('img');img.src=a.image;img.alt='Publicidad de La ON Radio';img.loading='eager';card.appendChild(img);return card;
+    var img=document.createElement('img');img.src=a.image;img.alt='Publicidad de La ON Radio';img.loading='eager';card.appendChild(img);
+    var btn=document.createElement('button');btn.type='button';btn.className='on-banner-zoom';btn.textContent='⛶ Ampliar';btn.setAttribute('aria-label','Ampliar publicidad');
+    btn.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();ampliar(a);});card.appendChild(btn);return card;
   }
   function reconstruir(){
     if(respaldo!==null){clearTimeout(respaldo);respaldo=null;}
@@ -2422,7 +2467,7 @@ setInterval(()=>{if(!document.hidden)cargarImagenesProgramasDesdeNube();}, 60*60
     reconstruir();reanudar();
   }
   viewport.addEventListener('mouseenter',function(){pausa=true;detener();});
-  viewport.addEventListener('mouseleave',function(){pausa=false;reanudar();});
+  viewport.addEventListener('mouseleave',function(){if(modal.hidden){pausa=false;reanudar();}});
   document.addEventListener('visibilitychange',reanudar);
   window.addEventListener('resize',function(){if(anuncios.length){reconstruir();reanudar();}});
   function cargar(){
