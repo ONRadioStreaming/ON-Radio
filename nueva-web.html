@@ -1448,9 +1448,98 @@ body.on-pwa-invite-visible.player-active {
   }
 }
 </style>
+
+<style>
+/* PRUEBA LOCAL: anuncios junto al chat en escritorio; en celular después del reproductor. */
+.ads-web { display:block !important; min-width:0; margin:0 !important; padding:14px !important; }
+.ads-web-heading { display:block !important; margin-bottom:12px !important; }
+.ads-web-heading h2 { font-size:17px !important; line-height:1.2; }
+.ads-web-heading p {font-size:11px !important;}
+.ads-web .publicidad-main {min-height:43px !important;width:100% !important;max-width:none !important;margin-top:10px !important;padding:7px 9px !important;}
+.ads-web .publicidad-main-title {font-size:14px !important;}
+.ads-web .publicidad-main-sub {font-size:10px !important;}
+.ads-web-viewport {height:340px !important;overflow:hidden !important;border-radius:12px;}
+.ads-web-track {display:flex !important;flex-direction:column !important;align-items:stretch !important;justify-content:flex-start !important;gap:10px !important;width:100% !important;min-width:0 !important;height:max-content !important;transform:translate3d(0,0,0);}
+.ads-web-item {display:block !important;flex:0 0 auto !important;width:100% !important;height:auto !important;aspect-ratio:8/3 !important;background:#120c0c;border-radius:12px;overflow:hidden;}
+.ads-web-item img {width:100% !important;height:100% !important;object-fit:contain !important;}
+@media (min-width:920px), (orientation:landscape) and (min-width:780px) {
+ .main {grid-template-columns:minmax(0,1.04fr) minmax(0,1.12fr) minmax(230px,.78fr) !important;
+ grid-template-areas:"redes redes redes" "hero chat publicidadweb" "programacion programacion programacion" "formulario formulario formulario" !important;
+ column-gap:15px !important;max-width:1500px !important;padding-left:20px !important;padding-right:20px !important;}
+ .main>.ads-web {grid-area:publicidadweb !important;align-self:stretch !important;}
+ .main>.chat-card {min-width:0 !important;padding:14px !important;}
+ .main>.chat-card .chat-box {min-height:240px !important;}
+ .ads-web-viewport {height:360px !important;}
+}
+@media (max-width:919px) and (orientation:portrait) {
+ .main {display:flex !important;flex-direction:column !important;}
+ .main>.hero-card {order:1;}
+ .main>.ads-web {order:2;width:100%;}
+ .main>.whatsapp-main {order:3;}
+ .main>.chat-card {order:4;}
+ .main>.redes-top {order:0;}
+ .main>#programacion {order:5;}
+ .main>.form-card {order:6;}
+ .ads-web-viewport {height:220px !important;}
+ .ads-web-item {height:auto !important;aspect-ratio:16/9 !important;}
+}
+</style>
+<style>
+/* Ajustes de la prueba: la columna es vertical; CADA banner es horizontal 16:9. */
+.ads-web-viewport {height:390px !important; width:100% !important; overflow:hidden !important;}
+.ads-web-track {display:flex !important; flex-direction:column !important; width:100% !important; gap:10px !important;}
+.ads-web-item {width:100% !important; flex:0 0 auto !important; aspect-ratio:16 / 9 !important; height:auto !important; margin:0 !important; border-radius:10px !important;}
+.ads-web-item img {display:block !important; width:100% !important; height:100% !important; object-fit:contain !important;}
+@media(max-width:919px) and (orientation:portrait) {.ads-web-viewport {height:390px !important;}}
+/* Ocultar únicamente el aviso de instalación en la prueba local, para evaluar la composición completa. */
+body.prueba-local .on-pwa-invite {display:none !important;}
+</style>
+<style>
+/* SEGUNDA PRUEBA LOCAL: conservar el programa, ceder ancho del chat a los anuncios. */
+@media (min-width:920px), (orientation:landscape) and (min-width:780px) {
+  .main {
+    grid-template-columns: minmax(0,1.04fr) minmax(0,1.00fr) minmax(0,.90fr) !important;
+    align-items:stretch !important;
+  }
+  .main > .chat-card {min-width:0 !important;}
+  .main > .ads-web {min-width:0 !important;}
+  .main > .ads-web .ads-web-viewport {height: min(390px, 32vw) !important; min-height: 260px !important;}
+}
+/* Encabezado compacto para que la primera publicidad se vea antes. */
+.ads-web {padding: 12px !important;}
+.ads-web-heading {margin:0 0 8px !important;gap:0 !important;}
+.ads-web-heading h2 {font-size:14px !important;line-height:1.15 !important;margin:0 !important;}
+.ads-web-heading p {display:none !important;}
+.ads-web .publicidad-main {
+  margin:8px 0 0 !important; padding:7px 8px !important;
+  min-height:34px !important;gap:0 !important;border-radius:10px !important;
+}
+.ads-web .publicidad-main-title {font-size:13px !important;line-height:1.1 !important;}
+.ads-web .publicidad-main-sub {display:none !important;}
+.ads-web-viewport {border-radius:10px !important;}
+@media(max-width:919px) and (orientation:portrait) {
+ .ads-web {padding:12px !important;}
+ .ads-web-viewport {height:320px !important;}
+}
+</style>
+<style>
+/* PRUEBA 1920x720: columna igual, banners horizontales más bajos. */
+.ads-web-item { aspect-ratio: 1920 / 720 !important; height:auto !important; }
+.ads-web-item img { object-fit:contain !important; }
+</style>
+<style>
+/* PRUEBA FINAL: recupera el encabezado comercial original, conserva banners 1920x720. */
+.ads-web { padding: 13px 13px 15px !important; }
+.ads-web-heading { display:flex !important; flex-direction:column !important; align-items:stretch !important; gap:0 !important; margin:0 0 0 !important; }
+.ads-web-heading h2 {font-size:17px !important; font-weight:900 !important; line-height:1.13 !important; margin:0 0 7px !important; }
+.ads-web-heading p {display:block !important; font-size:11px !important; line-height:1.3 !important; margin:0 0 10px !important; opacity:.90 !important; }
+.ads-web .publicidad-main {display:flex !important; flex-direction:column !important; justify-content:center !important; gap:4px !important; margin:0 0 12px !important; min-height:53px !important; padding:9px 9px !important; border-radius:13px !important; }
+.ads-web .publicidad-main-title {display:block !important; font-size:16px !important; font-weight:1000 !important; line-height:1.15 !important; }
+.ads-web .publicidad-main-sub {display:block !important; font-size:10px !important; line-height:1.15 !important; }
+</style>
 </head>
 
-<body>
+<body class="prueba-local">
 
 <div id="splash">
   <img src="https://onradiostreaming.github.io/ON-Radio/logotipo.png" alt="ON Radio">
@@ -1639,10 +1728,10 @@ body.on-pwa-invite-visible.player-active {
     <span class="publicidad-main-sub">Conocé nuestros planes y hacé crecer tu comercio</span>
   </a>
     </div>
-    <div id="ads-web-viewport" class="ads-web-viewport" hidden tabindex="0" aria-label="Anunciantes. Deslizá horizontalmente para ver más">
+    <div id="ads-web-viewport" class="ads-web-viewport" hidden tabindex="0" aria-label="Anunciantes. Publicidades con desplazamiento vertical automático">
       <div id="ads-web-track" class="ads-web-track"></div>
     </div>
-    <div class="ads-web-demo-note">Vista de prueba: imágenes ficticias, todavía no cargadas desde el administrador.</div>
+    <div class="ads-web-demo-note">PRUEBA LOCAL: banners horizontales 1920x720 de ejemplo. Los anuncios reales no se modifican.</div>
   </section>
 
   <section id="programacion">
@@ -2762,23 +2851,12 @@ setInterval(()=>{if(!document.hidden)cargarImagenesProgramasDesdeNube();}, 60*60
   const track = document.getElementById('ads-web-track');
   if (!section || !viewport || !track) return;
   const apiUrl = 'https://onradio-ia.guillermocaballini.workers.dev/web-ads';
-  const esVistaDePrueba = /(?:^|\/)nueva-web\.html$/i.test(location.pathname) || ['content:', 'file:'].includes(location.protocol);
   let timer = null;
   let pausado = false;
   let enPantalla = false;
   let visibles = [];
   const intervaloMs = 4500;
 
-  function imagenDemo(i){
-    // No son marcas comerciales reales: sólo permiten comprobar el desplazamiento.
-    const label = String(i).padStart(2,'0');
-    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="420" height="420" viewBox="0 0 420 420"><defs><linearGradient id="g" x2="1" y2="1"><stop stop-color="#310707"/><stop offset="1" stop-color="#c4211d"/></linearGradient></defs><rect width="420" height="420" rx="24" fill="url(#g)"/><rect x="20" y="20" width="380" height="380" rx="18" fill="none" stroke="#ffffff" stroke-opacity=".20" stroke-width="3"/><text x="210" y="165" font-family="Arial,sans-serif" font-size="20" font-weight="700" letter-spacing="3" text-anchor="middle" fill="#fff">PUBLICIDAD WEB</text><text x="210" y="260" font-family="Arial,sans-serif" font-size="86" font-weight="900" text-anchor="middle" fill="#fff">${label}</text><text x="210" y="324" font-family="Arial,sans-serif" font-size="17" text-anchor="middle" fill="#fff">IMAGEN DE EJEMPLO</text></svg>`;
-    return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
-  }
-  const demoAds = Array.from({length:8},(_,i)=>({
-    name:'Publicidad de ejemplo '+(i+1),image:imagenDemo(i+1),link:'',
-    plan: i%2 ? 'integral' : 'destacado',active:true,order:i+1
-  }));
   function fechaVigente(ad){
     // Vigencia YYYY-MM-DD interpretada con fecha Argentina.
     // Evitar encadenamiento opcional (encadenamiento) y ofrecer compatibilidad a navegadores TV.
@@ -2822,193 +2900,109 @@ setInterval(()=>{if(!document.hidden)cargarImagenesProgramasDesdeNube();}, 60*60
   }
   function limpiarTimer(){ if(timer!==null){clearInterval(timer); timer=null;} }
 
-  // Carrusel continuo para TV: NO depende de scrollLeft, scroll-snap ni scrollend.
-  // Las copias se enlazan sin dejar huecos, también cuando hay pocos anunciantes.
-  var anchoPaso = 0;
-  var indiceActual = 0;
-  var cantidadPrevias = 0;
-  var posicionActual = 0;
-  var animando = false;
-  var ultimoAncho = -1;
-  var fotogramaActivo = 0;
-  var reinicioPendiente = null;
-
-  function modulo(n, total){ return ((n % total) + total) % total; }
-
+  // Prueba vertical: conserva API, filtros, imágenes y enlaces.
+  var posicionVertical=0, altoPaso=0, moviendo=false, raf=0;
   function crearTarjeta(ad){
     var enlace=urlSegura(ad.link);
     var card=document.createElement(enlace?'a':'div');
     card.className='ads-web-item'+(enlace?' is-linked':'');
-    if(enlace){
-      card.href=enlace;card.target='_blank';card.rel='noopener noreferrer';
-      card.setAttribute('aria-label','Abrir publicidad en otra pestaña');
-    }
+    if(enlace){card.href=enlace;card.target='_blank';card.rel='noopener noreferrer';}
     var img=document.createElement('img');
-    img.src=ad.image;img.alt='Publicidad de La ON Radio';
-    img.loading='eager';
-    card.appendChild(img);
-    return card;
+    img.src=ad.image;img.alt='Publicidad de La ON Radio';img.loading='eager';
+    card.appendChild(img);return card;
   }
-
-  function pintarPosicion(posicion){
-    // Los navegadores de Smart TV suelen soportar transform mejor que scrollLeft.
-    var valor='translate3d('+(-posicion)+'px,0,0)';
-    track.style.transform=valor;
-    track.style.webkitTransform=valor;
+  function pintar(pos){
+    var v='translate3d(0,'+(-pos)+'px,0)';
+    track.style.transform=v;track.style.webkitTransform=v;
   }
-
-  function detenerAnimacion(){
-    animando=false;
-    if(fotogramaActivo && window.cancelAnimationFrame)window.cancelAnimationFrame(fotogramaActivo);
-    fotogramaActivo=0;
-    if(reinicioPendiente!==null){clearTimeout(reinicioPendiente);reinicioPendiente=null;}
-  }
-
-  function reconstruirCarrusel(indice){
-    detenerAnimacion();
+  function reconstruir(){
+    if(tvFallback!==null){clearTimeout(tvFallback);tvFallback=null;}
+    if(raf&&window.cancelAnimationFrame)window.cancelAnimationFrame(raf);
+    moviendo=false;
     if(!visibles.length)return;
     track.textContent='';
-    // Medimos con una tarjeta real; CSS conserva el tamaño adaptable original.
-    var muestra=crearTarjeta(visibles[0]);
-    track.appendChild(muestra);
-    var separacion=parseFloat(window.getComputedStyle(track).gap)||14;
-    anchoPaso=muestra.getBoundingClientRect().width+separacion;
-    if(!(anchoPaso>1)){anchoPaso=muestra.offsetWidth+separacion;}
-    if(!(anchoPaso>1))return;
-
-    var necesarios=Math.ceil(viewport.clientWidth/anchoPaso)+3;
-    // Un bloque completo antes y múltiples después, incluso con un solo anuncio.
-    cantidadPrevias=Math.max(necesarios,visibles.length);
-    var cantidadPosteriores=Math.max(necesarios+visibles.length,visibles.length*2);
-    var fragmento=document.createDocumentFragment();
-    var i, tarjeta;
-    for(i=-cantidadPrevias;i<0;i++){
-      tarjeta=crearTarjeta(visibles[modulo(i,visibles.length)]);
-      tarjeta.setAttribute('aria-hidden','true');
-      if(tarjeta.tagName==='A')tarjeta.tabIndex=-1;
-      fragmento.appendChild(tarjeta);
-    }
-    for(i=0;i<visibles.length;i++)fragmento.appendChild(crearTarjeta(visibles[i]));
-    for(i=0;i<cantidadPosteriores;i++){
-      tarjeta=crearTarjeta(visibles[i%visibles.length]);
-      tarjeta.setAttribute('aria-hidden','true');
-      if(tarjeta.tagName==='A')tarjeta.tabIndex=-1;
-      fragmento.appendChild(tarjeta);
-    }
-    track.textContent='';
-    track.appendChild(fragmento);
-    indiceActual=modulo(Math.round(indice||0),visibles.length);
-    posicionActual=(cantidadPrevias+indiceActual)*anchoPaso;
-    pintarPosicion(posicionActual);
+    var n=Math.max(12,visibles.length*3);
+    var frag=document.createDocumentFragment();
+    for(var i=0;i<n;i++)frag.appendChild(crearTarjeta(visibles[i%visibles.length]));
+    track.appendChild(frag);
+    var primera=track.firstElementChild;
+    altoPaso=primera.getBoundingClientRect().height+10;
+    posicionVertical=0;pintar(0);
   }
-
-  function avanzarUnAnuncio(){
-    if(animando||!visibles.length||!anchoPaso||document.hidden)return;
-    animando=true;
-    var desde=posicionActual;
-    var hasta=desde+anchoPaso;
-    var comienzo=Date.now();
-    var duracion=700;
-
-    function terminar(){
-      if(!animando)return;
-      indiceActual=modulo(indiceActual+1,visibles.length);
-      // Volvemos a la copia central sin movimiento visible:
-      // las tarjetas vecinas coinciden exactamente.
-      posicionActual=(cantidadPrevias+indiceActual)*anchoPaso;
-      pintarPosicion(posicionActual);
-      animando=false;
-      fotogramaActivo=0;
-    }
+  var tvFallback=null;
+  function avanzar(){
+    if(moviendo||!visibles.length||!altoPaso||document.hidden)return;
+    moviendo=true;
+    var desde=posicionVertical,hasta=desde+altoPaso,t0=Date.now(),dur=850;
     function cuadro(){
-      if(!animando)return;
-      var progreso=Math.min(1,(Date.now()-comienzo)/duracion);
-      var suave=progreso*progreso*(3-2*progreso);
-      pintarPosicion(desde+(hasta-desde)*suave);
-      if(progreso<1){
-        fotogramaActivo=window.requestAnimationFrame(cuadro);
-      }else{
-        terminar();
+      var t=Math.min(1,(Date.now()-t0)/dur),ease=t*t*(3-2*t);
+      pintar(desde+(hasta-desde)*ease);
+      if(t<1){raf=requestAnimationFrame(cuadro);}
+      else{
+        posicionVertical=hasta;
+        // Se repite el bloque inicial sin salto visible.
+        if(posicionVertical>=altoPaso*visibles.length){
+          posicionVertical=0;pintar(0);
+        }
+        moviendo=false;
+        if(tvFallback!==null){clearTimeout(tvFallback);tvFallback=null;}
       }
     }
     if(window.requestAnimationFrame){
-      fotogramaActivo=window.requestAnimationFrame(cuadro);
-      // Protección para televisores que suspenden cuadros mientras cargan imágenes.
-      reinicioPendiente=setTimeout(function(){
-        reinicioPendiente=null;
-        if(animando)terminar();
-      },duracion+800);
-    }else{
-      pintarPosicion(hasta);
-      terminar();
-    }
+      raf=requestAnimationFrame(cuadro);
+      // Respaldo para Smart TV cuando requestAnimationFrame queda suspendido.
+      tvFallback=setTimeout(function(){
+        tvFallback=null;
+        if(!moviendo)return;
+        if(window.cancelAnimationFrame)window.cancelAnimationFrame(raf);
+        posicionVertical=hasta;
+        if(posicionVertical>=altoPaso*visibles.length)posicionVertical=0;
+        pintar(posicionVertical);moviendo=false;
+      },dur+800);
+    }else{posicionVertical=hasta;pintar(posicionVertical);moviendo=false;}
   }
-
   function actualizarCarrusel(){
     limpiarTimer();
-    if(!visibles.length||viewport.hidden||!anchoPaso||pausado||!enPantalla||document.hidden||
-      (window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches))return;
-    timer=window.setInterval(avanzarUnAnuncio,intervaloMs);
+    if(!visibles.length||viewport.hidden||pausado||document.hidden)return;
+    timer=setInterval(avanzar,intervaloMs);
   }
-
   function mostrarAds(items,demostracion){
     var nuevos=normalizarAds(items);
-    var sonIguales=visibles.length===nuevos.length && visibles.every(function(anuncio,i){
-      return anuncio.image===nuevos[i].image && anuncio.link===nuevos[i].link &&
-        anuncio.order===nuevos[i].order && anuncio.plan===nuevos[i].plan;
+    var iguales=visibles.length===nuevos.length&&visibles.every(function(ad,i){
+      return ad.image===nuevos[i].image&&ad.link===nuevos[i].link&&ad.order===nuevos[i].order;
     });
     section.classList.toggle('is-demo',Boolean(demostracion)&&nuevos.length>0);
-    if(sonIguales)return;
+    if(iguales)return;
     limpiarTimer();
-    detenerAnimacion();
-    visibles=nuevos;
-    track.textContent='';
+    if(tvFallback!==null){clearTimeout(tvFallback);tvFallback=null;}
+    if(raf&&window.cancelAnimationFrame)window.cancelAnimationFrame(raf);
+    moviendo=false;visibles=nuevos;
     viewport.hidden=!visibles.length;
     section.classList.toggle('has-ads',visibles.length>0);
-    if(!visibles.length){anchoPaso=0;return;}
-    reconstruirCarrusel(0);
-    actualizarCarrusel();
+    if(!visibles.length){track.textContent='';return;}
+    reconstruir();actualizarCarrusel();
   }
-
-  // No se usa ningún evento scroll para mover o reiniciar las tarjetas.
-  viewport.addEventListener('pointerdown',function(){pausado=true;limpiarTimer();});
-  viewport.addEventListener('pointerup',function(){pausado=false;actualizarCarrusel();});
-  viewport.addEventListener('pointercancel',function(){pausado=false;actualizarCarrusel();});
-  viewport.addEventListener('focusin',function(){pausado=true;limpiarTimer();});
-  viewport.addEventListener('focusout',function(){pausado=false;actualizarCarrusel();});
+  viewport.addEventListener('mouseenter',function(){pausado=true;limpiarTimer();});
+  viewport.addEventListener('mouseleave',function(){pausado=false;actualizarCarrusel();});
   document.addEventListener('visibilitychange',actualizarCarrusel);
-  if('IntersectionObserver' in window){
-    new IntersectionObserver(function(entries){
-      enPantalla=!!(entries&&entries.length&&entries[0]&&entries[0].isIntersecting);
-      actualizarCarrusel();
-    },{threshold:0.1}).observe(section);
-  }else{enPantalla=true;}
-  function adaptarTamano(){
-    var nuevoAncho=viewport.clientWidth;
-    if(!visibles.length||nuevoAncho===ultimoAncho)return;
-    ultimoAncho=nuevoAncho;
-    reconstruirCarrusel(indiceActual);
-    actualizarCarrusel();
-  }
-  window.addEventListener('resize',adaptarTamano);
-  if('ResizeObserver' in window){new ResizeObserver(adaptarTamano).observe(viewport);}
-
-  async function consultarAnunciantes(){
-    try{
-      const response=await fetch(apiUrl+'?t='+Date.now(),{cache:'no-store'});
-      if(!response.ok)throw new Error('API de publicidad web aún no disponible');
-      const body=await response.json();
-      const ads=Array.isArray(body.ads)?body.ads:(Array.isArray(body.publicidades)?body.publicidades:null);
-      if(!ads)throw new Error('Formato de anuncios no disponible');
-      mostrarAds(ads,false); // Lista vacía válida: no muestra anuncios ficticios.
+  window.addEventListener('resize',function(){if(visibles.length){reconstruir();actualizarCarrusel();}});
+  // Datos reales compartidos con el administrador comercial y la futura app.
+  // Esta página sólo consulta; nunca envía la clave ni modifica Cloudflare.
+  async function cargarPublicidades(){
+    try {
+      var respuesta=await fetch(apiUrl,{method:'GET',cache:'no-store'});
+      if(!respuesta.ok)throw new Error('HTTP '+respuesta.status);
+      var datos=await respuesta.json();
+      var anuncios=Array.isArray(datos)?datos:(Array.isArray(datos.ads)?datos.ads:(Array.isArray(datos.publicidades)?datos.publicidades:(Array.isArray(datos.items)?datos.items:[])));
+      mostrarAds(anuncios,false);
     }catch(error){
-      if(esVistaDePrueba){mostrarAds(demoAds,true);}
-      else{mostrarAds([],false);}
+      // Ante un error de red, conservar los anuncios cargados; jamás sustituirlos por demos.
+      console.warn('No se pudieron actualizar las publicidades:',error);
     }
   }
-  consultarAnunciantes();
-  // Una modificación del panel en el futuro se reflejará sin republicar el HTML.
-  setInterval(()=>{if(!document.hidden)consultarAnunciantes();},60*1000);
+  cargarPublicidades();
+  window.setInterval(cargarPublicidades,120000);
+
 })();
 </script>
 
