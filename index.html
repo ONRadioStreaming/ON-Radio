@@ -1150,6 +1150,24 @@ body::after{background:linear-gradient(145deg,rgba(244,251,255,.82),rgba(237,232
 @media(prefers-reduced-motion:reduce){.redes-pills .pill{transition:none!important}}
 
 </style>
+<style id="on-season-styles">
+/* Ambientacion estacional aislada: no altera el branding ni los componentes. */
+#on-season-decor{position:fixed;inset:0;z-index:2147483000;pointer-events:none;overflow:hidden;contain:layout style;--on-a:#f7a5db;--on-b:#9c66f4;--on-c:#62d6ec}
+#on-season-decor[data-season="summer"]{--on-a:#ffdb61;--on-b:#17bdf2;--on-c:#f78b8b}
+#on-season-decor[data-season="autumn"]{--on-a:#ffa657;--on-b:#bd76dc;--on-c:#ffd17d}
+#on-season-decor[data-season="winter"]{--on-a:#b8f3ff;--on-b:#8b8fff;--on-c:#f3e8ff}
+.on-season-corner{position:absolute;width:min(28vw,270px);height:min(24vw,220px);opacity:.82;filter:drop-shadow(0 2px 7px rgba(119,87,200,.12));animation:on-season-float 9s ease-in-out infinite alternate}
+.on-season-tl{top:0;left:0}.on-season-tr{top:0;right:0;transform:scaleX(-1);animation-delay:-3s}.on-season-bl{bottom:0;left:0;transform:scaleY(-1);animation-delay:-5s}.on-season-br{bottom:0;right:0;transform:scale(-1);animation-delay:-7s}
+.on-season-corner svg{height:100%;width:100%;overflow:visible}
+.on-season-waves{position:absolute;left:0;right:0;bottom:0;height:90px;width:100%;opacity:.64}
+.on-season-waves path{fill:none;stroke-width:2.5;stroke-linecap:round}
+.on-season-note{position:absolute;color:var(--on-b);font-size:clamp(15px,2vw,25px);opacity:.55;text-shadow:0 0 9px var(--on-a);animation:on-season-drift 12s ease-in-out infinite alternate}
+.on-season-note.n1{top:14%;left:13%}.on-season-note.n2{top:9%;right:17%;animation-delay:-4s}.on-season-note.n3{bottom:12%;left:26%;animation-delay:-8s}.on-season-note.n4{bottom:8%;right:25%;animation-delay:-2s}
+@keyframes on-season-float{from{translate:0 0}to{translate:0 9px}}
+@keyframes on-season-drift{from{transform:translate(0,0) rotate(-8deg)}to{transform:translate(12px,-15px) rotate(9deg)}}
+@media(max-width:700px){.on-season-corner{width:105px;height:115px;opacity:.62}.on-season-waves{height:55px;opacity:.42}.on-season-note{font-size:15px;opacity:.4}.on-season-note.n1{top:20%;left:5%}.on-season-note.n2{top:18%;right:5%}.on-season-note.n3{bottom:15%;left:7%}.on-season-note.n4{bottom:13%;right:7%}}
+@media(prefers-reduced-motion:reduce){.on-season-corner,.on-season-note{animation:none!important}}
+</style>
 </head>
 
 <body>
@@ -2581,6 +2599,46 @@ async function onvideoPlay(){
   }catch(e){console.info("Video no confirmado; se inicia audio.");}
   escucharRadio();
 }
+</script>
+<script id="on-season-script">
+(function(){
+  'use strict';
+  // Calendario estacional fijo para Argentina (sin red ni servicios externos).
+  function seasonForArgentina(){
+    const parts=new Intl.DateTimeFormat('en-US',{timeZone:'America/Argentina/Buenos_Aires',month:'numeric',day:'numeric'}).formatToParts(new Date());
+    const month=Number(parts.find(p=>p.type==='month').value);
+    const day=Number(parts.find(p=>p.type==='day').value);
+    const md=month*100+day;
+    return md>=1221||md<321?'summer':md>=921?'spring':md>=621?'winter':'autumn';
+  }
+  const symbols={spring:['✿','✿','🦋','✦'],summer:['☀','✦','◉','✧'],autumn:['🍁','🍂','✦','✧'],winter:['❄','✧','❅','✦']};
+  function cornerSVG(season){
+    const motif=symbols[season];
+    return `<svg viewBox="0 0 250 220" aria-hidden="true" focusable="false">
+      <defs><linearGradient id="ons-line" x1="0" y1="0" x2="1" y2="1"><stop stop-color="var(--on-a)"/><stop offset=".55" stop-color="var(--on-b)"/><stop offset="1" stop-color="var(--on-c)"/></linearGradient></defs>
+      <path d="M-10 100 Q35 35 100 70 T235 12" fill="none" stroke="url(#ons-line)" stroke-width="3" opacity=".8"/>
+      <path d="M-10 121 Q45 55 110 90 T240 35" fill="none" stroke="var(--on-c)" stroke-width="2" opacity=".5"/>
+      <circle cx="36" cy="35" r="4" fill="var(--on-a)"/><circle cx="178" cy="46" r="3" fill="var(--on-c)"/>
+      <text x="16" y="69" font-size="42">${motif[0]}</text><text x="86" y="43" font-size="27">${motif[1]}</text>
+      <text x="154" y="99" font-size="32">${motif[2]}</text><text x="61" y="151" font-size="27" fill="var(--on-b)">${motif[3]}</text>
+      <text x="198" y="158" font-size="24" fill="var(--on-b)">♫</text>
+    </svg>`;
+  }
+  function renderSeason(){
+    const season=seasonForArgentina();
+    let decor=document.getElementById('on-season-decor');
+    if(decor && decor.dataset.season===season)return;
+    if(!decor){decor=document.createElement('div');decor.id='on-season-decor';decor.setAttribute('aria-hidden','true');document.body.appendChild(decor);}
+    decor.dataset.season=season;
+    decor.innerHTML=['tl','tr','bl','br'].map(c=>`<div class="on-season-corner on-season-${c}">${cornerSVG(season)}</div>`).join('')+
+      `<svg class="on-season-waves" viewBox="0 0 1200 100" preserveAspectRatio="none" aria-hidden="true"><path stroke="var(--on-b)" d="M-20 75 Q150 0 310 55 T650 55 T1010 55 T1230 45"/><path stroke="var(--on-c)" d="M-20 93 Q150 20 310 73 T650 73 T1010 73 T1230 63"/></svg>`+
+      ['♫','♪','✦','♫'].map((v,i)=>`<span class="on-season-note n${i+1}">${v}</span>`).join('');
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',renderSeason,{once:true});else renderSeason();
+  // Actualiza también si la app permanece abierta durante el cambio de estación.
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)renderSeason();});
+  setInterval(renderSeason,60*60*1000);
+})();
 </script>
 </body>
 </html>
