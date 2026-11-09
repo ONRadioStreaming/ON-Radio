@@ -1098,6 +1098,10 @@ body.player-active{
 .on-banner-lightbox-actions button{background:#444}
 .on-banner-lightbox-actions a[hidden]{display:none!important}
 body.on-banner-modal-open{overflow:hidden}
+
+/* Ajuste puntual de legibilidad publicitaria - 09/11/2026 */
+.on-banner-section h2 {color:#29266d !important; text-shadow:none !important; opacity:1 !important;}
+.on-banner-section .on-banner-sub {color:#424b63 !important; text-shadow:none !important; opacity:1 !important;}
 </style>
 <style>
 
@@ -1161,7 +1165,7 @@ body::after{background:linear-gradient(145deg,rgba(244,251,255,.82),rgba(237,232
   </div>
 
   <div class="header-actions">
-    <button class="icon-btn play-header" onclick="abrirSenales()" aria-label="Reproducir">▶</button>
+    <button class="icon-btn play-header" onclick="onvideoPlay()" aria-label="Reproducir">▶</button>
     <button class="icon-btn share-header" onclick="compartirApp()" aria-label="Compartir">
       <svg width="30" height="30" viewBox="0 0 24 24">
         <circle cx="18" cy="5" r="3" fill="white"/>
@@ -1255,7 +1259,7 @@ body::after{background:linear-gradient(145deg,rgba(244,251,255,.82),rgba(237,232
       </div>
       <div id="musicBadge" class="music-badge">ON AIR</div>
       <div id="heroBgText" class="hero-bg-text">ON RADIO</div>
-      <button class="play-center" onclick="abrirSenales()" aria-label="Reproducir">▶</button>
+      <button class="play-center" onclick="onvideoPlay()" aria-label="Reproducir">▶</button>
     </div>
 
     <div class="hero-info">
@@ -1728,8 +1732,10 @@ function abrirSenales(){ document.getElementById("modalSenales").style.display =
 function cerrarSenales(){ document.getElementById("modalSenales").style.display = "none"; }
 function escucharRadio(){
   cerrarSenales();
-  document.getElementById("streaming").play();
-  mostrarBarraPlayer();
+  const audio=document.getElementById("streaming");
+  const p=audio.play();
+  if(p&&typeof p.catch==="function")p.then(mostrarBarraPlayer).catch(()=>alert("No se pudo iniciar el audio. Revisá tu conexión."));
+  else mostrarBarraPlayer();
 }
 function mostrarBarraPlayer(){
   document.getElementById("playerBar").classList.add("show");
@@ -2524,5 +2530,57 @@ setInterval(()=>{if(!document.hidden)cargarImagenesProgramasDesdeNube();}, 60*60
 })();
 </script>
 
+
+<style id="onvideo-selector-style">
+#onvideoSelector{display:none;position:fixed;inset:0;z-index:2147483000;background:rgba(9,12,35,.72);align-items:center;justify-content:center;padding:20px}
+#onvideoSelector .onvideo-box{width:min(100%,390px);padding:26px 20px;border-radius:22px;background:#fff;color:#29214d;text-align:center;box-shadow:0 18px 65px #0005}
+#onvideoSelector h2{font-size:22px;margin:0 0 8px;color:#312164}
+#onvideoSelector p{margin:0 0 20px;color:#555}
+#onvideoSelector button{display:block;width:100%;margin:9px 0;padding:14px;border:0;border-radius:13px;background:linear-gradient(110deg,#6b35ce,#008fcd);color:white;font-weight:700;font-size:16px;cursor:pointer}
+#onvideoSelector button.onvideo-cancel{background:#e9e8f1;color:#302d48}
+</style>
+<div id="onvideoSelector" role="dialog" aria-modal="true" aria-labelledby="onvideoTitle">
+<div class="onvideo-box"><h2 id="onvideoTitle">¡Estamos en vivo!</h2><p>¿Querés escucharnos o vernos?</p>
+<button type="button" onclick="onvideoEscuchar()">🎧 ESCUCHANOS EN VIVO</button>
+<button type="button" onclick="onvideoVer()">▶ MIRANOS EN VIVO</button>
+<button type="button" class="onvideo-cancel" onclick="onvideoCerrar()">Cancelar</button></div></div>
+
+<script>
+// Señal pública del Worker: GET /video/live -> {live:true, url:"https://www.youtube.com/watch?v=..."}
+// Si no hay respuesta válida, el reproductor inicia audio directamente.
+const ONVIDEO_STATUS_URL = "https://onradio-ia.guillermocaballini.workers.dev/video/live";
+const ONVIDEO_YOUTUBE_URL = "https://www.youtube.com/@laonradio/live";
+let onvideoUrl = ONVIDEO_YOUTUBE_URL;
+function onvideoCerrar(){document.getElementById("onvideoSelector").style.display="none";}
+function onvideoEscuchar(){onvideoCerrar();escucharRadio();}
+function onvideoVer(){
+  onvideoCerrar();
+  detenerRadio();
+  window.open(onvideoUrl,"_blank","noopener,noreferrer");
+}
+async function onvideoPlay(){
+  const audio=document.getElementById("streaming");
+  if(audio && !audio.paused){mostrarBarraPlayer();return;}
+  try{
+    const controller=new AbortController();
+    const timeout=setTimeout(()=>controller.abort(),2200);
+    let response;
+    try{response=await fetch(ONVIDEO_STATUS_URL,{cache:"no-store",signal:controller.signal});}
+    finally{clearTimeout(timeout);}
+    if(response.ok){
+      const data=await response.json();
+      if(data && data.live===true){
+        const candidate=typeof data.url==="string"?data.url:ONVIDEO_YOUTUBE_URL;
+        const u=new URL(candidate);
+        if(u.protocol==="https:" && ["youtube.com","www.youtube.com","youtu.be","www.youtube-nocookie.com"].includes(u.hostname)){
+          onvideoUrl=u.href;
+          document.getElementById("onvideoSelector").style.display="flex";return;
+        }
+      }
+    }
+  }catch(e){console.info("Video no confirmado; se inicia audio.");}
+  escucharRadio();
+}
+</script>
 </body>
 </html>
