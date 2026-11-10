@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="theme-color" content="#e30613">
+<meta name="theme-color" content="#7556e8">
 <title>ON Radio — Administrador</title>
 
 <style>
@@ -378,9 +378,9 @@ textarea{
 .medidas-recomendadas b{color:#fff;font-size:14px}
 .medidas-recomendadas span{color:#bbb;font-size:12px;line-height:1.4}
 .frame.horizontal{width:min(100%,360px);height:auto;aspect-ratio:16/9}
-.web-ad-preview{margin-top:12px;width:min(100%,360px);aspect-ratio:8/3;background:#101010;border:1px dashed #666;border-radius:10px;display:grid;place-items:center;overflow:hidden}
+.web-ad-preview{margin-top:12px;width:145px;aspect-ratio:9/16;background:#101010;border:1px dashed #666;border-radius:10px;display:grid;place-items:center;overflow:hidden}
 .web-ad-preview img{width:100%;height:100%;object-fit:contain}
-.web-ad-thumb{width:min(100%,260px);aspect-ratio:8/3;height:auto;object-fit:contain;background:#101010;border-radius:8px;border:1px solid #555}
+.web-ad-thumb{width:105px;aspect-ratio:9/16;height:auto;object-fit:contain;background:#101010;border-radius:8px;border:1px solid #555}
 .web-ad-item-layout{display:flex;align-items:start;gap:15px;flex-wrap:wrap}
 .web-ad-item-layout>div:last-child{flex:1;min-width:200px}
 @media(max-width:780px){
@@ -417,16 +417,45 @@ textarea{
     display:none;
   }
 }
+
+/* ON RADIO · identidad visual, solo presentación */
+:root{--red:#7556e8;--red-dark:#5948d7;--bg:#10172b;--card:#1c2540;--card2:#273454;--line:#394669;--text:#fff;--muted:#c0cbe0;--green:#16a34a;--danger:#dc2626}
+html,body{background:radial-gradient(ellipse at 92% 0%,rgba(45,157,215,.16),transparent 42%),radial-gradient(ellipse at 4% 90%,rgba(165,85,232,.13),transparent 46%),var(--bg)}
+header{background:linear-gradient(105deg,#5948d7 0%,#7556e8 44%,#2d9dd7 100%);gap:12px;box-shadow:0 5px 22px rgba(24,31,76,.35)}
+.logo{font-size:20px;line-height:1.05}.logo small{font-size:9px;margin-top:4px}
+.card{box-shadow:0 8px 24px rgba(2,9,27,.14)}
+.btn{background:linear-gradient(110deg,#7556e8,#398edc)}.btn.gray{background:#35415d}.btn.green{background:#168f69}.btn.danger{background:#bd375e}
+.nav:hover,.nav.active{background:linear-gradient(100deg,#7556e8,#2d9dd7)}
+input,select,textarea{background:#101a30;border-color:#4b597b}
+input:focus,select:focus,textarea:focus{border-color:#58c4ed}
+.notice{background:#263352;border-left-color:#57bde9}
+.medidas-recomendadas{background:#252b51;border-color:#6456ad}
+.item{background:#141e35;border-color:#3b496b}
+.modal{background:#1c2540;border-color:#64719a}
+/* Navegación lateral desplegable en escritorio y celular */
+.layout{display:block;min-height:calc(100vh - 62px)}
+main{max-width:1200px;padding:24px;margin:auto}
+#adminMenuButton{width:42px;height:42px;display:grid;place-items:center;flex:none;border:0;border-radius:10px;background:#ffffff1e;color:#fff;font-size:27px;line-height:1;cursor:pointer}
+#adminMenuButton:hover{background:#ffffff35}
+#adminMenuBackdrop{position:fixed;inset:62px 0 0;background:#020718a8;z-index:59;display:none}
+#adminMenuBackdrop.open{display:block}
+aside#adminSidebar{position:fixed;top:62px;left:0;bottom:0;width:min(300px,85vw);background:#17213a;border-right:1px solid #455476;padding:14px;z-index:60;overflow-y:auto;box-shadow:12px 0 35px #02071870;transform:translateX(-105%);transition:transform .2s ease;display:block}
+aside#adminSidebar.open{transform:translateX(0)}
+aside#adminSidebar .nav{width:100%;display:block;white-space:normal;margin:4px 0;padding:14px 12px}
+body.admin-menu-open{overflow:hidden}
+@media(max-width:780px){aside#adminSidebar{position:fixed;top:62px;left:0;bottom:0;width:min(300px,85vw);display:block;overflow-y:auto}main{padding:14px}.header-right{display:none}}
+@media(prefers-reduced-motion:reduce){aside#adminSidebar{transition:none}}
 </style>
 
 <link rel="manifest" href="manifest-admin.json">
-<meta name="theme-color" content="#e01818">
+<meta name="theme-color" content="#7556e8">
 <link rel="apple-touch-icon" href="icono-admin-192.png">
 </head>
 
 <body>
 
 <header>
+  <button id="adminMenuButton" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="adminSidebar">☰</button>
   <div class="logo">
     ON Radio
     <small>ADMINISTRADOR</small>
@@ -437,16 +466,17 @@ textarea{
   </div>
 </header>
 
+<div id="adminMenuBackdrop" aria-hidden="true"></div>
 <div class="layout">
 
-<aside>
+<aside id="adminSidebar" aria-label="Secciones del administrador">
 
 <button class="nav active" data-tab="popup">
 📢 Pop-up
 </button>
 
 <button class="nav" data-tab="publicidad-web">
-🖥️ Publicidad Web y App
+🖥️ Publicidad Web
 </button>
 
 <button class="nav" data-tab="programacion">
@@ -544,10 +574,10 @@ class="list">
 
 <!-- PUBLICIDAD WEB - MODULO INDEPENDIENTE. No modifica el sistema de POP-UP -->
 <section id="tab-publicidad-web" class="tab">
-  <h1>🖥️ Publicidad Web y App</h1>
-  <p class="subtitle">Administración compartida de banners horizontales 1920 × 720 px para la web y la app. La visualización en ambas plataformas se activará cuando actualicemos sus reproductores.</p>
+  <h1>🖥️ Publicidad Web</h1>
+  <p class="subtitle">Anuncios verticales 9:16 exclusivos del carrusel de la página web, para planes Destacado e Integral. No aparecen en la aplicación.</p>
   <div class="card">
-    <div class="notice" style="margin-bottom:14px"><b>Publicidad web y app:</b> los planes Destacado e Integral se administran desde Cloudflare. Este módulo no modifica los pop-ups. Los anuncios existentes se conservan hasta que los reemplaces.</div>
+    <div class="notice" style="margin-bottom:14px"><b>Publicidad web independiente:</b> únicamente los planes Destacado e Integral aparecen en el carrusel. Los anuncios se guardan en Cloudflare y se reflejan en la web sin tocar el sistema de pop-ups.</div>
     <div class="field"><label for="webAdminToken">Clave comercial (secreto ONRADIO_WEB_ADMIN_TOKEN de Cloudflare)</label><input id="webAdminToken" type="password" autocomplete="off" placeholder="Ingresá la clave configurada en Cloudflare"><small class="muted">La clave habilita Publicidad Web y las imágenes 16:9 del Pop-up. Nunca se incorpora al archivo HTML ni a GitHub.</small></div>
     <div class="field" style="margin-top:12px">
       <label style="display:flex;align-items:center;gap:10px;font-size:13px;text-transform:none;font-weight:700;color:#fff;cursor:pointer">
@@ -557,7 +587,7 @@ class="list">
       <small class="muted" style="display:block;margin-top:7px">Opcional: guarda la clave sin cifrar en los datos locales de este navegador, solo después de una conexión correcta. Usalo únicamente en una computadora personal de confianza. Si borrás los datos de Chrome, cambiás de navegador o pasás del archivo local a GitHub, podría perderse. Conservá otra copia en un gestor de contraseñas.</small>
     </div>
     <div class="actions"><button class="btn gray" type="button" id="webAdConnect">🔐 Conectar a Cloudflare / Actualizar listado</button><span id="webAdConnection" class="muted" role="status" aria-live="polite">No conectado</span></div>
-    <div class="medidas-recomendadas"><b>▭ Nuevo banner horizontal: 1920 × 720 px (8:3)</b><span>Usá imágenes de 1920 × 720 px. Los anuncios anteriores 9:16 siguen guardados y se identifican como formato anterior hasta que los reemplaces. No cambies anuncios reales hasta actualizar la web y la app.</span></div>
+    <div class="medidas-recomendadas"><b>▯ Imagen vertical: 1080 × 1920 px (9:16)</b><span>Usá este tamaño vertical para aprovechar la tarjeta completa del carrusel, sin franjas ni recortes. Las imágenes anteriores se conservan hasta que las reemplaces.</span></div>
     <form id="webAdForm" autocomplete="off">
       <h3 id="webAdFormTitle">Agregar publicidad web</h3>
       <div class="grid">
@@ -570,14 +600,14 @@ class="list">
         <div class="field"><label for="webAdEnd">Vencimiento (opcional)</label><input type="date" id="webAdEnd"></div>
       </div>
       <div class="grid">
-        <div class="field"><label for="webAdImage">Banner horizontal — 1920 × 720 px</label><input type="file" id="webAdImage" accept="image/*"><small class="muted">Proporción 8:3 obligatoria. La imagen se prepara a 1920 × 720 px. Podés reutilizarla en varios anuncios. Al editar, si no elegís otra, se conserva la existente.</small></div>
-        <div class="field"><label for="webAdEnabled">Visibilidad</label><select id="webAdEnabled"><option value="1">Activa</option><option value="0">Inactiva</option></select><div id="webAdPreview" class="web-ad-preview"><span class="muted">Vista previa 1920 × 720</span></div></div>
+        <div class="field"><label for="webAdImage">Imagen vertical — 1080 × 1920 px</label><input type="file" id="webAdImage" accept="image/*"><small class="muted">Proporción 9:16 obligatoria. La imagen se prepara a 1080 × 1920 px. Podés reutilizarla en varios anuncios. Al editar, si no elegís otra, se conserva la existente.</small></div>
+        <div class="field"><label for="webAdEnabled">Visibilidad</label><select id="webAdEnabled"><option value="1">Activa</option><option value="0">Inactiva</option></select><div id="webAdPreview" class="web-ad-preview"><span class="muted">Vista previa 9:16</span></div></div>
       </div>
       <div class="actions"><button class="btn green" type="submit" id="webAdSave">💾 Guardar en Cloudflare</button><button class="btn gray" type="button" id="webAdCancel">Cancelar edición</button></div>
       <div id="webAdFeedback" class="muted" role="status" aria-live="polite" style="margin-top:10px"></div>
     </form>
   </div>
-  <div class="card"><h3>Publicidades web guardadas</h3><p class="muted">Orden de los anuncios para la web y la app. El desplazamiento vertical se incorporará en ambas plataformas.</p><div id="webAdList" class="list"><div class="empty">Todavía no hay anuncios cargados.</div></div></div>
+  <div class="card"><h3>Publicidades web guardadas</h3><p class="muted">Orden del carrusel en la web. Si todas las publicidades entran, permanecen quietas; si desbordan, avanzan automáticamente.</p><div id="webAdList" class="list"><div class="empty">Todavía no hay anuncios cargados.</div></div></div>
 </section>
 
 <!-- ========================================================= -->
@@ -1939,6 +1969,22 @@ document
 });
 
 
+/* Menú lateral: solo interfaz, no altera las funciones de las pestañas. */
+const adminMenuButton=document.getElementById('adminMenuButton');
+const adminSidebar=document.getElementById('adminSidebar');
+const adminMenuBackdrop=document.getElementById('adminMenuBackdrop');
+function setAdminMenu(open){
+ adminSidebar.classList.toggle('open',open);
+ adminMenuBackdrop.classList.toggle('open',open);
+ document.body.classList.toggle('admin-menu-open',open);
+ adminMenuButton.setAttribute('aria-expanded',String(open));
+ adminMenuButton.setAttribute('aria-label',open?'Cerrar menú':'Abrir menú');
+}
+adminMenuButton.addEventListener('click',()=>setAdminMenu(!adminSidebar.classList.contains('open')));
+adminMenuBackdrop.addEventListener('click',()=>setAdminMenu(false));
+adminSidebar.querySelectorAll('.nav').forEach(b=>b.addEventListener('click',()=>setAdminMenu(false)));
+document.addEventListener('keydown',e=>{if(e.key==='Escape')setAdminMenu(false)});
+
 /* ========================================================= */
 /* POPUP CENTRALIZADO */
 /* ========================================================= */
@@ -1952,17 +1998,27 @@ let webCommercialToken="";
 function commercialHeaders(){return {'Content-Type':'application/json','Authorization':'Bearer '+webCommercialToken};}
 window.onradioCommercialAuth={apiBase:'https://onradio-ia.guillermocaballini.workers.dev',setToken(value){webCommercialToken=String(value||'').trim();},hasToken(){return webCommercialToken.length>=20;},headers:commercialHeaders};
 async function compressImageRatio(file,ratio,maxW,maxH,maxLength){
-  if(!file||!String(file.type||"").startsWith("image/"))throw Error("Elegí una imagen válida.");
+  if(!file||!String(file.type||'').startsWith('image/'))throw Error('Elegí una imagen válida.');
   const source=await readFile(file);
-  const img=await new Promise((resolve,reject)=>{const x=new Image();x.onload=()=>resolve(x);x.onerror=()=>reject(Error("No se pudo leer la imagen."));x.src=source;});
-  if(Math.abs(img.naturalWidth/img.naturalHeight-ratio)>0.018)throw Error(`La imagen tiene proporción ${img.naturalWidth} × ${img.naturalHeight}. Necesitamos ${ratio===1?'1:1 (cuadrada)':'16:9 (horizontal)'} para que ocupe el contenedor completo, sin franjas.`);
-  const scale=Math.min(1,maxW/img.naturalWidth,maxH/img.naturalHeight);
-  const c=document.createElement('canvas');c.width=Math.round(img.naturalWidth*scale);c.height=Math.round(img.naturalHeight*scale);
-  const ctx=c.getContext('2d',{alpha:false});ctx.fillStyle='#fff';ctx.fillRect(0,0,c.width,c.height);ctx.drawImage(img,0,0,c.width,c.height);
-  let result='',quality=.8;
-  while(quality>=.36){result=c.toDataURL('image/jpeg',quality);if(result.length<=maxLength)break;quality-=.08;}
-  if(result.length>maxLength)throw Error("La imagen es demasiado pesada para guardarla. Reducí su tamaño.");
-  return result;
+  const img=await new Promise((resolve,reject)=>{const x=new Image();x.onload=()=>resolve(x);x.onerror=()=>reject(Error('No se pudo leer la imagen.'));x.src=source;});
+  if(Math.abs(img.naturalWidth/img.naturalHeight-ratio)>0.018)throw Error(`La imagen tiene proporción ${img.naturalWidth} × ${img.naturalHeight}. Necesitamos 16:9 (horizontal).`);
+  const baseScale=Math.min(1,maxW/img.naturalWidth,maxH/img.naturalHeight);
+  // La codificación del canvas puede pesar más que el JPG original.
+  // Adaptar resolución y calidad antes de rechazarlo, sin cambiar el backend.
+  for(const factor of [1,.85,.7,.55,.42,.32]){
+    const c=document.createElement('canvas');
+    c.width=Math.max(1,Math.round(img.naturalWidth*baseScale*factor));
+    c.height=Math.max(1,Math.round(img.naturalHeight*baseScale*factor));
+    const ctx=c.getContext('2d',{alpha:false});
+    ctx.fillStyle='#fff';ctx.fillRect(0,0,c.width,c.height);
+    ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';
+    ctx.drawImage(img,0,0,c.width,c.height);
+    for(const quality of [.82,.72,.62,.52,.42,.32,.24]){
+      const result=c.toDataURL('image/jpeg',quality);
+      if(result.length<=maxLength)return result;
+    }
+  }
+  throw Error('No fue posible optimizar la imagen dentro del límite actual de Cloudflare.');
 }
 window.setPopupHorizontalDraft=async function(i,input){
   const ad=state.popup.images[i],file=input.files?.[0];if(!ad||!file)return;
@@ -3683,17 +3739,17 @@ if ("serviceWorker" in navigator) {
    preview('');
    notice('');
  }
- function preview(img){const p=byId('webAdPreview');p.replaceChildren();if(img){const e=document.createElement('img');e.src=img;e.alt='Vista previa banner horizontal 1920 × 720';p.append(e);}else p.textContent='Vista previa 1920 × 720';}
+ function preview(img){const p=byId('webAdPreview');p.replaceChildren();if(img){const e=document.createElement('img');e.src=img;e.alt='Vista previa anuncio vertical 9:16';p.append(e);}else p.textContent='Vista previa 9:16';}
  function fechaAR(){return new Date().toLocaleDateString('en-CA',{timeZone:'America/Argentina/Buenos_Aires'});}
  function estado(ad){const hoy=fechaAR();if(!ad.enabled)return 'Inactivo';if(ad.start&&ad.start>hoy)return 'Programado';if(ad.end&&ad.end<hoy)return 'Vencido';return 'Activo';}
- async function compressWebAdBanner(f){
+ async function compressWebAdVertical(f){
    if(!String(f?.type||'').startsWith('image/'))throw Error('Elegí una imagen válida.');
    const src=await new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(r.result);r.onerror=reject;r.readAsDataURL(f);});
    const img=await new Promise((resolve,reject)=>{const i=new Image();i.onload=()=>resolve(i);i.onerror=reject;i.src=src;});
-   const ratio=8/3;
+   const ratio=9/16;
    if(Math.abs(img.naturalWidth/img.naturalHeight-ratio)>.018)
-     throw Error('Esta publicidad debe ser horizontal 1920 × 720 px (proporción 8:3).');
-   const c=document.createElement('canvas');c.width=1920;c.height=720;
+     throw Error('Esta publicidad debe ser vertical 9:16. Prepará una imagen de 1080 × 1920 px (no cuadrada).');
+   const c=document.createElement('canvas');c.width=1080;c.height=1920;
    const ctx=c.getContext('2d',{alpha:false});ctx.fillStyle='#fff';ctx.fillRect(0,0,c.width,c.height);
    ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';
    ctx.drawImage(img,0,0,c.width,c.height);
@@ -3704,7 +3760,7 @@ if ("serviceWorker" in navigator) {
  }
  byId('webAdImage').onchange=async e=>{
    const f=e.target.files?.[0];if(!f)return;
-   try{preparedImage=await compressWebAdBanner(f);preview(preparedImage);notice('Banner horizontal preparado: 1920 × 720 px (8:3).');}
+   try{preparedImage=await compressWebAdVertical(f);preview(preparedImage);notice('Imagen vertical preparada: 1080 × 1920 px (9:16).');}
    catch(err){preview(preparedImage);notice(err.message+' Se conserva la imagen anterior si estabas editando.');}finally{e.target.value='';e.target.removeAttribute('required');e.target.setCustomValidity('');}
  };
  function render(){
@@ -3715,7 +3771,6 @@ if ("serviceWorker" in navigator) {
      const img=document.createElement('img');img.className='web-ad-thumb';img.src=ad.image;img.alt='Flyer '+ad.name;layout.append(img);
      const right=document.createElement('div');const b=document.createElement('b');b.textContent=ad.name;right.append(b);
      const p=document.createElement('p');p.className='muted';p.textContent=(ad.plan==='integral'?'Integral':'Destacado')+' · '+estado(ad)+' · '+(ad.start||'Sin inicio')+' → '+(ad.end||'Sin vencimiento');right.append(p);
-     const fmt=document.createElement('div');fmt.className='muted';fmt.textContent='Formato de imagen: comprobando…';right.append(fmt);if(ad.image){const probe=new Image();probe.onload=()=>{const r=probe.naturalWidth/probe.naturalHeight;fmt.textContent=Math.abs(r-8/3)<.03?'✓ Banner horizontal 1920 × 720':'⚠ Imagen anterior: reemplazar por banner 1920 × 720 antes de activar el nuevo diseño';};probe.onerror=()=>{fmt.textContent='No se pudo comprobar el formato';};probe.src=ad.image;}
      if(ad.url){const a=document.createElement('a');a.href=ad.url;a.target='_blank';a.rel='noopener noreferrer';a.textContent='Abrir destino ↗';a.style.color='#93c5fd';right.append(a);}
      const actions=document.createElement('div');actions.className='actions';
      function btn(label,fn,kind='gray'){const el=document.createElement('button');el.type='button';el.className='btn '+kind;el.textContent=label;el.onclick=async()=>{if(busy)return;try{await fn();}catch(e){notice(e.message);}};actions.append(el);}
@@ -3730,7 +3785,7 @@ if ("serviceWorker" in navigator) {
    e.preventDefault();if(busy)return;
    if(!connected)return notice('Primero ingresá tu clave comercial y conectate a Cloudflare.');
    const name=byId('webAdName').value.trim(),plan=byId('webAdPlan').value,urlDest=byId('webAdUrl').value.trim(),start=byId('webAdStart').value,end=byId('webAdEnd').value,enabled=byId('webAdEnabled').value==='1';
-   if(!preparedImage){notice('Elegí un banner horizontal de 1920 × 720 px (8:3).');return;}
+   if(!preparedImage){notice('Elegí una imagen vertical de 1080 × 1920 px (9:16).');return;}
    if(start&&end&&end<start){notice('El vencimiento no puede ser anterior a la fecha de inicio.');return;}
    inProgress(true);try{
      const data={name,plan,link:urlDest,start_date:start,end_date:end,enabled,image:preparedImage};
