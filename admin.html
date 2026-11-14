@@ -380,7 +380,7 @@ textarea{
 .frame.horizontal{width:min(100%,360px);height:auto;aspect-ratio:16/9}
 .web-ad-preview{margin-top:12px;width:145px;aspect-ratio:9/16;background:#101010;border:1px dashed #666;border-radius:10px;display:grid;place-items:center;overflow:hidden}
 .web-ad-preview img{width:100%;height:100%;object-fit:contain}
-.web-ad-thumb{width:105px;aspect-ratio:9/16;height:auto;object-fit:contain;background:#101010;border-radius:8px;border:1px solid #555}
+.web-ad-thumb{display:block;width:auto;max-width:min(220px,100%);height:auto;max-height:190px;object-fit:contain;border-radius:8px;border:1px solid #555;background:transparent;flex-shrink:0}
 .web-ad-item-layout{display:flex;align-items:start;gap:15px;flex-wrap:wrap}
 .web-ad-item-layout>div:last-child{flex:1;min-width:200px}
 @media(max-width:780px){
