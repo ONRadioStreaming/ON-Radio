@@ -3155,48 +3155,7 @@ setInterval(()=>{if(!document.hidden)cargarImagenesProgramasDesdeNube();}, 60*60
   </a>
   <button class="on-pwa-invite__close" id="onPwaInviteClose" type="button" aria-label="Cerrar invitación de instalación">×</button>
 </aside>
-<script>
-/* Banner de instalación exclusivo de esta web; no altera la PWA ni el reproductor. */
-(function iniciarInvitacionAppOficial(){
-  'use strict';
-  const barra=document.getElementById('onPwaInvite');
-  const titulo=document.getElementById('onPwaInviteTitle');
-  const indicacion=document.getElementById('onPwaInviteHint');
-  const cerrar=document.getElementById('onPwaInviteClose');
-  if(!barra||!titulo||!indicacion||!cerrar)return;
-  const ua=navigator.userAgent||'';
-  const iOS=/iPhone|iPad|iPod/i.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
-  const android=/Android/i.test(ua);
-  const windows=/Windows/i.test(ua);
-  if(iOS){
-    titulo.textContent='Instalá la app oficial de La ON Radio en tu iPhone';
-    indicacion.textContent='Abrila en Safari y tocá Compartir → Agregar a pantalla de inicio.';
-  }else if(android){
-    titulo.textContent='Instalá la app oficial de La ON Radio en tu Android';
-    indicacion.textContent='Abrila en Chrome y elegí Instalar app desde el menú del navegador.';
-  }else if(windows){
-    titulo.textContent='Instalá la app oficial de La ON Radio en Windows';
-    indicacion.textContent='Abrila en Chrome o Edge y elegí Instalar desde el navegador.';
-  }else{
-    titulo.textContent='Instalá la app oficial de La ON Radio';
-    indicacion.textContent='Abrila y usá la opción Instalar de tu navegador, si está disponible.';
-  }
-  const clave='onradio_web_invite_closed_this_session';
-  try{if(sessionStorage.getItem(clave)==='1')return;}catch(_e){}
-  barra.hidden=false;
-  document.body.classList.add('on-pwa-invite-visible');
-  const actualizarAlto=()=>document.body.style.setProperty('--on-pwa-invite-height',Math.ceil(barra.getBoundingClientRect().height)+'px');
-  actualizarAlto();
-  if('ResizeObserver' in window){new ResizeObserver(actualizarAlto).observe(barra);}
-  window.addEventListener('resize',actualizarAlto,{passive:true});
-  cerrar.addEventListener('click',()=>{
-    barra.hidden=true;
-    document.body.classList.remove('on-pwa-invite-visible');
-    document.body.style.removeProperty('--on-pwa-invite-height');
-    try{sessionStorage.setItem(clave,'1');}catch(_e){}
-  });
-})();
-</script>
+
 
 
 <style id="onradio-instalacion-compacta-web">
@@ -3211,23 +3170,28 @@ setInterval(()=>{if(!document.hidden)cargarImagenesProgramasDesdeNube();}, 60*60
 body.player-active .on-pwa-invite{bottom:58px!important}
 @media(max-width:600px){.on-pwa-invite{min-height:65px!important;padding:9px 12px calc(9px + env(safe-area-inset-bottom))!important;gap:8px!important}.on-pwa-invite__eyebrow{font-size:12px!important}.on-pwa-invite__title{font-size:10px!important}.on-pwa-invite__cta{font-size:12px!important;padding:10px 12px!important}.on-pwa-invite__logo{width:32px!important;height:32px!important}}
 </style>
-<script>
-/* Ajuste de presentación: la web dirige a la página oficial de instalación. */
+<script id="onradio-invitacion-web-control">
+/* Solo la web principal. La instalación se completa en la PWA oficial. */
 (function(){
- const bar=document.getElementById('onPwaInvite');
- const eyebrow=bar?.querySelector('.on-pwa-invite__eyebrow');
- const title=document.getElementById('onPwaInviteTitle');
- const hint=document.getElementById('onPwaInviteHint');
- const cta=document.getElementById('onPwaInviteOpen');
- if(!bar||!eyebrow||!title||!cta)return;
- eyebrow.textContent='LA ON RADIO';
- title.textContent='¡Llevanos siempre con vos!';
- if(hint)hint.textContent='';
- cta.textContent='Instalar app';
- cta.setAttribute('aria-label','Abrir LA ON RADIO para instalar la aplicación');
- bar.hidden=false;
- document.body.classList.add('on-pwa-invite-visible');
- document.body.style.setProperty('--on-pwa-invite-height',Math.ceil(bar.getBoundingClientRect().height)+'px');
+  'use strict';
+  const barra=document.getElementById('onPwaInvite');
+  if(!barra)return;
+  const titulo=document.getElementById('onPwaInviteTitle');
+  const texto=barra.querySelector('.on-pwa-invite__eyebrow');
+  const boton=document.getElementById('onPwaInviteOpen');
+  if(texto)texto.textContent='LA ON RADIO';
+  if(titulo)titulo.textContent='¡Llevanos siempre con vos!';
+  if(boton){
+    boton.textContent='Instalar app';
+    boton.href='https://onradiostreaming.github.io/ON-Radio/';
+    boton.setAttribute('aria-label','Abrir LA ON RADIO para instalar la aplicación');
+  }
+  barra.hidden=false;
+  document.body.classList.add('on-pwa-invite-visible');
+  const ajustar=()=>document.body.style.setProperty('--on-pwa-invite-height',Math.ceil(barra.getBoundingClientRect().height)+'px');
+  ajustar();
+  if('ResizeObserver' in window)new ResizeObserver(ajustar).observe(barra);
+  window.addEventListener('resize',ajustar,{passive:true});
 })();
 </script>
 <style id="onvideo-selector-style">
