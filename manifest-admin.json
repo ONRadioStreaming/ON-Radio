@@ -4,10 +4,10 @@
   "short_name": "ON Admin",
   "description": "Panel de administración de ON Radio",
   "start_url": "./admin.html",
-  "scope": "./admin.html",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#111111",
-  "theme_color": "#7556e8",
+  "theme_color": "#e01818",
   "icons": [
     {
       "src": "icono-admin-192.png",
