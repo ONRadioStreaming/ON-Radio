@@ -1789,6 +1789,8 @@ function cerrarModalInstalar(){ document.getElementById("modalInstalar").style.d
 window.addEventListener("beforeinstallprompt",(e)=>{
   e.preventDefault();
   deferredPrompt = e;
+  const boton=document.querySelector("#modalInstalar .btn-instalar");
+  if(boton) boton.style.display="";
 });
 
 async function registrarInstalacionApp(){
@@ -2671,6 +2673,15 @@ async function onvideoPlay(){
   document.addEventListener('visibilitychange',()=>{if(!document.hidden)renderSeason();});
   setInterval(renderSeason,60*60*1000);
 })();
+</script>
+<script>
+/* Registro independiente de notificaciones de la app de oyentes. */
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./service-worker.js', {scope:'./'})
+      .catch(err => console.warn('No se pudo registrar el servicio de oyentes:',err));
+  });
+}
 </script>
 </body>
 </html>
