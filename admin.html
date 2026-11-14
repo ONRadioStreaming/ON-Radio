@@ -3619,22 +3619,8 @@ loadAudienceStats();
 <script>
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    (async () => {
-      try {
-        const regs = await navigator.serviceWorker.getRegistrations();
-        const adminScript = new URL('./service-worker-admin.js', location.href).href;
-        const adminScope = new URL('./admin.html', location.href).href;
-        for (const reg of regs) {
-          const scripts = [reg.active, reg.waiting, reg.installing].filter(Boolean);
-          if (reg.scope !== adminScope && scripts.some(w => w.scriptURL === adminScript)) {
-            await reg.unregister(); // Solo el registro antiguo del administrador
-          }
-        }
-        await navigator.serviceWorker.register('./service-worker-admin.js', {scope:'./admin.html'});
-      } catch(error) {
-        console.warn('No se pudo actualizar el registro de ON Radio Admin:',error);
-      }
-    })();
+    navigator.serviceWorker.register("./service-worker-admin.js")
+      .catch(error => console.log("No se pudo registrar ON Radio Admin como PWA", error));
   });
 }
 </script>
