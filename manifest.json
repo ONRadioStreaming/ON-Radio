@@ -1,12 +1,13 @@
 {
+  "id": "./",
   "name": "ON Radio",
   "short_name": "ON Radio",
   "start_url": "./",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#7556e8",
   "theme_color": "#7556e8",
   "orientation": "portrait",
-  "scope": "./",
   "icons": [
     {
       "src": "icono-192.png",
