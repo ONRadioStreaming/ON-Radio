@@ -1171,6 +1171,16 @@ body::after{background:linear-gradient(145deg,rgba(244,251,255,.82),rgba(237,232
 /* Estaciones como ambientacion de fondo: contenido y controles por encima */
 .main{position:relative;z-index:2;}
 </style>
+
+<style id="on-play-violet-waves">
+button.play-header,button.play-center{background:#7556e8!important;color:#fff!important;border:1px solid #a995ff!important;outline:1px solid #8b70ff;outline-offset:3px;box-shadow:0 3px 12px #4b2ac766!important;overflow:visible;}
+button.play-header{position:relative;}
+button.play-header::before,button.play-header::after,button.play-center::before,button.play-center::after{content:"";position:absolute;inset:-4px;border:1.5px solid #ffffff;border-radius:50%;pointer-events:none;animation:onPlayVioletWave 2.4s ease-out infinite;}
+button.play-header::after,button.play-center::after{animation-delay:1.2s;opacity:0;}
+@keyframes onPlayVioletWave{0%{transform:scale(1);opacity:.9;}100%{transform:scale(1.65);opacity:0;}}
+button.play-header:focus-visible,button.play-center:focus-visible{outline:2px solid #fff;outline-offset:4px;}
+@media(prefers-reduced-motion:reduce){button.play-header::before,button.play-header::after,button.play-center::before,button.play-center::after{animation:none;opacity:0;}}
+</style>
 </head>
 
 <body>
